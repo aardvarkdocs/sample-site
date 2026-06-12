@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="{% lang %}"{% (' data-aardvark-banner="' + banner_id + '"') if banner_id else '' %}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% full_title %}</title>
+  {% seo_head %}
+  <script src="/_aardvark/color-scheme.js"></script>
+  {% '<script src="/_aardvark/banner.js"></script>' if banner_id else '' %}
+  <link rel="stylesheet" href="/_aardvark/theme.css" />
+  {% theme_style %}
+  {% '<link rel="stylesheet" href="/_aardvark/twoslash.css" />' if page_has_twoslash else '' %}
+  {%
+  for href in css_files:
+      page.print('<link rel="stylesheet" href="' + href + '">')
+  %}
+  {% head_extra %}
+</head>
+<body>
+  <a class="aardvark-skip-link" href="#aardvark-main">{% t("Skip to main content") %}</a>
+  {% banner_html %}
+  <header class="aardvark-header">
+    {% brand_html %}
+    <div id="aardvark-search">{% search_html %}</div>
+    <div id="aardvark-ai">{% ai_assistant_html %}</div>
+    {%
+    if len(languages) > 1:
+        page.print('<select id="aardvark-lang-select" class="aardvark-lang-select" aria-label="Language">')
+        for choice in languages:
+            sel = ' selected' if choice['selected'] else ''
+            page.print('<option value="' + choice['url'] + '"' + sel + '>' + choice['label'] + '</option>')
+        page.print('</select>')
+    %}
+    <button type="button" class="aardvark-theme-toggle" aria-label="Toggle color scheme">
+      <span class="aardvark-icon-light">&#9788;</span><span class="aardvark-icon-dark">&#9789;</span>
+    </button>
+    {% top_buttons_html %}
+  </header>
+  {% tabs_html %}
+  <div class="aardvark-layout{% (' ' + layout_class) if layout_class else '' %}">
+    <nav class="aardvark-sidebar" aria-label="{% t('Documentation') %}">{% nav_html %}</nav>
+    <main id="aardvark-main" class="aardvark-main" tabindex="-1">
+      {%
+      # Top-of-content bar: breadcrumbs (left) + the "Open" page-markdown menu (right, via
+      # margin-left:auto). Rendered whenever either exists, so a page with neither stays clean.
+      # The menu lives here (not the TOC rail) so it shows on mobile and in wide/full layouts.
+      # See theme.render_markdown_menu.
+      if breadcrumbs_html or markdown_menu_html:
+          crumbs = ('<nav class="aardvark-breadcrumbs" aria-label="Breadcrumb">' + breadcrumbs_html + '</nav>') if breadcrumbs_html else ''
+          # Without breadcrumbs the bar holds only the menu; the `-bare` variant floats it level
+          # with the title instead of reserving a blank row above it. See theme.css.
+          bar_class = 'aardvark-page-bar' if breadcrumbs_html else 'aardvark-page-bar aardvark-page-bar-bare'
+          page.print('<div class="' + bar_class + '">' + crumbs + markdown_menu_html + '</div>')
+      %}
+      <article class="aardvark-content"{% table_attrs %}>{% content %}</article>
+      {% ('<div class="aardvark-last-modified">' + t("Last modified") + ' <time datetime="' + last_modified_iso + '">' + last_modified_iso + '</time></div>') if last_modified_iso else "" %}
+      {%
+      # Page-feedback widget. Gated on `pageFeedback` so `false` removes it entirely
+      # (PageFeedback is force-bundled in builder.py under the same flag). One island
+      # owns the rating + the comment box + both gtag events; the literal wrapper keeps
+      # `class="aardvark-rating"` in static HTML so the divider styling works before
+      # hydration. Visible strings are passed in already-translated (island JSX isn't
+      # run through t()).
+      if config.page_feedback:
+          page.print('<div class="aardvark-rating">' + component('PageFeedback',
+              question=t("Was this page helpful?"),
+              thanks=t("Thanks for your feedback!"),
+              commentLabel=t("Tell us more (optional)"),
+              commentNotice=t("Please don't include personal information."),
+              commentPlaceholder=t("What worked, what didn't?"),
+              submitLabel=t("Submit"),
+              commentThanks=t("Thanks for the details!")) + '</div>')
+      %}
+      {%
+      # Reader survey (config `survey`, default off): the built-in Survey island self-hides until
+      # the reader's Nth pageview and records answers to GA. render_survey returns "" when off, so
+      # the survey_html slot below is emitted unconditionally, like the ai_assistant_html slot.
+      %}
+      {% survey_html %}
+    </main>
+    <div class="aardvark-toc-panel">
+      {% page_actions_html %}
+      {% ('<nav class="aardvark-toc-nav" aria-label="' + t("On this page") + '"><div class="aardvark-toc-title">' + t("On this page") + '</div>' + toc_html + '</nav>') if toc_html else "" %}
+    </div>
+  </div>
+  {% powered_by_html %}
+  <!-- Shared ARIA live region for table filtering feedback ("No matching rows").
+       Present at page load so screen readers (notably NVDA) register it; tables.js
+       writes here rather than into a JS-injected region, which some AT ignore. -->
+  <div id="aardvark-live" class="aardvark-visually-hidden" role="status" aria-live="polite"></div>
+  <script src="/_aardvark/tabs.js" defer></script>
+  <script src="/_aardvark/nav.js" defer></script>
+  <script src="/_aardvark/toc.js" defer></script>
+  {% '<script src="/_aardvark/md-menu.js" defer></script>' if markdown_menu_html else '' %}
+  <script src="/_aardvark/tables.js" defer></script>
+  <script src="/_aardvark/code-blocks.js" defer></script>
+  <script src="/_aardvark/language-switcher.js" defer></script>
+  {% '<script src="/_aardvark/hovercard.js" defer></script>' if hovercards_enabled else "" %}
+  {% '<script src="/_aardvark/glossary.js" defer></script>' if glossary_enabled else "" %}
+  <!-- The mermaid and markdeep diagram scripts are injected automatically by the builder,
+       just before the closing body tag, and only on pages that actually contain a diagram,
+       so there is no script tag to place here and no ordering for a template author to get
+       wrong. Detection covers fenced blocks, raw diagram HTML, and changelog diagrams. -->
+  {%
+  for src in js_files:
+      page.print('<script src="' + src + '" defer></script>')
+  %}
+  {% body_extra %}
+</body>
+</html>

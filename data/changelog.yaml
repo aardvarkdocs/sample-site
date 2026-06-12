@@ -1,0 +1,87 @@
+# Changelog data for the {% changelog %} component. A YAML list of changes; each entry
+# needs a `title`, a `date`, and a Markdown `description`. The `date` may include a time
+# (`2026-05-28 16:30`) — the full timestamp drives the newest-first sort, so two changes on
+# the same day order correctly. `version` (a release marker shown beside the date) and
+# `tags` (which populate the filter cloud) are optional. Descriptions are Markdown, so they
+# can link to the docs. See /components/changelog/ for the full schema.
+
+- title: Generate the CLI reference from `vark --help`
+  date: 2026-05-28 16:30
+  version: "0.9.0"
+  tags: [cli, docs]
+  description: |
+    The **CLI reference** page is now generated straight from `vark --help`, so every
+    flag and subcommand stays in lockstep with the code:
+
+    - No hand-maintained option tables to drift
+    - Each subcommand is documented from its own `--help`
+
+    See the [CLI reference](/cli/) for the full command list.
+
+- title: Faster incremental builds
+  date: 2026-05-28 09:15
+  tags: [build, performance]
+  description: |
+    Unchanged pages are now skipped on rebuild, so large sites rebuild in a fraction of the
+    time. Details in the [`build` command docs](/cli/).
+
+- title: Standardized code-block Copy & Download buttons
+  date: 2026-05-22
+  tags: [components, ui]
+  description: |
+    Every code block — on the page, in the file-tree modal, and in OpenAPI request/response
+    samples — now shares one **Copy** and **Download** affordance, so the interaction is
+    identical everywhere a reader meets code. See the [components](/components/) library.
+
+- title: Index OpenAPI descriptions for search
+  date: 2026-05-14
+  version: "0.8.2"
+  tags: [search, openapi]
+  description: |
+    Operation and schema descriptions from your [OpenAPI spec](/openapi/) are now part of
+    the [search](/search/) index, so a reader searching for an endpoint's behavior lands on
+    the right reference section — not just pages that happen to mention it in prose.
+
+- title: Ask-AI reader assistant
+  date: 2026-05-03
+  version: "0.8.0"
+  tags: [ai, search]
+  description: |
+    An optional [**Ask AI**](/ai-assistant/) assistant answers reader questions grounded in
+    your docs, backed by a metered cloud gateway. Bring your own key, or use the bundled,
+    capped allowance to try it out.
+
+- title: Build-time accessibility contrast audit
+  date: 2026-04-19
+  tags: [a11y, build]
+  description: |
+    `vark build` now runs a non-fatal **WCAG color-contrast audit** over your theme
+    colors (light *and* dark) and reports any pair that falls below the configured level, so
+    regressions surface before they ship. Read more under [Accessibility](/accessibility/).
+
+- title: Social unfurl cards (Open Graph)
+  date: 2026-04-05
+  version: "0.7.0"
+  tags: [seo]
+  description: |
+    Every page can render a branded **1200×630 Open Graph card** — your logo over a gradient
+    of the theme's primary color — cached under `og/` and regenerated only when a page's
+    title or description changes, so CI builds stay fast.
+
+- title: Multi-language sites
+  date: 2026-03-21
+  version: "0.6.0"
+  tags: [i18n, build]
+  description: |
+    Serve translated content from per-language directories with an automatic language
+    picker. [`vark build --translate`](/cli/) fills missing or changed pages with a
+    model, grounded in a reusable translation memory.
+
+- title: Interactive Mantine islands
+  date: 2026-03-02
+  version: "0.5.0"
+  tags: [components, performance]
+  description: |
+    Embed any **Mantine** [component](/components/) as an interactive island straight from
+    Markdown. Islands are optionally prerendered to static HTML at build time for crawlers
+    and first paint, then rehydrated on the client for full interactivity.

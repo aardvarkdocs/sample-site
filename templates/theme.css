@@ -1,0 +1,1402 @@
+/* MIRROR: src/aardvark/theme_default/theme.css and examples/sample-site/templates/theme.css
+   are kept byte-for-byte identical — edit BOTH (the sample site renders from its own
+   templates/ copy, which wins over the packaged theme). Drift fails the build via
+   tests/test_tables.py::test_sample_site_templates_match_theme_default, which prints the
+   offending files and the re-sync command. */
+
+/* Palette maps onto Mantine's scheme-aware CSS variables so the chrome tracks
+   light/dark together with the mounted islands. Fallbacks (2nd arg) keep the
+   theme usable in --no-bundle builds where Mantine's styles.css is absent. */
+:root {
+  --aardvark-fg: var(--mantine-color-text, #1a1b1e);
+  --aardvark-muted: var(--mantine-color-dimmed, #6b7280);
+  --aardvark-bg: var(--mantine-color-body, #ffffff);
+  --aardvark-surface: var(--mantine-color-default, #f8f9fa);
+  --aardvark-hover: var(--mantine-color-default-hover, #f1f3f5);
+  --aardvark-border: var(--mantine-color-default-border, rgba(0, 0, 0, 0.08));
+  --aardvark-accent: var(--mantine-primary-color-filled, #1971c2);
+  --aardvark-active-bg: var(--mantine-primary-color-light, rgba(34, 139, 230, 0.1));
+  --aardvark-active-fg: var(--mantine-primary-color-light-color, #1864ab);
+  /* Prose-link text color. Deliberately NOT bound to --mantine-primary-color-filled:
+     that filled shade is scheme-independent (Mantine's blue.6, ~3.6:1 on white) so it
+     can't be WCAG AA on both light and dark. This is a fixed, AA, scheme-aware default;
+     a configured theme.colors primary overrides it (see theme.py _color_decls), so
+     custom-brand links stay on-brand and are checked by the build-time contrast audit. */
+  --aardvark-link: #1971c2;
+  --aardvark-sidebar-w: 260px;
+  --aardvark-toc-w: 220px;
+  --aardvark-ai-w: 380px;
+  --aardvark-content-max: 820px;
+  --aardvark-content-max-wide: 1100px;
+  /* The main column's horizontal padding, as a var so the layout grid can cap the content
+     track at content-max + this padding — that keeps the TOC rail beside the content rather
+     than stranded at the viewport edge on wide screens (see .aardvark-layout). */
+  --aardvark-main-pad-x: 40px;
+  --aardvark-header-h: 56px;
+  --aardvark-tabbar-h: 0px;
+  --aardvark-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --aardvark-font-body: var(--aardvark-font);
+  --aardvark-font-heading: var(--aardvark-font);
+}
+/* Reserve space for the tab bar (set via config) only when it is present. */
+:root:has(.aardvark-tabbar) { --aardvark-tabbar-h: 48px; }
+/* Dark fallbacks for --no-bundle builds (no Mantine vars to inherit). When the
+   Mantine bundle IS present, its variables win and these fallbacks are unused. */
+:root[data-mantine-color-scheme="dark"] {
+  --aardvark-fg: var(--mantine-color-text, #c9c9c9);
+  --aardvark-muted: var(--mantine-color-dimmed, #909296);
+  --aardvark-bg: var(--mantine-color-body, #1a1b1e);
+  --aardvark-surface: var(--mantine-color-default, #25262b);
+  --aardvark-hover: var(--mantine-color-default-hover, #2c2e33);
+  --aardvark-border: var(--mantine-color-default-border, rgba(255, 255, 255, 0.1));
+  --aardvark-active-bg: var(--mantine-primary-color-light, rgba(34, 139, 230, 0.15));
+  --aardvark-active-fg: var(--mantine-primary-color-light-color, #66b2ff);
+  /* A lighter fallback so the no-bundle accent (focus rings, underlines) stays visible
+     on the dark background; the light :root #1971c2 would be too dark here. */
+  --aardvark-accent: var(--mantine-primary-color-filled, #4dabf7);
+  --aardvark-link: #4dabf7;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+/* background-* longhands (not the shorthand) so a configured theme.backgroundImage can layer
+   over the --aardvark-bg color: theme.py sets --aardvark-bg-image (+ optional size/position/
+   repeat/attachment) from config. With no image, --aardvark-bg-image is unset → `none`, so
+   this is just the background color, as before. The image shows through the transparent
+   content area, sidebar and TOC; with attachment: fixed the sticky header/tab bar repaint it
+   too (see the .aardvark-header rule) so it stays continuous through them.
+   attachment defaults to scroll, not fixed: `background-attachment: fixed` is broken on iOS
+   Safari, so fixed is a documented desktop-only opt-in (theme.backgroundImage.attachment). */
+body {
+  font-family: var(--aardvark-font-body); color: var(--aardvark-fg); line-height: 1.6;
+  background-color: var(--aardvark-bg);
+  background-image: var(--aardvark-bg-image, none);
+  background-position: var(--aardvark-bg-position, center);
+  background-repeat: var(--aardvark-bg-repeat, no-repeat);
+  background-size: var(--aardvark-bg-size, cover);
+  background-attachment: var(--aardvark-bg-attachment, scroll);
+}
+
+/* Smooth light/dark switch via the View Transitions API. color-scheme.js wraps the
+   scheme flip in document.startViewTransition(); the browser cross-fades a snapshot
+   of the old page into the new one on the compositor, so the whole page fades in
+   unison with no page-wide per-element transition. That means no style-recalc storm,
+   nothing clobbered mid-animation, and no first-paint flash. Unsupported browsers and
+   reduced motion fall back to an instant switch (handled in color-scheme.js). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: .3s;
+}
+
+/* --- Accessibility: skip link + keyboard focus ------------------------------
+   The skip link is the first tabbable element; it lets keyboard/AT users jump
+   past the header and nav straight to the main content (WCAG 2.4.1). It stays
+   off-screen until focused. The inverted fg/bg pairing makes the link itself
+   high-contrast regardless of the configured accent. */
+.aardvark-skip-link {
+  position: fixed; top: 8px; left: 8px; z-index: 100;
+  padding: 8px 14px; border-radius: 8px;
+  background: var(--aardvark-fg); color: var(--aardvark-bg);
+  font-size: 14px; font-weight: 600; text-decoration: none;
+  transform: translateY(calc(-100% - 16px)); transition: transform .15s ease;
+}
+.aardvark-skip-link:focus { transform: translateY(0); outline: 2px solid var(--aardvark-accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .aardvark-skip-link { transition: none; } }
+/* The skip target receives focus programmatically — don't paint a ring on the
+   whole content region when it does. */
+.aardvark-main:focus { outline: none; }
+/* A coherent keyboard focus ring (WCAG 2.4.7) for the chrome controls that don't
+   already define one. Content links, heading anchors, and sortable table headers
+   keep their own (defined later). */
+.aardvark-nav a:focus-visible,
+.aardvark-nav-toggle:focus-visible,
+.aardvark-toc a:focus-visible,
+.aardvark-page-action:focus-visible,
+.aardvark-tab > a:focus-visible,
+.aardvark-tab-trigger:focus-visible,
+.aardvark-tab-subitem a:focus-visible,
+.aardvark-md-menu-primary:focus-visible,
+.aardvark-md-menu-toggle:focus-visible,
+.aardvark-md-menu-item:focus-visible,
+.aardvark-theme-toggle:focus-visible,
+.aardvark-lang-select:focus-visible,
+.aardvark-brand:focus-visible {
+  outline: 2px solid var(--aardvark-accent); outline-offset: 2px; border-radius: 4px;
+}
+
+/* Announcement banner: a non-sticky, full-width row above the header. It scrolls away as the
+   reader scrolls while the header still sticks to top:0, so none of the sticky-offset variables
+   change. The fill is the theme primary via --aardvark-accent; text is white with a faint shadow
+   so it stays legible on mid-tone primaries (pick a primary with enough contrast for white).
+   banner.js sets [data-aardvark-banner-hidden] on <html> once this announcement was dismissed. */
+html[data-aardvark-banner-hidden] .aardvark-banner { display: none; }
+.aardvark-banner {
+  position: relative;
+  padding: 8px 44px;
+  background: var(--aardvark-accent);
+  color: #fff;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.4;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+.aardvark-banner-inner { max-width: var(--aardvark-content-max-wide); margin: 0 auto; }
+.aardvark-banner a { color: #fff; text-decoration: underline; }
+.aardvark-banner a:hover { text-decoration: none; }
+.aardvark-banner code { background: rgba(255, 255, 255, 0.2); padding: 1px 5px; border-radius: 4px; }
+.aardvark-banner-close {
+  position: absolute; top: 50%; right: 12px; transform: translateY(-50%);
+  padding: 4px; border: 0; background: none;
+  color: #fff; font-size: 20px; line-height: 1; cursor: pointer; opacity: 0.8;
+}
+.aardvark-banner-close:hover { opacity: 1; }
+
+.aardvark-header {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; gap: 16px;
+  height: var(--aardvark-header-h); padding: 0 20px;
+  border-bottom: 1px solid var(--aardvark-border);
+}
+/* With a tab bar present, its own bottom border separates the nav block from the
+   content, so the header's divider would be a redundant second rule — drop it.
+   Without tabs the header keeps its border as the sole nav/content separator. */
+.aardvark-header:has(+ .aardvark-tabbar) { border-bottom: 0; }
+/* The sticky header and tab bar let a configured theme.backgroundImage show through, instead
+   of hiding it behind a solid band. They read --aardvark-bg-image-FIXED, not --aardvark-bg-image:
+   theme.py publishes that var only when the image is attachment:fixed, which is viewport-relative
+   and so lines the bars up pixel-for-pixel with <body>. Under the default scroll (and local),
+   background-size is sized to each element's own box — the 56px bar vs the full page would
+   mismatch and seam — so the var is unset, the bars fall back to `none`, and they stay a solid
+   --aardvark-bg over the scrolling body image. No image configured -> `none` too, as before. */
+.aardvark-header, .aardvark-tabbar {
+  background-color: var(--aardvark-bg);
+  background-image: var(--aardvark-bg-image-fixed, none);
+  background-position: var(--aardvark-bg-position, center);
+  background-repeat: var(--aardvark-bg-repeat, no-repeat);
+  background-size: var(--aardvark-bg-size, cover);
+  background-attachment: fixed;
+}
+.aardvark-brand { font-weight: 700; font-size: 18px; color: var(--aardvark-fg); text-decoration: none; font-family: var(--aardvark-font-heading); }
+.aardvark-brand-logo { display: inline-flex; align-items: center; }
+/* No logo configured: render the site name as an h1-sized wordmark. */
+.aardvark-brand-text { font-size: 2rem; line-height: 1.2; }
+.aardvark-logo { display: block; width: auto; height: 28px; max-height: calc(var(--aardvark-header-h) - 24px); }
+/* Show the logo matching the active scheme, mirroring the theme-toggle icons. */
+.aardvark-logo-dark { display: none; }
+:root[data-mantine-color-scheme="dark"] .aardvark-logo-light { display: none; }
+:root[data-mantine-color-scheme="dark"] .aardvark-logo-dark { display: block; }
+/* "Powered by aardvark" footer (theme.render_powered_by). The #aardvark-powered-by id is
+   the documented opt-out — `#aardvark-powered-by { display: none }`. */
+.aardvark-powered-by { border-top: 1px solid var(--aardvark-border); padding: 24px; text-align: center; }
+.aardvark-powered-by-link { display: inline-flex; align-items: center; gap: 8px; color: var(--aardvark-muted); font-size: 13px; text-decoration: none; }
+.aardvark-powered-by-link:hover { color: var(--aardvark-fg); }
+.aardvark-powered-by-logo { height: 18px; width: auto; }
+/* Light/dark logo swap (mirrors .aardvark-logo-*). The sizing class above sets no
+   `display`, so these visibility rules never fight it. */
+.aardvark-powered-by-dark { display: none; }
+:root[data-mantine-color-scheme="dark"] .aardvark-powered-by-light { display: none; }
+:root[data-mantine-color-scheme="dark"] .aardvark-powered-by-dark { display: inline; }
+/* Search occupies the flexible middle of the header. The Mantine island mounts
+   into a wrapper <div> inside #aardvark-search, so the width + centering rules
+   target THAT wrapper — it would otherwise shrink to the trigger's content width
+   and the box couldn't grow. An empty slot (search disabled / --no-bundle) just
+   collapses to a spacer, as the old header spacer did. */
+/* flex-end (not center): pairs with #aardvark-ai (flex: 1, justify-content: flex-start) so the
+   search box + "Ask AI" trigger land adjacent and centered in the top bar. With the assistant off,
+   #aardvark-ai is an empty equal-weight flex item, so the box stays centered either way. */
+#aardvark-search { flex: 1; display: flex; justify-content: flex-end; min-width: 0; }
+#aardvark-search > [data-aardvark-island] { flex: 0 0 auto; display: flex; }
+/* Compact pill search trigger. The whole pill IS the button — it carries the outline,
+   highlights on hover (same token as the theme toggle), and opens the search Modal on
+   click; it is not an inline text input. Scoped under #aardvark-search so border /
+   padding / font-size beat Mantine's UnstyledButton reset: the islands CSS bundle loads
+   after theme.css, so an unscoped .aardvark-search-box ties on specificity and loses. */
+#aardvark-search .aardvark-search-box {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 34px; padding: 0 11px;
+  border: 1px solid var(--aardvark-border); border-radius: 999px;
+  background: transparent; color: var(--aardvark-muted); font-size: 13px; cursor: pointer;
+}
+#aardvark-search .aardvark-search-box:hover { background: var(--aardvark-hover); }
+#aardvark-search .aardvark-search-box-field { display: inline-flex; align-items: center; gap: 6px; }
+#aardvark-search .aardvark-search-box-icon { flex: none; }
+#aardvark-search .aardvark-search-box-keys { flex: none; display: inline-flex; gap: 3px; }
+/* Shrink the Mantine <Kbd> glyphs to sit neatly inside the compact pill. */
+#aardvark-search .aardvark-search-box-keys kbd { font-size: 11px; padding: 1px 5px; }
+/* Keycap modifier: both ⌘ and Ctrl ship in the markup; show the one matching the
+   reader's platform, chosen before first paint by color-scheme.js (which sets
+   html[data-aardvark-platform]). The right key renders on load with no Ctrl→⌘ swap.
+   Default to Ctrl (hide ⌘) so no-JS readers still get a sensible hint. */
+#aardvark-search .aardvark-key-mac { display: none; }
+:root[data-aardvark-platform="mac"] #aardvark-search .aardvark-key-mac { display: inline; }
+:root[data-aardvark-platform="mac"] #aardvark-search .aardvark-key-other { display: none; }
+
+/* Search dialog (Mantine Modal) — Mantine styles the chrome; these lay out our
+   header/results/footer sections and the keyboard-active row highlight. */
+.aardvark-search-head { padding: 4px 12px; }
+.aardvark-search-results { padding: 6px; display: flex; flex-direction: column; gap: 2px; }
+.aardvark-search-result { padding: 8px 12px; border-radius: 8px; cursor: pointer; border: 1px solid transparent; }
+.aardvark-search-result-active { background: var(--aardvark-active-bg); border-color: var(--aardvark-border); }
+.aardvark-search-result-crumb { display: block; margin-bottom: 2px; }
+.aardvark-search-result-title { display: block; color: var(--aardvark-fg); }
+.aardvark-search-result-snippet { display: block; margin-top: 2px; line-height: 1.4; }
+.aardvark-search-empty { padding: 20px 16px; text-align: center; }
+/* The synthetic "Ask AI" option appended to the results (Search.jsx) — escalates the query to the
+   assistant. Inline icon + label; reuses .aardvark-search-result for padding and the active highlight. */
+.aardvark-search-ask-ai { display: flex; align-items: center; gap: 8px; }
+.aardvark-search-ask-ai-icon { flex: none; color: var(--aardvark-accent); }
+.aardvark-search-ask-ai-label { color: var(--aardvark-fg); font-weight: 600; }
+.aardvark-search-ask-ai-q { color: var(--aardvark-muted); font-weight: 400; }
+.aardvark-search-pager { padding: 8px; }
+.aardvark-search-foot { padding: 8px 14px; flex-wrap: wrap; row-gap: 6px; }
+
+/* Tablet: as the header tightens, drop the "Search" word but keep the ⌘K hint. */
+@media (max-width: 768px) { #aardvark-search .aardvark-search-box-label { display: none; } }
+
+/* Narrow screens: collapse the box to an icon-only trigger. The label is already
+   hidden by the 768px rule above, so only the ⌘K hint needs hiding here. */
+@media (max-width: 640px) {
+  #aardvark-search .aardvark-search-box-keys { display: none; }
+  #aardvark-search .aardvark-search-box { width: 34px; padding: 0; justify-content: center; }
+}
+
+/* Horizontal tab bar (config `tabs:`), sticky directly beneath the header. */
+.aardvark-tabbar {
+  position: sticky; top: var(--aardvark-header-h); z-index: 9;
+  height: var(--aardvark-tabbar-h);
+  border-bottom: 1px solid var(--aardvark-border);
+}
+.aardvark-tabs { list-style: none; margin: 0; padding: 0 20px; display: flex; gap: 4px; align-items: stretch; height: 100%; }
+.aardvark-tab { position: relative; display: flex; align-items: center; }
+.aardvark-tab > a, .aardvark-tab-trigger {
+  display: inline-flex; align-items: center; gap: 5px; height: 100%; padding: 0 12px;
+  border: 0; border-bottom: 2px solid transparent; background: transparent;
+  color: var(--aardvark-fg); text-decoration: none; font: inherit; font-size: 14px; cursor: pointer;
+}
+.aardvark-tab > a:hover, .aardvark-tab-trigger:hover { color: var(--aardvark-accent); }
+.aardvark-tab.aardvark-active > a, .aardvark-tab.aardvark-active > .aardvark-tab-trigger { color: var(--aardvark-accent); border-bottom-color: var(--aardvark-accent); font-weight: 600; }
+/* Same line-style chevron as .aardvark-lang-select, drawn as a background image so
+   the two header carets match (no solid-triangle glyph). */
+.aardvark-tab-caret {
+  width: 10px; height: 6px; flex: none;
+  background: center / 10px 6px no-repeat
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  transition: transform .15s ease;
+}
+.aardvark-tab-trigger[aria-expanded="true"] .aardvark-tab-caret { transform: rotate(180deg); }
+.aardvark-tab-dropdown {
+  list-style: none; margin: 0; padding: 6px; display: none;
+  position: absolute; top: 100%; left: 0; min-width: 180px; z-index: 20;
+  background: var(--aardvark-bg); border: 1px solid var(--aardvark-border); border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .12);
+}
+/* JS toggles .aardvark-open; :hover/:focus-within keep it usable without JS. */
+.aardvark-tab-menu.aardvark-open .aardvark-tab-dropdown,
+.aardvark-tab-menu:hover .aardvark-tab-dropdown,
+.aardvark-tab-menu:focus-within .aardvark-tab-dropdown { display: block; }
+.aardvark-tab-subitem a { display: block; padding: 6px 10px; border-radius: 6px; color: var(--aardvark-fg); text-decoration: none; font-size: 14px; white-space: nowrap; }
+.aardvark-tab-subitem a:hover { background: var(--aardvark-hover); }
+.aardvark-tab-subitem.aardvark-active a { color: var(--aardvark-active-fg); background: var(--aardvark-active-bg); font-weight: 600; }
+/* Animated active-tab underline (progressive enhancement). tabs.js inserts the bar
+   into the sticky .aardvark-tabbar (its containing block) and adds .aardvark-tabs-enhanced;
+   the bar glides to the hovered/focused top-level tab and settles on the active one.
+   Without JS, the per-tab border-bottom above marks the active tab; once enhanced we
+   hide that so only the single sliding bar shows. */
+.aardvark-tabs-enhanced .aardvark-tab.aardvark-active > a,
+.aardvark-tabs-enhanced .aardvark-tab.aardvark-active > .aardvark-tab-trigger { border-bottom-color: transparent; }
+.aardvark-tab-underline {
+  position: absolute; left: 0; bottom: 0; width: 0; height: 2px;
+  background: var(--aardvark-accent); border-radius: 2px; opacity: 0; pointer-events: none;
+  transition: transform .2s ease, width .2s ease, opacity .2s ease;
+}
+@media (prefers-reduced-motion: reduce) { .aardvark-tab-underline { transition: none; } }
+
+.aardvark-theme-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; padding: 0;
+  border: 1px solid var(--aardvark-border); border-radius: 8px;
+  background: transparent; color: var(--aardvark-fg); cursor: pointer; font-size: 16px;
+}
+.aardvark-theme-toggle:hover { background: var(--aardvark-hover); }
+/* Show the right glyph for the active scheme (set via the data attribute). */
+.aardvark-theme-toggle .aardvark-icon-dark { display: none; }
+:root[data-mantine-color-scheme="dark"] .aardvark-theme-toggle .aardvark-icon-dark { display: inline; }
+:root[data-mantine-color-scheme="dark"] .aardvark-theme-toggle .aardvark-icon-light { display: none; }
+/* Language picker — a discreet, slightly smaller sibling of the theme-toggle.
+   The native select arrow ignores padding (it pins to the right edge), so we
+   drop it and draw our own caret at a fixed offset for consistent spacing. */
+.aardvark-lang-select {
+  height: 30px; margin-right: 6px; padding: 0 25px 0 9px;
+  border: 1px solid var(--aardvark-border); border-radius: 7px;
+  background-color: transparent; color: var(--aardvark-muted); cursor: pointer;
+  font: inherit; font-size: 12px; line-height: 1;
+  -webkit-appearance: none; -moz-appearance: none; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 9px center; background-size: 9px 5px;
+}
+/* background-color only (keeps the caret); muted text until hovered, then full fg. */
+.aardvark-lang-select:hover { background-color: var(--aardvark-hover); color: var(--aardvark-fg); }
+
+/* Header CTA buttons (config `topButtons`) — Mantine Button islands; this only lays
+   them out in a row, the button look (filled/outline + color) comes from Mantine. */
+.aardvark-top-buttons { display: inline-flex; align-items: center; gap: 8px; }
+
+.aardvark-layout {
+  display: grid;
+  grid-template-columns: var(--aardvark-sidebar-w) minmax(0, 1fr) var(--aardvark-toc-w);
+  align-items: start;
+}
+/* Keep the TOC rail adjacent to the content on wide viewports. With the base `1fr` middle
+   track, the column swallows all the slack on wide screens and the left-aligned content
+   leaves the TOC stranded out at the right edge. Cap the middle track at the content's own
+   width instead (max-width + the main's two side paddings) so the three tracks total only as
+   wide as they need, then anchor that cluster left (under the brand/sidebar) with
+   justify-content:start — the leftover space now falls to the right of the TOC, never between
+   it and the content. minmax(0, …) still lets the content shrink to fit narrower viewports.
+   Excludes `full`/`uncapped`: those drop the sidebar+TOC and want the content
+   viewport-centered / full-bleed, which the base 1fr track already provides (and uncapped's
+   content-max:none would void the calc). `wide` and `toc-only` ride along — their wider cap
+   comes through --aardvark-content-max automatically. */
+.aardvark-layout:not(.aardvark-mode-full):not(.aardvark-mode-uncapped) {
+  grid-template-columns:
+    var(--aardvark-sidebar-w)
+    minmax(0, calc(var(--aardvark-content-max) + 2 * var(--aardvark-main-pad-x)))
+    var(--aardvark-toc-w);
+  justify-content: start;
+}
+/* Pin each region to its track so a hidden (display:none) sidebar/TOC never
+   pulls the main column out of the center track via grid auto-placement. */
+.aardvark-sidebar { grid-column: 1; }
+.aardvark-main { grid-column: 2; }
+.aardvark-toc-panel { grid-column: 3; }
+.aardvark-sidebar, .aardvark-toc-panel {
+  position: sticky; top: calc(var(--aardvark-header-h) + var(--aardvark-tabbar-h));
+  height: calc(100vh - var(--aardvark-header-h) - var(--aardvark-tabbar-h));
+  overflow-y: auto; padding: 24px 16px;
+}
+.aardvark-main { padding: 32px var(--aardvark-main-pad-x); min-width: 0; }
+.aardvark-content { max-width: var(--aardvark-content-max); }
+
+/* Menu-derived breadcrumbs (config `breadcrumbs:`), above the page content.
+   The trail is a Mantine Breadcrumbs island; reserve one line of height so its
+   mounting doesn't nudge the content down. */
+.aardvark-breadcrumbs { min-height: 1.5rem; }
+
+/* Top-of-content bar: breadcrumbs (left) + the "Open" page-markdown menu (right). The bar
+   owns the 18px gap above the article (the breadcrumb rule used to); align-items:center so
+   the menu lines up with the trail whether or not breadcrumbs are present. It shares the
+   article's max-width so the right-aligned menu lands on the content's right edge (not out in
+   the gap before the TOC). See base.html. */
+.aardvark-page-bar { display: flex; align-items: center; gap: 12px; min-height: 1.5rem; margin-bottom: 18px; max-width: var(--aardvark-content-max); }
+/* No breadcrumbs: don't reserve a blank row above the title. Drop the bar's height/margin and
+   float the menu to the top-right so the content rises up and the H1 sits on the same line as it.
+   .aardvark-content isn't a block formatting context, so its first heading flows beside the float. */
+.aardvark-page-bar-bare { display: block; min-height: 0; margin-bottom: 0; }
+.aardvark-page-bar-bare .aardvark-md-menu { float: right; }
+/* Contain the float: clear it at the foot of the following article so on a short page it can't
+   bleed past the article into the last-modified line / feedback widget. The article then encloses
+   the menu's height without becoming a BFC (which would stop the H1 flowing beside the float). */
+.aardvark-page-bar-bare + .aardvark-content::after { content: ""; display: block; clear: right; }
+
+/* Page-Markdown split button: a "View in Markdown" primary (opens the .md) joined to a caret
+   toggle (opens Copy / ChatGPT / Claude), sized like .aardvark-lang-select. It sits in <main>
+   (not the TOC rail) so it survives on mobile and in wide/full modes; margin-left:auto pins it
+   to the content's right edge. md-menu.js toggles .aardvark-open on the caret (no
+   :hover/:focus-within open, so a click reliably closes). The dropdown is cloned from
+   .aardvark-tab-dropdown. */
+.aardvark-md-menu { position: relative; margin-left: auto; flex: none; display: inline-flex; align-items: stretch; }
+.aardvark-md-menu-primary, .aardvark-md-menu-toggle {
+  display: inline-flex; align-items: center; height: 30px;
+  border: 1px solid var(--aardvark-border); background: transparent;
+  color: var(--aardvark-fg); cursor: pointer; font: inherit; font-size: 13px; font-weight: 600; line-height: 1;
+}
+/* The two halves share a seam: the primary drops its right border/radius so they read as one
+   pill; alone (no secondary actions) it regains both via :last-child. */
+.aardvark-md-menu-primary { gap: 6px; padding: 0 10px; text-decoration: none; border-radius: 7px 0 0 7px; border-right: 0; }
+.aardvark-md-menu-primary:last-child { border-radius: 7px; border-right: 1px solid var(--aardvark-border); }
+.aardvark-md-menu-toggle { padding: 0 8px; border-radius: 0 7px 7px 0; }
+.aardvark-md-menu-toggle:first-child { gap: 6px; padding: 0 9px; border-radius: 7px; }  /* solo: viewMarkdown off */
+.aardvark-md-menu-primary:hover, .aardvark-md-menu-toggle:hover { background: var(--aardvark-hover); color: var(--aardvark-fg); }
+.aardvark-md-menu-icon { width: 1em; height: 1em; flex: none; }
+.aardvark-md-menu-toggle[aria-expanded="true"] .aardvark-tab-caret { transform: rotate(180deg); }
+.aardvark-md-menu-dropdown {
+  list-style: none; margin: 6px 0 0; padding: 6px; display: none;
+  position: absolute; top: 100%; right: 0; min-width: 200px; z-index: 20;
+  background: var(--aardvark-bg); border: 1px solid var(--aardvark-border); border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .12);
+}
+.aardvark-md-menu.aardvark-open .aardvark-md-menu-dropdown { display: block; }
+.aardvark-md-menu-item {
+  display: flex; align-items: center; gap: 8px; width: 100%; box-sizing: border-box; text-align: left;
+  margin: 0; padding: 6px 10px; border: 0; border-radius: 6px;
+  background: transparent; color: var(--aardvark-fg); text-decoration: none;
+  font: inherit; font-size: 14px; white-space: nowrap; cursor: pointer;
+}
+.aardvark-md-menu-item:hover { background: var(--aardvark-hover); }
+@media (prefers-reduced-motion: reduce) { .aardvark-md-menu .aardvark-tab-caret { transition: none; } }
+
+/* Per-page layout modes (front matter `mode:`). Each variant collapses the
+   relevant column(s) by zeroing the width variable and hiding the panel; the
+   main column is pinned to track 2 (above), so it stays centered regardless.
+   The responsive media queries below collapse these same variables, so a mode
+   and a breakpoint compose cleanly at every width. */
+.aardvark-layout.aardvark-mode-wide { --aardvark-toc-w: 0px; --aardvark-content-max: var(--aardvark-content-max-wide); }
+.aardvark-layout.aardvark-mode-wide .aardvark-toc-panel { display: none; }
+
+.aardvark-layout.aardvark-mode-toc-only { --aardvark-sidebar-w: 0px; --aardvark-content-max: var(--aardvark-content-max-wide); }
+.aardvark-layout.aardvark-mode-toc-only .aardvark-sidebar { display: none; }
+
+.aardvark-layout.aardvark-mode-full { --aardvark-sidebar-w: 0px; --aardvark-toc-w: 0px; --aardvark-content-max: var(--aardvark-content-max-wide); }
+.aardvark-layout.aardvark-mode-full .aardvark-sidebar,
+.aardvark-layout.aardvark-mode-full .aardvark-toc-panel { display: none; }
+.aardvark-layout.aardvark-mode-full .aardvark-content,
+.aardvark-layout.aardvark-mode-full .aardvark-page-bar { margin-inline: auto; }  /* center — nothing flanks it */
+
+/* Full-bleed: like `full`, but content goes edge-to-edge (no cap, no padding). */
+.aardvark-layout.aardvark-mode-uncapped { --aardvark-sidebar-w: 0px; --aardvark-toc-w: 0px; --aardvark-content-max: none; }
+.aardvark-layout.aardvark-mode-uncapped .aardvark-sidebar,
+.aardvark-layout.aardvark-mode-uncapped .aardvark-toc-panel { display: none; }
+.aardvark-layout.aardvark-mode-uncapped .aardvark-main { padding: 0; }
+.aardvark-layout.aardvark-mode-uncapped .aardvark-page-bar { display: none; }  /* full-bleed: no trail/menu above the hero */
+
+.aardvark-nav, .aardvark-nav-subtree, .aardvark-toc { list-style: none; margin: 0; padding: 0; }
+/* Non-clickable section heading: a static, always-open bold label (today's look). */
+.aardvark-nav-heading > span { display: flex; align-items: center; gap: 6px; font-weight: 600; margin: 14px 0 6px; color: var(--aardvark-muted); font-size: 13px; }
+/* Leaf links and branch labels share one look. */
+.aardvark-nav-item a, .aardvark-nav-branch-link, .aardvark-toc a { display: block; padding: 4px 8px; border-radius: 6px; color: var(--aardvark-fg); text-decoration: none; font-size: 14px; }
+/* Nav-only hover fade — kept separate from the shared rule above so it never
+   touches .aardvark-toc a, which defines its own (slower) transition below. */
+.aardvark-nav-item a, .aardvark-nav-branch-link { transition: background-color .15s ease; }
+.aardvark-nav-item a:hover, .aardvark-nav-branch-link:hover, .aardvark-toc a:hover { background: var(--aardvark-hover); }
+.aardvark-nav-item.aardvark-active a, .aardvark-nav-branch-link.aardvark-active { color: var(--aardvark-active-fg); background: var(--aardvark-active-bg); font-weight: 600; }
+/* Front-matter icons (`icon:` on a page, `heading-icon:` on a section label).
+   The nav link / heading becomes a flex row so the icon sits to the LEFT of the
+   label. The icon is capped to 1em — inside the existing line box — so the row
+   is no taller with an icon than without one. (Heading span flexed above.) */
+.aardvark-nav-item > a, .aardvark-nav-branch-link { display: flex; align-items: center; gap: 8px; }
+.aardvark-nav-icon { flex: none; width: 1em; height: 1em; font-size: 1em; line-height: 1; }
+i.aardvark-nav-icon { display: inline-flex; align-items: center; justify-content: center; }
+img.aardvark-nav-icon { object-fit: contain; }
+/* Inline {% icon %}: an icon dropped inside prose or a heading. Sized to 1em via
+   --aardvark-icon-size so it tracks the surrounding text; size/scale override that.
+   FA <i> glyphs scale with font-size and tint with `color`; an <img> is boxed at 1em.
+   Split rule on purpose — no width/height on <i> (it would clip wide glyphs).
+   vertical-align optically centers the glyph on the text. FA's stock -0.125em
+   centers the glyph ink on the x-height (~0.25em above baseline), which reads as
+   subscript next to capitals. The geometric cap-height center is ~-0.025em, but a
+   glyph's visual weight sits below its geometric center (a star's top point is
+   light), so it still sags there — a small positive 0.03em lifts it to look
+   centered. Affects <i> glyphs and <img> icons alike. */
+.aardvark-icon { --aardvark-icon-size: 1em; display: inline-block; font-size: var(--aardvark-icon-size); line-height: 1; vertical-align: 0.03em; }
+img.aardvark-icon { width: 1em; height: 1em; object-fit: contain; }
+/* In page content, out-specify a generic `.aardvark-content img { height:auto; max-width:100% }`
+   image reset (same specificity, but it can load after the theme) so an SVG/image icon keeps
+   its explicit 1em box instead of collapsing to the reset's auto height. */
+.aardvark-content img.aardvark-icon { width: 1em; height: 1em; max-width: none; }
+/* Collapsible branch: an always-visible label row (its own link plus a caret button that
+   toggles the subtree below). The row stays a plain block; only the subtree wrapper
+   animates (see .aardvark-nav-subtree-wrap), so the highlighted row is never stretched
+   mid-open. */
+.aardvark-nav-branch-row { display: flex; align-items: stretch; gap: 2px; }
+.aardvark-nav-branch-link { flex: 1 1 auto; min-width: 0; }
+/* Active-trail ancestor: subtle emphasis, distinct from the active leaf's full accent. */
+.aardvark-nav-branch.aardvark-active-trail > .aardvark-nav-branch-row > .aardvark-nav-branch-link:not(.aardvark-active) { font-weight: 600; }
+.aardvark-nav-toggle { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 28px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: inherit; cursor: pointer; transition: background-color .15s ease; }
+.aardvark-nav-toggle:hover { background: var(--aardvark-hover); }
+.aardvark-nav-caret { width: 10px; height: 6px; flex: none; background: center / 10px 6px no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23888' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); transform: rotate(-90deg); transition: transform .18s ease; }
+.aardvark-nav-branch.aardvark-open > .aardvark-nav-branch-row .aardvark-nav-caret { transform: rotate(0); }
+/* The animated subtree: a single-track grid grown 0fr->1fr to the subtree's true height
+   (no magic numbers); the subtree inside is clipped while collapsing, nested items indent
+   one step. The label row sits outside this grid, so a 2-row auto+fr balloon can't happen. */
+.aardvark-nav-subtree-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .22s ease; }
+.aardvark-nav-branch.aardvark-open > .aardvark-nav-subtree-wrap { grid-template-rows: 1fr; }
+.aardvark-nav-subtree-wrap > .aardvark-nav-subtree { overflow: hidden; min-height: 0; }
+.aardvark-nav-subtree { padding-left: 12px; }
+/* Until nav.js restores persisted open/closed state and adds .aardvark-nav-ready (after a
+   reflow), keep the subtree wrapper + caret static — otherwise a remembered-open branch
+   re-runs its unfurl, and the caret its spin, on every page load (the class lands after
+   first paint). No JS = static, the correct no-animation fallback. */
+.aardvark-nav:not(.aardvark-nav-ready) .aardvark-nav-subtree-wrap,
+.aardvark-nav:not(.aardvark-nav-ready) .aardvark-nav-caret { transition: none; }
+@media (prefers-reduced-motion: reduce) { .aardvark-nav-subtree-wrap, .aardvark-nav-caret, .aardvark-nav-item a, .aardvark-nav-branch-link, .aardvark-nav-toggle { transition: none; } }
+/* "Edit this page" / "Report an issue" links above the TOC. The "On this page" heading
+   below reuses this same icon+label row (see .aardvark-toc-title) so all three line up on
+   one left edge. They share the panel's visibility, hiding with the TOC on narrow layouts. */
+.aardvark-page-actions { display: flex; flex-direction: column; gap: 8px; }
+.aardvark-page-actions:not(:last-child) { margin-bottom: 8px; }
+.aardvark-page-action { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--aardvark-muted); text-decoration: none; transition: color .2s ease; }
+.aardvark-page-action:hover { color: var(--aardvark-fg); }
+.aardvark-page-action-icon { width: 1em; height: 1em; flex: none; }
+@media (prefers-reduced-motion: reduce) { .aardvark-page-action { transition: none; } }
+/* Same icon+label row as the page-action links above (inline 1em icon, 7px gap, 13px), so
+   the heading's icon and text align with them — the list icon is inline, not hung into the
+   left gutter. */
+.aardvark-toc-title { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--aardvark-muted); margin-bottom: 8px; }
+.aardvark-toc-title::before { content: ""; width: 1em; height: 1em; flex: none; background-color: currentColor; -webkit-mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Crect x='2.5' y='3.25' width='11' height='1.5' rx='.75'/%3E%3Crect x='2.5' y='7.25' width='11' height='1.5' rx='.75'/%3E%3Crect x='2.5' y='11.25' width='8' height='1.5' rx='.75'/%3E%3C/svg%3E"); mask: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Crect x='2.5' y='3.25' width='11' height='1.5' rx='.75'/%3E%3Crect x='2.5' y='7.25' width='11' height='1.5' rx='.75'/%3E%3Crect x='2.5' y='11.25' width='8' height='1.5' rx='.75'/%3E%3C/svg%3E"); }
+/* NB: weight is intentionally NOT transitioned — animating font-weight re-rasterizes
+   the glyphs each frame and pops on the final snap. It changes instantly; the color
+   and line fades carry the animation. */
+.aardvark-toc a { color: var(--aardvark-muted); position: relative; transition: color .25s ease, background-color .25s ease; }
+.aardvark-toc-l3 a { padding-left: 20px; }
+/* Active-section marker: a straight 1px rule at the left edge. A pseudo-element
+   (not border-left) keeps it straight — a border would bow with the border-radius. */
+.aardvark-toc a::before { content: ""; position: absolute; left: 0; top: 4px; bottom: 4px; width: 1px; background: var(--aardvark-accent); opacity: 0; transition: opacity .25s ease; }
+.aardvark-toc a.aardvark-active { color: var(--aardvark-active-fg); font-weight: 600; }
+.aardvark-toc a.aardvark-active::before { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .aardvark-toc a, .aardvark-toc a::before { transition: none; } }
+
+.aardvark-content h1, .aardvark-content h2, .aardvark-content h3,
+.aardvark-content h4, .aardvark-content h5, .aardvark-content h6 {
+  font-family: var(--aardvark-font-heading);
+  scroll-margin-top: calc(var(--aardvark-header-h) + var(--aardvark-tabbar-h) + 16px);
+}
+.aardvark-content h1 { font-size: 2rem; margin-top: 0; }
+.aardvark-content h2 { margin-top: 2rem; padding-bottom: .3rem; }
+/* Front-matter description, rendered as a lead just under the page title. */
+.aardvark-content .aardvark-lead { margin: 0 0 1.5rem; color: var(--aardvark-muted); font-size: 1.15rem; line-height: 1.6; }
+
+/* Heading permalinks: a link icon just right of each heading (levels 1–4),
+   revealed on hover or keyboard focus. The <a> is baked into the HTML by the
+   Markdown renderer, so this works with no JavaScript. */
+.aardvark-heading-anchor {
+  display: inline-flex; align-items: center; vertical-align: middle;
+  margin-left: .35em; color: var(--aardvark-muted); text-decoration: none;
+  opacity: 0; transition: opacity .12s ease, color .12s ease;
+}
+.aardvark-heading-anchor svg { width: .8em; height: .8em; display: block; }
+.aardvark-heading-anchor:hover { color: var(--aardvark-accent); }
+.aardvark-content :is(h1, h2, h3, h4):hover > .aardvark-heading-anchor,
+.aardvark-heading-anchor:focus { opacity: 1; }
+.aardvark-heading-anchor:focus-visible { outline: 2px solid var(--aardvark-accent); outline-offset: 2px; border-radius: 3px; }
+/* Touch devices can't hover, so keep the link reachable — just subtler. */
+@media (hover: none) { .aardvark-heading-anchor { opacity: .5; } }
+/* Body (prose) links: accent color plus an underline so they read as links by
+   more than color alone (WCAG 1.4.1). Two links inside .aardvark-content are excluded
+   so they keep their own look: the heading-anchor icon, and a Mantine Button rendered
+   as a link ({% button url=... %} → a.mantine-Button-root) — the button must look like
+   a button, not prose, so this scoped reset lets Mantine's own styling win.
+   NOTE: .mantine-Button-root is a Mantine-internal class name and is therefore
+   version-tied — if a major Mantine release renames it, button-as-link silently
+   reverts to prose styling. Re-check on every Mantine major bump. */
+.aardvark-content a:not(.aardvark-heading-anchor):not(.mantine-Button-root) { color: var(--aardvark-link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; transition: text-decoration-thickness .12s ease; }
+.aardvark-content a:not(.aardvark-heading-anchor):not(.mantine-Button-root):hover { text-decoration-thickness: 2px; }
+.aardvark-content a:not(.aardvark-heading-anchor):not(.mantine-Button-root):focus-visible { outline: 2px solid var(--aardvark-accent); outline-offset: 2px; border-radius: 3px; }
+.aardvark-content pre { background: var(--aardvark-surface); border: 1px solid var(--aardvark-border); border-radius: 8px; padding: 14px; overflow-x: auto; }
+.aardvark-content code { background: var(--aardvark-surface); padding: .15em .4em; border-radius: 4px; font-size: .9em; }
+.aardvark-content pre code { background: none; padding: 0; }
+/* An image with an explicit `{% image caption='…' %}` renders as a <figure> with a visible
+   caption (Markdown title/alt go to a hover tooltip instead — see ZoomImage.jsx). The figure
+   shrink-wraps the image (or takes its `size`, both set inline) so the caption's measure
+   matches the image, not the column; data-align places a scaled one. Muted, smaller, centered. */
+.aardvark-content .aardvark-figure { margin: 1.5rem 0; }
+.aardvark-content .aardvark-figure[data-align="center"] { margin-inline: auto; }
+.aardvark-content .aardvark-figure[data-align="right"] { margin-inline: auto 0; }
+.aardvark-content .aardvark-figcaption {
+  margin-top: .6rem; color: var(--aardvark-muted);
+  font-size: .875rem; line-height: 1.5; text-align: center;
+}
+/* Token colors for highlighted code are generated from config and injected via
+   {% theme_style %} (see theme.py render_theme_style); only structural rules live here. */
+/* Code-block actions: copy + download buttons revealed top-right on hover/focus
+   (code-blocks.js wraps each <pre> in .aardvark-code-block and injects them). Pure
+   chrome — a no-JS page just shows the styled <pre>. Collapsed they're opacity:0 +
+   pointer-events:none so they can't intercept clicks yet stay Tab-focusable, exactly
+   like .aardvark-table-search below. */
+.aardvark-code-block { position: relative; }
+/* Inside a React island a .aardvark-code-block can be a flex child (e.g. a Mantine Stack
+   wrapping an OpenAPI response example), which makes it a block formatting context — so the
+   rendered <pre>'s default top margin no longer collapses out and instead opens a gap that
+   the absolutely-positioned actions float in, above the block. Zero that margin for
+   island-rendered code blocks (Mantine layout owns their spacing); on-page blocks are not
+   in an island, so they keep their normal-flow margin. */
+[data-aardvark-island] .aardvark-code-block > pre { margin: 0; }
+.aardvark-code-actions {
+  position: absolute; top: 8px; right: 8px; z-index: 2;
+  display: flex; gap: 4px;
+  opacity: 0; pointer-events: none;
+  transition: opacity .15s ease;
+}
+.aardvark-code-block:hover .aardvark-code-actions,
+.aardvark-code-block:focus-within .aardvark-code-actions { opacity: 1; pointer-events: auto; }
+/* A decorated block *with a header bar* (title / icon / file source) has room for the actions, so
+   keep them visible there (the photo-style look) instead of only on hover; they span the header's
+   height and centre in it, so they never overhang into the code. A decorated block without a header
+   bar (highlight=/focus= only, or a lone snippet=) is NOT has-header, so it falls back to the default
+   hover-reveal above rather than pinning the buttons at top:0 over the first code line. */
+.aardvark-code-has-header .aardvark-code-actions {
+  opacity: 1; pointer-events: auto;
+  top: 0; height: 40px; align-items: center;
+}
+.aardvark-code-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; padding: 0;
+  border: 1px solid var(--aardvark-border); border-radius: 6px;
+  background: var(--aardvark-bg); color: var(--aardvark-muted);
+  cursor: pointer; transition: color .12s ease, background .12s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .12);   /* lifts the button over the code it floats above */
+}
+.aardvark-code-btn:hover { background: var(--aardvark-hover); color: var(--aardvark-fg); }
+.aardvark-code-btn:focus-visible { outline: 2px solid var(--aardvark-accent); outline-offset: 2px; }
+.aardvark-code-btn svg { display: block; }
+.aardvark-code-btn.aardvark-code-copied { color: var(--aardvark-accent); }
+@media (prefers-reduced-motion: reduce) { .aardvark-code-actions, .aardvark-code-btn { transition: none; } }
+/* Touch can't hover — keep the actions visible (occluding the code's top corner,
+   which is the accepted trade-off here), mirroring the table-search touch fallback. */
+@media (hover: none) { .aardvark-code-actions { opacity: 1; pointer-events: auto; } }
+/* Never print the action buttons: they overlay the code's top-right corner, and because
+   print matches hover:none the touch rule above would otherwise force them visible on paper. */
+@media print { .aardvark-code-actions { display: none; } }
+
+/* ---- Code block decorators (title / lines / icon / highlight / focus / diff / wrap /
+   expandable) -------------------------------------------------------------------------
+   markdown._render_decorated_fence wraps a fence carrying decorators (or a body with
+   `// [!code ++]` diff markers) in .aardvark-code-decorated, with every source line its own
+   .aardvark-code-line <span>. Token colors still come from the generated {% theme_style %}
+   block (its `pre code .k` selectors reach the spans nested one level deeper). All of this
+   renders with no JS; code-blocks.js only adds the copy/download buttons and the expandable
+   toggle. Copy/download read data-aardvark-code, so line numbers (CSS counters) and diff
+   signs (::before) never reach the clipboard. */
+
+/* The decorated wrapper owns the card border + radius so a header and the code read as one
+   unit; the inner <pre> drops its own chrome and rounds its own bottom corners to match (the
+   header rounds the top). Corners are rounded on the children rather than clipped with
+   overflow:hidden on the wrapper, so an expanded block's position:sticky toggle isn't trapped
+   in a scroll container (overflow:hidden is applied only while collapsed). Horizontal padding
+   moves onto each line, so a highlighted/diff row's tint bleeds to the card edges; the <pre>
+   keeps only vertical padding. */
+.aardvark-code-decorated { border: 1px solid var(--aardvark-border); border-radius: 8px; }
+.aardvark-code-decorated > pre { margin: 0; border: 0; border-radius: 0 0 8px 8px; padding: 10px 0; }
+.aardvark-code-decorated > pre:first-child { border-radius: 8px; }  /* no header → round all four */
+/* A license footer rounds the card's bottom corners, so square off the <pre>'s (overriding both rules
+   above). A github= block has a header, so its <pre> sits between header and footer at radius 0. */
+.aardvark-code-has-footer > pre { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.aardvark-code-header { border-radius: 8px 8px 0 0; }  /* top corners, kept with the radii above; the bar's own layout/appearance is the .aardvark-code-header block below */
+
+/* Header bar: a document/author glyph + the title (read as a file name), a language badge, and —
+   for a `snippet=` block — an excerpt tag, on a faint accent tint divided from the code. The right
+   padding clears the copy/download actions that sit in the same corner. */
+.aardvark-code-header {
+  display: flex; align-items: center; gap: 8px;
+  min-height: 40px;  /* room for the 30px copy/download buttons to sit centered, not overhang */
+  padding: 9px 76px 9px 14px;
+  background: color-mix(in srgb, var(--aardvark-accent) 5%, var(--aardvark-surface));
+  border-bottom: 1px solid var(--aardvark-border);
+  font-size: .82em; line-height: 1.4;
+}
+.aardvark-code-title {
+  color: var(--aardvark-fg); font-weight: 500;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+/* The default document glyph shown when a file-sourced block sets no icon= (sized here because the
+   SVG carries no width/height; an author icon= is a font glyph or <img> sized by .aardvark-icon). */
+.aardvark-code-file-icon { width: 1.1em; height: 1.1em; flex: none; color: var(--aardvark-muted); }
+.aardvark-code-header > .aardvark-icon { flex: none; color: var(--aardvark-muted); }
+/* `snippet=` "Snippet" badge: a small accent pill marking the block as a fragment. (No language
+   badge — the title shows the file name and the syntax colouring conveys the language.) */
+.aardvark-code-badge {
+  flex: none; padding: 1px 8px; border-radius: 999px;
+  font-family: var(--aardvark-font); font-size: .82em; font-weight: 600; letter-spacing: .02em;
+  color: var(--aardvark-accent);
+  background: color-mix(in srgb, var(--aardvark-accent) 14%, transparent);
+}
+/* github= header: the filename is a link to the file on github.com, preceded by the GitHub mark. The
+   link reuses .aardvark-code-title (fg, mono, weight 500); drop the UA underline, restore it on hover.
+   The mark carries no intrinsic size (viewBox only), so size it here like the file glyph. */
+/* The header/footer links live inside .aardvark-content, so they must out-specify its generic body-
+   link styling (the `.aardvark-content a:not(…)` rule above, specificity 0,3,1). Scoped to match it
+   and win on source order: the filename reads as the code title (fg, mono — the mono/weight come from
+   .aardvark-code-title), and the license as a muted caption, each revealing an underline only on
+   hover. */
+.aardvark-content .aardvark-code-header a.aardvark-code-source-link { color: var(--aardvark-fg); text-decoration: none; }
+.aardvark-content .aardvark-code-header a.aardvark-code-source-link:hover { color: var(--aardvark-link); text-decoration: underline; text-decoration-thickness: 1px; }
+/* The repo crumb (owner/repo) sits before the filename as a muted, lighter-weight breadcrumb segment
+   linking to the repo home; the filename stays the emphasised title. Same .aardvark-content scoping to
+   out-specify the body-link rule. */
+.aardvark-content .aardvark-code-header a.aardvark-code-repo-link { color: var(--aardvark-muted); font-weight: 400; text-decoration: none; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.aardvark-content .aardvark-code-header a.aardvark-code-repo-link:hover { color: var(--aardvark-fg); text-decoration: underline; }
+.aardvark-code-path-sep { color: var(--aardvark-muted); margin: 0 1px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.aardvark-code-source-icon { width: 1.05em; height: 1.05em; }
+
+/* Footer bar: a license glyph + a link to the repo's LICENSE, on the same faint accent tint as the
+   header, divided from the code and rounding the card's bottom corners. Shown only for a github= block
+   whose repo has a detectable license. */
+.aardvark-code-footer {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px;
+  background: color-mix(in srgb, var(--aardvark-accent) 5%, var(--aardvark-surface));
+  border-top: 1px solid var(--aardvark-border);
+  border-radius: 0 0 8px 8px;
+  font-size: .78em; line-height: 1.3; color: var(--aardvark-muted);
+}
+.aardvark-code-license-icon { width: 1em; height: 1em; flex: none; color: var(--aardvark-muted); }
+.aardvark-content .aardvark-code-footer a.aardvark-code-license { color: var(--aardvark-muted); text-decoration: none; font-family: var(--aardvark-font); }
+.aardvark-content .aardvark-code-footer a.aardvark-code-license:hover { color: var(--aardvark-fg); text-decoration: underline; }
+
+/* Each source line is its own block, so highlight/focus/diff tints span the full width and a
+   gutter has somewhere to sit. No literal newlines separate the spans (copy uses
+   data-aardvark-code), so an empty line needs a non-breaking space to keep its height. */
+.aardvark-code-decorated .aardvark-code-line { display: block; padding: 0 14px; }
+.aardvark-code-decorated .aardvark-code-line:empty::after { content: "\00a0"; }
+
+/* `snippet=` excerpt: a faded ⋯ above the first and below the last line, signalling lines are
+   hidden. Real aria-hidden <span> nodes inside <pre> (a pseudo-element's text would be announced by
+   screen readers). For a `lines` block the ⋯ sits in the number gutter — reading as "more lines
+   here" beside the real source numbers; otherwise it aligns with the code. */
+.aardvark-code-excerpt-ellipsis {
+  display: block; padding: 2px 14px; line-height: 1;
+  color: var(--aardvark-muted); opacity: .6; letter-spacing: .12em;
+  user-select: none; -webkit-user-select: none; pointer-events: none;
+}
+.aardvark-code-excerpt.aardvark-code-lines .aardvark-code-excerpt-ellipsis {
+  padding: 2px 0; width: 2.4em; text-align: right;  /* sit in the number gutter, like the line numbers */
+}
+
+/* `lines`: the line number (from data-line) painted in a non-selectable gutter, so it never lands
+   in a selection, copy, or download. data-line is the source line for a snippet — which can be
+   non-contiguous when markers/regions are skipped — else the 1-based position, so a CSS counter
+   won't do. */
+.aardvark-code-lines .aardvark-code-line { position: relative; padding-left: 3.6em; }
+.aardvark-code-lines .aardvark-code-line::before {
+  content: attr(data-line);
+  position: absolute; left: 0; width: 2.4em; text-align: right;
+  color: var(--aardvark-muted); opacity: .65;
+  user-select: none; -webkit-user-select: none; pointer-events: none;
+}
+
+/* `highlight={…}`: a tinted row with an accent edge (inset shadow shows even at the padded
+   card edge and survives horizontal scroll). */
+.aardvark-code-decorated .aardvark-line-hl {
+  background: color-mix(in srgb, var(--aardvark-accent) 12%, transparent);
+  box-shadow: inset 3px 0 0 0 var(--aardvark-accent);
+}
+
+/* `focus={…}`: dim every non-focused line; restore full opacity while the block is hovered or
+   focused so the surrounding code is one glance away. */
+.aardvark-code-has-focus .aardvark-code-line { transition: opacity .15s ease; }
+.aardvark-code-has-focus .aardvark-code-line:not(.aardvark-line-focus) { opacity: .4; }
+.aardvark-code-has-focus:hover .aardvark-code-line,
+.aardvark-code-has-focus:focus-within .aardvark-code-line { opacity: 1; }
+
+/* `diff` (driven by `// [!code ++]` / `// [!code --]` markers): green/red tinted rows with a
+   colored edge. Without line numbers every line gets a +/- gutter (so context lines align
+   with the marked ones) and the marked rows show the sign; with line numbers the counter owns
+   the gutter, so the sign is dropped (it would collide) and the tint + edge carry the meaning.
+   The add/del hues are theme variables (like --aardvark-accent) so they track light/dark. */
+:root { --aardvark-diff-add: #2da44e; --aardvark-diff-del: #cf222e; }
+:root[data-mantine-color-scheme="dark"] { --aardvark-diff-add: #3fb950; --aardvark-diff-del: #f85149; }
+.aardvark-code-decorated .aardvark-line-add { background: color-mix(in srgb, var(--aardvark-diff-add) 16%, transparent); box-shadow: inset 3px 0 0 0 var(--aardvark-diff-add); }
+.aardvark-code-decorated .aardvark-line-del { background: color-mix(in srgb, var(--aardvark-diff-del) 16%, transparent); box-shadow: inset 3px 0 0 0 var(--aardvark-diff-del); }
+.aardvark-code-diff:not(.aardvark-code-lines) .aardvark-code-line { position: relative; padding-left: 1.9em; }
+.aardvark-code-diff:not(.aardvark-code-lines) .aardvark-line-add::before,
+.aardvark-code-diff:not(.aardvark-code-lines) .aardvark-line-del::before {
+  position: absolute; left: .55em; opacity: .85;
+  user-select: none; -webkit-user-select: none; pointer-events: none;
+}
+.aardvark-code-diff:not(.aardvark-code-lines) .aardvark-line-add::before { content: "+"; color: var(--aardvark-diff-add); }
+.aardvark-code-diff:not(.aardvark-code-lines) .aardvark-line-del::before { content: "\2212"; color: var(--aardvark-diff-del); }
+
+/* `wrap`: soft-wrap long lines instead of scrolling. */
+.aardvark-code-wrap > pre { overflow-x: hidden; }
+.aardvark-code-wrap .aardvark-code-line { white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* `expandable`: code-blocks.js caps the whole card (.aardvark-code-collapsed — header + code)
+   and fades the bottom; the Show more / Show less pill is a sibling just below the card. A no-JS
+   page shows it all. --aardvark-collapse-max is the single source for the cap: this rule and
+   COLLAPSED_MAX in code-blocks.js (read from it via getComputedStyle) both derive from the one
+   value, so the threshold and the clamp can't drift apart. */
+:root { --aardvark-collapse-max: 260px; }
+.aardvark-code-collapsed { max-height: var(--aardvark-collapse-max); overflow: hidden; }
+.aardvark-code-collapsed::after {
+  content: ""; position: absolute; left: 1px; right: 1px; bottom: 1px; height: 5em;
+  pointer-events: none; border-radius: 0 0 8px 8px;
+  background: linear-gradient(to bottom, transparent, var(--aardvark-surface));
+}
+.aardvark-code-expand-btn {
+  /* a sibling below the card: sticky so it pins to the viewport bottom while a long expanded
+     block scrolls, then settles under the card; centered via auto margins. */
+  position: sticky; bottom: 8px; z-index: 3;
+  display: block; width: fit-content; margin: 6px auto 0;
+  border: 1px solid var(--aardvark-border); border-radius: 999px;
+  background: var(--aardvark-bg); color: var(--aardvark-fg);
+  padding: 3px 12px; font-size: .8em; cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+}
+.aardvark-code-expand-btn:hover { background: var(--aardvark-hover); }
+.aardvark-code-expand-btn:focus-visible { outline: 2px solid var(--aardvark-accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .aardvark-code-has-focus .aardvark-code-line { transition: none; } }
+@media print {
+  .aardvark-code-expand-btn, .aardvark-code-collapsed::after { display: none; }
+  .aardvark-code-collapsed { max-height: none; }
+}
+
+/* GFM task lists (`- [ ] …` / `- [x] …`): _IslandRenderer wraps each task item's body in a
+   TaskItem island (a Mantine Checkbox), which stands in for the bullet. The list gets
+   .aardvark-task-list only when EVERY item is a task — then drop its bullet gutter so the
+   checkbox sits flush. A list that mixes task and plain items keeps its gutter, so its plain
+   items' bullets (which browsers paint in that padding) still render; only the task item's
+   own bullet is removed (list-style:none). */
+.aardvark-content .aardvark-task-list { padding-left: 0; }
+.aardvark-content li.aardvark-task-item { list-style: none; }
+/* Tables. The accent header and zebra striping below are pure CSS, so a no-JS
+   table still reads as styled and striped; tables.js layers on click-to-sort
+   headers (.aardvark-th-button + aria-sort) and a hover-revealed filter box. */
+.aardvark-table-wrap { margin: 16px 0; position: relative; }
+/* Scrolls a wide table horizontally within the wrapper instead of overflowing the
+   page. Deliberately an inner element, not .aardvark-table-wrap: overflow on the
+   wrap would clip the search box that floats above it (bottom: 100%). */
+.aardvark-table-scroll { overflow-x: auto; }
+.aardvark-content table { border-collapse: collapse; width: 100%; border: 1px solid var(--aardvark-border); }
+.aardvark-content th, .aardvark-content td { padding: 8px 12px; text-align: left; vertical-align: top; }
+.aardvark-content tbody td { border-top: 1px solid var(--aardvark-border); }
+.aardvark-content tr[hidden] { display: none; }
+
+/* Header: a solid band in the body text color, with the page background as the
+   text — an inverted, high-contrast header that tracks the active color scheme. */
+.aardvark-content thead th {
+  background: var(--aardvark-fg);
+  color: var(--aardvark-bg);
+  font-weight: 600;
+  vertical-align: bottom;
+}
+/* Inline code in the inverted header band: drop the chip — its surface fill ≈
+   the page bg, so the bg-colored text the code inherits from the th would vanish
+   into it. Without the chip, code reads as monospace text in the header's
+   inverted color, like the other header labels. Contrast is then bg-on-fg, the
+   same pair as body text. */
+.aardvark-content thead th code { background: none; padding: 0; }
+
+/* Zebra: alternate rows use the same surface fill as code blocks
+   (var(--aardvark-surface)) for a consistent, scheme-aware tint. The nth-child rule
+   covers the no-JS / unfiltered case; once tables.js runs it marks the table
+   `.aardvark-js` and manages `.aardvark-alt` on the *visible* rows, so the stripes
+   stay correct through filtering and sorting. The `.aardvark-js` / `.aardvark-alt`
+   / nth-child qualifiers are wrapped in :where() (zero specificity) so all three
+   stripe rules stay below the single :hover rule — otherwise they'd outrank it and
+   rows would never highlight on hover in an enhanced table. */
+.aardvark-content tbody tr:where(:nth-child(even)) { background: var(--aardvark-surface); }
+.aardvark-content table:where(.aardvark-js) tbody tr { background: transparent; }
+.aardvark-content table:where(.aardvark-js) tbody tr:where(.aardvark-alt) { background: var(--aardvark-surface); }
+.aardvark-content tbody tr:not(.aardvark-table-empty):hover { background: var(--aardvark-hover); }
+
+/* Sortable header button (injected by tables.js): fills the cell, inherits the
+   header's contrast color, and carries a sort caret driven by th[aria-sort]. */
+.aardvark-content thead th.aardvark-th-sortable { padding: 0; transition: background-color .15s ease; }
+.aardvark-content thead th.aardvark-th-sortable:hover { background: var(--aardvark-muted); background: color-mix(in srgb, var(--aardvark-fg) 85%, var(--aardvark-bg)); }
+.aardvark-th-button {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  width: 100%; padding: 8px 12px;
+  font: inherit; font-weight: 600; color: inherit; text-align: inherit;
+  background: none; border: 0; cursor: pointer;
+}
+.aardvark-th-button:focus-visible { outline: 2px solid var(--aardvark-bg); outline-offset: -3px; }
+.aardvark-th-caret { flex: none; font-size: .85em; line-height: 1; transition: opacity .15s ease; }
+.aardvark-th-caret::before { content: "\2195"; }                                              /* ↕ */
+/* The ↕ caret is only a "this column sorts" hint, so keep it off at rest and reveal it on
+   hover / keyboard focus — one arrow on every header of every table reads as clutter. The
+   active ↑/↓ caret below stays visible regardless: it's sort *state*, not a hint. Fading
+   opacity (not display) keeps the caret's box reserved, so revealing it never reflows the
+   header label. Mirrors the filter box's hover/focus reveal further down. */
+.aardvark-content thead th[aria-sort="none"] .aardvark-th-caret { opacity: 0; }
+.aardvark-content thead th[aria-sort="none"]:hover .aardvark-th-caret,
+.aardvark-content thead th[aria-sort="none"]:focus-within .aardvark-th-caret { opacity: .45; }
+.aardvark-content thead th[aria-sort="ascending"] .aardvark-th-caret::before { content: "\2191"; }  /* ↑ */
+.aardvark-content thead th[aria-sort="descending"] .aardvark-th-caret::before { content: "\2193"; } /* ↓ */
+
+/* Filter box floats just above the table (position:absolute) so revealing it on
+   hover never shifts the table down — the headers stay put and stay clickable.
+   When collapsed it's opacity:0 + pointer-events:none (not display:none): it can't
+   intercept a header click or cover the table, yet stays Tab-focusable. The table
+   reveals it on :hover, and :focus-within reveals it for keyboard users.
+   Caveat for custom templates: because it floats above the wrap (bottom:100%), an
+   ancestor with `overflow: hidden`/`clip` (cards, callouts, panels) clips it — the
+   field stays focusable but invisible. Leave room above such a wrapper or set its
+   `overflow: visible`. Note `overflow` on .aardvark-table-wrap itself won't help;
+   the clip comes from the ancestor. (The shipped theme has no such ancestor.) */
+.aardvark-table-search {
+  position: absolute; left: 0; bottom: 100%; z-index: 3;
+  padding-bottom: 6px;                 /* bridges to the table so moving between them keeps :hover */
+  opacity: 0; pointer-events: none;
+  transition: opacity .15s ease;
+}
+.aardvark-table-wrap:hover .aardvark-table-search,
+.aardvark-table-wrap:focus-within .aardvark-table-search,
+.aardvark-table-wrap.aardvark-has-query .aardvark-table-search {
+  opacity: 1; pointer-events: auto;
+}
+.aardvark-table-search-input {
+  width: 240px; max-width: 60vw; padding: 6px 10px;
+  border: 1px solid var(--aardvark-border); border-radius: 8px;
+  background: var(--aardvark-bg); color: var(--aardvark-fg);
+  font: inherit; font-size: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .15);   /* lifts it over the content it floats above */
+}
+.aardvark-content tr.aardvark-table-empty td { color: var(--aardvark-muted); font-size: 14px; text-align: center; }
+/* Off-screen but exposed to assistive tech — backs the shared table live region. */
+.aardvark-visually-hidden {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aardvark-table-search, .aardvark-th-caret, .aardvark-content thead th.aardvark-th-sortable { transition: none; }
+}
+
+/* Touch devices can't hover, and can't focus a pointer-events:none input to reveal
+   it — so where the primary pointer can't hover, show the filter inline (normal
+   flow, above the table) and always-on instead of as a hover-revealed float. */
+@media (hover: none) {
+  .aardvark-table-search { position: static; opacity: 1; pointer-events: auto; padding-bottom: 0; margin-bottom: 8px; }
+  .aardvark-table-search-input { box-shadow: none; }
+  /* No hover to reveal it — keep the sortable hint visible so the affordance isn't lost. */
+  .aardvark-content thead th[aria-sort="none"] .aardvark-th-caret { opacity: .45; }
+}
+
+/* Aside body ({% aside %} renders a Mantine Notification). Mantine dims the body
+   — its "description" element — to gray-6/dark-2 when a title is set, flagging it
+   with data-with-title; the bold title alone is enough separation, so keep the body
+   at full prose strength. Scoping to that same attribute targets only the case
+   Mantine dims; the .aardvark-content scope then outranks Mantine's :where()-zeroed
+   rule, so this wins regardless of stylesheet order. (.mantine-Notification-description
+   is a Mantine-internal class — re-check on a Mantine major bump, like the
+   button-as-link note above.) */
+.aardvark-content .mantine-Notification-description[data-with-title] { color: var(--aardvark-fg); }
+
+.aardvark-last-modified { margin-top: 40px; color: var(--aardvark-muted); font-size: 0.8125rem; }
+/* The PageFeedback island renders its own internal layout (a Mantine Stack); this
+   wrapper only provides the divider + spacing, kept as literal HTML in base.html so
+   it's present before hydration. */
+.aardvark-rating { margin: 40px 0 0; padding-top: 20px; border-top: 1px solid var(--aardvark-border); }
+.aardvark-rating-q { font-weight: 600; }
+/* Feedback acknowledgements. Colors live here (not inline / Mantine c=) so theme
+   authors can override them with a class selector. */
+.aardvark-rating-thanks { color: var(--aardvark-accent); }
+.aardvark-rating-comment-thanks { color: var(--aardvark-muted); }
+
+/* Responsive: collapse the same width variables the modes use (rather than
+   redefining the track list), so the main column stays pinned to track 2 and
+   any active `mode` composes correctly with these breakpoints. */
+/* "Ask AI" assistant right column: while open, reserve a right gutter so page content
+   reflows beside the panel instead of being covered. The AiAssistant island
+   toggles body.aardvark-ai-open; the panel chrome lives in the bundled AiAssistant.css.
+   Below 1100px (the TOC is already gone) there's no reflow room, so the panel overlays
+   full-screen instead. */
+body.aardvark-ai-open .aardvark-layout { padding-right: var(--aardvark-ai-w, 380px); }
+@media (max-width: 1100px) { body.aardvark-ai-open .aardvark-layout { padding-right: 0; } }
+/* Animate the reflow so the content slides over in lockstep with the panel sliding in (same 0.28s
+   as .aardvark-ai-panel's transform in AiAssistant.css), rather than snapping. */
+.aardvark-layout { transition: padding-right 0.28s ease; }
+@media (prefers-reduced-motion: reduce) { .aardvark-layout { transition: none; } }
+
+@media (max-width: 1100px) { .aardvark-layout { --aardvark-toc-w: 0px; } .aardvark-toc-panel { display: none; } }
+@media (max-width: 760px) { .aardvark-layout { --aardvark-sidebar-w: 0px; } .aardvark-sidebar { display: none; } }
+
+/* Hover preview cards (hovercard.js): a floating card with a linked page's title,
+   a short description, and its breadcrumb. Colors come from the theme variables, so
+   light/dark follow automatically. Kept visibility:hidden (not display:none) when
+   closed so the script can measure it for positioning. */
+.aardvark-hovercard {
+  position: fixed; top: 0; left: 0; z-index: 1000;
+  /* fixed-position elements shrink-to-fit; width:max-content + a cap keeps the
+     card from collapsing into a narrow column on long excerpts. */
+  width: max-content; max-width: 400px; box-sizing: border-box; padding: 16px 18px;
+  background: var(--aardvark-bg); color: var(--aardvark-fg);
+  border: 1px solid var(--aardvark-border); border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .12);
+  font-size: 14px; line-height: 1.5;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .15s ease;
+}
+.aardvark-hovercard-visible { opacity: 1; visibility: visible; pointer-events: auto; }
+.aardvark-hovercard-title { font-weight: 700; font-size: 16px; line-height: 1.3; font-family: var(--aardvark-font-heading); }
+.aardvark-hovercard-desc { margin-top: 6px; color: var(--aardvark-muted); }
+.aardvark-hovercard-crumb { margin-top: 10px; font-size: 12px; color: var(--aardvark-muted); }
+@media (prefers-reduced-motion: reduce) { .aardvark-hovercard { transition: none; } }
+
+/* Public glossary terms (glossary.js): a dotted-underline trigger in body text whose hover
+   card reuses the .aardvark-hovercard styling above (title + definition, no breadcrumb). The
+   card element itself is created by glossary.js with the .aardvark-hovercard* classes. */
+.aardvark-glossary-term {
+  text-decoration: underline dotted;
+  text-decoration-color: var(--aardvark-muted);
+  text-underline-offset: 3px;
+  cursor: help;
+}
+.aardvark-glossary-term:hover { text-decoration-color: var(--aardvark-accent); }
+.aardvark-glossary-term:focus-visible {
+  outline: 2px solid var(--aardvark-accent); outline-offset: 2px; border-radius: 3px;
+}
+
+/* Mermaid diagrams: the Markdown renderer emits ```mermaid blocks as
+   <pre class="mermaid">, which mermaid-init.js renders to inline SVG. Drop the code
+   styling, center the diagram, and keep wide ones scrollable inside the column. */
+pre.mermaid { background: none; padding: 0; text-align: center; overflow-x: auto; }
+/* Avoid a flash of raw diagram source: once JS is active (html.aardvark-mermaid is set
+   by mermaid-init.js), hide each block until mermaid marks it data-processed. Readers
+   without JS never get the class, so they still see the diagram source as text. */
+html.aardvark-mermaid pre.mermaid:not([data-processed]) { visibility: hidden; }
+
+/* Markdeep diagrams: the Markdown renderer emits ```markdeep blocks as <pre class="markdeep">,
+   which markdeep-init.js replaces with an <svg class="diagram"> wrapped in
+   .aardvark-markdeep-diagram. The svg.diagram rules below are Markdeep's own diagram styling,
+   re-scoped to that wrapper so they can't restyle the rest of the page; Markdeep sets each
+   label's font-size inline on an 8px grid and lays the text out on that monospace grid, so the
+   family MUST stay monospace — a proportional font (e.g. Mermaid's) misaligns every label. We use
+   the site's code-font stack rather than Markdeep's bare Menlo/Consolas for a cleaner look. */
+pre.markdeep { background: none; padding: 0; }
+.aardvark-markdeep-diagram { text-align: center; overflow-x: auto; }
+.aardvark-markdeep-diagram svg.diagram {
+  display: block; margin: 0 auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; /* monospace required */
+  stroke-linecap: round; stroke-width: 2px; stroke: #000; fill: #000;
+}
+.aardvark-markdeep-diagram svg.diagram .opendot { fill: #fff; }
+.aardvark-markdeep-diagram svg.diagram .shadeddot { fill: #ccc; }
+.aardvark-markdeep-diagram svg.diagram .dotteddot { stroke: #000; stroke-dasharray: 4; fill: none; }
+.aardvark-markdeep-diagram svg.diagram text { stroke: none; }
+/* Avoid a flash of raw diagram source: once JS is active (html.aardvark-markdeep is set by
+   markdeep-init.js) hide the source until each <pre> is swapped for its SVG. Readers without JS
+   never get the class, so they still see the diagram source as text. */
+html.aardvark-markdeep pre.markdeep { visibility: hidden; }
+/* Markdeep ships no dark theme; its diagrams are black line-art on transparent. Invert them for
+   legibility on dark (hue-rotate restores any intentionally-colored regions). */
+:root[data-mantine-color-scheme="dark"] .aardvark-markdeep-diagram svg.diagram {
+  filter: invert(1) hue-rotate(180deg);
+}
+/* The blanket invert turns Markdeep's light-gray shaded dot (#ccc) into #333 — too close to the
+   inverted open dot (#000) on a dark background, so the shaded/open distinction is lost. Render it
+   as #777 so it inverts to a clear mid-gray (~#888), distinct from both white solid dots and the
+   hollow open dots. */
+:root[data-mantine-color-scheme="dark"] .aardvark-markdeep-diagram svg.diagram .shadeddot {
+  fill: #777;
+}
+
+
+/* ============================================================================
+   API reference (ApiReference island) — three-column layout
+   Left: operation nav (anchor links + method chips, scroll-spy). Middle: per-
+   operation docs (endpoint, parameters, Try it now, response docs). Right: a
+   sticky rail of request samples + response examples. Built on the same
+   --aardvark-* tokens and sticky offsets as the page chrome. The middle/right
+   split lives inside .aardvark-content, so the island uncaps that column to give
+   the three tracks room (works in any page mode; best on `mode: wide`).
+   ============================================================================ */
+.aardvark-content:has(.aardvark-api) { max-width: none; }
+/* ...and free the layout's middle GRID TRACK too. The wide/toc-only rule sizes that track to
+   calc(--aardvark-content-max + 2*pad) and parks the slack on the right (justify-content:
+   start), so uncapping only .aardvark-content isn't enough — the track still pins the API
+   reference to ~1100px on a wide screen, cramping the doc+rail and h-scrolling the samples.
+   For a layout containing an API reference, let the middle track fill the viewport (minus the
+   sidebar; the TOC track is already 0 in wide mode). Higher specificity than the cap rule, so
+   it wins; full/uncapped are excluded (their base 1fr track already fills). */
+.aardvark-layout:not(.aardvark-mode-full):not(.aardvark-mode-uncapped):has(.aardvark-api) {
+  grid-template-columns: var(--aardvark-sidebar-w) minmax(0, 1fr) var(--aardvark-toc-w);
+}
+
+.aardvark-api {
+  /* The operation nav now lives in the site's own left sidebar (emitted at build time
+     by {% openapi %} — see openapi/parse.py + theme.render_nav), so this wrapper is a
+     single content column. The per-operation doc|rail split below carries the
+     two-column layout. */
+  /* The code rail grows with the (now-uncapped, see the layout rule above) content width:
+     44% of the operation row, but never below 400px and never past 640px — wide enough for
+     a long request/response line to fit instead of h-scrolling in a cramped 360px column,
+     without hogging the doc on very wide screens. */
+  --aardvark-api-rail-w: clamp(400px, 44%, 640px);
+  --aardvark-api-sticky: calc(var(--aardvark-header-h) + var(--aardvark-tabbar-h) + 8px);
+}
+
+/* ---- operation method chips in the site nav (built by {% openapi %}) ------ */
+/* A small uppercase verb tag before each operation's sidebar label, color-keyed to match the
+   in-page MethodChip (METHOD_COLORS in ApiReference.jsx); OPTIONS/HEAD get a gray, mirroring
+   MethodChip's `|| 'gray'` fallback. */
+.aardvark-nav-method {
+  display: inline-block; flex: none; margin-right: 7px; vertical-align: 1px;
+  font-family: var(--aardvark-font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 9.5px; font-weight: 700; letter-spacing: .03em;
+  padding: 1px 5px; border-radius: 4px; color: #fff; background: var(--aardvark-muted);
+}
+.aardvark-nav-method[data-method="get"] { background: #1971c2; }
+.aardvark-nav-method[data-method="post"] { background: #2f9e44; }
+.aardvark-nav-method[data-method="put"] { background: #f08c00; color: #1a1a1a; }
+.aardvark-nav-method[data-method="patch"] { background: #e8590c; }
+.aardvark-nav-method[data-method="delete"] { background: #e03131; }
+.aardvark-nav-method[data-method="options"],
+.aardvark-nav-method[data-method="head"] { background: #868e96; color: #1a1a1a; }
+
+/* ---- middle column ------------------------------------------------------- */
+.aardvark-api-main { min-width: 0; }
+.aardvark-api-intro { scroll-margin-top: var(--aardvark-api-sticky); padding-bottom: 8px; }
+/* Same header offset as every other anchor target (.aardvark-api-op too), so a direct
+   /api/#aardvark-api-auth bookmark/link doesn't clip under the sticky header — the island's
+   scrollToAnchor only compensates for in-page sidebar clicks, not native hash navigation. */
+#aardvark-api-auth { scroll-margin-top: var(--aardvark-api-sticky); }
+.aardvark-api-titlerow { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.aardvark-api-titlerow h1, .aardvark-api-titlerow .mantine-Title-root { margin: 0; }
+.aardvark-api-baselabel {
+  font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--aardvark-muted); white-space: nowrap; flex: none;
+}
+.aardvark-api-endpoint-baseline { display: inline-flex; margin-top: 14px; }
+
+/* ---- per-operation row: doc | rail --------------------------------------- */
+.aardvark-api-op {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--aardvark-api-rail-w);
+  gap: 0 40px; align-items: start;
+  padding: 22px 0 40px; border-top: 1px solid var(--aardvark-border);
+  scroll-margin-top: var(--aardvark-api-sticky);
+  /* The always-visible layout renders every operation up front; let the browser skip layout +
+     paint for operations the reader hasn't scrolled near. The <section> stays in the DOM, so its
+     #anchor remains a scroll-spy / nav / find-in-page target — content-visibility defers only
+     RENDERING, not existence. contain-intrinsic-size reserves an estimated height per skipped
+     section so the scrollbar + anchor offsets stay stable; `auto` lets the browser cache each
+     section's real height once painted. No-op where unsupported (the section just renders). */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}
+/* Print every operation: content-visibility: auto leaves un-scrolled sections unrendered, so
+   without this their print output is browser-dependent. `visible` forces a full layout. */
+@media print { .aardvark-api-op { content-visibility: visible; } }
+.aardvark-api-doc { min-width: 0; }
+/* Title row: the HTTP-method badge sits before the operation name (it used to live in
+   the endpoint bar, where a long URL squeezed it to "G…"). flex: none keeps it full. */
+.aardvark-api-op-head { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; }
+.aardvark-api-op-head .aardvark-api-method { flex: none; }
+/* Scoped under .aardvark-api-op-head so it out-specifies `.aardvark-content h2` (0,1,1):
+   that rule's margin-top: 2rem + padding-bottom skew this flex item, throwing the method
+   badge ~16px off the title's optical center. Zero them + a tight line-height so the badge
+   (align-items: center on the row) lines up with the title. */
+.aardvark-api-op-head .aardvark-api-op-title { margin: 0; padding: 0; font-size: 1.5rem; line-height: 1.2; font-weight: 700; letter-spacing: -.01em; }
+/* align-self: stretch (overriding the row's align-items: start) makes the rail column
+   fill the operation's height, so the sticky inner can travel — staying pinned while a
+   tall doc column scrolls past, instead of scrolling away with a content-height cell. */
+.aardvark-api-rail { min-width: 0; align-self: stretch; }
+.aardvark-api-rail-inner {
+  position: sticky; top: var(--aardvark-api-sticky);
+  display: flex; flex-direction: column; gap: 18px;
+}
+.aardvark-api-rail-panel { min-width: 0; }
+
+/* ---- endpoint bar -------------------------------------------------------- */
+.aardvark-api-endpoint {
+  display: flex; align-items: center; gap: 10px;
+  margin: 0 0 14px; padding: 8px 12px;
+  border: 1px solid var(--aardvark-border); border-radius: 8px;
+  background: var(--aardvark-surface);
+}
+.aardvark-api-endpoint-url {
+  font-family: var(--aardvark-font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 13px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  background: none; border: 0; padding: 0;
+}
+.aardvark-api-endpoint-base { color: var(--aardvark-muted); }
+
+/* ---- status dot on the response-example tabs ----------------------------- */
+.aardvark-api-status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--aardvark-muted); }
+.aardvark-api-status-dot[data-status="green"] { background: #2f9e44; }
+.aardvark-api-status-dot[data-status="yellow"] { background: #f08c00; }
+.aardvark-api-status-dot[data-status="orange"] { background: #e8590c; }
+.aardvark-api-status-dot[data-status="red"] { background: #e03131; }
+.aardvark-api-status-dot[data-status="blue"] { background: #1971c2; }
+
+/* ---- responsive: stack the rail under the doc --------------------------- */
+@media (max-width: 1280px) {
+  .aardvark-api-op { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .aardvark-api-rail { align-self: start; }
+  .aardvark-api-rail-inner { position: static; }
+}
+
+
+/* ============================================================================
+   Elevated polish — entrance reveal + component lifts
+   Brings the page chrome to life: content stacks into place on load, filled
+   buttons carry a soft color-matched shadow and lift on hover, and callouts gain
+   an accent spine + a chipped icon. Built on the same --aardvark-* tokens and
+   Mantine CSS vars; all motion is short, ease-only, and off under reduced-motion.
+   ============================================================================ */
+
+/* Content reveal: each top-level block rises into place, lightly staggered.
+   Transform-only (opacity stays 1) so print, no-JS, and the SSR-baked HTML always
+   show everything even if the animation never runs. */
+@media (prefers-reduced-motion: no-preference) {
+  .aardvark-content > * { animation: aardvark-rise .45s cubic-bezier(.2, .7, .3, 1) both; }
+  .aardvark-content > *:nth-child(1) { animation-delay: 0s; }
+  .aardvark-content > *:nth-child(2) { animation-delay: .04s; }
+  .aardvark-content > *:nth-child(3) { animation-delay: .08s; }
+  .aardvark-content > *:nth-child(4) { animation-delay: .12s; }
+  .aardvark-content > *:nth-child(5) { animation-delay: .16s; }
+  .aardvark-content > *:nth-child(6) { animation-delay: .20s; }
+  .aardvark-content > *:nth-child(n + 7) { animation-delay: .24s; }
+}
+@keyframes aardvark-rise { from { transform: translateY(9px); } to { transform: none; } }
+
+/* Buttons: filled/gradient variants gain a soft, color-matched elevation and lift
+   on hover; a press nudges down. --button-bg is Mantine's resolved fill color
+   (falls back to the theme accent). NOTE: .mantine-Button-root and the --button-*
+   vars are Mantine-internal and version-tied — re-check on a Mantine major bump,
+   as the prose-link rule above already does. The box-shadow + transform transitions
+   live on the filled/gradient rule (the only variants we elevate), not the base, so no
+   other button variant carries a transform transition a future Mantine release could
+   animate; the base keeps only the universal color transitions. */
+.mantine-Button-root {
+  transition: background-color .15s ease, border-color .15s ease;
+}
+.mantine-Button-root[data-variant="filled"],
+.mantine-Button-root[data-variant="gradient"] {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .10), 0 2px 5px color-mix(in srgb, var(--button-bg, var(--aardvark-accent)) 26%, transparent);
+  transition: box-shadow .2s cubic-bezier(.4, 0, .2, 1), transform .12s cubic-bezier(.4, 0, .2, 1),
+    background-color .15s ease, border-color .15s ease;
+}
+.mantine-Button-root[data-variant="filled"]:hover,
+.mantine-Button-root[data-variant="gradient"]:hover {
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--button-bg, var(--aardvark-accent)) 34%, transparent), 0 2px 4px rgba(0, 0, 0, .10);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mantine-Button-root[data-variant="filled"]:hover,
+  .mantine-Button-root[data-variant="gradient"]:hover { transform: translateY(-1px); }
+  .mantine-Button-root[data-variant="filled"]:active,
+  .mantine-Button-root[data-variant="gradient"]:active { transform: translateY(.5px); }
+}
+
+/* Callouts ({% callout %} -> Mantine Alert, variant=light): a hairline border, a
+   3px accent spine, and the severity icon in a tinted rounded chip. --alert-color
+   is Mantine's resolved per-severity color; it falls back to the theme accent.
+   Same Mantine-internal caveat as the buttons above. */
+.aardvark-content .mantine-Alert-root {
+  border: 1px solid color-mix(in srgb, var(--alert-color, var(--aardvark-accent)) 22%, transparent);
+  border-left: 3px solid var(--alert-color, var(--aardvark-accent));
+}
+.aardvark-content .mantine-Alert-icon {
+  width: 30px; height: 30px; margin-right: 12px; border-radius: 7px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: color-mix(in srgb, var(--alert-color, var(--aardvark-accent)) 14%, transparent);
+}
+
+
+/* ============================================================================
+   Elevated polish — part two: page transitions + more component lifts
+   A cross-document view transition (pages crossfade on navigation), and the
+   remaining built-in treatments ported from the elevated theme: badges, steps,
+   text inputs, and asides. Mantine-internal classes/vars again — version-tied,
+   re-check on a Mantine major bump (as the prose-link / button rules note).
+   ============================================================================ */
+
+/* Page-switch crossfade: same-origin navigations fade old -> new instead of a hard cut. This is
+   SITE-WIDE — every page of any site on the default theme, not scoped to the API reference
+   (intentional, part of the elevated-polish chrome). A site that doesn't want it opts out by
+   redeclaring `@view-transition { navigation: none; }` in its own CSS (last declaration wins) —
+   there's no element to hang an #id opt-out on, since this is a page-level at-rule. Cross-document
+   view transitions (Chromium 126+); unsupported browsers just navigate as before. Honor
+   reduced-motion by zeroing the generated animations. */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) { animation: none !important; }
+}
+
+/* Badges ({% badge %} -> Mantine Badge): filled/gradient pills get a crisp top
+   highlight + a tiny color-matched shadow so they read as raised chips. */
+.mantine-Badge-root[data-variant="filled"],
+.mantine-Badge-root[data-variant="gradient"] {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .20),
+    0 1px 2px color-mix(in srgb, var(--badge-bg, var(--aardvark-accent)) 30%, transparent);
+}
+
+/* Steps ({% steps %} -> Mantine Timeline): completed/active bullets get a soft
+   accent halo (no size change, so the connecting line stays aligned). */
+[data-aardvark-steps] .mantine-Timeline-itemBullet[data-active],
+[data-aardvark-steps] .mantine-Timeline-item[data-active] .mantine-Timeline-itemBullet {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--aardvark-accent) 14%, transparent);
+}
+
+/* Text inputs (Mantine Input): a larger radius, and on focus the label and any
+   left/right section adopt the accent alongside Mantine's own focus ring. */
+.mantine-Input-input { border-radius: 8px; transition: border-color .15s ease, box-shadow .15s ease; }
+.mantine-InputWrapper-root:focus-within .mantine-InputWrapper-label { color: var(--aardvark-accent); transition: color .15s ease; }
+.mantine-Input-wrapper:focus-within .mantine-Input-section { color: var(--aardvark-accent); transition: color .15s ease; }
+
+/* Asides ({% aside %} -> Mantine Notification): keep the colored left bar, but tint
+   the box and trade the toast shadow for a hairline so it reads as page content,
+   not a floating notification. --notification-color is the resolved accent. */
+.aardvark-content .mantine-Notification-root {
+  box-shadow: none;
+  border: 1px solid color-mix(in srgb, var(--notification-color, var(--aardvark-accent)) 22%, transparent);
+  background: color-mix(in srgb, var(--notification-color, var(--aardvark-accent)) 7%, var(--aardvark-bg));
+}
+
+
+/* ============================================================================
+   Elevated chrome — reading progress, active-item accent
+   The page chrome's share of the elevated look: a thin reading-progress line
+   under the header (filled by toc.js), an accent spine on the active sidebar
+   item, and a slightly bolder TOC reading marker. Pure presentation on the
+   existing chrome classes — no markup changes.
+   ============================================================================ */
+
+/* Header reading-progress bar (created + driven by toc.js). The sticky header is
+   a positioned containing block, so this pins to its bottom edge and fills L->R. */
+.aardvark-reading-progress {
+  position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; z-index: 11;
+  background: var(--aardvark-accent); transform: scaleX(0); transform-origin: left;
+  pointer-events: none; transition: transform .1s linear;
+}
+@media (prefers-reduced-motion: reduce) { .aardvark-reading-progress { transition: none; } }
+
+/* TOC: a slightly bolder active marker, and the active link eases in a touch — so
+   the reading position reads as a moving thread alongside the existing scroll-spy. */
+.aardvark-toc a { transition: color .25s ease, background-color .25s ease, transform .18s ease; }
+.aardvark-toc a.aardvark-active { transform: translateX(2px); }
+.aardvark-toc a::before { width: 2px; border-radius: 2px; }
+@media (prefers-reduced-motion: reduce) { .aardvark-toc a.aardvark-active { transform: none; } }
+
+
+/* ============================================================================
+   Elevated code chrome — persistent header bar + compact footer
+   code-blocks.js now mounts copy/download in a header bar (filename/title left,
+   language pill + buttons right) instead of floating them over the code, and the
+   "powered by" footer is slimmed to a compact hairline row. Pure presentation on
+   the classes code-blocks.js / theme.render_powered_by emit — re-check on a
+   Mantine major bump like the other Mantine-internal rules.
+   ============================================================================ */
+
+/* A plain fence's wrapper owns the frame (border + radius + clip) so the synth header sits
+   flush atop a square-topped <pre>; a decorated fence (.aardvark-code-decorated) already does. */
+.aardvark-code-framed { border: 1px solid var(--aardvark-border); border-radius: 8px; overflow: hidden; background: var(--aardvark-surface); }
+.aardvark-code-framed > pre { margin: 0; border: 0; border-radius: 0; }
+
+/* The bar: title/filename left, a right-aligned tools cluster (language pill + actions). Tighter
+   right padding than the base rule, which reserved 76px for the old floating actions. */
+.aardvark-code-block .aardvark-code-header,
+.aardvark-code-decorated .aardvark-code-header {
+  gap: 10px; padding: 0 8px 0 14px; min-height: 38px;
+  background: color-mix(in srgb, var(--aardvark-fg) 4%, var(--aardvark-bg));
+}
+.aardvark-code-tools { display: flex; align-items: center; gap: 8px; margin-left: auto; flex: none; }
+.aardvark-code-lang {
+  font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--aardvark-accent);
+  background: color-mix(in srgb, var(--aardvark-accent) 12%, transparent);
+  padding: 2px 7px; border-radius: 999px; white-space: nowrap;
+}
+
+/* Actions now live IN the bar: static and always visible, not the floating hover overlay. The
+   buttons keep their bordered chip look but drop the lift shadow (they no longer float over code). */
+.aardvark-code-header .aardvark-code-actions { position: static; inset: auto; opacity: 1; pointer-events: auto; }
+.aardvark-code-header .aardvark-code-btn { width: 28px; height: 28px; box-shadow: none; }
+/* The touch + reduced-motion fallbacks for the floating overlay are now moot inside the bar. */
+@media (hover: none) { .aardvark-code-header .aardvark-code-actions { opacity: 1; } }
+@media print { .aardvark-code-header .aardvark-code-actions { display: none; } }
+
+/* Compact "powered by" footer: a slim CENTERED row — the "Powered by" label + the aardvark logo,
+   linking to aardvarkdocs.com (theme.render_powered_by). Same markup + the #aardvark-powered-by
+   opt-out. Deliberately no tagline: a site's own footer shouldn't carry extra aardvark copy. */
+.aardvark-powered-by {
+  padding: 14px 0;
+  display: flex; align-items: center; justify-content: center;
+}
+/* The feedback rating already draws a hairline above the footer matter; when it's present this
+   row would add a second divider right below it. Defer to the rating's divider then; keep our own
+   (the base border-top) only when feedback is disabled, so the footer always has exactly one. */
+.aardvark-layout:has(.aardvark-rating) ~ .aardvark-powered-by { border-top: none; }
+.aardvark-powered-by-logo { height: 15px; }
+@media (max-width: 760px) { .aardvark-powered-by { padding: 14px 16px; } }

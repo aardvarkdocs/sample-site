@@ -1,0 +1,31 @@
+name: Auto-close pull requests (read-only mirror)
+
+# This repository is a one-way, automatically published mirror and does not accept
+# pull requests. This workflow closes any PR with a polite pointer to issues.
+#
+# SECURITY: it uses pull_request_target (so it can act on PRs from forks) but it
+# must NEVER check out or run the PR's code - it only calls the GitHub API to
+# comment and close. Do not add actions/checkout of the PR head to this workflow.
+
+on:
+  pull_request_target:
+    types: [opened, reopened]
+
+permissions:
+  pull-requests: write   # comment + close
+  issues: write          # gh pr lock hits the issues lock API
+
+jobs:
+  close:
+    runs-on: ubuntu-latest
+    if: github.repository == 'aardvarkdocs/sample-site'   # inert in "Use this template" copies
+    steps:
+      - name: Comment and close
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body "Thanks @${AUTHOR}! This repository is a read-only mirror and a starter template, so it does not accept pull requests; a change here would be overwritten by the next sync. Please open an issue instead, or use the Use this template button at the top of the page to start your own project. Closing automatically."
+          gh pr close "$PR" --repo "$GITHUB_REPOSITORY"
+          gh pr lock "$PR" --repo "$GITHUB_REPOSITORY" --reason resolved || true

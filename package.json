@@ -1,0 +1,25 @@
+{
+  "name": "my-docs-islands",
+  "private": true,
+  "scripts": {
+    "postinstall": "node -e \"if(process.platform==='darwin')try{require('child_process').execFileSync('xattr',['-r','-d','com.apple.quarantine','node_modules/esbuild','node_modules/@esbuild'],{stdio:'ignore'})}catch(e){}\""
+  },
+  "dependencies": {
+    "@mantine/carousel": "^7.13.0",
+    "@mantine/core": "^7.13.0",
+    "@mantine/hooks": "^7.13.0",
+    "@tabler/icons-react": "^3.0.0",
+    "embla-carousel-react": "^8.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@shikijs/twoslash": "^1.24.0",
+    "esbuild": "^0.24.0",
+    "linkedom": "^0.18.0",
+    "shiki": "^1.24.0",
+    "twoslash": "^0.2.12",
+    "typescript": "^5.7.0",
+    "wrangler": "4.96.0"
+  }
+}

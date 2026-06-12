@@ -1,0 +1,6 @@
+count: 2
+items:
+  - name: Starter
+    price: 0
+  - name: Pro
+    price: 49

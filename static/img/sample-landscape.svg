@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="A stylized landscape illustration: a sun setting over layered hills.">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5b34d4"/>
+      <stop offset="0.55" stop-color="#9775fa"/>
+      <stop offset="1" stop-color="#e7deff"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffe9a8"/>
+      <stop offset="0.6" stop-color="#ffd43b"/>
+      <stop offset="1" stop-color="#ffd43b" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="round">
+      <rect x="0" y="0" width="1200" height="630" rx="28"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#round)">
+    <rect x="0" y="0" width="1200" height="630" fill="url(#sky)"/>
+
+    <!-- Sun -->
+    <circle cx="840" cy="220" r="150" fill="url(#sun)"/>
+    <circle cx="840" cy="220" r="78" fill="#fff3bf"/>
+
+    <!-- Far hills -->
+    <path d="M0 430 Q 300 320 600 400 T 1200 380 V630 H0 Z" fill="#b197fc" opacity="0.85"/>
+    <!-- Mid hills (teal) -->
+    <path d="M0 500 Q 350 410 700 470 T 1200 460 V630 H0 Z" fill="#0ca678"/>
+    <!-- Front hill (dark teal) -->
+    <path d="M0 575 Q 400 505 760 560 T 1200 545 V630 H0 Z" fill="#087f5b"/>
+
+    <!-- Caption -->
+    <text x="48" y="592" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="26" font-weight="600" fill="#ffffff" opacity="0.92">Sample image</text>
+  </g>
+</svg>

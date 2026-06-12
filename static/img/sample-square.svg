@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240" role="img" aria-label="A small square thumbnail: a sun over a hill, on a purple background.">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7048e8"/>
+      <stop offset="1" stop-color="#9775fa"/>
+    </linearGradient>
+    <clipPath id="card">
+      <rect x="0" y="0" width="240" height="240" rx="40"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#card)">
+    <rect x="0" y="0" width="240" height="240" fill="url(#bg)"/>
+    <circle cx="150" cy="92" r="34" fill="#ffe066"/>
+    <path d="M0 200 Q 70 130 130 168 T 240 150 V240 H0 Z" fill="#38d9a9"/>
+    <path d="M0 230 Q 90 185 150 210 T 240 200 V240 H0 Z" fill="#0ca678"/>
+  </g>
+</svg>
