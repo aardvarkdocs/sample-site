@@ -1,0 +1,11 @@
+/* Styles for the {% SpotlightDemo %} snippet (snippets/SpotlightDemo.jsx): a command
+   palette opened from the trigger button via spotlight.open().
+
+   @mantine/core's stylesheet loads globally from the client bundle, but the Spotlight
+   parts (.mantine-Spotlight-*) live in @mantine/spotlight's own stylesheet, which must
+   be pulled in here. Per the sub-package CSS rule, load it with a CSS `@import` from
+   this co-located file — NOT a JS `import '@mantine/spotlight/styles.css'`, which the
+   SSR prerender (esbuild --packages=external) would leave as a runtime import of a
+   package .css and crash Node. The JSX imports this local file instead; esbuild bundles
+   it for the client and drops it from the SSR module. */
+@import '@mantine/spotlight/styles.css';

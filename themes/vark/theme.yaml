@@ -1,0 +1,76 @@
+# Theme manifest — extra React component libraries this theme pulls in beyond the
+# built-in Mantine/builtin/snippet sources. Each one becomes addressable from Markdown
+# as {% component('<key>', 'Name') %}; the library-name first argument keeps two
+# libraries that both export the same name from colliding. The packages listed here must
+# be installed in the project's node_modules (they are — see package.json).
+#
+# This file lives only in the sample site (it powers /components/component-libraries/);
+# the packaged default theme ships no manifest, so a stock Aardvark site depends on
+# nothing but Mantine until it declares its own libraries.
+componentLibraries:
+  # Stripe's React SDK — its Element components render the real, PCI-compliant card fields
+  # (powers /components/component-libraries/). The cross-origin iframe only mounts in the
+  # browser (in an effect), so the components prerender to a safe placeholder and hydrate on
+  # the client; the <Elements> provider is supplied by the snippets/StripeProvider.jsx glue,
+  # which resolves loadStripe() browser-side only — see the page for why a library can't.
+  stripe:
+    package: "@stripe/react-stripe-js"
+    components:
+      - CardElement
+      - PaymentElement
+      - LinkAuthenticationElement
+  # @mantine/dates — the date/time pickers. Their built-in tags ({% dateinput %},
+  # {% datepickerinput %}, {% datetimepicker %}, {% timeinput %}) resolve through this
+  # library, so the package must be installed (it is — see package.json). Values are date
+  # STRINGS (YYYY-MM-DD / YYYY-MM-DD HH:mm:ss) in Mantine 9, never Date objects. The
+  # stylesheet rides the client bundle (a side-effect CSS import, never the SSR entry).
+  dates:
+    package: "@mantine/dates"
+    css:
+      - "@mantine/dates/styles.css"
+    components:
+      - DateInput
+      - DatePickerInput
+      - DateTimePicker
+      - TimeInput
+  # @mantine/charts — Recharts-backed charts. ssr: false because Recharts renders against live
+  # container dimensions (a ResponsiveContainer), so the charts are client-rendered only; the
+  # build skips them in the SSR prerender and they mount in the browser. Their tags
+  # ({% linechart %}, {% barchart %}, {% areachart %}, {% donutchart %}) resolve here. Heavy dep
+  # (Recharts), so a chart-free site never pulls it in.
+  charts:
+    package: "@mantine/charts"
+    css:
+      - "@mantine/charts/styles.css"
+    ssr: false
+    components:
+      - LineChart
+      - BarChart
+      - AreaChart
+      - DonutChart
+  # @mantine/carousel — embla-backed slides carousel. ssr: false because embla measures live DOM
+  # dimensions on mount, so the carousel is client-rendered only (the build skips it in the SSR
+  # prerender). Its tags ({% carousel %}, {% slide %}) resolve here. Heavy deps (embla), so a
+  # carousel-free site never pulls them in.
+  carousel:
+    package: "@mantine/carousel"
+    css:
+      - "@mantine/carousel/styles.css"
+    ssr: false
+    components:
+      - Carousel
+      - CarouselSlide
+  # @mantine/dropzone — drag-and-drop file upload zone (wraps react-dropzone). ssr: false because the
+  # drop target wires up the browser's file/drag APIs on mount. Its tag ({% dropzone %}) resolves here;
+  # the sub-state components (DropzoneAccept/Idle/Reject) swap content by drag state.
+  dropzone:
+    package: "@mantine/dropzone"
+    css:
+      - "@mantine/dropzone/styles.css"
+    ssr: false
+    components:
+      - Dropzone
+      - DropzoneAccept
+      - DropzoneIdle
+      - DropzoneReject
+      - DropzoneFullScreen

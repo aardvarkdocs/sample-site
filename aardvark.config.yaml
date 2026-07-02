@@ -1,0 +1,689 @@
+site:
+  name: aardvark
+  description: >-
+    A Mantine-powered static site generator. Author in Markdown, build to
+    static HTML with interactive React islands.
+  summary: >-
+    vark builds documentation sites from Markdown. It uses real Python in
+    {% %} tags, loads JSON/YAML/CSV data, embeds any Mantine component as an
+    interactive island, and generates sitemap.xml, llms.txt, and OpenAPI
+    reference pages.
+  # Official profile/source URLs for this project — emitted as the `sameAs` of
+  # the home page's Organization JSON-LD so search engines link the entity.
+  # sameAs:
+  #   - https://github.com/your-org/your-repo
+
+# Absolute site URL. Drives canonical links, Open Graph/Twitter URLs, hreflang,
+# JSON-LD URLs, sitemap <loc>/<lastmod>, and the robots.txt Sitemap: line. With
+# no baseUrl those absolute-URL features are simply skipped.
+baseUrl: https://aardvarkdocs.com
+
+# Whole-site PDF. With `pdf: true`, the build renders the entire site to ONE downloadable PDF
+# (a cover page plus every page in nav order, with bookmarks), named after the site
+# (`aardvark` -> `/aardvark.pdf`), and adds a "Download PDF" item to every page's "View in
+# Markdown" dropdown that links to it. The content matches each page's `.md` (interactive
+# islands flattened/omitted), rendered to a styled, printable document. Off by default
+# (rendering adds a little build time). Hide just the menu link with
+# `markdownMenu: { downloadPdf: false }`.
+#
+# Given as an object so the build can REUSE the already-published PDF for up to `reuseForDays` days
+# instead of re-rendering it every time (the whole-site PDF is the slowest build step). The build
+# fetches `/_aardvark/pdf-reuse.json` from `baseUrl` to find the last deployed fingerprinted PDF
+# path (falling back to the legacy `<baseUrl>/<slug>.pdf`), checks its age, and republishes it as-is
+# while it's young enough; once it ages past the window the next build renders a fresh one and the
+# clock resets. Use a bare `pdf: true` to render on every build instead.
+pdf:
+  reuseForDays: 7
+
+# SEO knobs (all optional). The default template already emits canonical,
+# robots, Open Graph, Twitter cards, hreflang and JSON-LD (TechArticle +
+# BreadcrumbList per page; Organization + WebSite on the home page).
+# seo:
+#   robots: "index, follow, max-image-preview:large"  # override the default directive
+#   noindex: false        # set true for a staging build (emits noindex on every page)
+#   searchUrl: "https://aardvarkdocs.com/?q={search_term_string}"  # enables WebSite SearchAction
+#
+# Per page, front matter can set: `description`, `keywords`, `robots`/`noindex`,
+# `date`/`lastmod` (else the git commit date is used), `author`, `schemaType`, and
+# `aliases` (old paths that forward to the page — see redirects below).
+
+# robots.txt Content Signals (https://contentsignals.org/). The generated robots.txt
+# declares how automated systems may use your content via a `Content-Signal:` line.
+# By default all three uses are granted; uncomment to override per signal (set one to
+# `null` to declare no preference — drop it from the line), or set `robots: false` to
+# omit the block entirely. (A hand-written static/robots.txt always wins.) `robots:`
+# here is the robots.txt file — distinct from `seo.robots` (the per-page meta tag).
+# robots:
+#   contentSignals:
+#     search: yes      # building a search index / showing links + snippets
+#     ai-input: yes    # real-time use in AI answers (RAG, grounding)
+#     ai-train: no     # training or fine-tuning AI models (set `no` to reserve rights)
+
+# Web Bot Auth — publish a key directory so your site can identify itself when an agent sends
+# signed requests on its behalf. Generate a keypair with `vark web-bot-auth-keygen`, store the
+# private key as a secret for your signing agent, and list the PUBLIC key(s) here. `vark build`
+# then publishes a JWKS at /.well-known/http-message-signatures-directory, served with the right
+# media type by `vark serve` and (via _headers) on Cloudflare Pages / Netlify. Off until you add
+# keys; see Docs → Web Bot Auth.
+webBotAuth:
+  keys:
+    - P8RGdtK6gevw78FvqaBzzuCGQY__vNxUyxOApPliptY   # base64url Ed25519 public key (from `vark web-bot-auth-keygen`)
+
+# OAuth/OIDC discovery. aardvark ALWAYS publishes the discovery metadata an AI agent reads to learn
+# how to authenticate — /.well-known/openid-configuration, /.well-known/oauth-authorization-server,
+# /.well-known/oauth-protected-resource and /auth.md — so the isitagentready.com checks clear with
+# best-available info. aardvark is NOT an OAuth server; these docs only ADVERTISE where to go. Unset,
+# every field is derived from `baseUrl` as a clearly-labelled EXAMPLE endpoint. Point them at your
+# real IdP (e.g. Cloudflare Access) for production. See Docs → Agent discovery. The example values
+# below mirror what the build would derive from baseUrl, made explicit so this demo's docs are concrete.
+oauth:
+  issuer: https://aardvarkdocs.com
+  authorizationEndpoint: https://aardvarkdocs.com/oauth/authorize
+  tokenEndpoint: https://aardvarkdocs.com/oauth/token
+  jwksUri: https://aardvarkdocs.com/.well-known/jwks.json
+  registrationEndpoint: https://aardvarkdocs.com/oauth/register
+  scopesSupported: [openid, profile, email, offline_access]
+  # Generic OAuth grants PLUS the two agent-auth profile grants (RFC 7523 JWT-bearer assertion
+  # exchange and the WorkOS claim-ceremony polling grant) so the demo advertises the full agentic
+  # flow. Pinning this list overrides the build default, so the agentic grants are listed explicitly
+  # here; drop the whole key to inherit the same default.
+  grantTypesSupported:
+    - authorization_code
+    - refresh_token
+    - client_credentials
+    - urn:ietf:params:oauth:grant-type:jwt-bearer
+    - urn:workos:agent-auth:grant-type:claim
+  responseTypesSupported: [code]
+  bearerMethodsSupported: [header]
+  oidc: true            # also publish /.well-known/openid-configuration (default on)
+  # How an autonomous agent registers and proves identity (surfaced in the AS metadata + auth.md,
+  # following the WorkOS auth.md recognized flows: ID-JAG identity assertions, verified email, and
+  # anonymous + claim). Endpoints are published in BOTH vocabularies for compatibility: the readiness
+  # scanner's *Uri fields and the canonical WorkOS *Endpoint aliases. The *Endpoint keys default to
+  # the matching *Uri value, so you usually only set the *Uri ones (the aliases are shown here for
+  # completeness).
+  # Precedence: if you ALSO set the top-level standard `oauth.registrationEndpoint` /
+  # `oauth.revocationEndpoint` above, those RFC fields win over `agentAuth.registerUri` /
+  # `revocationUri` and feed the agent_auth `register_uri` / `identity_endpoint` / `revocation_uri`
+  # too — every surface resolves to the one URL. So don't set `registrationEndpoint` to your DCR
+  # endpoint expecting `registerUri` to route agent identity-registration elsewhere; the standard
+  # field is authoritative for both.
+  agentAuth:
+    registerUri: https://aardvarkdocs.com/oauth/register
+    claimUri: https://aardvarkdocs.com/oauth/claim
+    revocationUri: https://aardvarkdocs.com/oauth/revoke
+    identityTypesSupported: [identity_assertion, anonymous]
+    assertionTypesSupported: [urn:ietf:params:oauth:token-type:id-jag, verified_email]
+    credentialTypesSupported: [access_token]
+    eventsSupported: [https://schemas.workos.com/events/agent/auth/identity/assertion/revoked]
+    # Canonical WorkOS AUTH.md endpoint aliases (default to the *Uri values above; eventsEndpoint
+    # defaults to {baseUrl}/agent/event/notify):
+    identityEndpoint: https://aardvarkdocs.com/oauth/register
+    claimEndpoint: https://aardvarkdocs.com/oauth/claim
+    eventsEndpoint: https://aardvarkdocs.com/agent/event/notify
+
+# DNS-AID (DNS-based Agent Interface Discovery). aardvark ALWAYS emits a copy-pasteable zone snippet
+# (/.well-known/dns-aid/records.zone) plus a /.well-known/dns-aid/records.json mirror from this list.
+# IMPORTANT: the DNS-AID check validates via DNS-over-HTTPS against your domain's real authoritative
+# nameservers, so NO HTTP server (vark serve included) can make it pass — you must publish these
+# SVCB/HTTPS records at your DNS provider and enable DNSSEC. See Docs → Agent discovery for the steps.
+dnsAid:
+  services:
+    - name: a2a          # -> _a2a._agents.aardvarkdocs.com.  (the Agent2Agent agent card)
+      target: aardvarkdocs.com
+      alpn: h2
+      port: 443
+      params:
+        path: /.well-known/agent.json
+    - name: mcp          # -> _mcp._agents.aardvarkdocs.com.  (the MCP endpoint)
+      target: aardvarkdocs.com
+      alpn: h2
+      port: 443
+      params:
+        path: /mcp
+    - name: index        # -> _index._agents.aardvarkdocs.com.  (the agent index)
+      target: aardvarkdocs.com
+      alpn: h2
+      port: 443
+      params:
+        path: /.well-known/agents.json
+
+# Redirects. Per-page `aliases:` (front matter) list a page's old paths; each gets
+# an HTML stub (canonical + noindex + instant refresh) so links keep working and
+# search engines move to the new URL. A site-wide `redirects:` list adds
+# Cloudflare/Netlify `_redirects` rules — these may use `*` wildcards and `:slug` /
+# `:splat` placeholders and are passed through verbatim, so they only take effect on
+# a host that reads `_redirects`. Both write a `_redirects` file at the site root.
+# aliases:
+#   htmlStubs: true       # write per-alias HTML stub pages (default true)
+#   redirectsFile: true   # also emit a _redirects file (default true)
+#   force: false          # append `!` to alias 301s (Netlify force flag; default false)
+# redirects:                          # one rule per list item; each is a single line
+#   - /blog/* /news/:splat 301        # raw _redirects line (wildcards/placeholders ok)
+#   - from: /docs/:slug               # or the mapping form
+#     to:   /guide/:slug
+#     status: 301
+
+# Social "unfurl" previews. With `generate: true`, every page gets a branded
+# 1200x630 Open Graph card — the logo top-left, then a breadcrumb, title, and
+# description on a diagonal gradient of the theme's primary color — which becomes the
+# page's og:image. Cards are pure build output (written under build/_aardvark/og/,
+# never committed), rendered in parallel on `vark build` and skipped on
+# `vark dev` so authoring stays fast. They just need an absolute `baseUrl`
+# (rendering works out of the box — Pillow ships with aardvark). A page can override
+# its image with `image:` in front matter.
+og:
+  generate: true
+  # logo: /card-logo.png      # override the card's logo (defaults to your theme logo,
+                              # rasterized from SVG; falls back to the site name)
+  # background: "#7048e8"     # gradient start (defaults to theme primary)
+  # backgroundEnd: "#0b0717"  # gradient end (defaults to a darkened start color)
+  # color: "#ffffff"          # card text color
+  # image: /og-default.png    # fallback image when generation is off
+
+# Horizontal tabs are the ONLY navigation in this file. Each tab gets a `link`
+# and an `id`; the id names that tab's isolated left-nav menu. Pages join a menu
+# (and nest within it) via front matter — `menu: <tab-id>`, `parent: <id>`,
+# `weight:`, `heading: true` — so the sidebar is a property of the content, not
+# config. A tab with `items:` instead of a `link` becomes a dropdown.
+tabs:
+  - label: Why Aardvark?
+    link: /
+    id: why
+  - label: Docs
+    link: /docs/
+    id: docs
+  - label: AI Features
+    link: /ai/
+    id: ai
+  - label: Pricing                 # the /pricing/ page is built by generators/pricing.py
+    link: /pricing/
+    id: pricing
+  - label: Components
+    link: /components/
+    id: components
+  - label: Gateway API
+    link: /api/
+    id: api
+  - label: Changelog
+    link: /changelog/
+    id: changelog
+
+# Site-wide footer (theme.render_footer): link columns + an optional tagline, rendered at the
+# bottom of every page as a frosted bar above the "Powered by" line. Omit the block for no footer.
+footer:
+  columns:
+    - heading: Explore
+      links:
+        - label: Docs
+          href: /docs/
+        - label: Components
+          href: /components/
+        - label: Gateway API
+          href: /api/
+        - label: Changelog
+          href: /changelog/
+    - heading: "Ship & scale"
+      links:
+        - label: Deploy
+          href: /deploy/
+        - label: AI Features
+          href: /ai/
+        - label: Generated files
+          href: /llms-and-sitemap/
+        - label: "Self-hosting & MCP"
+          href: /self-hosting/
+    - heading: Start
+      links:
+        - label: Installation
+          href: /getting-started/installation/
+        - label: Quickstart
+          href: /getting-started/quickstart/
+  tagline: The first word in documentation.
+
+# Menu-based breadcrumbs render at the top of every page (except home), built
+# from the page's own tab menu (front matter) and shown with Mantine's
+# Breadcrumbs component. On by default; set `breadcrumbs: false` to turn them
+# off, or use the mapping form to tune the Home crumb / separator.
+# breadcrumbs:
+#   enabled: true
+#   home: true
+#   homeLabel: Home
+#   separator: "/"
+
+# Numbered Markdown lists (`1. … 2. …`) render as a Steps component — a Mantine
+# Timeline of numbered steps (see /components/steps/) — by default. Set `steps: false`
+# to keep them as plain ordered lists site-wide. Only top-level lists convert; nested
+# numbered lists and bullet lists are always left as-is.
+# steps: false
+
+# Content tables (Markdown pipe tables) get click-to-sort column headers and a
+# filter box by default. Toggle either off site-wide here; a bare `tables: false`
+# turns both off. A page overrides with `sortableTables:`/`filterableTables:` in
+# its front matter (page wins). The sortable switch also applies to the tables in
+# an "{% openapi %}" API reference.
+# tables:
+#   sortable: true
+#   filterable: true
+
+# Embedded maps: the {% map %} / {% pin %} tag renders an OpenFreeMap / MapLibre map
+# with a marker per location (see /components/map/). On by default; a bare `map: false`
+# disables the tag. `address` pins are geocoded at build time by Nominatim (free, no
+# key) and cached under .aardvark-cache/; `lat`/`lng` pins skip geocoding entirely.
+# map:
+#   geocoder: nominatim          # default; or "google" (then set googleApiKey)
+#   # googleApiKey: "…"
+#   # rateLimit: 1.0             # requests/second (Nominatim policy is <= 1)
+#   # timeout: 10                # seconds per geocoder request
+#   style: liberty               # liberty | bright | positron | a full MapLibre style URL
+#   height: 400                  # default map height in px
+#   # maplibreVersion: "5.24.0"  # pin a different MapLibre GL JS release
+
+# Accessibility: a non-fatal, build-time WCAG color-contrast audit of your theme's palette
+# (light + dark), read from themes/<name>/theme.scss. On by default; the shipped default
+# palette is AA-clean, so a stock build is quiet, while a custom palette that dips below the
+# ratio gets a warning. `contrastLevel: AAA` raises the bar; a bare `a11y: false` turns it off.
+# See the Accessibility page under Docs → Configuration.
+# a11y:
+#   contrast: true
+#   contrastLevel: AA
+
+# Permanent redirects (Cloudflare/Netlify `_redirects` style). The component docs were
+# reorganized from a flat `/components/<name>/` layout into category buckets, so these 301
+# the old URLs to their new homes — external links and bookmarks keep working on deploy.
+redirects:
+  - { from: /components/button/, to: /components/buttons/button/ }
+  - { from: /components/badge/, to: /components/data-display/badge/ }
+  - { from: /components/card/, to: /components/data-display/card/ }
+  - { from: /components/image/, to: /components/data-display/image/ }
+  - { from: /components/icon/, to: /components/data-display/icon/ }
+  - { from: /components/accordion/, to: /components/data-display/accordion/ }
+  - { from: /components/callout/, to: /components/feedback/callout/ }
+  - { from: /components/steps/, to: /components/navigation/steps/ }
+  - { from: /components/tabs/, to: /components/navigation/tabs/ }
+  - { from: /components/tree/, to: /components/navigation/tree/ }
+  - { from: /components/rating/, to: /components/inputs/rating/ }
+  - { from: /components/text/, to: /components/typography/text/ }
+  - { from: /components/divider/, to: /components/typography/divider/ }
+  - { from: /components/aside/, to: /components/feedback/notification/ }
+  - { from: /components/banner/, to: /components/extras/banner/ }
+  - { from: /components/expandable/, to: /components/data-display/accordion/ }
+  - { from: /components/gitfolder/, to: /components/extras/gitfolder/ }
+  - { from: /components/include/, to: /components/extras/include/ }
+  - { from: /components/map/, to: /components/extras/map/ }
+  - { from: /components/changelog/, to: /components/extras/changelog/ }
+  - { from: /components/component-libraries/, to: /components/extras/component-libraries/ }
+  - { from: /components/carousel/, to: /components/ }
+  # 2026-06 extras cleanup: Carousel removed entirely; Aside and Expandable removed in favor of
+  # the Mantine primitives they wrapped (Notification / Accordion). Catch the old bucket URLs too.
+  - { from: /components/extras/aside/, to: /components/feedback/notification/ }
+  - { from: /components/extras/expandable/, to: /components/data-display/accordion/ }
+  - { from: /components/extras/carousel/, to: /components/ }
+  # 2026-06 bucket merges: Inputs-Fields + Inputs-Controls -> Inputs; Overlays-Panels +
+  # Overlays-Floating -> Overlays; Data-Display-Misc folded into Data Display. Wildcards catch
+  # any slug (and the bucket root, with an empty splat).
+  - { from: "/components/inputs-fields/*", to: "/components/inputs/:splat" }
+  - { from: "/components/inputs-controls/*", to: "/components/inputs/:splat" }
+  - { from: "/components/overlays-panels/*", to: "/components/overlays/:splat" }
+  - { from: "/components/overlays-floating/*", to: "/components/overlays/:splat" }
+  - { from: "/components/data-display-misc/*", to: "/components/data-display/:splat" }
+  # Miscellaneous bucket dissolved: each page rehomed individually, so map per slug.
+  - { from: /components/misc/box/, to: /components/layout/box/ }
+  - { from: /components/misc/collapse/, to: /components/layout/collapse/ }
+  - { from: /components/misc/marquee/, to: /components/layout/marquee/ }
+  - { from: /components/misc/paper/, to: /components/layout/paper/ }
+  - { from: /components/misc/portal/, to: /components/layout/portal/ }
+  - { from: /components/misc/scrollarea/, to: /components/layout/scrollarea/ }
+  - { from: /components/misc/scroller/, to: /components/layout/scroller/ }
+  - { from: /components/misc/divider/, to: /components/typography/divider/ }
+  - { from: /components/misc/visuallyhidden/, to: /components/typography/visuallyhidden/ }
+  - { from: /components/misc/focustrap/, to: /components/inputs/focustrap/ }
+  - { from: /components/misc/transition/, to: /components/overlays/transition/ }
+
+# Prerender React islands to static HTML at build time. The client bundle still
+# re-renders them on load (so they stay interactive); this bakes the real widget
+# markup into the .html files for crawlers / no-JS / first paint. Opt-in; needs
+# Node + esbuild + linkedom (see package.json). Omit to ship client-only islands.
+islands:
+  ssr: true
+
+# "Edit this page" and "Report an issue" links above the right-hand "On this page" TOC.
+# Point `repo` at a GitHub repo (an `owner/repo` shorthand or a full URL), then enable
+# whichever links you want. Edit deep-links to GitHub's web editor for the page's Markdown
+# source on `branch`; Report opens a new-issue form pre-filled (via querystring) with the
+# page's URL and source path. A page can hide either link with `editPage: false` /
+# `reportIssue: false` in its front matter. Omit the block (or `repo`) to show no links.
+# This points at the sample site's own public source repo (the example site is open;
+# aardvark itself is not) — see the README note in aardvarkdocs/sample-site.
+github:
+  repo: https://github.com/aardvarkdocs/sample-site
+  branch: main
+  editPage: true
+  reportIssue: true
+
+# Call-to-action buttons in the top-right of the header. Each is a Mantine Button
+# island (same wrapper as the built-in `{% button %}` tag): `text`, `url`, `variant`
+# (any Mantine Button variant — filled, outline, light, subtle, default, transparent,
+# white, gradient), and an optional `color` (a Mantine color name or any CSS color;
+# defaults to the theme's primary). Omit the whole key to get the Login/Sign up
+# defaults below; set `topButtons: []` for none.
+# topButtons:
+#   - text: Login
+#     url: /login
+#     variant: outline
+#   - text: Sign up
+#     url: /signup
+#     variant: gradient
+#     gradientFrom: grape
+#     gradientTo: pink
+#     gradientDeg: 135
+
+# HTML-attribute policy applied to every `attr={...}` use site-wide. Multi-author
+# sites should turn this on: `onclick` (via `{% button onclick=... %}` or `attr={...}`
+# on any component) ships verbatim to readers' browsers and is a stored XSS surface
+# if any contributor isn't trusted. Pick one shape:
+#   attrPolicy:
+#     deny: ['on*']           # default-deny: refuse every inline event handler
+#   attrPolicy:
+#     allow: ['onclick']      # strict allowlist: ONLY these names pass — add any
+#                             # data-/aria-* attrs you need too (they aren't special-cased)
+# Patterns are exact names or a trailing `*` for prefix match. Empty/missing = permissive.
+
+# Look & feel. Logos live in static/ (copied to the site root). Site COLORS are NOT set here
+# anymore — they live in your theme's SCSS (themes/vark/theme.scss), the single source of truth
+# for the palette. Edit the $-variables at the top of that file to recolor the whole site, in
+# both light and dark; the theme's $brand colors (primary, secondary, …) also seed the Mantine
+# island palette (usable as color='primary' etc. in component() calls) and the build-time a11y
+# contrast audit. This block keeps the non-color theme settings below: logo, favicon, fonts,
+# Font Awesome, and the background image.
+theme:
+  logo:
+    light: /logo-light.svg
+    dark: /logo-dark.svg
+    alt: aardvark
+    href: /
+  # Browser tab / bookmark icon. Drop the file in static/ and point at it; the
+  # extension sets the <link type>. Here: the standalone aardvark-head SVG (scales
+  # to any tab size). Pass a list to also ship a legacy .ico fallback.
+  favicon: /favicon.svg
+  # Load Font Awesome so `icon:`/`heading-icon:` front matter can use FA glyphs
+  # (e.g. `icon: fa-solid fa-rocket`). `true` pulls the free FA6 CDN stylesheet;
+  # set a kit/CDN URL string instead to self-host or use Pro. Image-path icons
+  # (svg/png) don't need this.
+  fontawesome: true
+  # Self-hosted fonts. Inter is the brand face (Aardvark Design System); the bundled
+  # Inter-Variable.woff2 in static/fonts/ (WOFF2-compressed from the variable TTF) covers
+  # the whole 100-900 weight axis in one face,
+  # so headings reuse the body @font-face (no `faces:` of its own). The system stack stays
+  # as the fallback.
+  fonts:
+    body:
+      family: Inter
+      fallback: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif
+      faces:
+        - src: /fonts/Inter-Variable.woff2
+          weight: 100 900
+    heading:
+      family: Inter
+      fallback: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif
+  # Colors moved to themes/vark/theme.scss — see the note above. This sample's palette
+  # (purple primary #7048e8 / teal secondary, scheme-aware surface) lives there now.
+  # Page background image. Drop the file in static/ and point at it here; it layers over the
+  # background color (the theme's `bg`, set in theme.scss) and shows through the transparent content
+  # area, sidebar and TOC. Every placement option is documented on the Theming page.
+  # Here: a fixed, right-justified diamond-wave panel — `contain` sizes it to the viewport
+  # height so `position: right` anchors it to the right edge, with page content over the bg
+  # color. (attachment: fixed is desktop-only; iOS Safari ignores it and falls back to scroll.)
+  backgroundImage:
+    light: /diamond-wave-bg-light.svg
+    dark: /diamond-wave-bg.svg
+    size: contain
+    position: right
+    attachment: fixed
+  # Code syntax highlighting. Choose a preset per scheme and/or override individual
+  # token colors (overrides win over the preset). Presets are any Pygments style, e.g.
+  # monokai, dracula, nord, github-dark, solarized-light, solarized-dark, gruvbox-dark,
+  # one-dark, one-light (the vivid default), friendly, native, vs, xcode, tango.
+  syntax:
+    enabled: true          # set to false to turn highlighting off (plain <pre><code>)
+    theme: one-light       # light-mode preset
+    themeDark: one-dark    # dark-mode preset
+    # Per-token overrides (friendly names) — uncomment and edit any. Values below are the
+    # one-light / one-dark defaults, shown so every color is visible and tweakable.
+    # colors:              # light mode
+    #   comment: "#a0a1a7"
+    #   keyword: "#a626a4"
+    #   constant: "#986801"
+    #   string: "#50a14f"
+    #   number: "#986801"
+    #   function: "#4078f2"
+    #   builtin: "#0184bc"
+    #   decorator: "#4078f2"
+    #   class: "#c18401"
+    #   variable: "#e45649"
+    #   attribute: "#986801"
+    #   tag: "#e45649"
+    #   operator: "#383a42"
+    #   heading: "#e45649"
+    # colorsDark:          # dark mode
+    #   comment: "#5c6370"
+    #   keyword: "#c678dd"
+    #   constant: "#d19a66"
+    #   string: "#98c379"
+    #   number: "#d19a66"
+    #   function: "#61afef"
+    #   builtin: "#56b6c2"
+    #   decorator: "#61afef"
+    #   class: "#e5c07b"
+    #   variable: "#e06c75"
+    #   attribute: "#d19a66"
+    #   tag: "#e06c75"
+    #   operator: "#56b6c2"
+    #   heading: "#e06c75"
+
+# Terms, acronyms, and definitions (optional). Grounds `vark build --translate` and, for
+# entries marked `public: true`, powers the reader-facing hover-card glossary (and an
+# optional standalone glossary page). See definitions.yaml for the format.
+definitions: definitions.yaml
+
+# Multi-language: the base language (English) is served at the site root from
+# content/; French is served under /fr from content-fr/. A header language picker
+# appears automatically. `vark build --translate` fills missing/changed French
+# pages with Claude (needs AARDVARK_SECRET_KEY), grounded in the definitions glossary.
+languages:
+  base:
+    code: en
+    label: English
+  others:
+    - code: fr
+      label: Français
+      source: content-fr
+  uiStrings: i18n/ui-strings.yaml
+
+# Integrations are disabled by default (empty = off). See the Integrations docs
+# for how to enable each with real credentials.
+integrations:
+  # Google Analytics. `ga4:` is the canonical (Mintlify-parity) key; `analytics:` is the
+  # original aardvark key, kept working as an alias — both emit the same gtag snippet, and the
+  # page-rating + survey widgets record to whichever is set. Using one here (not both).
+  analytics:
+    # Intentionally wired to this project's real GA4 property so the live demo site records page
+    # analytics and survey responses. Forking or cloning to deploy your own copy? Replace this with
+    # your own Measurement ID, or set it back to "", so your build doesn't send events to this
+    # property. (A GA4 id isn't a secret — it ships in the gtag snippet on every page — but it is
+    # account-specific, and a deploy-time env var is cleaner than committing it; see the AARDVARK_KEY
+    # note under `ai.assistant` for that pattern.)
+    measurementId: "G-0M07MLF54V"
+  # aardvark supports the full set of Mintlify analytics platforms — drop in the id/key and the
+  # vendor snippet is injected site-wide. The keys/fields mirror Mintlify's docs.json, so a
+  # Mintlify config ports straight over. Uncomment any of these (see content/analytics.md):
+  # gtm:        { tagId: "GTM-XXXXXXX" }
+  # plausible:  { domain: "docs.example.com" }   # optional: src: for a self-hosted instance
+  # fathom:     { siteId: "ABCDEFGH" }
+  # posthog:    { apiKey: "phc_XXXX" }            # optional: apiHost: (default us.i.posthog.com)
+  # mixpanel:   { projectToken: "XXXX" }
+  # amplitude:  { apiKey: "XXXX" }
+  # clarity:    { projectId: "XXXX" }
+  # heap:       { appId: "XXXX" }
+  # hotjar:     { hjid: 1234567, hjsv: 6 }
+  # logrocket:  { appId: "org/app" }
+  # pirsch:     { id: "XXXX" }
+  # segment:    { key: "XXXX" }
+  # clearbit:   { publicApiKey: "pk_XXXX" }
+  # hightouch:  { writeKey: "XXXX" }              # optional: apiHost:
+  # adobe:      { launchUrl: "https://assets.adobedtm.com/launch-XXXX.min.js" }
+  # Anything not listed above (or any third-party tag) — paste its snippet raw:
+  # custom:
+  #   head: |
+  #     <script defer src="https://cdn.example.com/tag.js"></script>
+
+ai:
+  frontmatter: false
+  examples: false
+  skills: false
+  # Any OpenRouter model slug; overridable per run with `--model`. The "latest" router alias needs its
+  # LEADING TILDE (and YAML quotes — a bare leading ~ is null); or pin a version like anthropic/claude-sonnet-4.6.
+  model: "~anthropic/claude-sonnet-latest"
+  # The reader-facing "Ask AI" assistant. It streams answers from the metered aardvark
+  # cloud gateway (which holds the managed OpenRouter key) using a spend-capped AARDVARK_KEY
+  # set as a *build* env var (e.g. in Cloudflare Pages build settings) — never in this file.
+  assistant:
+    enabled: true
+    # Sent to the gateway per request; any OpenRouter slug. Sonnet is a PAID model, so the public key now
+    # spends real money per question — keep the account funded and size the spend cap to the exposure you
+    # accept (the cap + origin lock are the controls; a :free model was the old cost-free pick).
+    # NOTE: the leading `~` is REQUIRED and the value MUST be quoted (a bare leading ~ is YAML null).
+    # OpenRouter lists the "latest" router alias as `~anthropic/claude-sonnet-latest` — the tilde is part
+    # of the id. Without it the gateway's fail-closed price lookup can't find the model and every request
+    # 503s `pricing_unavailable`. Prefer a fixed version? Use a concrete slug like `anthropic/claude-sonnet-4.6`
+    # (no tilde, no quotes needed) instead of auto-tracking the latest.
+    model: "~anthropic/claude-sonnet-latest"
+    # Sonnet supports OPTIONAL reasoning (Claude extended thinking). These two knobs steer it (both forwarded
+    # to OpenRouter; omit the whole block to let the model decide). When reasoning is on, the assistant
+    # streams it LIVE into the panel, so any think-time shows as progress. Reasoning tokens bill as output,
+    # so more effort = slower + a bit pricier. Note it reasons on EACH step of a multi-step navigation
+    # (it can reason about which doc to read next), so a turn that reads several pages multiplies the
+    # reasoning cost — `low` keeps that modest; set `enabled: false` for the cheapest/fastest answers.
+    reasoning:
+      # Master switch. `false` turns reasoning OFF — the FASTEST setting (Sonnet answers directly, no
+      # pre-answer thinking phase). `true` reasons at `effort` below (a little slower; can help hard questions).
+      enabled: true
+      # Reasoning budget: low | medium | high. `low` keeps think-time short — a good default for a snappy
+      # public assistant; raise it for harder questions (omit `effort` to use the model's default).
+      effort: low
+    # Token budget for what the assistant inlines into the FIRST question (replayed on every follow-up, so
+    # it's a speed-vs-tokens-per-turn dial). It inlines the LARGEST thing that fits, in order: the whole
+    # corpus (llms-full.txt → the model answers with NO fetches), else the rich metadata.json index, else
+    # the leaner llms.txt index; if none fit, the model navigates from scratch.
+    #
+    # By DEFAULT this is derived from your `model`'s real context window — sized to inlineContextWindowFraction
+    # (default 0.6) of it (so a 200k-window model defaults to ~120k), leaving room for the conversation + the
+    # answer. The window is looked up at build time from OpenRouter (best-effort; falls back to a built-in
+    # table, then a 100k floor — a build with no network still works). Tune the fill level instead of pinning
+    # an absolute number:
+    # inlineContextWindowFraction: 0.6
+    #
+    # Or set an explicit absolute budget below to OVERRIDE the model-derived default verbatim (the fraction
+    # is then ignored); set 0 to always navigate. (This sample's corpus is ~65k tokens, so it inlines whole
+    # under the default.) Leave it unset to get the model-derived default.
+    # inlineContextMaxTokens: 100000
+    # Shown to readers when an answer didn't help or the assistant is unavailable.
+    escalationEmail: support@example.com
+    # Show/hide the floating question field pinned to the bottom of every page (default: true).
+    # Set false to remove it — useful when the trigger button alone is sufficient or the float
+    # bar conflicts with other fixed-position page elements.
+    bottomTextField: true
+    # Show/hide the "Ask AI" button in the site header next to search (default: true).
+    # Set false if you want the assistant accessible only via the bottom text field or keyboard
+    # shortcut (Cmd/Ctrl+I), not a persistent header button.
+    topAskButton: true
+    # Reader file attachments (images, PDFs, text/code). DEFAULT ON — readers can attach files to a
+    # question via a paperclip, drag-and-drop, or paste. Images/PDFs cost far MORE tokens than text, so
+    # this spends more; the caps below + the gateway spend cap bound it. Your `model` above must be a
+    # vision/file-capable model (e.g. a Claude/GPT vision model) or attachments error/are ignored. Set
+    # `attachments: false` to turn the picker off entirely. Object form tunes the caps (all optional):
+    # attachments:
+    #   enabled: true            # master switch (default true; `attachments: false` is the shorthand)
+    #   maxFiles: 4              # per-message file cap (default 4)
+    #   maxFileSizeMb: 10        # per-file size cap in MB (default 10)
+    #   pdfEngine: pdf-text      # PDF parsing: pdf-text (fast/cheap) | mistral-ocr (scanned) | native
+    #   accept:                  # allowed MIME types / extensions (default: images + pdf + text/code)
+    #     - image/png
+    #     - image/jpeg
+    #     - application/pdf
+    #     - .md
+    #     - .txt
+    # Installable "{site} Assistant" app. ON by default with the assistant: it adds a reserved
+    # /_assistant/ page (the assistant alone, permanently fullscreen — no exit) plus a web manifest
+    # and app icons (rasterized from theme.favicon, falling back to the logo), so readers can install
+    # a portable chatbot that launches straight into the fullscreen assistant on desktop and mobile.
+    # The browser's native install offer shows on every page; an in-assistant "Install app" button
+    # appears in the empty state. There is no service worker (so no stale-docs risk). All knobs are
+    # optional — name/shortName overridden here so the app reads "Aardvark" (capitalized) even though
+    # the site brand is the lowercase "aardvark" wordmark; the rest stay at their defaults:
+    app:
+      name: "Aardvark Assistant"        # installed app name (default "{site.name} Assistant")
+      shortName: "Aardvark"             # home-screen label (default site.name)
+    #   enabled: true                   # set false to drop the page, manifest, icons and install UI
+    #   iconBackground: "#ffffff"       # solid fill behind the maskable + iOS icons (default theme bg)
+    # NOTE: the assistant's system prompt is NOT a config/build field. It is enforced server-side by
+    # the gateway from the key's stored system_prompt — pass your instructions as `system_prompt`
+    # when you mint the key (POST /admin/keys), and re-mint to change them. (It is never exposed in
+    # the public ai-config.json.) Setting a `prompt:` here has NO effect; the build warns and
+    # ignores it, so it's intentionally omitted from this sample rather than shipped as a dead knob.
+    # Gateway base URL (defaults to the aardvark cloud gateway). Override to self-host:
+    # gateway: https://gateway.aardvark.dev/v1
+
+# Reader survey — a Google-Surveys-style prompt (default OFF; opt-in like the assistant). When
+# enabled, a small card appears at the end of every eligible page, asks the questions one at a
+# time, and records answers to Google Analytics via gtag.
+# Once a reader finishes on a page, the prompt still appears on the next page — each answer
+# is tied to that page via `response_page_url` in GA. Editing the questions changes the
+# auto-generated survey_id hash. Per-page opt-out: `survey: false` in front matter.
+#   NOTE: responses ride GA events, so they're only recorded when integrations.analytics.measurementId
+#   is set (it is, above — responses flow to that GA4 property). With no measurementId the prompt still
+#   shows but records nothing, and the build prints a one-line notice. To see the values in GA4,
+#   register survey_id / answer / question_id / response_page_url as custom dimensions in the GA admin
+#   (free-text answers are high-cardinality).
+#   FULL COMMENTS: when the AI assistant is enabled (ai.assistant, above — it is), an open-ended `text`
+#   answer is ALSO sent to the gateway at full length (up to 2000 chars) and shown in the gateway
+#   dashboard's "Page comments" section, so a comment isn't clipped to GA's 100-char cap. GA still fires.
+survey:
+  # FORK WARNING: enabled here so the live demo runs. Because integrations.analytics.measurementId is
+  # set (above), an as-is fork/clone deploy sends real survey *responses* — including any open-ended
+  # text answers, not just pageviews — to that GA4 property. Set `enabled: false` (or point analytics
+  # elsewhere / empty it) before deploying your own copy.
+  enabled: true
+  # id: docs-2024-q2         # optional stable GA survey_id; default = a short content hash of `questions`
+  sampleRate: 1.0             # fraction of visitors who ever see it (Google's "every Xth visitor"; 1.0 = all)
+  questions:
+    - type: text              # open-ended. The GA event keeps the first 100 chars (GA4's limit); with the
+                              # assistant on (it is, here) the FULL comment also goes to the gateway (≤2000).
+      text: "Leave a comment on this page"
+      placeholder: "Tell us what you think"
+      required: true          # prevents blank Submit from counting as a completed survey in GA
+      # NOTE: open-ended answers are sent to GA verbatim (and, with the assistant on, to the gateway) —
+      # GA4's terms prohibit storing PII (names, emails, etc.). Readers see a "don't include personal
+      # information" hint under the box; review your GA data-retention and gateway data-handling settings.
+
+# Expose this site's docs as MCP tools — to `vark serve --mcp` clients AND to in-browser AI agents
+# via WebMCP (navigator.modelContext): search/fetch/list/corpus over the build artifacts. On so the
+# live docs are agent-ready (the isitagentready.com scanner expects WebMCP tools on page load); it
+# also writes metadata.json (the nav index) as long as `markdownMenu` is on (its default — disable it
+# and the .md files and metadata.json aren't built). Set `mcp: {enabled: true, webmcp: false}` to keep the
+# server tools without the in-browser client (the `enabled: true` is required — a bare `webmcp: false`
+# turns MCP off entirely). See Docs → Self-hosting & MCP.
+mcp: true
+
+# Password-protected directories. Each entry AES-256-GCM-encrypts every page under `path`
+# (content-relative) at build time, keyed by PBKDF2 of the password read from `passwordEnv`;
+# readers unlock client-side in the browser. Protected pages ship as an opaque `.enc` blob +
+# a noindex loader and are kept out of the sitemap, search, llms.txt, .md siblings, OG cards
+# and RSS. A missing/empty env var FAILS the build (so pages can't slip out unencrypted), and
+# decryption needs HTTPS/localhost (WebCrypto). See Docs → Password protection.
+#   This site ships a LIVE demo at /secretpage/ (password documented on the Password protection
+#   page). The build therefore needs SECRET_PAGE_PW set in the environment (a git-ignored .env
+#   works) — without it the build fails by design rather than publish /secretpage/ unencrypted.
+protected:
+  - path: /secretpage
+    passwordEnv: SECRET_PAGE_PW

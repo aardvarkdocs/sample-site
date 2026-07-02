@@ -1,0 +1,20 @@
+# A tiny catalog. The /components/component-libraries/ shop demo loops over `items` to build
+# Stripe-powered product cards; `count` + `items[].name`/`price` are also used by the data-file
+# example on /authoring/templating/.
+count: 3
+items:
+  - name: Sticker Pack
+    price: 8
+    blurb: A dozen die-cut vinyl aardvarks.
+    icon: sticker-2
+    color: "#e8590c"
+  - name: Enamel Mug
+    price: 18
+    blurb: 12oz, dishwasher-safe, with the aardvark crest.
+    icon: mug
+    color: "#1971c2"
+  - name: Zip Hoodie
+    price: 55
+    blurb: Heavyweight fleece, embroidered logo.
+    icon: shirt
+    color: "#7048e8"

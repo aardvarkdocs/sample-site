@@ -1,0 +1,174 @@
+# OpenAPI Overlay (spec.openapis.org/overlay) — auto-applied to petstore.json because it
+# sits beside it and is named "<stem>.overlay.yaml". It customizes a spec we don't own,
+# entirely from this side file: rewriting prose and dropping in aardvark primitives (a
+# callout, a card grid) that render right inside the API reference. See /components/extras/openapi/ for docs.
+overlay: 1.0.0
+info:
+  title: Petstore docs overlay
+  version: 1.0.0
+actions:
+  # Replace the API blurb with a friendlier intro plus block primitives — a callout and a
+  # card grid that render in the reference's overview, above the operations.
+  - target: "$.info.description"
+    update: |
+      Browse and manage pets {% icon "paw" %}, store orders, and users — see the
+      [overlay guide](/components/extras/openapi/). This reference is the upstream **Swagger Petstore** spec,
+      customized entirely through an aardvark overlay.
+
+      {% callout severity="info" title="Sandbox API" %}
+      Every operation here runs against the public Petstore sandbox — data resets
+      periodically, so experiment freely.
+      {% endCallout %}
+
+      {% cardGrid cols=2 %}
+      {% card title="Authentication" icon="key" accent="grape" %}
+      Most write operations need an API key — paste one into the **Authorize** box and it
+      rides along with every *Try it now* call.
+      {% endCard %}
+      {% card title="Status codes" icon="components" accent="grape" %}
+      Errors follow standard HTTP semantics: `4xx` for client problems, `5xx` for ours.
+      {% endCard %}
+      {% endCardGrid %}
+
+  # Rewrite a summary — the small fix you can't make to a vendored spec by hand.
+  - target: "$.paths['/pet'].post.summary"
+    update: "Create a new pet listing"
+
+  # Drop a caution callout (and Markdown) into one operation's description.
+  - target: "$.paths['/pet/findByStatus'].get.description"
+    update: |
+      Returns every pet matching the given **status** values — pass one or more of
+      `available`, `pending`, or `sold` in the `status` query parameter.
+
+      {% callout severity="caution" title="Deprecation" %}
+      The multi-value form is being phased out — prefer a single status per request.
+      {% endCallout %}
+
+  # Filter targets work too: enrich one parameter by name (renders inline in the table).
+  - target: "$.paths['/pet/findByStatus'].get.parameters[?(@.name=='status')].description"
+    update: "Filter by status — one or more of `available`, `pending`, or `sold`."
+
+  # Response examples — the upstream Petstore declares response schemas but no example bodies, so
+  # the reference's right-hand rail had nothing to show. Add representative examples (an object, an
+  # array, a map, an error) so the rail renders them as the interactive, collapsible JSON tree
+  # (deep-merged into each media type, leaving the schema/property tables intact).
+  - target: "$.paths['/pet/{petId}'].get.responses['200'].content['application/json']"
+    update:
+      example:
+        id: 10
+        name: doggie
+        category: { id: 1, name: Dogs }
+        photoUrls: ["https://cdn.example.com/pets/10/front.jpg", "https://cdn.example.com/pets/10/side.jpg"]
+        tags:
+          - { id: 1, name: good-boy }
+          - { id: 2, name: house-trained }
+        status: available
+  - target: "$.paths['/pet/findByStatus'].get.responses['200'].content['application/json']"
+    update:
+      example:
+        - { id: 10, name: doggie, status: available }
+        - { id: 11, name: kitty, status: pending }
+        - { id: 12, name: rex, status: sold }
+  - target: "$.paths['/store/inventory'].get.responses['200'].content['application/json']"
+    update:
+      example:
+        available: 7
+        pending: 2
+        sold: 41
+  - target: "$.paths['/store/order/{orderId}'].get.responses['200'].content['application/json']"
+    update:
+      example:
+        id: 5
+        petId: 10
+        quantity: 1
+        shipDate: "2026-06-24T09:00:00.000Z"
+        status: approved
+        complete: false
+  # findByTags returns an array (no shared schema to carry the example); login returns a bare token.
+  - target: "$.paths['/pet/findByTags'].get.responses['200'].content['application/json']"
+    update:
+      example:
+        - { id: 10, name: doggie, status: available }
+        - { id: 13, name: bella, status: available }
+  - target: "$.paths['/user/login'].get.responses['200'].content['application/json']"
+    update:
+      example: "session-9f8c2b1a4e7d"
+
+  # Schema-level examples — OpenAPI lets a schema carry its own `example`, which aardvark now uses
+  # when a response's media block has no inline example. One example per shared schema documents
+  # EVERY 2xx that references it (Create/Update pet, place/fetch order, user ops, image upload), so
+  # the rail leads with the success body and the error examples sit behind the status picker.
+  - target: "$.components.schemas.Pet"
+    update:
+      example:
+        id: 10
+        name: doggie
+        category: { id: 1, name: Dogs }
+        photoUrls: ["https://cdn.example.com/pets/10/front.jpg"]
+        tags: [{ id: 1, name: good-boy }]
+        status: available
+  - target: "$.components.schemas.Order"
+    update:
+      example:
+        id: 5
+        petId: 10
+        quantity: 1
+        shipDate: "2026-06-24T09:00:00.000Z"
+        status: approved
+        complete: false
+  - target: "$.components.schemas.User"
+    update:
+      example:
+        id: 7
+        username: quokka
+        firstName: Quentin
+        lastName: Okka
+        email: quentin@example.com
+        phone: "+1-555-0100"
+        userStatus: 1
+  - target: "$.components.schemas.ApiResponse"
+    update:
+      example:
+        code: 200
+        type: success
+        message: Image uploaded.
+
+  # Error responses — the upstream Petstore declares every 4xx/default with only a description (no
+  # body), so they rendered with no schema table and no example. Add a shared Error schema and
+  # deep-merge an Error-typed body + a representative example into every common error status across
+  # ALL operations (wildcard targets). The deep-merge preserves each operation's specific
+  # description; it adds the body, so the reference now shows the Error field table and the rail's
+  # status picker can switch to the error example tree.
+  - target: "$.components.schemas"
+    update:
+      Error:
+        type: object
+        description: A problem response — returned with a non-2xx status.
+        required: [code, message]
+        properties:
+          code: { type: integer, format: int32, description: Numeric error code (mirrors the HTTP status). }
+          message: { type: string, description: Human-readable explanation of what went wrong. }
+  - target: "$.paths.*.*.responses['400']"
+    update:
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { code: 400, message: Invalid request — check the parameters and body. }
+  - target: "$.paths.*.*.responses['404']"
+    update:
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { code: 404, message: The requested resource was not found. }
+  - target: "$.paths.*.*.responses['422']"
+    update:
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { code: 422, message: Validation failed — one or more fields are invalid. }
+  - target: "$.paths.*.*.responses['default']"
+    update:
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { code: 500, message: An unexpected error occurred. }

@@ -1,0 +1,19 @@
+# Build context for the site-root Dockerfile. The project is bind-mounted at build time, so
+# keep this small and secret-free. Regenerated/derived artifacts are excluded -- `npm ci` and
+# `vark build` reproduce them inside the image.
+.git
+node_modules
+**/node_modules
+build
+**/build
+.aardvark-cache
+__pycache__
+**/__pycache__
+*.pyc
+# Never expose local secrets to the build (AARDVARK_KEY / AARDVARK_SECRET_KEY, etc.):
+.env
+*.env
+**/.env
+**/*.env
+# Editor/agent cruft not needed to render the site:
+.claude

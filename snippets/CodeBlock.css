@@ -1,0 +1,23 @@
+/* Styles for the {% CodeBlock %} snippet (snippets/CodeBlock.jsx): a runtime, Shiki-highlighted
+   code block from @mantine/code-highlight. The package stylesheet rides a CSS @import (never a JS
+   import of the package .css — the SSR prerender runs esbuild with --packages=external, which
+   chokes on a JS-imported package .css). */
+@import '@mantine/code-highlight/styles.css';
+
+/* The pre-hydration placeholder: a plain, un-tokenized code block shown during the build-time
+   prerender and the first client paint, before Shiki swaps in the highlighted CodeHighlight.
+   Match the resting CodeHighlight box so the swap doesn't jump the layout. */
+.aardvark-codeblock-placeholder {
+  margin: 0;
+  padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
+  border-radius: var(--mantine-radius-sm);
+  overflow-x: auto;
+  font-family: var(--mantine-font-family-monospace);
+  font-size: var(--mantine-font-size-sm);
+  line-height: 1.55;
+  background: var(--mantine-color-default-hover);
+  color: var(--mantine-color-text);
+}
+.aardvark-codeblock-placeholder code {
+  font-family: inherit;
+}

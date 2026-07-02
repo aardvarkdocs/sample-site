@@ -1,0 +1,13 @@
+/*
+ * (Intentionally empty.)
+ *
+ * This file used to hold the @keyframes wa-scroll rule that drove the
+ * hand-rolled landing-page logo marquees. Those marquees now use the built-in
+ * {% marquee %} tag (its CSS animation ships with the Marquee island), so the
+ * keyframes are no longer referenced and have been removed.
+ *
+ * The file is kept (rather than deleted) because the build auto-links every
+ * root-level .css into each page's <head> via _copy_assets in
+ * src/aardvark/builder.py; leaving an empty stylesheet here is harmless and
+ * avoids churning that link out of the baked HTML.
+ */

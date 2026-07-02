@@ -1,0 +1,10 @@
+/* RichTextEditor (snippets/RichTextEditor.jsx) styles. The editor chrome — toolbar,
+   control buttons, the editable content area, the link-edit popover — comes from
+   @mantine/tiptap's stylesheet. @mantine/core/styles.css is already loaded globally by
+   the islands client entry; only the tiptap-specific sheet is pulled in here.
+
+   This is a CSS @import, NOT a JS import of the package stylesheet: the SSR prerender
+   bundles with esbuild --packages=external, so a JS `import '@mantine/tiptap/styles.css'`
+   would be left as a runtime require() of a .css and crash Node. esbuild's CSS bundler,
+   by contrast, inlines this @import at build time into the single islands-<sha>.css. */
+@import '@mantine/tiptap/styles.css';

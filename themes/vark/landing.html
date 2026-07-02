@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<!--
+  A sample alternate theme template, selected per page with `pagetype: landing` in
+  front matter. It demonstrates that a theme can carry more than one layout: this one
+  drops the sidebar nav and the on-this-page TOC and centers the content in a full-width
+  hero, while reusing the same `default.html` context (brand, theme styles, assets).
+  Lives only in this project's themes/vark/ (not the packaged vark theme), so it's a
+  worked example of "add your own template and point a page at it". The hero styling is
+  scoped here and built on the theme's --aardvark-* variables, so it stays on-theme in
+  both light and dark mode without touching theme.css.
+-->
+<html lang="{% lang %}"{% (' data-aardvark-banner="' + banner_id + '"') if banner_id else '' %}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% full_title %}</title>
+  {% seo_head %}
+  <script src="/_aardvark/color-scheme.js"></script>
+  {% '<script src="/_aardvark/banner.js"></script>' if banner_id else '' %}
+  <link rel="stylesheet" href="/_aardvark/theme.css" />
+  {% theme_style %}
+  {%
+  for href in css_files:
+      page.print('<link rel="stylesheet" href="' + href + '">')
+  %}
+  <style>
+    .aardvark-landing-main { display: flex; justify-content: center; padding: 4rem 1.5rem; }
+    .aardvark-landing-hero { max-width: 52rem; width: 100%; text-align: center; }
+    .aardvark-landing-hero h1 { font-size: clamp(2rem, 5vw, 3rem); margin-top: 0; }
+  </style>
+  {% head_extra %}
+</head>
+<body class="aardvark-landing">
+  <a class="aardvark-skip-link" href="#aardvark-main">{% t("Skip to main content") %}</a>
+  {% banner_html %}
+  <header class="aardvark-header">
+    {% brand_html %}
+    <button type="button" class="aardvark-theme-toggle" aria-label="Toggle color scheme">
+      <span class="aardvark-icon-light">&#9788;</span><span class="aardvark-icon-dark">&#9789;</span>
+    </button>
+    {% top_buttons_html %}
+  </header>
+  <main id="aardvark-main" class="aardvark-landing-main" tabindex="-1">
+    <article class="aardvark-content aardvark-landing-hero">{% content %}</article>
+  </main>
+  {% footer_html %}
+  {% powered_by_html %}
+  <div id="aardvark-live" class="aardvark-visually-hidden" role="status" aria-live="polite"></div>
+  <script src="/_aardvark/code-blocks.js" defer></script>
+  {%
+  for src in js_files:
+      page.print('<script src="' + src + '" defer></script>')
+  %}
+  {% body_extra %}
+</body>
+</html>
