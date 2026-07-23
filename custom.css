@@ -1,0 +1,6 @@
+/* Drop any .css file in the project root and it is included in the build. */
+.aardvark-brand { letter-spacing: -0.01em; }
+
+/* Keep content images inside the prose column (the theme caps tables and code
+   blocks but not images), so a large asset scales down instead of overflowing. */
+.aardvark-content img { max-width: 100%; height: auto; }

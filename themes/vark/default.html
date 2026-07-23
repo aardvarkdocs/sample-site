@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="{% lang %}"{% (' data-aardvark-banner="' + banner_id + '"') if banner_id else '' %}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% full_title %}</title>
+  {% seo_head %}
+  {% base_script %}
+  <script src="/_aardvark/color-scheme.js"></script>
+  {% '<script src="/_aardvark/banner.js"></script>' if banner_id else '' %}
+  <link rel="stylesheet" href="/_aardvark/theme.css" />
+  {% theme_style %}
+  <noscript><style>
+    /* No JS → the drawer can never open, so restore the pre-PR mobile baseline: hide the (now inert)
+       hamburger and the off-canvas nav entirely. The closed drawer is already visibility:hidden (out
+       of the a11y tree + tab order), so this is mainly to drop the dead trigger and match the old
+       display:none. !important beats the layout-mode .aardvark-sidebar{display:block} override. The
+       header's language/CTA controls stay reachable — their hide is gated on a JS-set class. */
+    @media (max-width: 760px) { .aardvark-nav-burger, .aardvark-sidebar { display: none !important; } }
+  </style></noscript>
+  {% '<link rel="stylesheet" href="/_aardvark/twoslash.css" />' if page_has_twoslash else '' %}
+  {%
+  for href in css_files:
+      page.print('<link rel="stylesheet" href="' + href + '">')
+  %}
+  {% head_extra %}
+</head>
+<body>
+  <a class="aardvark-skip-link" href="#aardvark-main">{% escape(t("Skip to main content")) %}</a>
+  {% banner_html %}
+  {% version_banner_html %}
+  <header class="aardvark-header">
+    <button type="button" class="aardvark-nav-burger" aria-label="{% escape(t('Toggle navigation')) %}"
+            aria-controls="aardvark-drawer" aria-expanded="false">
+      <span class="aardvark-nav-burger-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+    </button>
+    {% brand_html %}
+    <div id="aardvark-search">{% search_html %}</div>
+    <div id="aardvark-ai">{% ai_assistant_html %}</div>
+    {%
+    if len(languages) > 1:
+        page.print('<select id="aardvark-lang-select" class="aardvark-lang-select" aria-label="' + escape(t('Language')) + '">')
+        for choice in languages:
+            sel = ' selected' if choice['selected'] else ''
+            page.print('<option value="' + escape(choice['url']) + '"' + sel + '>' + escape(choice['label']) + '</option>')
+        page.print('</select>')
+    %}
+    {%
+    # Version switcher (docs versioning). Each option's value is its build-time-resolved target URL
+    # — the equivalent page in that version or that version's home — so version-switcher.js just
+    # navigates to select.value, exactly like the language picker. Reuses .aardvark-lang-select
+    # styling; hidden on global pages and unversioned/single-version sites (empty `versions`).
+    if versions_enabled and len(versions) > 1:
+        page.print('<select id="aardvark-version-select" class="aardvark-lang-select aardvark-version-select" aria-label="' + escape(t('Version')) + '">')
+        for choice in versions:
+            sel = ' selected' if choice['selected'] else ''
+            badge = (' (' + choice['badge'] + ')') if choice['badge'] else ''
+            page.print('<option value="' + escape(choice['url']) + '"' + sel + '>' + escape(choice['label'] + badge) + '</option>')
+        page.print('</select>')
+    %}
+    <button type="button" class="aardvark-theme-toggle" aria-label="{% escape(t('Toggle color scheme')) %}"
+            data-label-light="{% escape(t('Switch to light mode')) %}" data-label-dark="{% escape(t('Switch to dark mode')) %}">
+      <span class="aardvark-icon-light">&#9788;</span><span class="aardvark-icon-dark">&#9789;</span>
+    </button>
+    {% top_buttons_html %}
+  </header>
+  {% tabs_html %}
+  <div class="aardvark-layout{% (' ' + layout_class) if layout_class else '' %}{% ' aardvark-has-site-footer' if footer_html else '' %}">
+    <nav id="aardvark-drawer" class="aardvark-sidebar" aria-label="{% escape(t('Documentation')) %}"><button type="button" class="aardvark-drawer-close" aria-label="{% escape(t('Close')) %}">&times;</button><div class="aardvark-drawer-tabs" hidden></div>{% nav_html %}<div class="aardvark-drawer-actions" hidden></div></nav>
+    <main id="aardvark-main" class="aardvark-main" tabindex="-1">
+      {%
+      # Top-of-content bar: breadcrumbs (left) + the "Open" page-markdown menu (right, via
+      # margin-left:auto). Rendered whenever either exists, so a page with neither stays clean.
+      # The menu lives here (not the TOC rail) so it shows on mobile and in wide/full layouts.
+      # See theme.render_markdown_menu.
+      if breadcrumbs_html or markdown_menu_html:
+          crumbs = ('<nav class="aardvark-breadcrumbs" aria-label="' + escape(t('Breadcrumb')) + '">' + breadcrumbs_html + '</nav>') if breadcrumbs_html else ''
+          # Without breadcrumbs the bar holds only the menu; the `-bare` variant floats it level
+          # with the title instead of reserving a blank row above it. See theme.css.
+          bar_class = 'aardvark-page-bar' if breadcrumbs_html else 'aardvark-page-bar aardvark-page-bar-bare'
+          page.print('<div class="' + bar_class + '">' + crumbs + markdown_menu_html + '</div>')
+      %}
+      <article class="aardvark-content"{% table_attrs %}>{% not_found_html %}{% content %}</article>
+      {%
+      # The page-date line: a MANUALLY-authored publish date (front matter) shows as
+      # "Published …" beside the git-derived "Last modified …" — the two tell different
+      # stories on dated articles (changelog members, blog posts). The builder blanks
+      # last_modified_iso when it matches published_iso (same-day noise) and blanks both
+      # under lastModified: false.
+      _date_parts = []
+      if published_iso:
+          _date_parts.append(escape(t("Published")) + ' <time datetime="' + escape(published_iso) + '">' + escape(published_iso) + '</time>')
+      if last_modified_iso:
+          _date_parts.append(escape(t("Last modified")) + ' <time datetime="' + escape(last_modified_iso) + '">' + escape(last_modified_iso) + '</time>')
+      if _date_parts:
+          print('<div class="aardvark-last-modified">' + ' · '.join(_date_parts) + '</div>')
+      %}
+      {%
+      # Page-feedback widget. Gated on `pageFeedback` so `false` removes it entirely
+      # (PageFeedback is force-bundled in builder.py under the same flag). One island
+      # owns the rating + the comment box + both gtag events; the literal wrapper keeps
+      # `class="aardvark-rating"` in static HTML so the divider styling works before
+      # hydration. Visible strings are passed in already-translated (island JSX isn't
+      # run through t()). When the AI assistant is on (`ai_assistant_on`), the island ALSO
+      # POSTs the star rating to the gateway (ratingEndpoint) for the owner dashboard's Feedback
+      # panel; the optional comment (UI-capped, see PageFeedback.COMMENT_MAX) is sent SEPARATELY
+      # to commentEndpoint, not as a second rating row — reading the key + endpoints from
+      # ai-config.json. GA fires either way.
+      if page_feedback:
+          page.print('<div class="aardvark-rating">' + component('PageFeedback',
+              question=t("Was this page helpful?"),
+              thanks=t("Thanks for your feedback!"),
+              commentLabel=t("Tell us more (optional)"),
+              commentNotice=t("Please don't include personal information."),
+              commentPlaceholder=t("What worked, what didn't?"),
+              submitLabel=t("Submit"),
+              commentThanks=t("Thanks for the details!"),
+              aiEnabled=ai_assistant_on,
+              configUrl=ai_config_url) + '</div>')
+      %}
+      {%
+      # Reader survey (config `survey`, default off): the built-in Survey island self-hides until
+      # the reader's Nth pageview and records answers to GA. render_survey returns "" when off, so
+      # the survey_html slot below is emitted unconditionally, like the ai_assistant_html slot.
+      %}
+      {% survey_html %}
+    </main>
+    <div class="aardvark-toc-panel">
+      {% page_actions_html %}
+      {% ('<nav class="aardvark-toc-nav" aria-label="' + escape(t("On this page")) + '"><div class="aardvark-toc-title">' + escape(t("On this page")) + '</div>' + toc_html + '</nav>') if toc_html else "" %}
+      {%
+      # Right-rail taxonomy tag cloud (front-matter `tagCloud: true` in a taxonomy entry):
+      # a stateless TagCloud island of links into the listing page's filtered view. The
+      # builder always supplies the key — empty string on the (vast) majority of pages.
+      %}
+      {% taxonomy_cloud_html %}
+    </div>
+  </div>
+  <div class="aardvark-drawer-overlay" aria-hidden="true"></div>
+  {% footer_html %}
+  {% powered_by_html %}
+  <!-- Shared ARIA live region for table filtering feedback ("No matching rows").
+       Present at page load so screen readers (notably NVDA) register it; tables.js
+       writes here rather than into a JS-injected region, which some AT ignore. -->
+  <div id="aardvark-live" class="aardvark-visually-hidden" role="status" aria-live="polite"></div>
+  <script src="/_aardvark/tabs.js" defer></script>
+  <script src="/_aardvark/nav.js" defer></script>
+  <script src="/_aardvark/drawer.js" defer></script>
+  <script src="/_aardvark/toc.js" defer></script>
+  <script src="/_aardvark/ai-layout.js" defer></script>
+  {% '<script src="/_aardvark/md-menu.js" defer></script>' if markdown_menu_html else '' %}
+  <script src="/_aardvark/tables.js" defer></script>
+  <script src="/_aardvark/code-blocks.js" defer></script>
+  <script src="/_aardvark/language-switcher.js" defer></script>
+  {% '<script src="/_aardvark/version-switcher.js" defer></script>' if versions_enabled else '' %}
+  {% '<script src="/_aardvark/hovercard.js" defer></script>' if hovercards_enabled else "" %}
+  {% '<script src="/_aardvark/glossary.js" defer></script>' if glossary_enabled else "" %}
+  <!-- The mermaid and markdeep diagram scripts are injected automatically by the builder,
+       just before the closing body tag, and only on pages that actually contain a diagram,
+       so there is no script tag to place here and no ordering for a template author to get
+       wrong. Detection covers fenced blocks, raw diagram HTML, and changelog diagrams. -->
+  {%
+  for src in js_files:
+      page.print('<script src="' + src + '" defer></script>')
+  %}
+  {% body_extra %}
+</body>
+</html>

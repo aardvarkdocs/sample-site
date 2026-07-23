@@ -1,0 +1,25 @@
+# Generated/maintained UI-string catalog: per-language translations of nav + tab
+# labels and the theme chrome strings. `vark build --translate` regenerates this;
+# it is committed so plain builds render localized chrome without an API key.
+# Untranslated labels fall back to the base language.
+fr:
+  # Theme chrome
+  On this page: Sur cette page
+  Edit this page: Modifier cette page
+  Report an issue: Signaler un problème
+  Skip to main content: Aller au contenu principal
+  Documentation: Documentation
+  Was this page helpful?: Cette page vous a-t-elle été utile ?
+  Yes: Oui
+  No: Non
+  Thanks for your feedback!: Merci pour votre retour !
+  # Nav + tab labels (a representative subset; the rest fall back to English)
+  Getting Started: Prise en main
+  Introduction: Introduction
+  Installation: Installation
+  Quickstart: Démarrage rapide
+  Docs: Docs
+  Components: Composants
+  API: API
+  Resources: Ressources
+  Deployment: Déploiement

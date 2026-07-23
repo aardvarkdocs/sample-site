@@ -1,0 +1,56 @@
+# Definitions: terms, acronyms, and their definitions. Two jobs in one file:
+#   • EVERY entry grounds `vark build --translate` (so terminology stays consistent), and
+#   • entries marked `public: true` get a dotted-underline hover card in the docs, and can
+#     be listed on an optional standalone glossary page (see the `page:` block below).
+#
+# Per entry: `term` (required), `definition`, `acronym`, `public` (default false),
+# `translate` (default true; `false` = never translate, e.g. a product name), and
+# `translations` (per language code). A `translations.<code>` value may be:
+#   • a string          → the translated term (shorthand for {term: ...})
+#   • a mapping         → any of {term, acronym, definition}; missing keys fall back to base
+#   • false             → do not translate for that language (keep the base term + acronym)
+
+# Optional standalone glossary page. Uncomment to generate one: give it a url and the same
+# nav front matter any topic uses (menu/parent/weight/title) so it slots into the build.
+# page:
+#   enabled: true
+#   url: /definitions/glossary/
+#   frontmatter:
+#     title: Glossary
+#     menu: docs
+#     weight: 57
+
+terms:
+  - term: island
+    definition: A self-contained interactive React component rendered in the browser.
+    public: true
+    translations:
+      fr:
+        term: îlot
+        definition: Un composant React interactif et autonome rendu dans le navigateur.
+
+  - term: Static Site Generator
+    acronym: SSG
+    definition: A tool that turns source files (here, Markdown) into static HTML pages.
+    public: true
+    translations:
+      fr:
+        term: générateur de site statique
+        acronym: GSS
+        definition: Un outil qui transforme des fichiers source en pages HTML statiques.
+
+  - term: Markdown
+    definition: The lightweight markup language these docs are authored in.
+    public: true
+    translate: false          # a proper name — keep "Markdown" verbatim in every language
+
+  # Non-public: these only ground translation; they get no hover card in the docs.
+  - term: build
+    definition: The process that turns Markdown sources into static HTML output.
+    translations:
+      fr: compilation
+
+  - term: theme
+    definition: The look and feel (templates, colors, fonts) applied to the site.
+    translations:
+      fr: thème

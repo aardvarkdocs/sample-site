@@ -1,0 +1,9 @@
+/* Stylesheet for the NProgressDemo snippet (snippets/NProgressDemo.jsx), which mounts
+   @mantine/nprogress's <NavigationProgress /> — the top-of-page progress bar.
+
+   The package's own stylesheet is pulled in with a CSS @import (NOT a JS
+   `import '@mantine/nprogress/styles.css'` inside the .jsx). esbuild extracts this local
+   stylesheet into the client islands-<sha>.css, where the @import is resolved as CSS, so the
+   bar's styles ship without the package .css ever becoming a Node import in the SSR prerender
+   bundle (which runs with --packages=external and would crash on a `.css` module). */
+@import '@mantine/nprogress/styles.css';

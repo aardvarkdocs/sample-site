@@ -1,0 +1,8 @@
+/* Styles for snippets/NotificationsDemo.jsx — the live notifications (toast) demo.
+
+   @mantine/notifications ships its own stylesheet (beyond @mantine/core, which loads
+   globally from the client bundle). It MUST be pulled in here, via a CSS @import, NOT a
+   JS `import '@mantine/notifications/styles.css'` inside the .jsx: a *local* stylesheet
+   is extracted to the client bundle by esbuild, but a package .css survives the SSR
+   bundle's --packages=external and crashes the Node prerender on a ".css" import. */
+@import '@mantine/notifications/styles.css';
