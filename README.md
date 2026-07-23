@@ -64,6 +64,7 @@ python3 -m http.server 8000 --directory build
 - `aardvark.config.yaml` — site metadata, navigation, theme, integrations
 - `content/` — Markdown pages (`content-fr/` holds the French translation)
 - `data/` — JSON/YAML/CSV data available to pages
+- `generators/` — Python hooks that create pages and other build outputs
 - `snippets/` — custom React components
 - `components/` — custom Markdown block components
 - `templates/` — HTML theme overrides
