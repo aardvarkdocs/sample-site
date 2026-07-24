@@ -17,23 +17,32 @@ snapshots travel outward; it does not mean public pull requests are merged here.
 For a new eligible change, the normal lifecycle is:
 
 1. Open a pull request against public `main` and keep it open.
-2. A bot validates and replays the eligible file changes into a draft
-   `sample-site-sync/pr-<number>` PR in the private aardvark source repository.
+2. The existing GitHub App sends a signed event that immediately enqueues the
+   private sync for this exact pull request. A bot validates and replays the
+   eligible file changes into a draft `sample-site-sync/pr-<number>` PR in the
+   private aardvark source repository. There is no scheduled poll, public sync
+   workflow, or public secret.
 3. Maintainers review the complete private diff, run isolated CI, resolve any
    replay conflicts in aardvark, and merge only the private mirror PR. You do not
    need to rebase merely to account for private-source changes.
-4. The next normal publish appends a bot-authored sync commit containing the
-   accepted private snapshot to public `main`.
-5. Only after the bot verifies that publication does it comment on and close the
-   original, still-unmerged public pull request.
+4. Merging the private mirror pushes private `main`, which triggers the normal
+   publisher to append a bot-authored sync commit containing the accepted
+   private snapshot to public `main`.
+5. A reconciliation job in that same publisher workflow verifies publication,
+   then comments on and closes the original, still-unmerged public pull request.
+
+The bot may temporarily apply `sample-site-sync: publish-needed` while accepted
+work waits for publication. It is automation-owned recovery state; please do
+not edit or remove it.
 
 While an ordinary private mirror remains a draft and maintainers have not frozen
-a conflict resolution, another commit on the same public branch refreshes it
-automatically. Once maintainers mark that mirror ready for final review, freeze a
-conflict resolution, or the public status says the accepted revision is waiting
-to be published, open a new public pull request for further changes—the reviewed
-mirror cannot include later commits. A conflicted draft may wait for a maintainer
-resolution or explicit acknowledgement commit before isolated CI starts.
+a conflict resolution, reopening the PR or pushing another commit on the same
+public branch immediately redispatches it and enqueues a refresh. Once maintainers mark
+that mirror ready for final review, freeze a conflict resolution, or the public
+status says the accepted revision is waiting to be published, open a new public
+pull request for further changes—the reviewed mirror cannot include later
+commits. A conflicted draft may wait for a maintainer resolution or explicit
+acknowledgement commit before isolated CI starts.
 
 ### What can be changed
 

@@ -17,21 +17,30 @@ For a new eligible change, the normal lifecycle is:
 
 1. Open a pull request here against `main`. It stays open and is not merged in
    this repository.
-2. A bot validates and replays the eligible file changes into a draft PR in the
-   private aardvark source repository. While an ordinary mirror remains a draft
-   and maintainers have not frozen a conflict resolution, follow-up commits on
-   the same public branch refresh it automatically.
+2. The existing GitHub App sends a signed event that immediately enqueues the
+   private sync for this exact pull request. A bot validates and replays eligible
+   file changes into a draft PR in the private aardvark source repository.
+   Reopening the PR or pushing follow-up commits immediately redispatches that
+   same exact PR; there is no scheduled poll, public sync workflow, or public secret.
 3. Maintainers review the complete private diff, run isolated CI, resolve any
    conflicts there, and merge only the private mirror PR. You do not need to
    rebase merely to solve a private-source conflict.
-4. The next normal publish appends a bot-authored sync commit to public `main`.
-   After the bot verifies that the accepted private revision is present, it
-   comments on and closes this still-unmerged public pull request.
+4. Merging the private mirror pushes private `main`, which triggers the normal
+   publisher to append a bot-authored sync commit here. After that push succeeds,
+   a reconciliation job in that same publisher workflow verifies that the
+   accepted private revision is present, then comments on and closes this
+   still-unmerged public pull request.
 
-Once maintainers mark the private mirror ready for final review, freeze a conflict
-resolution, or the public status says the accepted revision is waiting to be
-published, open a new public pull request for any further changes instead. Those
-later commits are not part of the reviewed mirror.
+The bot may temporarily apply `sample-site-sync: publish-needed` while accepted
+work waits for that snapshot. It is automation-owned recovery state; please do
+not edit or remove it.
+
+While the private mirror remains a draft and maintainers have not frozen a
+conflict resolution, reopening the PR or pushing another commit enqueues its refresh.
+Once maintainers mark the mirror ready for final review, freeze a resolution, or
+the public status says the accepted revision is waiting to be published, open a
+new public pull request for any further changes instead. Those later commits are
+not part of the reviewed mirror.
 
 The private repository remains the source of truth. Public pull requests are
 never merged into public `main`; that branch accepts only bot-authored outbound
