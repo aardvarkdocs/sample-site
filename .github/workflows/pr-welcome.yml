@@ -11,7 +11,9 @@ on:
 
 permissions:
   contents: none
-  issues: write
+  # This repository's GITHUB_TOKEN authorizes PR-backed issue comments through
+  # the pull-request resource; issues: write returned 403 for fork PRs.
+  pull-requests: write
 
 jobs:
   welcome:
