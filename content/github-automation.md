@@ -59,6 +59,47 @@ For each repo, turn on the checks you want and pick when each one runs:
 A check can use either trigger, both, or neither (manual-only). Click **Save** — this only updates
 your automation config in the gateway; nothing is committed to your repo.
 
+## Scope a run
+
+By default a check runs over **every page**. The three page-rewriting checks — *Apply style guide*,
+*Regenerate keywords*, and *Refresh descriptions* — can instead run over just part of your docs:
+
+- **Diff only (changed pages)** — a checkbox under **Run on every commit**. When on, a push restyles
+  only the pages that push changed, not the whole docset (and opens no PR when a push touched no docs).
+  It applies to **pushes only**: a **scheduled** run has no diff to work from, so it always covers every
+  page. One more case is skipped by design: the **first push that creates a branch** has no "before"
+  commit to diff against, so a diff-only automation doesn't run on it (rather than silently restyling
+  everything) — the next ordinary push to that branch is scoped normally.
+- **Run now → path** — the **Run now** control has an optional **path** field. Fill in a file or a
+  directory to scope that one run to it; leave it blank to run over everything.
+
+Scoped runs **build on the open PR** rather than replacing it. Aardvark opens one pull request per check (on
+an `aardvark/<check>` branch); when a later scoped run touches only a few pages, it **keeps** the styling the
+PR already proposed for every *other* page and just updates the pages it restyled — so the PR accumulates
+across commits instead of shrinking to the latest run's pages. Each run also rebases the PR on your current
+branch, so the proposed changes stay current. (A **full** run — a scheduled run, or any run over every page —
+regenerates the whole PR from scratch.)
+
+From the CLI, the same two ways to scope a run:
+
+```bash
+# A file or a whole directory (repeatable)
+vark author --action styleguide --yes --rulesets google --path guide/
+
+# Only the pages this branch changed vs another ref (e.g. main)
+vark author --action keywords --yes --diff main
+```
+
+`--diff <ref>` restyles only the pages whose source changed versus that git ref — the same mechanism the
+dashboard's *Diff only* toggle uses on a push. `--page` is the **single-page** selector — note it differs
+from `--path` on a trailing slash: `--page guide/` selects the `guide.md` page, whereas `--path guide/`
+selects the whole `guide/` subtree (and `--path` is repeatable). Don't combine `--path`/`--page` with
+`--diff` or `--all`; with none of them, the check runs on every page.
+
+`--diff` selects pages by their **own** source changing — including a changed reusable partial (styleguide
+only). It doesn't follow includes: a change confined to a data file (or, for keywords/descriptions, a
+partial) won't re-run the pages that merely *consume* it.
+
 ## The checks
 
 Every check runs the **same `vark` capability** two ways: unattended from the **dashboard**, where it
@@ -72,22 +113,25 @@ The CLI checks need your gateway **secret key** (the same account that powers th
 export AARDVARK_SECRET_KEY=aardvark_secret_...
 ```
 
-The `vark author` checks **preview a diff by default** — add `--yes` to write the changes. Use `--all`
-for every page or `--page <path>` for one, and `--model <slug>` to override the configured model. The
-summary table:
+The `vark author` checks **preview a diff by default** — add `--yes` to write the changes. They run on
+**every page** unless you [scope the run](#scope-a-run) with `--path <file-or-dir>` or `--diff <ref>`
+(or `--page <path>` for one), and `--model <slug>` overrides the configured model. The summary table:
 
 | Check | Dashboard label | CLI |
 | --- | --- | --- |
-| [Apply style guide](#apply-style-guide) | *Apply style guide* | `vark author --action styleguide --all --yes --rulesets <id,id,…>` |
+| [Apply style guide](#apply-style-guide) | *Apply style guide* | `vark author --action styleguide --yes --rulesets <id,id,…>` |
 | [Enrich metadata & skills](#enrich-metadata-skills) | *Enrich metadata & skills* | `vark ai-enrich` |
-| [Regenerate keywords](#regenerate-keywords) | *Regenerate keywords* | `vark author --action keywords --all --yes` |
-| [Refresh descriptions](#refresh-descriptions) | *Refresh descriptions* | `vark author --action description --all --yes` |
+| [Regenerate keywords](#regenerate-keywords) | *Regenerate keywords* | `vark author --action keywords --yes` |
+| [Refresh descriptions](#refresh-descriptions) | *Refresh descriptions* | `vark author --action description --yes` |
 | [Translate documentation](#translate-documentation) | *Translate documentation* | `vark build --translate` |
 
 ### Apply style guide
 
 Rewrites each page's **prose** to follow one or more **style rulesets**, in **precedence order** —
 without changing meaning, code, commands, front matter, link targets, or `{% raw %}{% %}{% endraw %}` template blocks.
+It also restyles your reusable **partials** (`_`-prefixed include-only files) under your base `content/`, so
+shared prose follows the style guide too — the other checks act on routable pages only. (Partials that live
+under a translated content directory aren't included; on a multilingual site, style the base-language ones.)
 aardvark ships six rulesets, condensed from each guide's own source of truth:
 
 | Ruleset | id | Focus |
@@ -111,11 +155,11 @@ stays disabled until at least one ruleset is picked. Then schedule the check or 
 **From the CLI:** pass the ids comma-separated, **highest precedence first**:
 
 ```bash
-# Preview the changes (Microsoft wins conflicts, then Google)
-vark author --action styleguide --all --rulesets microsoft,google
+# Preview the changes on every page (Microsoft wins conflicts, then Google)
+vark author --action styleguide --rulesets microsoft,google
 
 # Apply them
-vark author --action styleguide --all --yes --rulesets microsoft,google
+vark author --action styleguide --yes --rulesets microsoft,google
 
 # Style a single page against all six
 vark author --action styleguide --page docs/intro.md --yes \
@@ -150,7 +194,7 @@ Refreshes the SEO `keywords` front matter on every page from its current content
 **From the CLI:**
 
 ```bash
-vark author --action keywords --all --yes      # drop --yes to preview
+vark author --action keywords --yes      # every page; drop --yes to preview
 ```
 
 ### Refresh descriptions
@@ -162,7 +206,7 @@ Rewrites each page's one-sentence `description` — the text used in search resu
 **From the CLI:**
 
 ```bash
-vark author --action description --all --yes    # drop --yes to preview
+vark author --action description --yes    # every page; drop --yes to preview
 ```
 
 ### Translate documentation

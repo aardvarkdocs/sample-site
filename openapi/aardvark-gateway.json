@@ -4761,6 +4761,9 @@
                         "run_on_push": {
                           "type": "boolean"
                         },
+                        "run_on_push_diff_only": {
+                          "type": "boolean"
+                        },
                         "cron": {
                           "type": "string",
                           "nullable": true
@@ -4846,6 +4849,10 @@
                           "run_on_push": {
                             "type": "string",
                             "description": "Whether a matching push fires the automation."
+                          },
+                          "run_on_push_diff_only": {
+                            "type": "boolean",
+                            "description": "When true, a run-on-push fire restyles only the pages that push changed. Requires run_on_push and a scope-capable capability; ignored for cron."
                           },
                           "cron": {
                             "type": "string",
@@ -5190,6 +5197,10 @@
                                   "type": "string",
                                   "description": "Whether a matching push fires the automation."
                                 },
+                                "run_on_push_diff_only": {
+                                  "type": "boolean",
+                                  "description": "When true, a run-on-push fire restyles only the pages that push changed (not the whole docset). Only meaningful for a scope-capable capability with run_on_push; it never affects a cron fire."
+                                },
                                 "cron": {
                                   "type": "string",
                                   "description": "Schedule (5-field cron, at most hourly), or null."
@@ -5464,6 +5475,10 @@
                   "capability": {
                     "type": "string",
                     "description": "Capability id to run; must be enabled for the repo."
+                  },
+                  "path": {
+                    "type": "string",
+                    "description": "Optional page scope for this run only — a file or directory (relative to the project dir) to restyle instead of the whole docset. Only valid for a page-authoring capability (styleguide, keywords, description); does not persist."
                   }
                 },
                 "required": [

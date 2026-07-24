@@ -188,7 +188,7 @@ Run agentic authoring tasks on your docs — interactively or headless.
 
 With no `--action`, opens a menu of AI-assisted actions — regenerate keywords, refresh a page's description, check and replace dead outbound links, apply a style-guide pass, or chat with a writing agent — that edit your Markdown in place (each change previewed as a diff you confirm before it's written). The same menu is reachable by running bare `vark`.
 
-With `--action <id>` it runs ONE action non-interactively (for CI / automation): `--all` over every page or `--page` for one, previewing diffs unless `--yes` is given to write. This is the mode the gateway's GitHub integration drives on a runner. The styleguide action additionally REQUIRES `--rulesets` — the style ruleset ids to apply, comma-separated in precedence order (list order, first wins conflicts); no other action accepts the flag.
+With `--action <id>` it runs ONE action non-interactively (for CI / automation), previewing diffs unless `--yes` is given to write. Scope it with `--path <file-or-dir>` (repeatable), `--diff <ref>` (only pages changed vs a git ref), or `--page` for one; with none of those it runs on every page. This is the mode the gateway's GitHub integration drives on a runner. The styleguide action additionally REQUIRES `--rulesets` — the style ruleset ids to apply, comma-separated in precedence order (list order, first wins conflicts); no other action accepts the flag.
 
 Running an action (or the interactive menu) requires your aardvark **secret** key in `AARDVARK_SECRET_KEY` — the possession-based CLI credential; every call goes through Aardvark's metered gateway, never a model provider directly. (`--list-actions` only prints the headless action ids and needs no key.)
 
@@ -198,7 +198,9 @@ Running an action (or the interactive menu) requires your aardvark **secret** ke
 | `--model TEXT` | — | Override the model for the agent (a gateway model slug). |
 | `--page TEXT` | — | Pre-select a page by content-relative path (e.g. guide/intro.md) or URL, skipping the picker. |
 | `--action TEXT` | — | Run ONE authoring action non-interactively across pages (headless / CI). See --list-actions for the available ids. |
-| `--all` | off | With --action, run on every page (otherwise pass --page for one). |
+| `--all` | off | With --action, run on every page (the default when no --path/--diff is given). |
+| `--path TEXT` | — | With --action, scope to a file or directory (repeatable). A file targets that page; a directory targets every page under it. Omit --path/--diff/--all to run on every page. |
+| `--diff TEXT` | — | With --action, scope to only the pages whose source changed vs a git ref (e.g. --diff main = pages this branch changed). Runs nothing if no page changed. |
 | `-y, --yes` | off | With --action, WRITE the changes to disk. Without it, diffs are previewed only. |
 | `--rulesets TEXT` | — | With --action styleguide: comma-separated style ruleset ids to apply, highest precedence first (microsoft, google, alex, writegood, proselint, readability). |
 | `--list-actions` | off | List the authoring actions that can run headless via --action, then exit. |
@@ -210,9 +212,12 @@ Examples:
 vark author                              # open the agentic authoring menu
 vark author --page guide/intro.md        # act on one page directly
 vark author --list-actions               # list actions runnable headless
-vark author --action styleguide --all --rulesets microsoft,google
+vark author --action styleguide --rulesets microsoft,google
                                          # preview a style pass on every page
-vark author --action keywords --all --yes  # apply, non-interactively (CI)
+vark author --action keywords --path guide/ --yes
+                                         # apply to just the guide/ subtree (CI)
+vark author --action keywords --diff main --yes
+                                         # apply to only the pages this branch changed
 ```
 
 ## `vark serve`
