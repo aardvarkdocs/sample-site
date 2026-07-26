@@ -19,7 +19,7 @@ For a new eligible change, the normal lifecycle is:
    this repository.
 2. The existing GitHub App sends a signed event that immediately enqueues the
    private sync for this exact pull request. A bot validates and replays eligible
-   file changes into a draft PR in the private aardvark source repository.
+   file changes into a ready-for-review PR in the private aardvark source repository.
    Reopening the PR or pushing follow-up commits immediately redispatches that
    same exact PR; there is no scheduled poll, public sync workflow, or public secret.
 3. Maintainers review the complete private diff, run isolated CI, resolve any
@@ -35,12 +35,11 @@ The bot may temporarily apply `sample-site-sync: publish-needed` while accepted
 work waits for that snapshot. It is automation-owned recovery state; please do
 not edit or remove it.
 
-While the private mirror remains a draft and maintainers have not frozen a
-conflict resolution, reopening the PR or pushing another commit enqueues its refresh.
-Once maintainers mark the mirror ready for final review, freeze a resolution, or
-the public status says the accepted revision is waiting to be published, open a
-new public pull request for any further changes instead. Those later commits are
-not part of the reviewed mirror.
+While the private branch still contains the bot-authored mirrored revision,
+reopening the PR or pushing another commit enqueues its refresh. Once maintainers
+adopt a conflict resolution, merge the mirror, or the public status says the
+accepted revision is waiting to be published, open a new public pull request for
+further changes. Those later commits are not part of the accepted revision.
 
 The private repository remains the source of truth. Public pull requests are
 never merged into public `main`; that branch accepts only bot-authored outbound

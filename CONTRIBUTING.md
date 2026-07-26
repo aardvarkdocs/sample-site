@@ -19,7 +19,7 @@ For a new eligible change, the normal lifecycle is:
 1. Open a pull request against public `main` and keep it open.
 2. The existing GitHub App sends a signed event that immediately enqueues the
    private sync for this exact pull request. A bot validates and replays the
-   eligible file changes into a draft `sample-site-sync/pr-<number>` PR in the
+   eligible file changes into a ready-for-review `sample-site-sync/pr-<number>` PR in the
    private aardvark source repository. There is no scheduled poll, public sync
    workflow, or public secret.
 3. Maintainers review the complete private diff, run isolated CI, resolve any
@@ -35,13 +35,12 @@ The bot may temporarily apply `sample-site-sync: publish-needed` while accepted
 work waits for publication. It is automation-owned recovery state; please do
 not edit or remove it.
 
-While an ordinary private mirror remains a draft and maintainers have not frozen
-a conflict resolution, reopening the PR or pushing another commit on the same
-public branch immediately redispatches it and enqueues a refresh. Once maintainers mark
-that mirror ready for final review, freeze a conflict resolution, or the public
-status says the accepted revision is waiting to be published, open a new public
-pull request for further changes—the reviewed mirror cannot include later
-commits. A conflicted draft may wait for a maintainer resolution or explicit
+While the private branch still contains the bot-authored mirrored revision,
+reopening the PR or pushing another commit on the same public branch immediately
+redispatches it and enqueues a refresh. Once maintainers adopt a conflict
+resolution, merge the mirror, or the public status says the accepted revision is
+waiting to be published, open a new public pull request for further changes.
+A conflicted mirror may wait for a maintainer resolution or explicit
 acknowledgement commit before isolated CI starts.
 
 ### What can be changed
