@@ -24,7 +24,7 @@ tables, wide diagrams, or side-by-side code.
 
 | Tool | Language | Templating | Interactive UI | Data files | i18n | Search | API reference | Output |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| **aardvark** | Python | Real Python in tags | Mantine React islands | JSON / YAML / CSV | Built-in | Built-in | Built-in (OpenAPI) | Static HTML |
+| **Aardvark** | Python | Real Python in tags | Mantine React islands | JSON / YAML / CSV | Built-in | Built-in | Built-in (OpenAPI) | Static HTML |
 | Docusaurus | JavaScript | MDX | Full React app | Plugin | Plugin | Algolia / local | Plugin | Static HTML + SPA |
 | MkDocs Material | Python | Jinja2 | Limited | None | Plugin | Built-in (lunr) | Plugin | Static HTML |
 | Hugo | Go | Go templates | None | TOML / YAML / JSON | Built-in | Plugin | Plugin | Static HTML |

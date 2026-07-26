@@ -7,7 +7,7 @@ taxonomy:
   - name: blog
     leftnav: dates
     tags: "components, engineering"
-    authorName: aardvark engineering
+    authorName: Aardvark engineering
     authorAvatar: /img/sample-square.svg
     badgeText: Deep dive
     tagCloud: true

@@ -156,7 +156,7 @@ stops at 100 with a live counter, and a multi-select joins whole labels up to th
 
 GA4 caps every event parameter at 100 characters, which truncates a real comment. When your site
 has the [AI assistant](/ai-assistant/) enabled (`ai.assistant`), the survey **also** posts each
-open-ended **`text`** answer to your aardvark **gateway** at full length — up to **2000
+open-ended **`text`** answer to your Aardvark **gateway** at full length — up to **2000
 characters** — so the whole comment survives. This is automatic; there's nothing extra to
 configure beyond enabling the assistant.
 

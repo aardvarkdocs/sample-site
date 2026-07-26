@@ -1,7 +1,7 @@
 ---
 title: Why Aardvark?
 navtitle: Why Aardvark?
-description: aardvark is the Mantine-powered static site generator — Markdown in, fast
+description: Aardvark is the Mantine-powered static site generator — Markdown in, fast
   static HTML out, with built-in search, OpenAPI, llms.txt, and one-binary deploys.
 icon: fa-solid fa-circle-question
 menu: why
@@ -124,7 +124,7 @@ reportIssue: false
 <div class="wa-hero__inner">
 <span class="wa-eyebrow"><i aria-hidden="true" class="fa-solid fa-bolt"></i> Markdown in · agent-ready out</span>
 <h1>The <span class="wa-grad">first word</span> in documentation</h1>
-<p class="wa-sub">aardvark is a Mantine-powered static site generator. Author in Markdown, build to fast static HTML with interactive React islands.</p>
+<p class="wa-sub">Aardvark is a Mantine-powered static site generator. Author in Markdown, build to fast static HTML with interactive React islands.</p>
 <div class="wa-cta-row">
 <a class="wa-btn wa-btn--on-violet" href="/docs/#quickstart">Get started <i aria-hidden="true" class="fa-solid fa-arrow-right"></i></a>
 </div>
@@ -247,7 +247,7 @@ There are {% raw %}{% data.products.count %}{% endraw %} plans.
 <div class="wa-feature"><div class="wa-feature__ico"><i aria-hidden="true" class="fa-solid fa-bolt"></i></div><h3>Instant, no-backend search</h3><p>⌘K scores a prebuilt index right in the browser — no Algolia, no crawler, no server to keep running.</p></div>
 </div>
 <div class="wa-payline">
-<p><strong>Free to use.</strong> aardvark builds a plain static site you can host anywhere — Netlify, Vercel, S3, or your own box. You only pay for AI, and only when it runs: <strong>pay-as-you-go</strong>, metered per token through the cloud gateway.</p>
+<p><strong>Free to use.</strong> Aardvark builds a plain static site you can host anywhere — Netlify, Vercel, S3, or your own box. You only pay for AI, and only when it runs: <strong>pay-as-you-go</strong>, metered per token through the cloud gateway.</p>
 </div>
 <div class="wa-marquee-head">300+ models, from every major lab</div>
 </div>

@@ -1,17 +1,17 @@
 ---
-title: Why aardvark rebuilds every page (for now)
+title: Why Aardvark rebuilds every page (for now)
 description: The edit loop stays fast by skipping the heavy publish phases — and per-page incremental skipping is a harder promise than it looks.
 date: 2026-06-02
 taxonomy:
   - name: blog
     leftnav: dates
     tags: [build, performance]
-    authorName: aardvark engineering
+    authorName: Aardvark engineering
     badgeText: Engineering
     tagCloud: true
 ---
 
-# Why aardvark rebuilds every page (for now)
+# Why Aardvark rebuilds every page (for now)
 
 Here's an honest engineering answer to a question we get: does `vark` do incremental
 builds? Today, no — every build renders every page. The edit loop stays fast a different
@@ -22,7 +22,7 @@ lean enough that a full re-render of a mid-sized site lands in seconds.
 Why not skip unchanged pages? Because on a docs site, "unchanged" means much more than
 "the Markdown file has the same bytes."
 
-A rendered aardvark page is a function of many inputs. The obvious one is the page's own
+A rendered Aardvark page is a function of many inputs. The obvious one is the page's own
 source — prose, front matter, the `{% %}` tags inside it. But pages also read **shared
 inputs**: the site config (a renamed tab changes every page's header), the theme (one SCSS
 variable recolors the whole site), data files loaded through templating, snippets and

@@ -1,6 +1,6 @@
 ---
 description: Opt-in, cached AI features — generate frontmatter, example API
-  responses, and Claude Code skills from your docs, via the aardvark gateway.
+  responses, and Claude Code skills from your docs, via the Aardvark gateway.
 icon: fa-solid fa-microchip
 menu: ai
 title: Build-time AI
@@ -9,7 +9,7 @@ weight: 30
 
 # Build-time AI
 
-aardvark has optional, build-time AI features that run through the metered **aardvark
+Aardvark has optional, build-time AI features that run through the metered **Aardvark
 cloud gateway**, so you can use **any model it proxies**. They are **off by default**, run
 only when explicitly enabled, and their results are **cached** by content hash in
 `.aardvark-cache/ai/` — so unchanged content never re-calls the API and builds stay fast

@@ -19,7 +19,7 @@ but is hidden from readers of the HTML page.
 {% endraw %}
 
 This is the same idea as Mintlify's *Visibility* / *View* control, and a natural
-fit for aardvark's **Markdown for Agents** story: every page is served both as
+fit for Aardvark's **Markdown for Agents** story: every page is served both as
 rendered HTML and — to a client that asks for `text/markdown` — as a prebuilt
 `.md` representation. `{% raw %}{% visibility %}{% endraw %}` lets one source file
 carry a little extra guidance for agents, or hide browser-only chrome from them,
@@ -43,7 +43,7 @@ mistyped `for="agent"` can never silently leak agent-only content to humans.
 
 ## How it works with the agent Markdown
 
-aardvark serves each page two ways from **one** source file:
+Aardvark serves each page two ways from **one** source file:
 
 - **Humans** get the rendered HTML. There, a `for="agent"` block is wrapped in an
   element the theme hides with plain CSS (`display: none`) — no JavaScript, so it
@@ -148,13 +148,13 @@ component('aardvark', 'visibility',
 Keep side-effecting directives such as `changelog` and `openapi` lexically inside
 the paired `{% raw %}{% visibility %}…{% endVisibility %}{% endraw %}` block.
 Python evaluates `children=` (and custom-component children) before it calls the
-wrapper, too late to scope their TOC, RSS, navigation, or catalog output; aardvark
+wrapper, too late to scope their TOC, RSS, navigation, or catalog output; Aardvark
 fails that eager form closed and points to the paired-block rewrite.
 
 Put the audience block in the page, partial, or custom-component source—not around
 the layout's already-rendered `content` value. Layout rendering happens after
 headings, search text, agent Markdown, RSS, and API metadata are classified, so
-aardvark rejects a layout that tries to reclassify that content (`for="all"` is safe).
+Aardvark rejects a layout that tries to reclassify that content (`for="all"` is safe).
 
 ## Attributes
 

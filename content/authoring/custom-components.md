@@ -64,7 +64,7 @@ If a macro needs audience-specific `changelog` or `openapi` output, put that
 directive directly inside a paired `{% raw %}{% visibility %}{% endraw %}` block in
 the macro. Do not put visibility around `{% raw %}{% children %}{% endraw %}` at
 that point: the children have already rendered their page-level RSS/navigation
-side effects, so aardvark fails the build rather than publish them to the wrong audience.
+side effects, so Aardvark fails the build rather than publish them to the wrong audience.
 
 ## Parameters
 

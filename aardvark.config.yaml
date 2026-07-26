@@ -1,5 +1,5 @@
 site:
-  name: aardvark
+  name: Aardvark
   description: >-
     A Mantine-powered static site generator. Author in Markdown, build to
     static HTML with interactive React islands.
@@ -20,7 +20,7 @@ baseUrl: https://aardvarkdocs.com
 
 # Whole-site PDF. With `pdf: true`, the build renders the entire site to ONE downloadable PDF
 # (a cover page plus every page in nav order, with bookmarks), named after the site
-# (`aardvark` -> `/aardvark.pdf`), and adds a "Download PDF" item to every page's "View in
+# (`Aardvark` -> `/aardvark.pdf`), and adds a "Download PDF" item to every page's "View in
 # Markdown" dropdown that links to it. The content matches each page's `.md` (interactive
 # islands flattened/omitted), rendered to a styled, printable document. Off by default
 # (rendering adds a little build time). Hide just the menu link with
@@ -69,10 +69,10 @@ webBotAuth:
   keys:
     - P8RGdtK6gevw78FvqaBzzuCGQY__vNxUyxOApPliptY   # base64url Ed25519 public key (from `vark web-bot-auth-keygen`)
 
-# OAuth/OIDC discovery. aardvark ALWAYS publishes the discovery metadata an AI agent reads to learn
+# OAuth/OIDC discovery. Aardvark ALWAYS publishes the discovery metadata an AI agent reads to learn
 # how to authenticate — /.well-known/openid-configuration, /.well-known/oauth-authorization-server,
 # /.well-known/oauth-protected-resource and /auth.md — so the isitagentready.com checks clear with
-# best-available info. aardvark is NOT an OAuth server; these docs only ADVERTISE where to go. Unset,
+# best-available info. Aardvark is NOT an OAuth server; these docs only ADVERTISE where to go. Unset,
 # every field is derived from `baseUrl` as a clearly-labelled EXAMPLE endpoint. Point them at your
 # real IdP (e.g. Cloudflare Access) for production. See Docs → Agent discovery. The example values
 # below mirror what the build would derive from baseUrl, made explicit so this demo's docs are concrete.
@@ -122,7 +122,7 @@ oauth:
     claimEndpoint: https://aardvarkdocs.com/oauth/claim
     eventsEndpoint: https://aardvarkdocs.com/agent/event/notify
 
-# DNS-AID (DNS-based Agent Interface Discovery). aardvark ALWAYS emits a copy-pasteable zone snippet
+# DNS-AID (DNS-based Agent Interface Discovery). Aardvark ALWAYS emits a copy-pasteable zone snippet
 # (/.well-known/dns-aid/records.zone) plus a /.well-known/dns-aid/records.json mirror from this list.
 # IMPORTANT: the DNS-AID check validates via DNS-over-HTTPS against your domain's real authoritative
 # nameservers, so NO HTTP server (vark serve included) can make it pass — you must publish these
@@ -170,7 +170,7 @@ dnsAid:
 # page's og:image. Cards are pure build output (written under build/_aardvark/og/,
 # never committed), rendered in parallel on `vark build` and skipped on
 # `vark dev` so authoring stays fast. They just need an absolute `baseUrl`
-# (rendering works out of the box — Pillow ships with aardvark). A page can override
+# (rendering works out of the box — Pillow ships with Aardvark). A page can override
 # its image with `image:` in front matter.
 og:
   generate: true
@@ -395,7 +395,7 @@ islands:
 # page's URL and source path. A page can hide either link with `editPage: false` /
 # `reportIssue: false` in its front matter. Omit the block (or `repo`) to show no links.
 # This points at the sample site's own public source repo (the example site is open;
-# aardvark itself is not) — see the README note in aardvarkdocs/sample-site.
+# Aardvark itself is not) — see the README note in aardvarkdocs/sample-site.
 github:
   repo: https://github.com/aardvarkdocs/sample-site
   branch: main
@@ -443,7 +443,7 @@ theme:
   logo:
     light: /logo-light.svg
     dark: /logo-dark.svg
-    alt: aardvark
+    alt: Aardvark
     href: /
   # Browser tab / bookmark icon. Drop the file in static/ and point at it; the
   # extension sets the <link type>. Here: the standalone aardvark-head SVG (scales
@@ -547,7 +547,7 @@ languages:
 # for how to enable each with real credentials.
 integrations:
   # Google Analytics. `ga4:` is the canonical (Mintlify-parity) key; `analytics:` is the
-  # original aardvark key, kept working as an alias — both emit the same gtag snippet, and the
+  # original Aardvark key, kept working as an alias — both emit the same gtag snippet, and the
   # page-rating + survey widgets record to whichever is set. Using one here (not both).
   analytics:
     # Intentionally wired to this project's real GA4 property so the live demo site records page
@@ -557,7 +557,7 @@ integrations:
     # account-specific, and a deploy-time env var is cleaner than committing it; see the AARDVARK_KEY
     # note under `ai.assistant` for that pattern.)
     measurementId: "G-0M07MLF54V"
-  # aardvark supports the full set of Mintlify analytics platforms — drop in the id/key and the
+  # Aardvark supports the full set of Mintlify analytics platforms — drop in the id/key and the
   # vendor snippet is injected site-wide. Platform keys and legacy fields remain Mintlify-compatible;
   # vendor-current additions are shown below. Uncomment any of these (see content/analytics.md):
   # gtm:        { tagId: "GTM-XXXXXXX" }
@@ -587,7 +587,7 @@ ai:
   # Any OpenRouter model slug; overridable per run with `--model`. The "latest" router alias needs its
   # LEADING TILDE (and YAML quotes — a bare leading ~ is null); or pin a version like anthropic/claude-sonnet-4.6.
   model: "~anthropic/claude-sonnet-latest"
-  # The reader-facing "Ask AI" assistant. It streams answers from the metered aardvark
+  # The reader-facing "Ask AI" assistant. It streams answers from the metered Aardvark
   # cloud gateway (which holds the managed OpenRouter key) using a spend-capped AARDVARK_KEY
   # set as a *build* env var (e.g. in Cloudflare Pages build settings) — never in this file.
   assistant:
@@ -674,7 +674,7 @@ ai:
     # when you mint the key (POST /admin/keys), and re-mint to change them. (It is never exposed in
     # the public ai-config.json.) Setting a `prompt:` here has NO effect; the build warns and
     # ignores it, so it's intentionally omitted from this sample rather than shipped as a dead knob.
-    # Gateway base URL (defaults to the aardvark cloud gateway). Override to self-host:
+    # Gateway base URL (defaults to the Aardvark cloud gateway). Override to self-host:
     # gateway: https://gateway.aardvark.dev/v1
 
 # Reader survey — a Google-Surveys-style prompt (default OFF; opt-in like the assistant). When

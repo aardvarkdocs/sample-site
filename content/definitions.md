@@ -1,5 +1,5 @@
 ---
-description: definitions.yaml is aardvark's translation memory and reader-facing glossary in one file — consistent terminology for vark build --translate, and hover-card definitions for readers.
+description: definitions.yaml is Aardvark's translation memory and reader-facing glossary in one file — consistent terminology for vark build --translate, and hover-card definitions for readers.
 icon: fa-solid fa-book
 menu: docs
 title: Definitions & glossary
@@ -8,7 +8,7 @@ weight: 54
 
 # Definitions & glossary
 
-`definitions.yaml` is aardvark's **translation memory** — the single source of truth for how terms, acronyms, and product names are handled across languages. Every entry is injected as a grounding instruction whenever `vark build --translate` runs, so the model never guesses how to render your vocabulary.
+`definitions.yaml` is Aardvark's **translation memory** — the single source of truth for how terms, acronyms, and product names are handled across languages. Every entry is injected as a grounding instruction whenever `vark build --translate` runs, so the model never guesses how to render your vocabulary.
 
 Entries marked `public: true` do double duty: they also power a **reader-facing glossary**, adding a dotted-underline hover card to the first mention of each term on every page, and optionally generating a standalone glossary page.
 
@@ -85,7 +85,7 @@ A `translations.<code>` value can be:
 
 ## Reader-facing hover cards
 
-For every entry with `public: true`, aardvark wraps the **first mention** of the term on each page in a dotted-underline span. Hovering (or tabbing to) the term shows a card with the title and definition.
+For every entry with `public: true`, Aardvark wraps the **first mention** of the term on each page in a dotted-underline span. Hovering (or tabbing to) the term shows a card with the title and definition.
 
 A few rules govern which text is decorated:
 
@@ -128,9 +128,9 @@ A few safety checks apply:
 
 ## Translation memory
 
-`definitions.yaml` is aardvark's translation memory. Every entry — not just public ones — is compiled into a set of grounding instructions that prefix the model's prompt for each page translation. This is what keeps your domain vocabulary consistent: the model follows explicit rules rather than re-deriving terminology page by page.
+`definitions.yaml` is Aardvark's translation memory. Every entry — not just public ones — is compiled into a set of grounding instructions that prefix the model's prompt for each page translation. This is what keeps your domain vocabulary consistent: the model follows explicit rules rather than re-deriving terminology page by page.
 
-The prompt lines aardvark generates depend on what each entry has:
+The prompt lines Aardvark generates depend on what each entry has:
 
 | Entry has | Prompt instruction |
 | --- | --- |

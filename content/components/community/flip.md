@@ -142,7 +142,7 @@ The package exposes these hooks you can target from your site CSS (e.g. a projec
 | `.flip-container` | The container that holds both faces. |
 | `.flip-front-face` | The front face. |
 | `.flip-back-face` | The back face. |
-| `[data-aardvark-flip]` | The aardvark island wrapper around the Flip root. |
+| `[data-aardvark-flip]` | The Aardvark island wrapper around the Flip root. |
 
 ## Injecting Attributes
 

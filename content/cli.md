@@ -1,5 +1,5 @@
 ---
-description: Every aardvark command — new, build, dev, link-check, and ai-enrich — and the options each takes.
+description: Every Aardvark command — new, build, dev, link-check, and ai-enrich — and the options each takes.
 aliases:
   - /old-cli/
 icon: fa-solid fa-terminal
@@ -42,11 +42,11 @@ vark build              # build the static site into ./build
 | `vark build` | Build the site to the output directory. |
 | `vark dev` | Serve the site locally and rebuild on change. |
 | `vark link-check` | Check internal links, anchors, and images across the site (a build smoke test). |
-| `vark convert` | Import a docs site built for another platform into an aardvark site. |
+| `vark convert` | Import a docs site built for another platform into an Aardvark site. |
 | `vark ai-enrich` | Run opt-in build-time enrichment (frontmatter, examples, skills). |
 | `vark author` | Run agentic authoring tasks on your docs — interactively or headless. |
 | `vark serve` | Serve a built site (and a live MCP server) for production. |
-| `vark update` | Check whether a newer version of aardvark is available. |
+| `vark update` | Check whether a newer version of Aardvark is available. |
 | `vark version` | Manage documentation versions (snapshot-in-tree docs versioning). |
 | `vark web-bot-auth-keygen` | Generate an Ed25519 keypair for Web Bot Auth. |
 
@@ -136,9 +136,9 @@ vark link-check   # verify internal links and images without writing output
 
 ## `vark convert PLATFORM INPUT_PATH OUTPUT_PATH`
 
-Import a docs site built for another platform into an aardvark site.
+Import a docs site built for another platform into an Aardvark site.
 
-Reads the source docs at INPUT_PATH (a project built for PLATFORM), translates its navigation, pages, components, and assets into aardvark's format, and writes a buildable site to OUTPUT_PATH — an `aardvark.config.yaml`, `content/*.md`, and `static/` you can immediately `vark build` or `vark dev`. Conversion is best-effort: the summary reports how many pages and assets were converted and flags any construct that didn't map cleanly, so you know exactly what to review by hand.
+Reads the source docs at INPUT_PATH (a project built for PLATFORM), translates its navigation, pages, components, and assets into Aardvark's format, and writes a buildable site to OUTPUT_PATH — an `aardvark.config.yaml`, `content/*.md`, and `static/` you can immediately `vark build` or `vark dev`. Conversion is best-effort: the summary reports how many pages and assets were converted and flags any construct that didn't map cleanly, so you know exactly what to review by hand.
 
 The supported PLATFORM values are named in the epilog below (and running with an unknown one lists them). OUTPUT_PATH must be empty unless `--force` is given.
 
@@ -190,7 +190,7 @@ With no `--action`, opens a menu of AI-assisted actions — regenerate keywords,
 
 With `--action <id>` it runs ONE action non-interactively (for CI / automation), previewing diffs unless `--yes` is given to write. Scope it with `--path <file-or-dir>` (repeatable), `--diff <ref>` (only pages changed vs a git ref), or `--page` for one; with none of those it runs on every page. This is the mode the gateway's GitHub integration drives on a runner. The styleguide action additionally REQUIRES `--rulesets` — the style ruleset ids to apply, comma-separated in precedence order (list order, first wins conflicts); no other action accepts the flag.
 
-Running an action (or the interactive menu) requires your aardvark **secret** key in `AARDVARK_SECRET_KEY` — the possession-based CLI credential; every call goes through Aardvark's metered gateway, never a model provider directly. (`--list-actions` only prints the headless action ids and needs no key.)
+Running an action (or the interactive menu) requires your Aardvark **secret** key in `AARDVARK_SECRET_KEY` — the possession-based CLI credential; every call goes through Aardvark's metered gateway, never a model provider directly. (`--list-actions` only prints the headless action ids and needs no key.)
 
 | Option | Default | Effect |
 | --- | --- | --- |
@@ -228,7 +228,7 @@ The hardened, headless counterpart to `vark dev`: a single uvicorn/Starlette pro
 
 It does NOT build, watch, or live-reload — run `vark build` first. Designed to sit behind a CDN, which terminates TLS and absorbs the static volume; the per-IP `/mcp` rate limit is a single-process backstop, not a DDoS shield. For full-text MCP search on a site without the on-page search box, set `mcp: true` in `aardvark.config.yaml` before building.
 
-The serve stack (starlette/uvicorn/mcp) ships with every aardvark install — pip, the standalone binary, and the Docker image — so there is nothing extra to install.
+The serve stack (starlette/uvicorn/mcp) ships with every Aardvark install — pip, the standalone binary, and the Docker image — so there is nothing extra to install.
 
 | Option | Default | Effect |
 | --- | --- | --- |
@@ -250,7 +250,7 @@ vark serve --trusted-proxy 173.245.48.0/20  # trust a CDN's forwarded IPs
 
 ## `vark update`
 
-Check whether a newer version of aardvark is available.
+Check whether a newer version of Aardvark is available.
 
 Queries the public Homebrew tap for the latest published release. If you're behind, it prints how to upgrade — `brew upgrade aardvark`, or a direct binary download for your Mac (for people who don't use Homebrew). It only checks and reports; it never touches your installation, and degrades gracefully when offline.
 
@@ -278,7 +278,7 @@ vark version remove v1     # delete the v1 snapshot + config entry
 
 Generate an Ed25519 keypair for Web Bot Auth.
 
-Prints the public key to add under `webBotAuth.keys` in `aardvark.config.yaml` (so `vark build` publishes it at `/.well-known/http-message-signatures-directory`) and the private key to store as a secret for whatever agent signs requests on your site's behalf. aardvark only ever publishes the public directory — it never stores the private key, so save it now; it is not recoverable.
+Prints the public key to add under `webBotAuth.keys` in `aardvark.config.yaml` (so `vark build` publishes it at `/.well-known/http-message-signatures-directory`) and the private key to store as a secret for whatever agent signs requests on your site's behalf. Aardvark only ever publishes the public directory — it never stores the private key, so save it now; it is not recoverable.
 
 | Option | Default | Effect |
 | --- | --- | --- |

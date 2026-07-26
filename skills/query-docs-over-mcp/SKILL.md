@@ -1,9 +1,9 @@
 ---
 name: query-docs-over-mcp
-description: Query an aardvark documentation site over its built-in MCP server. Use when an agent needs to search or fetch documentation pages programmatically.
+description: Query an Aardvark documentation site over its built-in MCP server. Use when an agent needs to search or fetch documentation pages programmatically.
 ---
 
-# Query aardvark docs over MCP
+# Query Aardvark docs over MCP
 
 1. Start the site with `vark serve`. It exposes a live MCP endpoint at `/mcp`
    alongside the static files (pass `--no-mcp` to turn it off).

@@ -140,12 +140,12 @@ Omit any attribute to take its default. Bare flags (e.g. `ripple`) become `=True
 
 ## CSS Selector
 
-The reflection effect is owned by the package's stylesheet (loaded automatically). aardvark
+The reflection effect is owned by the package's stylesheet (loaded automatically). Aardvark
 adds one stable hook for site overrides:
 
 | Selector | Element |
 | --- | --- |
-| `[data-aardvark-reflection]` | The aardvark island wrapper around the Reflection root. |
+| `[data-aardvark-reflection]` | The Aardvark island wrapper around the Reflection root. |
 
 ## Injecting Attributes
 

@@ -1,5 +1,5 @@
 ---
-description: Installez aardvark via Homebrew ou un binaire de release précompilé. Node est
+description: Installez Aardvark via Homebrew ou un binaire de release précompilé. Node est
   requis à la compilation pour regrouper les îlots Mantine.
 menu: docs
 title: Installation
@@ -49,7 +49,7 @@ donc immédiatement. Node n'est nécessaire qu'à la *compilation du site* pour 
 
 ## Fonctionnalités IA
 
-Les fonctionnalités IA d'aardvark sont intégrées au binaire — rien d'autre à
+Les fonctionnalités IA d'Aardvark sont intégrées au binaire — rien d'autre à
 installer. Activez-les dans `aardvark.config.yaml` (le bloc `ai:`) et fournissez
 une clé. Voir [Fonctionnalités IA](/ai/) pour la vue d'ensemble,
 [IA à la compilation](/ai-features/) pour les options d'enrichissement à la

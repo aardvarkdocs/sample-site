@@ -151,12 +151,12 @@ Omit any attribute to take its default. Bare flags (e.g. `lightEffect`) become `
 
 ## CSS Selector
 
-The parallax effect is owned by the package's stylesheet (loaded automatically). aardvark
+The parallax effect is owned by the package's stylesheet (loaded automatically). Aardvark
 adds one stable hook for site overrides:
 
 | Selector | Element |
 | --- | --- |
-| `[data-aardvark-parallax]` | The aardvark island wrapper around the Parallax root. |
+| `[data-aardvark-parallax]` | The Aardvark island wrapper around the Parallax root. |
 
 ## Injecting Attributes
 

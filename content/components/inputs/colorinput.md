@@ -6,7 +6,7 @@ description: "The built-in colorinput tag — a text input with a color swatch a
 # ColorInput
 
 A **built-in** tag for a color input — a text field with a color swatch and a dropdown color
-picker. It ships with aardvark, so it's a single tag with no setup. Give it a `label`, a
+picker. It ships with Aardvark, so it's a single tag with no setup. Give it a `label`, a
 `format` (how the value reads back), and an optional `defaultValue`; the reader can type a
 value, pick from the dropdown, or use the eye-dropper.
 

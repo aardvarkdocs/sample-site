@@ -10,9 +10,9 @@ weight: 10
 
 # AI assistant & analytics
 
-aardvark ships a **native "Ask AI" assistant** for your readers, and behind it a full
+Aardvark ships a **native "Ask AI" assistant** for your readers, and behind it a full
 **conversation-analytics dashboard** that turns every question into product insight. It is a
-first-party feature — the assistant calls the [aardvark cloud gateway](/ai-gateway/), which proxies
+first-party feature — the assistant calls the [Aardvark cloud gateway](/ai-gateway/), which proxies
 the model, meters the spend, and records the conversation for analysis. There is no third-party
 widget to embed and no separate vendor to sign up with.
 

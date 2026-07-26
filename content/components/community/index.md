@@ -4,7 +4,7 @@ id: community
 title: Community Components
 icon: users
 weight: 200
-description: "Third-party Mantine extensions: bundled tags that pass aardvark's licensing and compatibility gates, plus documented exclusions."
+description: "Third-party Mantine extensions: bundled tags that pass Aardvark's licensing and compatibility gates, plus documented exclusions."
 ---
 
 # Community Components
@@ -12,7 +12,7 @@ description: "Third-party Mantine extensions: bundled tags that pass aardvark's 
 Most built-in tags wrap a **Mantine core** component, and the [Aardvark Extras](/components/extras/)
 are written in-house. **Community Components** are different: each one wraps a third-party
 **Mantine extension** from the [Mantine extensions catalog](https://mantine.dev/x/extensions/) —
-a widget written by a community member, not by the Mantine core team or by aardvark. Extensions
+a widget written by a community member, not by the Mantine core team or by Aardvark. Extensions
 listed under **Bundled components** expose a built-in `{% raw %}{% tag %}{% endraw %}` you can drop
 straight into Markdown.
 
@@ -25,7 +25,7 @@ author, and we bundle one only on these terms:
   Commercial use alone is not enough; licenses outside the project's permissive allowlist do not
   ship as community tags.
 - **Compatible as published.** The package's published peer and direct dependencies must support
-  the Mantine and React majors used by aardvark. Overrides and substitute implementations do not
+  the Mantine and React majors used by Aardvark. Overrides and substitute implementations do not
   count as compatibility.
 - **Credited to its author.** Each per-tag page names the original author and links to the source
   project, so credit (and the license terms) travel with the component.

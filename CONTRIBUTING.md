@@ -10,7 +10,7 @@ please [open an issue](../../issues/new). We read them.
 ## Pull requests are welcome
 
 This repository accepts contributions through public pull requests, but its
-`main` branch has a single writer: the outbound publisher in the private aardvark
+`main` branch has a single writer: the outbound publisher in the private Aardvark
 repository. “Two-way” means contributions travel inward for review and accepted
 snapshots travel outward; it does not mean public pull requests are merged here.
 
@@ -20,10 +20,10 @@ For a new eligible change, the normal lifecycle is:
 2. The existing GitHub App sends a signed event that immediately enqueues the
    private sync for this exact pull request. A bot validates and replays the
    eligible file changes into a ready-for-review `sample-site-sync/pr-<number>` PR in the
-   private aardvark source repository. There is no scheduled poll, public sync
+   private Aardvark source repository. There is no scheduled poll, public sync
    workflow, or public secret.
 3. Maintainers review the complete private diff, run isolated CI, resolve any
-   replay conflicts in aardvark, and merge only the private mirror PR. You do not
+   replay conflicts in Aardvark, and merge only the private mirror PR. You do not
    need to rebase merely to account for private-source changes.
 4. Merging the private mirror pushes private `main`, which triggers the normal
    publisher to append a bot-authored sync commit containing the accepted
@@ -54,7 +54,7 @@ limits. A refused pull request receives a generic explanation; open an issue if 
 maintainer needs to make that change in the source repository.
 
 Public pull requests are never merged into public `main`; that branch accepts
-only bot-authored outbound sync commits from the aardvark repository. Normal
+only bot-authored outbound sync commits from the Aardvark repository. Normal
 publishing is append-only, preserving the public branch and fork history needed
 for ongoing contributions.
 

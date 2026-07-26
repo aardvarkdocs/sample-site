@@ -3,7 +3,7 @@ name: Welcome sample-site pull requests
 # SECURITY: pull_request_target can comment on pull requests from forks, but this
 # workflow must never check out, build, or otherwise execute pull-request content.
 # It only explains the flow: private automation replays eligible file changes for
-# review, and only the private aardvark publisher may update public main.
+# review, and only the private Aardvark publisher may update public main.
 
 on:
   pull_request_target:
@@ -50,7 +50,7 @@ jobs:
                 '',
                 `Thanks @${pr.user.login}!`,
                 '',
-                'For a new eligible change, this opening event immediately enqueues an exact-PR sync in the private aardvark source repository. The bot validates and replays eligible file changes into a ready-for-review private pull request; reopening this PR or pushing follow-up commits redispatches that same exact sync. Keep this public pull request open.',
+                'For a new eligible change, this opening event immediately enqueues an exact-PR sync in the private Aardvark source repository. The bot validates and replays eligible file changes into a ready-for-review private pull request; reopening this PR or pushing follow-up commits redispatches that same exact sync. Keep this public pull request open.',
                 '',
                 'While the private branch still contains the bot-authored mirrored revision, each queued exact sync refreshes it. There is no scheduled scan, public sync workflow, or public secret.',
                 '',
@@ -58,6 +58,6 @@ jobs:
                 '',
                 'Maintainers review the complete private diff, run isolated CI, resolve any replay conflict there, and merge only the private mirror pull request. You do not need to rebase merely to solve a private-source conflict; isolated CI may wait for the resolved revision.',
                 '',
-                'This public pull request is never merged into public `main`; that branch accepts only bot-authored outbound sync commits from the aardvark repository. Merging the private mirror pushes private `main` and triggers the append-only publisher. After its public push, a reconciliation job in that same publisher workflow verifies the accepted private revision is present here, then the bot comments and closes this still-unmerged pull request.',
+                'This public pull request is never merged into public `main`; that branch accepts only bot-authored outbound sync commits from the Aardvark repository. Merging the private mirror pushes private `main` and triggers the append-only publisher. After its public push, a reconciliation job in that same publisher workflow verifies the accepted private revision is present here, then the bot comments and closes this still-unmerged pull request.',
               ].join('\n'),
             });

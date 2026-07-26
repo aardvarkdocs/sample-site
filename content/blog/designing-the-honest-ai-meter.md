@@ -1,19 +1,19 @@
 ---
 title: Designing the honest AI meter
-description: Why aardvark bills AI in dollars instead of credits, and the guardrails that keep a metered feature from ever producing a surprise bill.
+description: Why Aardvark bills AI in dollars instead of credits, and the guardrails that keep a metered feature from ever producing a surprise bill.
 date: 2026-07-08
 taxonomy:
   - name: blog
     leftnav: dates
     tags: [pricing, product]
-    authorName: aardvark product
+    authorName: Aardvark product
     tagCloud: true
 ---
 
 # Designing the honest AI meter
 
 Most products meter AI in **credits** — a currency you can't reason about, converted at a
-rate you can't see. When we designed aardvark's AI billing, we set one constraint up front:
+rate you can't see. When we designed Aardvark's AI billing, we set one constraint up front:
 every number a customer sees is a **dollar**. Here's what that constraint produced.
 
 **Published prices, real arithmetic.** [The pricing table](/pricing/models/) lists what

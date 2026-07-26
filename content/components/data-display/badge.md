@@ -6,7 +6,7 @@ description: "The built-in badge tag — labels, statuses, versions, and counts.
 # Badge
 
 A **built-in** tag for small labels — statuses, versions, counts, and tags. It ships with
-aardvark, so a badge is a single tag with no setup. The label is the block body or a `text`
+Aardvark, so a badge is a single tag with no setup. The label is the block body or a `text`
 param. Use it as `{% raw %}{% badge %}{% endraw %}` in Markdown, or call it from Python logic
 (loops, snippets) via `component('aardvark', 'badge', …)`.
 

@@ -16,7 +16,7 @@ public **key directory**; the receiving site fetches that directory, looks up th
 verifies the signature. Checkers such as [isitagentready.com](https://isitagentready.com) look
 for this directory at `/.well-known/http-message-signatures-directory`.
 
-aardvark **publishes** that directory. It never signs outbound requests itself, so it never
+Aardvark **publishes** that directory. It never signs outbound requests itself, so it never
 holds a private key — you list your public key(s), and the matching private key lives wherever
 your signing agent runs.
 
@@ -43,7 +43,7 @@ Public key — add to aardvark.config.yaml:
 Key ID (JWK thumbprint): <KEY_ID>
 ```
 
-Store the **private** key as a secret for your agent — aardvark never persists it, so save it
+Store the **private** key as a secret for your agent — Aardvark never persists it, so save it
 now. Add the **public** key to your config.
 
 ## Configure
@@ -54,7 +54,7 @@ webBotAuth:
     - <PUBLIC_KEY>   # a bare base64url Ed25519 public key
 ```
 
-Each entry is either a bare public-key string (aardvark fills in the JWK fields and computes the
+Each entry is either a bare public-key string (Aardvark fills in the JWK fields and computes the
 `kid` thumbprint) or a full [JWK](https://www.rfc-editor.org/rfc/rfc7517) mapping if you want to
 pin `kid`, `alg`, or key-rotation windows (`nbf` / `exp`):
 
@@ -97,4 +97,4 @@ It is served with `Content-Type: application/http-message-signatures-directory+j
 one-day cache. The directory holds **public** key material only, so it is a plain static file:
 [`vark serve`](/self-hosting/) serves it directly, and on Cloudflare Pages / Netlify the
 generated [`_headers`](/llms-and-sitemap/) rule sets its media type. If you ship your own
-`static/.well-known/http-message-signatures-directory`, aardvark leaves it untouched.
+`static/.well-known/http-message-signatures-directory`, Aardvark leaves it untouched.

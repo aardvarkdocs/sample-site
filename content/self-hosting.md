@@ -1,5 +1,5 @@
 ---
-description: Run a built aardvark site in production with vark serve — a hardened static
+description: Run a built Aardvark site in production with vark serve — a hardened static
   server plus a live MCP server — and package it as a Docker image behind a CDN.
 heading: Agent-ready
 heading-icon: fa-solid fa-robot
@@ -36,7 +36,7 @@ there's no second web-server config to drift from what the build produced. It al
 the [Web Bot Auth](/web-bot-auth/) key directory at its extension-less well-known path —
 which a generic static resolver would mistake for an HTML page — when you've enabled it.
 
-The serve stack (uvicorn/starlette/MCP) ships with every aardvark install — `pip install
+The serve stack (uvicorn/starlette/MCP) ships with every Aardvark install — `pip install
 aardvark`, the standalone binary, and the Docker image below — so there's nothing extra to
 add.
 

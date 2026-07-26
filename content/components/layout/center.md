@@ -7,7 +7,7 @@ description: "The built-in center tag — centers its content both horizontally 
 
 `{% raw %}{% center %}{% endraw %}` is a **built-in** tag that centers its content **both
 horizontally and vertically**. Give the container a height — with the `h` prop or from what's
-around it — and the body lands in the middle. It ships with aardvark, so there's no setup.
+around it — and the body lands in the middle. It ships with Aardvark, so there's no setup.
 
 Use it as `{% raw %}{% center %}{% endraw %}` in Markdown, or call it from Python logic
 (loops, snippets) via `component('aardvark', 'center', …)`.

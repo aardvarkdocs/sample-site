@@ -10,7 +10,7 @@ weight: 1
 
 # AI features
 
-aardvark is built for two audiences at once — the people reading your docs and the agents
+Aardvark is built for two audiences at once — the people reading your docs and the agents
 acting on them. The reader features add an assistant; the agent features make your site
 discoverable, queryable, and verifiable by automated clients. Everything is in one place
 here.
@@ -36,7 +36,7 @@ Opt-in, cached OpenRouter features — generate frontmatter, example API respons
 Run `vark serve` to expose a live MCP server and serve each page as Markdown via content negotiation — the same tools work in the browser through WebMCP.
 {% endCard %}
 {% card title="Agent readiness" icon="checklist" accent="teal" href="/agent-readiness/" cta="Score well" %}
-A checklist for making your site agent-ready — what aardvark publishes on every build, and the few steps only you can do.
+A checklist for making your site agent-ready — what Aardvark publishes on every build, and the few steps only you can do.
 {% endCard %}
 {% card title="Agent discovery" icon="compass" accent="teal" href="/agent-discovery/" cta="Be discoverable" %}
 Always-on discovery endpoints — an MCP Server Card, OAuth/OIDC metadata, `auth.md`, and DNS-AID records — emitted by every build.

@@ -37,7 +37,7 @@ The three signals are:
   generation, grounding, generative search answers).
 - **`ai-train`** — training or fine-tuning AI models.
 
-Each is `yes` or `no`. By default aardvark grants all three. To change that, add a
+Each is `yes` or `no`. By default Aardvark grants all three. To change that, add a
 top-level `robots:` block — distinct from `seo.robots`, which is the per-page
 `<meta name="robots">` directive:
 
@@ -60,7 +60,7 @@ so a placeholder key never silently strips the signals. Either way the rest of t
 `robots.txt` is still written.
 
 As with every artifact here, a hand-written `static/robots.txt` (or `public/robots.txt`)
-is copied verbatim and **always wins** — aardvark won't overwrite it.
+is copied verbatim and **always wins** — Aardvark won't overwrite it.
 
 ## `llms.txt` and `llms-full.txt`
 
@@ -111,7 +111,7 @@ content digest:
     {
       "name": "deploy-a-docs-site",
       "type": "skill-md",
-      "description": "Build an aardvark documentation site and deploy it to a static host.",
+      "description": "Build an Aardvark documentation site and deploy it to a static host.",
       "url": "/.well-known/agent-skills/deploy-a-docs-site/SKILL.md",
       "digest": "sha256:…"
     }
@@ -130,7 +130,7 @@ menu is on (the default) — even with no `skills/` directory. It is omitted onl
 when there are no skills at all (no `skills/` directory *and* `markdownMenu` off).
 
 As with every artifact here, a hand-written
-`static/.well-known/agent-skills/index.json` always **wins** — aardvark then leaves
+`static/.well-known/agent-skills/index.json` always **wins** — Aardvark then leaves
 the whole `.well-known/agent-skills/` tree untouched.
 
 ## Agent discovery — `Link` headers
@@ -183,7 +183,7 @@ opens the rest:
 
 The dropdown also carries the **agent hand-off** items — Copy MCP Server, Install
 Skill, Install Plugin, and Install Assistant — covered on the [Agent
-readiness](/agent-readiness/) page. aardvark also writes a `_headers` rule so hosts that read
+readiness](/agent-readiness/) page. Aardvark also writes a `_headers` rule so hosts that read
 it (Cloudflare, Netlify) serve the `.md` as `text/plain` — shown inline rather
 than the default `text/markdown`, which browsers download — and the generated
 `.txt` files (`llms.txt`, `llms-full.txt`, `robots.txt`) as `text/plain;
@@ -212,7 +212,7 @@ The agent hand-off items have their own toggles (`copyMcp`, `installSkill`,
 
 Set a top-level `pdf: true` to render the **whole site to one downloadable PDF** —
 a cover page, a clickable table of contents, then every page in nav reading order
-with a bookmark per page — named after your site (`aardvark` → `/aardvark.pdf`). A
+with a bookmark per page — named after your site (`Aardvark` → `/aardvark.pdf`). A
 **Download PDF** item is added to the dropdown on every page, linking to that single
 document. It's laid out as a clean, printable handbook with syntax-highlighted code
 (long lines wrap) and tables. **Built-in components are re-rendered for print** —
@@ -231,8 +231,8 @@ pdf: true
 
 To keep generating the PDF but hide the menu link, set
 `markdownMenu: { downloadPdf: false }`. The cover carries a small "Built by
-aardvark" credit; like the on-page [Powered-by footer](#), it's removable with
-`poweredBy: false` on sites that use aardvark's AI features.
+Aardvark" credit; like the on-page [Powered-by footer](#), it's removable with
+`poweredBy: false` on sites that use Aardvark's AI features.
 
 #### Reuse the PDF instead of re-rendering every build
 
@@ -245,7 +245,7 @@ pdf:
   reuseForDays: 7
 ```
 
-On each build aardvark fetches a tiny stable sidecar at
+On each build Aardvark fetches a tiny stable sidecar at
 `<baseUrl>/_aardvark/pdf-reuse.json` to find the last deployed fingerprinted PDF URL (falling back
 to the legacy `<baseUrl>/<slug>.pdf`, where the slug is derived from your `site.name`, e.g.
 "My Docs" → `/my-docs.pdf`). It then reads the build date embedded in that PDF itself (its
@@ -294,7 +294,7 @@ when an old URL should forward to a specific section or another URL; `to` accept
 a root-relative URL, an absolute HTTP(S) URL, or a fragment such as `#quickstart`
 resolved against the owning page.
 
-For every alias, aardvark writes a tiny HTML stub at the old path with a
+For every alias, Aardvark writes a tiny HTML stub at the old path with a
 `rel="canonical"` to the real page, `robots: noindex`, and an instant
 `<meta http-equiv="refresh">` (plus a JS redirect and a visible link). Google
 treats an instant refresh as a permanent move, and the canonical consolidates the

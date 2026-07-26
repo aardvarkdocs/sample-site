@@ -1,6 +1,6 @@
 ---
 title: "BlockNote"
-description: "BlockNote — a block-based rich-text editor by TypeCellOS. A Community Component that aardvark does NOT bundle, because its source is MPL-2.0 copyleft. This page records the license verdict and links to the project."
+description: "BlockNote — a block-based rich-text editor by TypeCellOS. A Community Component that Aardvark does NOT bundle, because its source is MPL-2.0 copyleft. This page records the license verdict and links to the project."
 menu: components
 parent: community
 weight: 130
@@ -13,13 +13,13 @@ weight: 130
 Mantine theme (`@blocknote/mantine`). It's a natural fit for a "Community Component" wrapper
 on paper.
 
-aardvark, however, does **not** ship BlockNote as a built-in `{% raw %}{% tag %}{% endraw %}`.
+Aardvark, however, does **not** ship BlockNote as a built-in `{% raw %}{% tag %}{% endraw %}`.
 This page exists to record *why*, and to point you at the project so you can integrate it
 yourself if its license works for your project.
 
 {% callout severity="caution" title="Not bundled — license verdict" %}
 BlockNote's source code is licensed under the **Mozilla Public License 2.0 (MPL-2.0)**, a
-**copyleft** license. aardvark's policy for Community Components is to bundle only
+**copyleft** license. Aardvark's policy for Community Components is to bundle only
 permissively-licensed projects (MIT / Apache-2.0 / BSD / ISC) into its island bundle. Because
 MPL-2.0 carries file-level copyleft obligations, BlockNote is **documented but not bundled**.
 There is no `{% raw %}{% blocknote %}{% endraw %}` tag.
@@ -45,7 +45,7 @@ A few details that matter for the verdict:
   themselves must be shared back. That makes it materially different from AGPL or
   "source-available" licenses.
 
-aardvark's Community Component bundling bar is intentionally narrow — **permissive only** — so
+Aardvark's Community Component bundling bar is intentionally narrow — **permissive only** — so
 that the island bundle (and anything built on top of it) stays free of file-level copyleft
 obligations. MPL-2.0, while friendly, sits on the copyleft side of that line, so BlockNote is
 not bundled. This is a packaging decision, **not** a statement that BlockNote is unsuitable —
@@ -97,6 +97,6 @@ For a **read-only** view (the shape that would suit a static docs page), upstrea
 ---
 
 *A **Community Component** entry — BlockNote by **TypeCellOS**, **MPL-2.0** licensed, npm
-`@blocknote/*`. Documented but **not bundled** by aardvark because MPL-2.0 is a copyleft
-license; aardvark bundles only permissively-licensed (MIT / Apache-2.0 / BSD / ISC)
+`@blocknote/*`. Documented but **not bundled** by Aardvark because MPL-2.0 is a copyleft
+license; Aardvark bundles only permissively-licensed (MIT / Apache-2.0 / BSD / ISC)
 components.*

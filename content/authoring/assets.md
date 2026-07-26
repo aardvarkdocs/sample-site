@@ -35,7 +35,7 @@ my-docs/
     fonts/ui.woff2 ->  /fonts/ui-<sha>.woff2
 ```
 
-Reference them with their stable authored paths (`/img/logo.svg`); aardvark
+Reference them with their stable authored paths (`/img/logo.svg`); Aardvark
 rewrites generated HTML, CSS, JS, manifests, and component props to the
 fingerprinted output URL. For dynamic template values, use
 `{% raw %}{% asset('/img/logo.svg') %}{% endraw %}`.
@@ -49,7 +49,7 @@ such as `/img/logo-<sha>.png`, preserving any query string or fragment.
 
 The token is one value shared across the whole build — the current short git
 `HEAD` SHA. When the build can't read git (for example a container build without
-the `.git` directory), aardvark uses the commit SHA from the `AARDVARK_BUILD_SHA`
+the `.git` directory), Aardvark uses the commit SHA from the `AARDVARK_BUILD_SHA`
 environment variable if you set it, otherwise a single content hash of your
 project sources. Because every asset in a build shares one token, a reference and
 the file it points at always rotate together, so an aggressively cached

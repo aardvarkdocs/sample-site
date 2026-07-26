@@ -6,7 +6,7 @@ description: "The built-in tooltip tag — a floating label shown on hover or fo
 # Tooltip
 
 A floating label that appears when you hover or focus a single target. The target is the
-block body; `label` is the floating text. It ships with aardvark, so a tooltip is a
+block body; `label` is the floating text. It ships with Aardvark, so a tooltip is a
 single tag pair with no setup. The tooltip reveals on hover or focus after the page
 hydrates — pass `opened` to force it visible in docs and screenshots.
 

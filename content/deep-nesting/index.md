@@ -13,7 +13,7 @@ weight: 95
 # Deep nesting
 
 This section nests **five levels deep** in the left sidebar — the deepest
-navigation in the sample site. It doubles as a worked example of how aardvark
+navigation in the sample site. It doubles as a worked example of how Aardvark
 assembles a sidebar tree and as a visual fixture for checking that deeply nested
 navigation still renders and indents correctly.
 

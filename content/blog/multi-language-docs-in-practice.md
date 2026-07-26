@@ -7,7 +7,7 @@ taxonomy:
   - name: blog
     leftnav: dates
     tags: [i18n, howto]
-    authorName: The aardvark team
+    authorName: The Aardvark team
     authorAvatar: /favicon.svg
     badgeText: How-to
     tagCloud: true
@@ -15,7 +15,7 @@ taxonomy:
 
 # Multi-language docs in practice
 
-Since 0.6.0, aardvark serves translated sites from per-language directories — and this site
+Since 0.6.0, Aardvark serves translated sites from per-language directories — and this site
 is a live example: the English content lives in `content/`, the French mirror in
 `content-fr/`, served under `/fr` with an automatic language picker in the header. Here's
 the setup, start to finish.

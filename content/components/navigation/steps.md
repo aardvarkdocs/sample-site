@@ -5,14 +5,14 @@ description: "Numbered Markdown lists render automatically as a Steps timeline �
 
 # Steps
 
-Write an ordinary numbered list in Markdown and aardvark renders it as a Steps block:
+Write an ordinary numbered list in Markdown and Aardvark renders it as a Steps block:
 a vertical run of numbered badges joined by a connecting line, each badge beside that
 step's content, built from Mantine's `Timeline`. Each step's body is full Markdown —
 paragraphs, code, images, even nested lists.
 
 Steps is not a tag. There is nothing to write as `{% raw %}{% steps %}{% endraw %}`
 and no `component('aardvark', 'steps', …)` call — a plain `1. … 2. … 3.` numbered
-list is the entire authoring surface, and aardvark transforms it at build time. The
+list is the entire authoring surface, and Aardvark transforms it at build time. The
 behavior is controlled site-wide by `steps: false` in `aardvark.config.yaml`.
 
 ## Default

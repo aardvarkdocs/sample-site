@@ -1,13 +1,13 @@
 ---
 title: Introducing Ask AI, the reader assistant
-description: aardvark 0.8 ships a native Ask AI panel that answers reader questions from your own docs, with cited sources and metered, dollar-based billing.
+description: Aardvark 0.8 ships a native Ask AI panel that answers reader questions from your own docs, with cited sources and metered, dollar-based billing.
 date: 2026-05-05
 image: /landscape.jpg
 taxonomy:
   - name: blog
     leftnav: dates
     tags: [ai, product]
-    authorName: The aardvark team
+    authorName: The Aardvark team
     authorAvatar: /favicon.svg
     badgeText: Product
     tagCloud: true
@@ -15,13 +15,13 @@ taxonomy:
 
 # Introducing Ask AI, the reader assistant
 
-With 0.8.0, every aardvark site can ship a native **Ask AI** assistant. A floating panel
+With 0.8.0, every Aardvark site can ship a native **Ask AI** assistant. A floating panel
 sits on every page; readers ask a question in natural language, and the assistant answers
 from **your content**, citing the pages it used. Each answer can be rated 👍 / 👎, and
 readers can attach images, PDFs, or code when a screenshot says it better than a sentence.
 
 There is no third-party widget to embed. The assistant is a first-party feature that calls
-the [aardvark cloud gateway](/ai-gateway/), which proxies the model, meters the spend, and
+the [Aardvark cloud gateway](/ai-gateway/), which proxies the model, meters the spend, and
 records the conversation for analysis. Enabling it is two lines of config:
 
 ```yaml

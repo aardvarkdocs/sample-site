@@ -1,5 +1,5 @@
 ---
-description: A live demo of every Markdown element aardvark renders — headings, text
+description: A live demo of every Markdown element Aardvark renders — headings, text
   styles, lists, tables, blockquotes, code, diagrams, images, and footnotes — plus the built-in tags.
 icon: fa-brands fa-markdown
 menu: docs
@@ -9,7 +9,7 @@ weight: 20.5
 
 # Markdown reference
 
-aardvark renders Markdown with [markdown-it](https://github.com/executablebooks/markdown-it-py),
+Aardvark renders Markdown with [markdown-it](https://github.com/executablebooks/markdown-it-py),
 following the [CommonMark](https://commonmark.org) spec with **tables**, **strikethrough**,
 **footnotes**, **smart typography**, and **automatic links** turned on. This page shows the
 source for every element next to its live result — copy any block straight into your own pages.
@@ -142,7 +142,7 @@ Hidden content that expands when you click the summary.
 
 ## Blockquotes
 
-aardvark renders a Markdown blockquote as an island rather than a plain `<blockquote>`: a
+Aardvark renders a Markdown blockquote as an island rather than a plain `<blockquote>`: a
 plain `>` becomes an untitled notification — the same one
 [`{% raw %}{% notification %}{% endraw %}`](/components/feedback/notification/) emits with its
 defaults — while an alert marker promotes it to a colored [callout](/components/feedback/callout/)
@@ -339,7 +339,7 @@ renders, live:
 Inline code uses single backticks: `print("hi")`. To include a literal backtick, wrap the span
 in two backticks: `` `not code` ``.
 
-A fenced block takes an optional language label, and aardvark highlights it at build time with
+A fenced block takes an optional language label, and Aardvark highlights it at build time with
 [Pygments](https://pygments.org) — no client-side highlighter or extra JavaScript to load. Under
 `theme.syntax` in `aardvark.config.yaml` you can pick a preset per color scheme (any Pygments style —
 the default `one-light` / `one-dark`, or `monokai`, `dracula`, `nord`, …) and override individual
@@ -529,7 +529,7 @@ closing ```` ``` ````) and name a source on the info string.
 `src="…"` reads a **local file**, resolved like a local include path: a leading `/` is relative to
 your content root, any other path is relative to the page (and a read can't escape the project
 root). The header is titled with the file name automatically (pass `title=` to override), and you
-can omit the language label to let aardvark infer one from the file extension. So this fence —
+can omit the language label to let Aardvark infer one from the file extension. So this fence —
 
 ````markdown
 ```src="/authoring/_examples/greeter.py" lines
@@ -601,14 +601,14 @@ immutable commit — cached across builds — only when it is a full
 if it were a commit and never re-fetched. Set the `AARDVARK_GITHUB_TOKEN` environment variable (or
 `GITHUB_TOKEN`, which CI provides automatically) to use GitHub's higher authenticated rate limit — and
 to read files from a **private** repo. For a branch or tag whose name contains a slash (`release/2.0`),
-pass it as `ref=` rather than burying it in a pasted URL, so aardvark can tell where the branch ends
+pass it as `ref=` rather than burying it in a pasted URL, so Aardvark can tell where the branch ends
 and the file path begins.
 
 {% callout title="Tokens and private repos" severity="caution" %}
 If `AARDVARK_GITHUB_TOKEN` / `GITHUB_TOKEN` in your build environment can read **private** repos, treat
 `github=` like any other code that runs at build time: an untrusted pull request could add a fence that
 embeds a private file's contents into the rendered output. Because CI injects `GITHUB_TOKEN`
-automatically, aardvark **refuses an authenticated `github=` fetch unless you scope it** — set
+automatically, Aardvark **refuses an authenticated `github=` fetch unless you scope it** — set
 `github.allowedOwners` so `github=` may only fetch from owners you list (the configured `github.repo`
 owner is always allowed):
 
@@ -636,7 +636,7 @@ reference surfaces at build time instead of shipping an empty or stale block.
 
 ## Diagrams
 
-Label a fenced block `mermaid` and aardvark renders it to an inline SVG in the browser with
+Label a fenced block `mermaid` and Aardvark renders it to an inline SVG in the browser with
 [Mermaid](https://mermaid.js.org) — flowcharts, sequence diagrams, Gantt charts, and more. The
 library is fetched only on pages that actually contain a diagram, and each diagram follows the
 page's light/dark setting:
@@ -667,7 +667,7 @@ syntax of every diagram type.
 
 Label a fenced block `markdeep` to draw **ASCII-art diagrams** with
 [Markdeep](https://casual-effects.com/markdeep/): sketch boxes, arrows, and flows in plain text
-and aardvark renders them to clean SVG in the browser. Unlike a standalone Markdeep document, you
+and Aardvark renders them to clean SVG in the browser. Unlike a standalone Markdeep document, you
 don't add the `***` border — the code fence is the boundary, so just draw the diagram inside it:
 
 ````markdown
@@ -734,7 +734,7 @@ asset such as the site logo:
 
 [![A clickable thumbnail](/img/sample-square.svg)](https://mantine.dev)
 
-![aardvark logo](/logo-light.svg)
+![Aardvark logo](/logo-light.svg)
 ```
 
 renders, live:
@@ -743,7 +743,7 @@ renders, live:
 
 [![A clickable thumbnail](/img/sample-square.svg)](https://mantine.dev)
 
-![aardvark logo](/logo-light.svg)
+![Aardvark logo](/logo-light.svg)
 
 ## Footnotes
 
@@ -776,14 +776,14 @@ renders, live:
 
 \*not italic\*, \`not code\`, and 1\. not a list.
 
-aardvark also runs its Python `{% raw %}{% %}{% endraw %}` template tags **before** Markdown. A tag
+Aardvark also runs its Python `{% raw %}{% %}{% endraw %}` template tags **before** Markdown. A tag
 wrapped in a raw block prints verbatim — {% raw %}{% badge text='New' %}{% endraw %} — while the
 same tag left unwrapped renders live: {% badge text='New' %}. See
 [Templating & data](/authoring/templating/) for the full rules on showing literal tag syntax.
 
 ## Built-in tags
 
-Beyond standard Markdown, aardvark ships a handful of tags that expand to interactive Mantine
+Beyond standard Markdown, Aardvark ships a handful of tags that expand to interactive Mantine
 components. Each has its own reference page; here is a quick look.
 
 A **[badge](/components/data-display/badge/)** for labels, statuses, and counts:
@@ -837,7 +837,7 @@ A **[button](/components/buttons/button/)** renders a link or an action:
 An **[accordion](/components/data-display/accordion/)** wraps collapsible panels, each with a full Markdown body:
 
 {% accordion %}
-{% accordionSection title="What is aardvark?" %}
+{% accordionSection title="What is Aardvark?" %}
 A Mantine-powered static site generator. This panel body is full **Markdown**.
 {% endAccordionSection %}
 {% accordionSection title="How do I add a page?" %}

@@ -1,10 +1,10 @@
 """Generate the Pricing page from OpenRouter's live model catalog.
 
-aardvark itself is free; only its optional built-in AI features — the reader-facing
+Aardvark itself is free; only its optional built-in AI features — the reader-facing
 Ask AI assistant and the author-assisting tools — cost anything, billed per token
-through aardvark's metered gateway. aardvark is a pass-through: any OpenRouter model
+through Aardvark's metered gateway. Aardvark is a pass-through: any OpenRouter model
 works for `ai.model` / `ai.assistant.model`, so this script lists the whole chat-model
-catalog (with context window + modality) at aardvark's published per-token rates.
+catalog (with context window + modality) at Aardvark's published per-token rates.
 
 It runs on every build; output is reconciled idempotently, so an unchanged catalog
 rewrites nothing (and `vark dev` never loops on it). The fetch is cached briefly and
@@ -19,7 +19,7 @@ import time
 import urllib.request
 
 MODELS_URL = "https://openrouter.ai/api/v1/models"
-# aardvark's published per-token rate over the upstream list price — the Free / pay-as-you-go
+# Aardvark's published per-token rate over the upstream list price — the Free / pay-as-you-go
 # meter. Subscribers meter the same tokens at their plan's lower member rate (the seeded plan
 # catalog in gateway/migrations/0044: Pro 1.4 / Business 1.3 / Enterprise 1.2), shown on the
 # table as per-plan Est./answer columns rather than as multipliers — the customer-facing copy
@@ -213,7 +213,7 @@ def _cell(value):
 
 
 def _price(per_token):
-    """aardvark's price per one million tokens, from an upstream per-token rate string.
+    """Aardvark's price per one million tokens, from an upstream per-token rate string.
     A negative rate is OpenRouter's "variable" sentinel (dynamic routers) — never a
     real price — so it renders as a dash rather than a bogus negative dollar amount."""
     try:
@@ -382,7 +382,7 @@ def _build():
 
     if not chat:
         body = (
-            "aardvark is **free and open**; only its optional built-in AI features are "
+            "Aardvark is **free and open**; only its optional built-in AI features are "
             "billed. Live model prices couldn't be fetched for this build.\n\n"
             "{% callout severity='info' %}\n"
             "Current per-model rates will reappear here on the next build; see "
@@ -398,7 +398,7 @@ def _build():
         rec_table = (
             "## Recommended (auto-updating)\n\n"
             "These floating aliases always route to the provider's newest model, so you "
-            "never pin a version. aardvark's default config uses "
+            "never pin a version. Aardvark's default config uses "
             "`~anthropic/claude-sonnet-latest`.\n\n"
             f"{_header(intel is not None)}\n"
             + "\n".join(_row(m, intel) for m in recommended)
@@ -430,7 +430,7 @@ def _build():
     )
 
     body = (
-        "Per-token rates for every model aardvark's metered gateway can serve — point "
+        "Per-token rates for every model Aardvark's metered gateway can serve — point "
         "`ai.model` / `ai.assistant.model` at **any** model below and pay only for the AI you "
         "actually use. Looking for the platform tiers (hosting, seats, support, included AI)? "
         "See **[Plans & pricing](/pricing/)**.\n\n"
@@ -456,7 +456,7 @@ def _front():
         "title": "AI model rates",
         "navtitle": "Model rates",
         "description": (
-            "Per-token rates for every model aardvark's gateway can serve, "
+            "Per-token rates for every model Aardvark's gateway can serve, "
             "at the pay-as-you-go meter; subscribers pay their plan's member rate."
         ),
         "menu": "pricing",

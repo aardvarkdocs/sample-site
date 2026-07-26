@@ -79,7 +79,7 @@ is the tag's Redoc-style `x-displayName` when set (else the first line of its
 ## Responses
 
 Operations list their responses straight from the spec. Define a `responses`
-block and aardvark renders one collapsible row per status code — success and errors
+block and Aardvark renders one collapsible row per status code — success and errors
 alike — colour-coded by class (green `2xx`, orange `4xx`, red `5xx`). Every row
 documents:
 
@@ -122,7 +122,7 @@ examples always use the code block.
 
 ## Authorization
 
-Declare a security scheme and aardvark renders an **Authorization** box at the top
+Declare a security scheme and Aardvark renders an **Authorization** box at the top
 of the reference. Readers paste their API key once; by default it's held in memory
 for that browser session only, with a **Save this key in my browser** checkbox to
 keep it (in `localStorage`) for next time. Either way it flows into both the request
@@ -170,7 +170,7 @@ to send.
 Every `description` in the spec — the API blurb, each operation, parameters,
 request-body fields, responses, headers, schema properties, and security schemes —
 renders as **Markdown**, so links, emphasis, lists, and code all work. Standalone descriptions (the API intro and each
-operation) go further: they accept the **full set of aardvark primitives**, so you
+operation) go further: they accept the **full set of Aardvark primitives**, so you
 can drop a callout, a card grid, tabs, or any other component straight into your API
 docs:
 
@@ -216,7 +216,7 @@ Often the spec you document isn't yours to edit — a vendor's file, or one gene
 build you don't control. An **[OpenAPI Overlay](https://spec.openapis.org/overlay/latest.html)**
 customizes a base spec *without touching it*: a side file of `actions`, each selecting
 node(s) with a JSONPath `target` and either **`update`**-ing or **`remove`**-ing them. Fix a
-wrong summary, hide an internal operation, enrich a parameter, or drop an aardvark callout
+wrong summary, hide an internal operation, enrich a parameter, or drop an Aardvark callout
 into the overview — all from a file that survives the next time you re-download the spec.
 
 ### Setting one up
@@ -225,7 +225,7 @@ Aardvark discovers overlays **by filename** — no directive argument, no config
 beside the spec named `<spec-stem>.overlay.{yaml,yml,json}` and it's applied on every
 build. For `openapi/petstore.json` the stem is `petstore`, so the file is
 `openapi/petstore.overlay.yaml`. The shape is an `overlay:` version, an optional `info:`
-block (the overlay's own title/version — aardvark doesn't merge it into your spec), and the
+block (the overlay's own title/version — Aardvark doesn't merge it into your spec), and the
 `actions` list:
 
 ```yaml
@@ -302,7 +302,7 @@ property you'd rather not show:
 (with a warning) so a stray value can't silently delete half your spec. The document root `$`
 can't be removed.
 
-### Injecting aardvark primitives
+### Injecting Aardvark primitives
 
 Because a spec's standalone descriptions render as **content** (see [Rich descriptions](#rich-descriptions)),
 an `update` that targets a `description` can drop a **callout, card grid, icon — any
@@ -422,7 +422,7 @@ path and query parameters and runs `fetch` against the spec's `servers[0].url`
 so the Authorization key and the per-language samples are computed in the browser —
 your key never leaves it.
 
-With [build-time AI](/ai-features/) enabled, aardvark *augments* authored examples:
+With [build-time AI](/ai-features/) enabled, Aardvark *augments* authored examples:
 when an operation's success response has no `example`, it generates a realistic
 one. Examples you write in the spec always win.
 

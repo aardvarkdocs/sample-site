@@ -8,8 +8,8 @@ weight: 52
 
 # Analytics & page ratings
 
-aardvark ships native support for the same analytics platforms as Mintlify. Add a block
-under `integrations:` with your platform's id or key and aardvark injects that vendor's
+Aardvark ships native support for the same analytics platforms as Mintlify. Add a block
+under `integrations:` with your platform's id or key and Aardvark injects that vendor's
 official `<script>` on every page — no template editing. Platform keys and legacy fields
 remain Mintlify-compatible, while vendor-current additions are available too. In particular,
 Plausible now prefers its per-site `scriptId`; an existing Mintlify-style `domain` block
@@ -78,7 +78,7 @@ integrations:
 ```
 
 Plausible's current snippet uses a unique script id for each site. Copy the id from the
-`https://plausible.io/js/<scriptId>.js` URL shown under **Site Installation**; aardvark emits
+`https://plausible.io/js/<scriptId>.js` URL shown under **Site Installation**; Aardvark emits
 that async loader plus Plausible's queue and `plausible.init()` shim. `id` is accepted as a
 short alias. If both `scriptId` and `domain` are present during a migration, `scriptId` wins.
 The current mode's override is named `scriptSrc` deliberately: legacy `src` commonly points at
@@ -137,7 +137,7 @@ integrations:
     measurementId: "G-XXXXXXXXXX"
 ```
 
-aardvark injects the standard `gtag.js` snippet. An empty id disables it; this sample site sets
+Aardvark injects the standard `gtag.js` snippet. An empty id disables it; this sample site sets
 a real id, so GA is active here.
 
 ## Page ratings

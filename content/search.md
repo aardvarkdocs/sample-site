@@ -1,5 +1,5 @@
 ---
-description: aardvark ships a built-in ⌘K search — a full-text index generated at
+description: Aardvark ships a built-in ⌘K search — a full-text index generated at
   build time and scored in the browser, with no external service.
 heading: Features
 heading-icon: fa-solid fa-puzzle-piece
@@ -11,7 +11,7 @@ weight: 50
 
 # Search
 
-aardvark has **built-in search** — no Algolia, no crawler, no API keys. The build
+Aardvark has **built-in search** — no Algolia, no crawler, no API keys. The build
 writes a full-text index of your site and a Mantine search box scores it in the
 browser as you type.
 
@@ -72,7 +72,7 @@ ranking order. Matching is path-boundary aware, so `/components/` matches
 `/components/button/` but not `/components-extra/`.
 
 Filters stay selected while you refine the query, as long as the new result set
-still contains those paths. If a selected path disappears, aardvark drops that
+still contains those paths. If a selected path disappears, Aardvark drops that
 selection so a stale filter cannot make a valid search look empty. Closing the
 search dialog clears both the query and selected paths.
 
@@ -327,7 +327,7 @@ With analytics off, nothing is sent.
 
 ### Search Analytics dashboard (AI-enabled sites)
 
-If your site uses the built-in AI assistant (a metered "aardvark cloud" key), the search box also
+If your site uses the built-in AI assistant (a metered "Aardvark cloud" key), the search box also
 reports activity to your dashboard's **Search Analytics** tab — a superset of what Fern, ReadMe, and
 Mintlify show:
 

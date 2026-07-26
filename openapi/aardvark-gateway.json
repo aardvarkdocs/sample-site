@@ -3,7 +3,7 @@
   "info": {
     "title": "Aardvark Gateway API",
     "version": "1.0.0",
-    "description": "User-facing HTTP API of the aardvark cloud gateway — the metered OpenRouter proxy and dashboard backend. Operator-only endpoints (`/admin/*`, `/operator-auth/*`, `/operator-api/*`) and the dashboard / operator SPA shells (`/dashboard*`, `/operator*`) are excluded by design.\n\nThis document is GENERATED from the gateway source: `scripts/gen-openapi.mjs` extracts every route's auth, request fields, query params, response shape, and error codes directly from the handlers, then renders them. Do NOT edit `openapi.json` (or hand-author its structure) — change the code, and regenerate. Only prose lives in `scripts/openapi/descriptions.mjs`."
+    "description": "User-facing HTTP API of the Aardvark cloud gateway — the metered OpenRouter proxy and dashboard backend. Operator-only endpoints (`/admin/*`, `/operator-auth/*`, `/operator-api/*`) and the dashboard / operator SPA shells (`/dashboard*`, `/operator*`) are excluded by design.\n\nThis document is GENERATED from the gateway source: `scripts/gen-openapi.mjs` extracts every route's auth, request fields, query params, response shape, and error codes directly from the handlers, then renders them. Do NOT edit `openapi.json` (or hand-author its structure) — change the code, and regenerate. Only prose lives in `scripts/openapi/descriptions.mjs`."
   },
   "servers": [
     {
@@ -1492,7 +1492,7 @@
         ],
         "summary": "Fetch a docs page",
         "operationId": "getV1AssistantDoc",
-        "description": "Server-side fetch of one aardvark documentation page (Markdown) for the assistant's `fetch_doc` grounding tool. The path is validated to a same-origin `.md` page and the body is size-capped.",
+        "description": "Server-side fetch of one Aardvark documentation page (Markdown) for the assistant's `fetch_doc` grounding tool. The path is validated to a same-origin `.md` page and the body is size-capped.",
         "security": [
           {
             "sessionCookie": []
@@ -10599,7 +10599,7 @@
                   "project_dir": {
                     "type": "string",
                     "nullable": true,
-                    "description": "For a monorepo: the repo-relative directory holding the aardvark project (e.g. `docs`); the build runs there. Blank/omitted = repo root. Relative, shell-safe (no leading `/`, no `..`)."
+                    "description": "For a monorepo: the repo-relative directory holding the Aardvark project (e.g. `docs`); the build runs there. Blank/omitted = repo root. Relative, shell-safe (no leading `/`, no `..`)."
                   }
                 },
                 "required": [

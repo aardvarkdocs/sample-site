@@ -1,5 +1,5 @@
 ---
-description: A checklist for making your site AI-agent ready — what aardvark publishes for you on
+description: A checklist for making your site AI-agent ready — what Aardvark publishes for you on
   every build, and the few steps only you can do (a Web Bot Auth key, DNS-AID records, real OAuth)
   to score well on isitagentready.com.
 icon: fa-solid fa-list-check
@@ -12,7 +12,7 @@ weight: 50
 
 [isitagentready.com](https://isitagentready.com) (Cloudflare's Agent Readiness Scanner) grades how
 well a site cooperates with AI agents: can they discover it, read it, learn the rules, and find its
-machine interfaces? aardvark publishes **almost all** of those signals automatically on every
+machine interfaces? Aardvark publishes **almost all** of those signals automatically on every
 `vark build` — this page is the checklist, so you can see what's already handled and do the handful
 of steps only you can do.
 
@@ -31,7 +31,7 @@ rung is *Agent-Native*). Four categories count toward your level:
 A fifth category, **Commerce** (x402, MPP, UCP, ACP, AP2), is reported but **does not count toward
 your score** — it only applies to shopping/checkout sites, so a docs or marketing site can ignore it.
 
-## What aardvark publishes for you (no work required)
+## What Aardvark publishes for you (no work required)
 
 Most are emitted on **every build** with no configuration — set [`baseUrl`](/llms-and-sitemap/) in
 `aardvark.config.yaml`, deploy over HTTPS, and they pass. A few are conditional, as the Notes column
@@ -55,7 +55,7 @@ OpenAPI specs, and the Agent Skills index lists whatever `skills/` you ship.
 | llms.txt | `/llms.txt`, `/llms-full.txt` | Bonus agent-friendly content index |
 
 See [Agent discovery](/agent-discovery/) and [Generated files](/llms-and-sitemap/) for the details of
-each. The takeaway: out of the box, with just a `baseUrl`, an aardvark site already clears most of
+each. The takeaway: out of the box, with just a `baseUrl`, an Aardvark site already clears most of
 the scanner.
 
 ## Hand this site to an agent (the page menu)
@@ -104,7 +104,7 @@ your identity provider. These steps are yours:
 
 [Web Bot Auth](/web-bot-auth/) lets your site identify itself when an agent sends signed requests on
 its behalf. The scanner looks for a JWKS (a set of public keys) at
-`/.well-known/http-message-signatures-directory`. aardvark **publishes** that directory — you just
+`/.well-known/http-message-signatures-directory`. Aardvark **publishes** that directory — you just
 provide a public key.
 
 Generate an Ed25519 keypair:
@@ -133,14 +133,14 @@ webBotAuth:
 ```
 
 Listing a key turns the feature on; the next `vark build` writes the JWKS. Keep the **private** key
-out of your repo — store it as a secret wherever your signing agent runs (aardvark never holds it,
-and the public directory is safe to commit). aardvark only publishes the directory; it never signs
+out of your repo — store it as a secret wherever your signing agent runs (Aardvark never holds it,
+and the public directory is safe to commit). Aardvark only publishes the directory; it never signs
 requests itself. Full reference: [Web Bot Auth](/web-bot-auth/).
 
 ### 2. Publish your DNS-AID records (and enable DNSSEC)
 
 DNS-based Agent Interface Discovery is validated over DNS-over-HTTPS against your **authoritative
-nameservers** — so no HTTP server, `vark serve` included, can make it pass. aardvark writes a
+nameservers** — so no HTTP server, `vark serve` included, can make it pass. Aardvark writes a
 copy-pasteable zone file for you at `/.well-known/dns-aid/records.zone`; you publish it:
 
 1. `vark build` writes `records.zone` (and a `records.json` mirror) from your `dnsAid.services` config.
@@ -154,7 +154,7 @@ Configuration and the full walkthrough live in [Agent discovery](/agent-discover
 
 ### 3. Point OAuth at your IdP
 
-aardvark always *advertises* OAuth 2.1 / OpenID Connect discovery metadata (derived from `baseUrl`
+Aardvark always *advertises* OAuth 2.1 / OpenID Connect discovery metadata (derived from `baseUrl`
 as labelled examples if you set nothing), so the discovery checks pass on a fresh build. For a real
 deployment, point the `oauth` block at your actual identity provider (for example Cloudflare Access)
 and fill in the `oauth.agentAuth` sub-block so `auth.md` advertises how an autonomous agent
@@ -172,7 +172,7 @@ oauth:
     credentialTypesSupported: [client_secret, private_key_jwt]
 ```
 
-aardvark is **not** an OAuth server — these documents only point agents at where to authenticate. See
+Aardvark is **not** an OAuth server — these documents only point agents at where to authenticate. See
 [Agent discovery](/agent-discovery/) for every field.
 
 ## Full checklist
@@ -181,22 +181,22 @@ Every scanner check, who handles it, and where to configure it:
 
 | Check | Category | Handled by | What to do |
 | --- | --- | --- | --- |
-| robots.txt | Discoverability | aardvark | Nothing (tune `robots` if you like) |
-| Sitemap | Discoverability | aardvark | Set `baseUrl` |
-| Link headers | Discoverability | aardvark | Nothing |
+| robots.txt | Discoverability | Aardvark | Nothing (tune `robots` if you like) |
+| Sitemap | Discoverability | Aardvark | Set `baseUrl` |
+| Link headers | Discoverability | Aardvark | Nothing |
 | DNS-AID | Discoverability | **You** | Publish records + DNSSEC (step 2) |
-| Markdown negotiation | Content accessibility | aardvark | Nothing |
-| robots.txt AI rules | Bot access control | aardvark | Nothing |
-| Content Signals | Bot access control | aardvark | Tune `robots.contentSignals` |
+| Markdown negotiation | Content accessibility | Aardvark | Nothing |
+| robots.txt AI rules | Bot access control | Aardvark | Nothing |
+| Content Signals | Bot access control | Aardvark | Tune `robots.contentSignals` |
 | Web Bot Auth | Bot access control | **You** | Add a public key (step 1) |
-| API catalog | Discovery | aardvark | Embed `{% raw %}{% openapi %}{% endraw %}` specs |
-| OAuth/OIDC discovery | Discovery | aardvark | Point at your IdP (step 3) |
-| OAuth Protected Resource | Discovery | aardvark | Nothing |
-| auth.md | Discovery | aardvark | Fill `oauth.agentAuth` for full credit |
-| MCP Server Card | Discovery | aardvark | Nothing |
-| Agent Skills | Discovery | aardvark | Add `skills/<name>/SKILL.md` (see [Build-time AI](/ai-features/)) |
-| WebMCP | Discovery | aardvark | Enable `mcp: true` (opt-in) |
-| A2A Agent Card | Discovery | *Not yet* | aardvark does not emit an A2A agent card today |
+| API catalog | Discovery | Aardvark | Embed `{% raw %}{% openapi %}{% endraw %}` specs |
+| OAuth/OIDC discovery | Discovery | Aardvark | Point at your IdP (step 3) |
+| OAuth Protected Resource | Discovery | Aardvark | Nothing |
+| auth.md | Discovery | Aardvark | Fill `oauth.agentAuth` for full credit |
+| MCP Server Card | Discovery | Aardvark | Nothing |
+| Agent Skills | Discovery | Aardvark | Add `skills/<name>/SKILL.md` (see [Build-time AI](/ai-features/)) |
+| WebMCP | Discovery | Aardvark | Enable `mcp: true` (opt-in) |
+| A2A Agent Card | Discovery | *Not yet* | Aardvark does not emit an A2A agent card today |
 | Commerce (x402, MPP, UCP, ACP, AP2) | Commerce | n/a | Not scored; only for commerce sites |
 
 ## Verify your score
@@ -215,7 +215,7 @@ confirm `checks.botAccessControl.webBotAuth.status` is `"pass"`.
 
 ## Known gaps
 
-- **A2A Agent Card** (`/.well-known/agent.json`): aardvark advertises an A2A entry in its DNS-AID
+- **A2A Agent Card** (`/.well-known/agent.json`): Aardvark advertises an A2A entry in its DNS-AID
   records but does not yet generate the agent card document itself. If you need this check, ship the
   card as a static file under `static/.well-known/`.
 - **Commerce checks**: out of scope for a docs/marketing site and excluded from the score.

@@ -1,5 +1,5 @@
 ---
-description: The directories and files that make up an aardvark project, and what each
+description: The directories and files that make up an Aardvark project, and what each
   one does.
 icon: /icons/folder.svg
 menu: docs
@@ -9,7 +9,7 @@ weight: 13
 
 # Project structure
 
-A scaffolded aardvark project looks like this:
+A scaffolded Aardvark project looks like this:
 
 ```bash
 my-docs/

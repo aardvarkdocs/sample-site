@@ -12,7 +12,7 @@ weight: 55
 
 # Versioned documentation
 
-aardvark can publish **multiple versions of your docs at once** — the latest release
+Aardvark can publish **multiple versions of your docs at once** — the latest release
 at the site root and older releases under a `/vX/` prefix — with a header version
 switcher, version-scoped [search](/search/), and SEO that keeps the latest version as
 the canonical surface.
@@ -54,7 +54,7 @@ vark version cut v1 --label "1.x"
 ```
 
 This copies each `paths` subtree — across **every language** — into
-`versions/v1/<lang>/…` and adds the `released:` entry above. Because aardvark builds
+`versions/v1/<lang>/…` and adds the `released:` entry above. Because Aardvark builds
 each page's sidebar from its front matter, the snapshot's front matter *is* its frozen
 navigation. To see what's configured or to remove a version:
 

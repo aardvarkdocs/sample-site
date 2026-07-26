@@ -34,7 +34,7 @@ a static Cloudflare Pages / Netlify deploy where no live `/mcp` is running.
 
 ```json
 {
-  "serverInfo": { "name": "aardvark", "version": "0.1.8" },
+  "serverInfo": { "name": "Aardvark", "version": "0.1.8" },
   "protocolVersion": "2025-06-18",
   "endpoint": "https://aardvarkdocs.com/mcp",
   "transport": "streamable-http",
@@ -48,7 +48,7 @@ server actually serves.
 
 ## OAuth / OIDC discovery
 
-aardvark **publishes** OAuth 2.1 / OpenID Connect discovery metadata so an agent knows where to
+Aardvark **publishes** OAuth 2.1 / OpenID Connect discovery metadata so an agent knows where to
 authenticate. It does **not** become an OAuth authorization server — these documents only advertise
 discovery information. Point them at your real identity provider (for example Cloudflare Access);
 left unset, every field is derived from `baseUrl` as a labelled example endpoint.

@@ -1,5 +1,5 @@
 ---
-description: aardvark est un générateur de site statique propulsé par Mantine — rédigez
+description: Aardvark est un générateur de site statique propulsé par Mantine — rédigez
   en Markdown, compilez en HTML statique rapide avec des îlots React interactifs.
 heading: Prise en main
 menu: docs
@@ -7,17 +7,17 @@ title: Introduction
 weight: 10
 ---
 
-# aardvark
+# Aardvark
 
-**aardvark** est un générateur de site statique axé sur la documentation. Vous
+**Aardvark** est un générateur de site statique axé sur la documentation. Vous
 rédigez en Markdown et compilez en HTML statique. L'interface interactive est
-livrée sous forme d'**îlots** : aardvark émet le HTML, et Mantine ainsi que vos
+livrée sous forme d'**îlots** : Aardvark émet le HTML, et Mantine ainsi que vos
 propres composants React sont rendus dans le navigateur depuis un unique
 runtime regroupé.
 
-Ce site même est construit avec aardvark.
+Ce site même est construit avec Aardvark.
 
-## Pourquoi aardvark
+## Pourquoi Aardvark
 
 - **Markdown en entrée, HTML en sortie** — des URL propres, une table des
   matières et un thème par défaut soigné.
@@ -57,7 +57,7 @@ Ce site même est construit avec aardvark.
 
 ## Démarrage rapide {#demarrage-rapide}
 
-Une fois [aardvark installé](/fr/getting-started/installation/), vous pouvez créer,
+Une fois [Aardvark installé](/fr/getting-started/installation/), vous pouvez créer,
 prévisualiser et compiler votre premier site en quelques commandes.
 
 ### 1. Créer un site
@@ -77,7 +77,7 @@ les îlots.
 npm install
 ```
 
-Cette commande installe React, Mantine et esbuild, qu'aardvark utilise pour
+Cette commande installe React, Mantine et esbuild, qu'Aardvark utilise pour
 regrouper les composants que vous intégrez.
 
 ### 3. Développer avec le rechargement automatique
@@ -99,7 +99,7 @@ vark build      # génère le HTML statique dans ./build
 
 ### Créer votre première page
 
-Une page aardvark est un fichier Markdown avec un frontmatter YAML facultatif.
+Une page Aardvark est un fichier Markdown avec un frontmatter YAML facultatif.
 La logique est du véritable Python placé dans des balises
 `{% raw %}{% %}{% endraw %}` :
 

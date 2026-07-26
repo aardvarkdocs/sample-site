@@ -11,7 +11,7 @@ weight: 20
 
 # Templating & data
 
-Logic in aardvark pages is **real Python**, written inside `{% raw %}{% %}{% endraw %}` tags.
+Logic in Aardvark pages is **real Python**, written inside `{% raw %}{% %}{% endraw %}` tags.
 
 ## The two kinds of block
 

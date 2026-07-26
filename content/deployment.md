@@ -1,5 +1,5 @@
 ---
-description: Host the static build/ output anywhere, and optionally ship aardvark itself
+description: Host the static build/ output anywhere, and optionally ship Aardvark itself
   as a single compiled binary.
 icon: fa-solid fa-rocket
 menu: docs
@@ -40,7 +40,7 @@ encrypted `.enc` payloads stay at stable paths by design.
 The fingerprint token is your git `HEAD` SHA. If you build where `.git` isn't
 present (a container image, or a CI job with a shallow/absent checkout), set the
 `AARDVARK_BUILD_SHA` environment variable to the commit being deployed so every
-build still gets a stable, unique token. Without it, aardvark falls back to a
+build still gets a stable, unique token. Without it, Aardvark falls back to a
 content hash of your project sources — correct, but it rotates every asset URL
 whenever any source file changes.
 
@@ -68,7 +68,7 @@ layout are then written for that prefix: pages land under `build/docs/…`, link
 `/docs/…`, and the whole `build/docs` folder is self-contained — drop it into a parent site at
 `/docs`, or serve it with `vark serve` / `vark dev` (both mount at the base path locally, so
 local dev matches production). If `baseUrl` is also set it keeps carrying the origin
-(`https://example.com`); aardvark folds the base path into the absolute URLs used by
+(`https://example.com`); Aardvark folds the base path into the absolute URLs used by
 `sitemap.xml`, canonical tags, and Open Graph so they stay correct.
 
 Authors keep writing site-relative links (`/guide/intro/`) — the base path is added at build
@@ -100,7 +100,7 @@ rootFiles: nested   # nested (default) | root
 
 ## Custom 404 page
 
-Create `404.md` at the root of your `content/` directory and aardvark renders it to
+Create `404.md` at the root of your `content/` directory and Aardvark renders it to
 `404.html` at the site root — wrapped in your theme, with the header, footer and
 search box, just like any other page:
 
@@ -136,7 +136,7 @@ and fall back to the root page. The exception is Cloudflare Workers'
 miss under `/fr/` returns `/fr/404.html` when it exists. Unless your host does that
 nearest-match lookup, a single base-language `404.md` is all you need.
 
-## Shipping aardvark as a binary
+## Shipping Aardvark as a binary
 
 Compile the tool itself to a single executable with Nuitka:
 

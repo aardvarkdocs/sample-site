@@ -1,7 +1,7 @@
 ---
 title: "Include"
 description: "The built-in include tag — splice a shared Markdown partial into a page and let it branch on the including page's front matter. Usage, path rules, and a live example with source."
-product: "aardvark Cloud"
+product: "Aardvark Cloud"
 edition: pro
 ---
 
@@ -75,7 +75,7 @@ renders, live:
 
 {% include '/components/_partials/plan-note.md' %}
 
-This page's front matter sets `product: "aardvark Cloud"` and `edition: pro`, so the
+This page's front matter sets `product: "Aardvark Cloud"` and `edition: pro`, so the
 partial emits the **Pro** line above. A page that set `edition: free` — or
 omitted it — would get the other line from the *same* partial, with no change to
 the partial itself. That's the point: one shared fragment, varied per page by

@@ -17,7 +17,7 @@ Use it as `{% raw %}{% typography %}{% endraw %}` in Markdown, or call it from P
 (loops, snippets) via `component('aardvark', 'typography', …)`.
 
 {% callout severity="info" title="You usually don't need this" %}
-Page content is **already** styled — aardvark applies its own article prose styles to every page
+Page content is **already** styled — Aardvark applies its own article prose styles to every page
 (the `.aardvark-content` surface), so your headings, lists, tables, code, and links look right
 with no wrapper at all. `{% raw %}{% typography %}{% endraw %}` is included for **completeness**; reach
 for it only to style a block of prose or raw HTML that sits **outside** that flow — content you

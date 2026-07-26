@@ -1,9 +1,9 @@
 ---
 name: deploy-a-docs-site
-description: Build an aardvark documentation site and deploy it to a static host. Use when someone wants to publish, ship, or host their aardvark docs.
+description: Build an Aardvark documentation site and deploy it to a static host. Use when someone wants to publish, ship, or host their Aardvark docs.
 ---
 
-# Deploy an aardvark documentation site
+# Deploy an Aardvark documentation site
 
 1. Set `baseUrl` in `aardvark.config.yaml` to the site's canonical URL, so the
    `sitemap.xml` and `robots.txt` emit absolute links.

@@ -16,7 +16,7 @@ Use it as `{% raw %}{% appshell %}{% endraw %}` in Markdown, or call it from Pyt
 
 {% callout severity='info' title='A self-contained frame' %}
 AppShell is a page-level primitive whose header, navbar, aside, and footer are normally fixed
-to the viewport. On an aardvark page (which already has its own header and sidebar) that would
+to the viewport. On an Aardvark page (which already has its own header and sidebar) that would
 take over the whole page, so the tag renders the shell inside a **bounded, self-contained
 frame** — each live example below sits in its own box and never escapes it. Size the frame with
 `height` (pixels, default 380).

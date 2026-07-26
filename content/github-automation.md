@@ -1,7 +1,7 @@
 ---
 title: Docs Quality Checks
 navtitle: Docs Quality Checks
-description: Connect a GitHub repo and run aardvark's AI-powered docs quality workflows automatically —
+description: Connect a GitHub repo and run Aardvark's AI-powered docs quality workflows automatically —
   on a schedule or on every commit — opening pull requests, all from the cloud-gateway dashboard.
 icon: fa-brands fa-github
 menu: ai
@@ -10,13 +10,13 @@ weight: 40
 
 # Docs Quality Checks
 
-**Docs Quality Checks** connect your GitHub repository to the **aardvark cloud gateway** and run
-aardvark's built-in **AI-powered docs workflows** for you — on a **schedule**, on **every commit**,
+**Docs Quality Checks** connect your GitHub repository to the **Aardvark cloud gateway** and run
+Aardvark's built-in **AI-powered docs workflows** for you — on a **schedule**, on **every commit**,
 or on demand — then opens a **pull request** with the changes for you to review and merge.
 
 You set it up entirely from the gateway **dashboard**: connect a repo, tick the capabilities you
 want, choose when they run, and watch the run history. There's nothing to install in your repo and
-no workflow YAML to write — the runs happen on aardvark's own runners.
+no workflow YAML to write — the runs happen on Aardvark's own runners.
 
 > Docs Quality Checks run the **same** capabilities as [Build-time AI](/ai-features/) and the
 > `vark author` command, just unattended in CI. It's the hands-off way to keep metadata, skills,
@@ -24,12 +24,12 @@ no workflow YAML to write — the runs happen on aardvark's own runners.
 
 ## How it works
 
-Everything runs on **aardvark's side** — your repository carries no workflow files and no secrets:
+Everything runs on **Aardvark's side** — your repository carries no workflow files and no secrets:
 
 1. You connect a repo and pick capabilities in the dashboard.
 2. The gateway stores your choices and schedule. **Nothing is written to your repo.**
 3. When an automation is due (schedule, a push to the chosen branch, or *Run now*), the gateway runs
-   it on **aardvark's own runners**: it checks out your repo with a short-lived, repo-scoped token,
+   it on **Aardvark's own runners**: it checks out your repo with a short-lived, repo-scoped token,
    runs the `vark` capability against your docs, and opens or updates a pull request on an
    `aardvark/<capability>` branch.
 4. The run's status — and its metered cost — flow back to the dashboard as **per-capability run
@@ -41,7 +41,7 @@ logic — ever leaves the binary. The gateway schedules the runs, opens the PRs,
 ## Connect a repository
 
 1. Open the gateway **dashboard** (`/dashboard`) and go to **Docs Quality Checks**.
-2. Click **Connect GitHub**. You'll be sent to GitHub to install the aardvark app and **choose which
+2. Click **Connect GitHub**. You'll be sent to GitHub to install the Aardvark app and **choose which
    repositories** to grant it — pick only the repos you want automated.
 3. Back in the dashboard, each connected repo appears with the capabilities you can enable.
 
@@ -132,7 +132,7 @@ without changing meaning, code, commands, front matter, link targets, or `{% raw
 It also restyles your reusable **partials** (`_`-prefixed include-only files) under your base `content/`, so
 shared prose follows the style guide too — the other checks act on routable pages only. (Partials that live
 under a translated content directory aren't included; on a multilingual site, style the base-language ones.)
-aardvark ships six rulesets, condensed from each guide's own source of truth:
+Aardvark ships six rulesets, condensed from each guide's own source of truth:
 
 | Ruleset | id | Focus |
 | --- | --- | --- |
@@ -236,7 +236,7 @@ Each run **spends from your gateway balance** on two things, both shown per run 
 
 - **AI** — the capability's model calls, metered exactly as a local `vark build` / `vark ai-enrich`
   would be.
-- **Compute** — because the run executes on aardvark's runners (not your own GitHub Actions), the
+- **Compute** — because the run executes on Aardvark's runners (not your own GitHub Actions), the
   runner minutes are metered too and billed to your balance.
 
 Schedule the heavier capabilities (translation, or a style-guide pass over a large site) accordingly,
@@ -254,5 +254,5 @@ simply shows that Docs Quality Checks aren't available, and the gateway runs exa
 ## Related
 
 - [Build-time AI](/ai-features/) — the same capabilities, run during a local build.
-- [aardvark cloud gateway](/ai-gateway/) — the metered account that powers and bills these runs.
+- [Aardvark cloud gateway](/ai-gateway/) — the metered account that powers and bills these runs.
 - [Agent readiness](/agent-readiness/) — what fresh metadata, skills, and clean prose buy you.

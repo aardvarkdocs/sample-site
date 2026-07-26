@@ -147,7 +147,7 @@ component('aardvark', 'prompt',
 ## Verbatim body
 
 The body is **not** Markdown — it's copied exactly as written, so `**stars**`, `# hashes`,
-`<angle brackets>`, and fenced code all stay literal. If your prompt contains aardvark template
+`<angle brackets>`, and fenced code all stay literal. If your prompt contains Aardvark template
 syntax (a literal `{% raw %}{% … %}{% endraw %}` or `{% raw %}{{ … }}{% endraw %}`), wrap that
 part in a **raw block** so the template engine leaves it alone — the same
 `{% raw %}{% raw %}{% endraw %}` … raw-guard convention used everywhere else in these docs.

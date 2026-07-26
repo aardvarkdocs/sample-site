@@ -9,7 +9,7 @@ description: "The built-in panel tag — a supplementary side panel that floats 
 content that sits *beside* the main text. Use it for a "see also", an API note, related links, or
 any aside that supports the main flow without interrupting it. On a wide screen the panel floats to
 one side and the surrounding text wraps alongside it; on a narrow screen it drops into place as a
-full-width block. It ships with aardvark, so a side panel is a single tag with no setup.
+full-width block. It ships with Aardvark, so a side panel is a single tag with no setup.
 
 The block body is the panel content (any Markdown), and an optional `title` renders a small heading
 above it. Use it as `{% raw %}{% panel %}{% endraw %}` in Markdown, or call it from Python logic

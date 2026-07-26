@@ -1,7 +1,7 @@
 ---
 breadcrumb: false
 title: Support
-description: Answers to common questions about aardvark plans, billing, and AI usage.
+description: Answers to common questions about Aardvark plans, billing, and AI usage.
 menu: support
 taxonomy:
   - name: support

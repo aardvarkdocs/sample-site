@@ -65,7 +65,7 @@ component('aardvark', 'floatingindicator')
 ## With other components
 
 The primitive is meant to live *inside* a real control. In practice you reach for a
-component that already wires the indicator for you — for example aardvark's built-in
+component that already wires the indicator for you — for example Aardvark's built-in
 [Tabs](/components/navigation/tabs/), which slides an underline indicator on switch.
 The demo below shows the standalone primitive sitting beside a short note rendered by
 the [Text](/components/typography/text/) tag:

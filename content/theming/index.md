@@ -12,13 +12,13 @@ weight: 40
 # Theme & customization
 
 A **theme** is a self-contained folder of HTML templates plus the CSS, JS, fonts, and
-logos they use. aardvark ships one theme, **`vark`** (the default docs theme), as
+logos they use. Aardvark ships one theme, **`vark`** (the default docs theme), as
 **full, editable source** — there's no hidden layout. `vark new` copies it into your
 project's `themes/vark/` so you own it.
 
 ## Where the theme lives
 
-The bundled `vark` theme is packaged with aardvark at `aardvark/themes/vark/`. `vark new`
+The bundled `vark` theme is packaged with Aardvark at `aardvark/themes/vark/`. `vark new`
 copies it into your project at **`themes/vark/`** — that's your editable copy, and a
 project-local `themes/<name>/` wins over the bundled theme of the same name, so you own
 the full source. Edit the files right there in `themes/vark/`.
@@ -42,7 +42,7 @@ instead, where the whole tree is copied and fingerprinted.
 - **`themes/vark/theme.scss`** — the color system and chrome styles. The `$`-variables at the
   top are the single source of truth for every color (light + dark); compiled to
   `/_aardvark/theme-<sha>.css` at build time. See [Colors](#colors). In source
-  templates, keep writing `/_aardvark/theme.css`; aardvark rewrites it during the build.
+  templates, keep writing `/_aardvark/theme.css`; Aardvark rewrites it during the build.
 - **`themes/vark/color-scheme.js`** — light/dark handling (see [Light & dark mode](/theming/dark-mode/)).
 
 ## Selecting a theme
@@ -129,7 +129,7 @@ automatically.
 Every page (except the home page) gets a breadcrumb trail at the top of the
 content, rendered with Mantine's
 [Breadcrumbs](https://mantine.dev/core/breadcrumbs/) component. The trail is **menu-based**:
-aardvark finds the current page in your `nav:` tree and shows the path of menu
+Aardvark finds the current page in your `nav:` tree and shows the path of menu
 labels to it — e.g. a page under the *Buttons & actions* group shows
 `Home / Buttons & actions / Button`. Pages absent from the nav fall back to
 `Home / <page title>`.
@@ -269,9 +269,9 @@ theme:
 
 Leave it unset and the browser just probes `/favicon.ico` on its own.
 
-## Powered by aardvark
+## Powered by Aardvark
 
-Every page ends with a small **Powered by aardvark** footer linking to
+Every page ends with a small **Powered by Aardvark** footer linking to
 [aardvarkdocs.com](https://aardvarkdocs.com). Its logo swaps with the active light/dark
 scheme, just like the header brand.
 
@@ -334,7 +334,7 @@ The recognized token names are `comment`, `keyword`, `constant`, `string`, `numb
 ### Code block labels
 
 Tag each fenced block with its language so it highlights correctly — `python`, `yaml`,
-`bash`, `json`, and so on. aardvark template examples have a dedicated `aardvark` label
+`bash`, `json`, and so on. Aardvark template examples have a dedicated `aardvark` label
 that colors the `{% raw %}{% %}{% endraw %}` directives — tag and attribute names and their
 values — and renders the surrounding Markdown body.
 

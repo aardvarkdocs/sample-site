@@ -2,7 +2,7 @@
 title: Plans & pricing
 navtitle: Plans
 description: >-
-  aardvark is free and open. Paid plans add managed hosting, seats, support,
+  Aardvark is free and open. Paid plans add managed hosting, seats, support,
   and a monthly included-AI allowance metered in real dollars — never opaque credits.
 icon: fa-solid fa-tags
 menu: pricing
@@ -23,10 +23,10 @@ mode: full
 }
 </style>
 
-aardvark is **free and open**: author, build, and self-host your docs at no cost, forever.
+Aardvark is **free and open**: author, build, and self-host your docs at no cost, forever.
 Paid plans are for teams that want a **predictable monthly bill** — managed hosting, more
 seats, real support, and a monthly **included-AI allowance in dollars**, keeping pricing
-simple and dollar-based. Your aardvark key also grants you access to hundreds of AI models
+simple and dollar-based. Your Aardvark key also grants you access to hundreds of AI models
 you can use strategically to control costs as you go.
 
 <div class="plan-grid" markdown="1">
@@ -105,11 +105,11 @@ hosting, seats, support, controls — and cheaper AI.
 
 ## The honest AI meter
 
-Every competitor meters AI in credits you can't reason about. aardvark bills AI in
+Every competitor meters AI in credits you can't reason about. Aardvark bills AI in
 **dollars**: [the pricing table](/pricing/models/) publishes what every model costs per
 answer on every plan — real figures, no conversion math. Subscribers pay less per metered
 dollar the more they commit (≈7% off on Pro, ≈13% on Business, 20% on Enterprise), on top
-of the allowance their plan includes. All of it runs on **aardvark's managed keys** — you
+of the allowance their plan includes. All of it runs on **Aardvark's managed keys** — you
 never create, rotate, or secure a model-provider key on any plan.
 
 Your included allowance is denominated in those same billed dollars:

@@ -1,5 +1,5 @@
 ---
-title: aardvark cloud gateway
+title: Aardvark cloud gateway
 navtitle: Cloud gateway
 description: The managed metering proxy behind the built-in Ask AI assistant — a prepaid
   balance with customer self-funding via Stripe card-on-file and auto-top-up.
@@ -8,12 +8,12 @@ menu: ai
 weight: 20
 ---
 
-# aardvark cloud gateway
+# Aardvark cloud gateway
 
-The **aardvark cloud gateway** is the managed metering proxy that sits behind the built-in
+The **Aardvark cloud gateway** is the managed metering proxy that sits behind the built-in
 **"Ask AI"** assistant. The assistant in a reader's browser never talks to a model directly — it
-calls the gateway, which proxies the request to the model behind aardvark's managed keys,
-**meters** the spend at aardvark's published [per-model rates](/pricing/models/)
+calls the gateway, which proxies the request to the model behind Aardvark's managed keys,
+**meters** the spend at Aardvark's published [per-model rates](/pricing/models/)
 (subscription plans meter at a member discount), and **cuts off** an account that has run out
 of credit.
 

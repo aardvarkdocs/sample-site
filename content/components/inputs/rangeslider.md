@@ -6,7 +6,7 @@ description: "The built-in rangeslider tag — pick a range with two thumbs. Usa
 # RangeSlider
 
 A **built-in** tag for a range slider — let the reader pick a low and high bound by dragging
-either of two thumbs. It ships with aardvark, so it's a single tag with no setup. The
+either of two thumbs. It ships with Aardvark, so it's a single tag with no setup. The
 `defaultValue` is a pair of numbers (the starting low and high), and `minRange` keeps the two
 thumbs a minimum distance apart.
 

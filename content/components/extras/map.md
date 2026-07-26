@@ -146,7 +146,7 @@ map:
 
 MapLibre GL JS loads from a pinned CDN release whose [Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity)
 hash the browser verifies. If you override `maplibreVersion` (or point `maplibreJs` /
-`maplibreCss` at your own URLs), aardvark can't know the hash and ships **no** SRI for it —
+`maplibreCss` at your own URLs), Aardvark can't know the hash and ships **no** SRI for it —
 you then own the supply-chain integrity of whatever that release serves.
 
 **Content-Security-Policy:** SRI checks the bytes but doesn't grant permission to fetch them. If

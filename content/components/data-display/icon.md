@@ -272,7 +272,7 @@ page.print(component('aardvark', 'card', title='Fast builds', icon='bolt', accen
 ## Loading and the CDN
 
 The `{% raw %}{% icon %}{% endraw %}` tag is a Mantine island, so it needs the islands bundle (which this site builds). **Tabler**
-glyphs add one more step: the first time a page uses a Tabler icon, aardvark fetches its SVG from
+glyphs add one more step: the first time a page uses a Tabler icon, Aardvark fetches its SVG from
 a pinned [jsDelivr](https://www.jsdelivr.com/) CDN (`cdn.jsdelivr.net`), caches it per name, and
 injects it inline — only the icons a page actually uses are fetched.
 
@@ -284,7 +284,7 @@ hydration) should prefer Font Awesome or image icons over Tabler.
 
 Navigation `icon:` and `heading-icon:` values are latency-sensitive page chrome, so Aardvark
 special-cases them: their SVGs are baked into the initial HTML and paint immediately — from the
-outline set bundled with aardvark (so it works even with no local `@tabler/icons` install, e.g. a
+outline set bundled with Aardvark (so it works even with no local `@tabler/icons` install, e.g. a
 `pip`/binary site), or from the installed package when it matches a pinned `theme.iconVersion`. A
 custom `theme.iconCdn` stays authoritative — navigation keeps its runtime loader and `vark build`
 emits no warning. A pinned `theme.iconVersion` that's neither bundled nor installed also falls back to

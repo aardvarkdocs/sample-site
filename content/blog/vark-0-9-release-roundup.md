@@ -7,7 +7,7 @@ taxonomy:
   - name: blog
     leftnav: dates
     tags: [release, cli]
-    authorName: The aardvark team
+    authorName: The Aardvark team
     authorAvatar: /favicon.svg
     badgeText: Release
     tagCloud: true
@@ -28,7 +28,7 @@ equivalent of eating your own dog food, and it's how this site's own CLI page is
 heaviest phases — Open Graph card rendering and the whole-site PDF — which only matter
 when you publish. (Full per-page incremental skipping is a promise we're deliberately not
 making yet; we wrote up why in
-[Why aardvark rebuilds every page (for now)](/blog/how-incremental-builds-work/).)
+[Why Aardvark rebuilds every page (for now)](/blog/how-incremental-builds-work/).)
 
 **And from the 0.8 series**, in case you missed it:
 

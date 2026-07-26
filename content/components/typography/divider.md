@@ -5,7 +5,7 @@ description: "The built-in divider tag — a labelled or plain horizontal/vertic
 
 # Divider
 
-`divider` is a horizontal or vertical rule — plain, or with a caption. It ships with aardvark, so a divider is a single tag with no setup. A plain Markdown thematic break (`---`) already renders as a Divider, so reach for the tag when you want a **label**, a **variant**, a specific **color**, or a **vertical** rule.
+`divider` is a horizontal or vertical rule — plain, or with a caption. It ships with Aardvark, so a divider is a single tag with no setup. A plain Markdown thematic break (`---`) already renders as a Divider, so reach for the tag when you want a **label**, a **variant**, a specific **color**, or a **vertical** rule.
 
 Use it as `{% raw %}{% divider %}{% endraw %}` in Markdown, or call it from Python logic (loops, snippets) via `component('aardvark', 'divider', …)`.
 

@@ -6,7 +6,7 @@
  *
  * The structural rules below are vendored from @shikijs/twoslash's reference style-rich.css;
  * the popover / docs / border / shadow colors are driven entirely by the --twoslash-*
- * variables, which we remap onto aardvark's --aardvark-* tokens — so the popovers track the
+ * variables, which we remap onto Aardvark's --aardvark-* tokens — so the popovers track the
  * site theme and flip on the dark scheme automatically, with no separate dark structural
  * block. Token colors come from Shiki's dual themes (see the .shiki rules).
  *

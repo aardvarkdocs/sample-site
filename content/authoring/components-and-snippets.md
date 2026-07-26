@@ -10,7 +10,7 @@ weight: 21
 # Components & snippets
 
 Call `component('Name', **props)` to drop a React component into a page. At
-build time aardvark records a mount point and bundles the component; in the browser
+build time Aardvark records a mount point and bundles the component; in the browser
 it mounts as an **island** wrapped in a Mantine provider.
 
 > **How islands render:** components are **client-rendered** — the bundled
@@ -63,7 +63,7 @@ explicit.
 
 A snippet **wins any name collision** with a Mantine component or a built-in island. Name a
 file after one — `snippets/Button.jsx`, `snippets/Survey.jsx` — and `component('Button')`
-mounts *your* component everywhere, not the shipped one; aardvark bundles your file in its
+mounts *your* component everywhere, not the shipped one; Aardvark bundles your file in its
 place. That's the supported way to customize a built-in island wholesale (restyle it, swap
 its data source, change its behavior) without forking the theme — for example, replacing the
 built-in [survey](/survey/) card with your own `snippets/Survey.jsx`. The precedence is
@@ -138,7 +138,7 @@ set an attribute on that one element — it can never inject markup elsewhere.
 - Use `attr` for **event handlers** (`onclick`, …), **`data-*`** / **`aria-*`**,
   `id`, and other custom attributes.
 - Use normal **props** for `className` and `style` — React manages those, and an
-  `attr` would fight it (aardvark warns in the console if you try).
+  `attr` would fight it (Aardvark warns in the console if you try).
 - A few Mantine components render only context and have no DOM node of their own —
   `Accordion`, `Combobox`, `MenuSub`, `NumberFormatter`. `attr` on these
   applies only at the top level; nested, put the `attr` on a child element instead.
@@ -149,7 +149,7 @@ set an attribute on that one element — it can never inject markup elsewhere.
 
 A **custom class or style** is the one case to reach past `attr`: pass them as the
 `className` and `style` props so Mantine *merges* them with its own. (Setting `class`
-or `style` through `attr` would overwrite the component's — aardvark warns if you try.)
+or `style` through `attr` would overwrite the component's — Aardvark warns if you try.)
 
 {% raw %}
 ```aardvark
@@ -163,7 +163,7 @@ or `style` through `attr` would overwrite the component's — aardvark warns if 
 your CSS to target), and the inline `style` is merged in — neither clobbers the
 component's styling.
 
-`attr` is intentionally powerful (it can run JavaScript), in keeping with aardvark's
+`attr` is intentionally powerful (it can run JavaScript), in keeping with Aardvark's
 trusted, in-repo content model. A site that wants to restrict it can set an
 `attrPolicy` in `aardvark.config.yaml` — patterns may end in `*` for a prefix match:
 

@@ -6,7 +6,7 @@ description: "The built-in angleslider tag — pick an angle on a dial (0–360�
 # AngleSlider
 
 A **built-in** tag for an angle slider — a circular dial for picking an angle from 0 to 360
-degrees. It ships with aardvark, so it's a single tag with no setup. Set the dial diameter
+degrees. It ships with Aardvark, so it's a single tag with no setup. Set the dial diameter
 with `size`, the starting angle with `defaultValue`, and the increment with `step`.
 
 Use it as `{% raw %}{% angleslider %}{% endraw %}` in Markdown, or call it from Python logic

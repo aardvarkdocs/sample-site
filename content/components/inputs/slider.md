@@ -6,7 +6,7 @@ description: "The built-in slider tag — pick a number in a range, with marks. 
 # Slider
 
 A **built-in** tag for a slider — let the reader pick a number within a range by dragging a
-thumb. It ships with aardvark, so it's a single tag with no setup. Tune the bounds with `min`
+thumb. It ships with Aardvark, so it's a single tag with no setup. Tune the bounds with `min`
 and `max`, the increment with `step`, and the starting position with `defaultValue`.
 
 Use it as `{% raw %}{% slider %}{% endraw %}` in Markdown, or call it from Python logic

@@ -9,7 +9,7 @@ pagetype: landing
 
 # A different template, same theme
 
-This page sets `pagetype: landing` in its front matter, so aardvark renders it with
+This page sets `pagetype: landing` in its front matter, so Aardvark renders it with
 `themes/vark/landing.html` instead of the usual `default.html`. Notice there's no sidebar
 and no on-this-page rail — the landing layout drops them and centers the content.
 

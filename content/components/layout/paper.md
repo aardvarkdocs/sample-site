@@ -5,7 +5,7 @@ description: "The built-in paper tag — a card-like surface with a shadow, roun
 
 # Paper
 
-`paper` is a **surface** — a panel that lifts content off the page with a shadow, rounded corners, padding, and an optional border. It ships with aardvark, so a surface is a single tag with no setup. The block body is the panel content, and the tag adds a comfortable padding by default.
+`paper` is a **surface** — a panel that lifts content off the page with a shadow, rounded corners, padding, and an optional border. It ships with Aardvark, so a surface is a single tag with no setup. The block body is the panel content, and the tag adds a comfortable padding by default.
 
 Use it as `{% raw %}{% paper %}{% endraw %}` in Markdown, or call it from Python logic (loops, snippets) via `component('aardvark', 'paper', …)`.
 

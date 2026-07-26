@@ -1,5 +1,5 @@
 ---
-description: Install aardvark via Homebrew or a prebuilt release binary. Node is required at
+description: Install Aardvark via Homebrew or a prebuilt release binary. Node is required at
   build time to bundle the Mantine islands.
 icon: fa-solid fa-download
 menu: docs
@@ -76,7 +76,7 @@ islands — see [Deployment](/deployment/) for details.
 
 ## AI features
 
-aardvark's AI features are built into the binary — there's nothing extra to
+Aardvark's AI features are built into the binary — there's nothing extra to
 install. Turn them on in `aardvark.config.yaml` (the `ai:` block) and provide a
 key. See [AI features](/ai/) for the overview, [Build-time AI](/ai-features/) for
 the build-time enrichment options, and [Cloud gateway](/ai-gateway/) for the

@@ -8,7 +8,7 @@ weight: 60
 # Navigation
 
 Tags for moving around: links, trails, toggles, and on-page guides. Each ships with
-aardvark, so it's a single tag with no setup — and each wraps a Mantine component, so
+Aardvark, so it's a single tag with no setup — and each wraps a Mantine component, so
 the full option set is there when you need it.
 
 - [Anchor](/components/navigation/anchor/) — a styled text link with the full Mantine Text surface (underline, color, weight, gradient).

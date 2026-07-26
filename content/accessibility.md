@@ -1,5 +1,5 @@
 ---
-description: How aardvark sites meet WCAG 2.1 AA — landmarks, keyboard navigation, and a build-time contrast check.
+description: How Aardvark sites meet WCAG 2.1 AA — landmarks, keyboard navigation, and a build-time contrast check.
 icon: fa-solid fa-universal-access
 menu: docs
 title: Accessibility
@@ -8,7 +8,7 @@ weight: 55
 
 # Accessibility
 
-Every site aardvark generates targets **WCAG 2.1 Level AA** out of the box. The chrome
+Every site Aardvark generates targets **WCAG 2.1 Level AA** out of the box. The chrome
 ships with semantic landmarks, a skip link, visible keyboard focus, screen-reader
 announcements, and reduced-motion support — and the build flags color-contrast problems
 in your theme before they reach readers.
@@ -118,7 +118,7 @@ WCAG AA, and prints a non-fatal warning for any text/background pair that falls 
 light and dark:
 
 ```text
-aardvark: warning — color contrast below WCAG AA:
+Aardvark: warning — color contrast below WCAG AA:
   light — links: #8a7fff on #ffffff = 3.41:1 (needs 4.5:1)
   Adjust the colors in your theme's theme.scss so each pair meets the ratio
   (a darker/lighter shade per scheme), or set a11y.contrast: false to silence this.

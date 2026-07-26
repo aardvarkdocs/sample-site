@@ -12,5 +12,5 @@ noindex: true
 
 `vark dev` keeps edit-loop rebuilds fast by skipping the build's heaviest publish
 phases — Open Graph card rendering and the whole-site PDF — which only matter when
-you ship. Full `vark build` output is unchanged. [Why aardvark still re-renders
+you ship. Full `vark build` output is unchanged. [Why Aardvark still re-renders
 every page](/blog/how-incremental-builds-work/) covers the design thinking.

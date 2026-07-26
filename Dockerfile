@@ -108,7 +108,7 @@ RUN --mount=type=bind,target=/ctx,readonly \
 # usable Python on PATH; the onefile's interpreter is internal, not callable).
 FROM debian:trixie-slim AS runtime
 LABEL org.opencontainers.image.title="aardvark-docs" \
-      org.opencontainers.image.description="Serve an aardvark docs site + a live MCP server"
+      org.opencontainers.image.description="Serve an Aardvark docs site + a live MCP server"
 # Same UTF-8 locale rationale as the builder: `vark serve` reads/serves UTF-8 docs content and the
 # MCP tools, so keep Python out of the ASCII default C/POSIX locale here too. C.UTF-8 is built into
 # glibc (no locales package needed).
@@ -125,7 +125,7 @@ COPY --from=builder /usr/local/bin/vark /usr/local/bin/vark
 # the output dir and the mcp/search flags. No Markdown source, no Node, no venv.
 COPY --from=builder /site/build /srv/site/build
 # Copy the project config (if any) via find — NOT `COPY /site/aardvark.config.*`: BuildKit aborts a
-# glob COPY with "no source files were specified" on NO match, but a minimal aardvark project runs
+# glob COPY with "no source files were specified" on NO match, but a minimal Aardvark project runs
 # fine on defaults with no config file at all. find exits 0 on no match (cp simply isn't run).
 RUN --mount=type=bind,from=builder,source=/site,target=/bsite \
     find /bsite -maxdepth 1 -name 'aardvark.config.*' -exec cp {} /srv/site/ \;

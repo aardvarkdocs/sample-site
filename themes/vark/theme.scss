@@ -334,7 +334,7 @@ html[data-aardvark-banner-hidden] .aardvark-banner { display: none; }
 .aardvark-logo-dark { display: none; }
 :root[data-mantine-color-scheme="dark"] .aardvark-logo-light { display: none; }
 :root[data-mantine-color-scheme="dark"] .aardvark-logo-dark { display: block; }
-/* "Powered by aardvark" footer (theme.render_powered_by). The #aardvark-powered-by id is
+/* "Powered by Aardvark" footer (theme.render_powered_by). The #aardvark-powered-by id is
    the documented opt-out — `#aardvark-powered-by { display: none }`. */
 .aardvark-powered-by { border-top: 1px solid var(--aardvark-border); padding: 24px; text-align: center; }
 .aardvark-powered-by-link { display: inline-flex; align-items: center; gap: 8px; color: var(--aardvark-muted); font-size: 13px; text-decoration: none; }
@@ -1804,7 +1804,7 @@ html.aardvark-markdeep pre.markdeep { visibility: hidden; }
    safety net for anything still too wide. :where() keeps this at the island's specificity (0,1,1) so
    it layers over Mantine's Code styling without an !important. */
 .aardvark-api :where(td, th) code { overflow-wrap: anywhere; }
-/* OpenAPI descriptions authored with Markdown + aardvark primitives (see ApiReference's Prose).
+/* OpenAPI descriptions authored with Markdown + Aardvark primitives (see ApiReference's Prose).
    A block description now emits real <p>/<ul>/island markup where it used to be a single line, so
    trim the first/last child's outer margins and give stacked block primitives (callouts, cards)
    breathing room; an inline (table-cell / accordion-label) description stays inline. */
@@ -2070,9 +2070,9 @@ div.aardvark-api-prose table { display: block; width: fit-content; max-width: 10
 @media (hover: none) { .aardvark-code-header .aardvark-code-actions { opacity: 1; } }
 @media print { .aardvark-code-header .aardvark-code-actions { display: none; } }
 
-/* Compact "powered by" footer: a slim CENTERED row — the "Powered by" label + the aardvark logo,
+/* Compact "powered by" footer: a slim CENTERED row — the "Powered by" label + the Aardvark logo,
    linking to aardvarkdocs.com (theme.render_powered_by). Same markup + the #aardvark-powered-by
-   opt-out. Deliberately no tagline: a site's own footer shouldn't carry extra aardvark copy. */
+   opt-out. Deliberately no tagline: a site's own footer shouldn't carry extra Aardvark copy. */
 .aardvark-powered-by {
   padding: 14px 0;
   display: flex; align-items: center; justify-content: center;

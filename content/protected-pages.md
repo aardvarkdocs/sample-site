@@ -9,7 +9,7 @@ icon: fa-solid fa-lock
 
 # Password protection
 
-aardvark builds a fully static site, so there's no server to check a login. The `protected`
+Aardvark builds a fully static site, so there's no server to check a login. The `protected`
 option instead **encrypts** every page under a directory at build time and ships an opaque
 blob plus a small loader page. Readers unlock it in the browser with a password; the
 plaintext is never published.
@@ -80,14 +80,14 @@ A separate concern is a **nonce-based CSP** (`Content-Security-Policy: script-sr
 A static-only deploy can't serve a real one — a nonce baked into a fixed `_headers` file is the
 same on every request, so it's guessable and non-functional. It works only behind a dynamic edge
 layer (Cloudflare Pages middleware/Worker, a Netlify Edge Function) that mints a fresh nonce per
-request and stamps it onto the loader's own script tag. In that setup aardvark automatically
+request and stamps it onto the loader's own script tag. In that setup Aardvark automatically
 propagates the loader's nonce onto the revived island module scripts, so they mount; without the
 propagation those scripts would be silently CSP-blocked. (A `'strict-dynamic'` policy needs no
 nonce on the island scripts — they're created by the already-trusted loader and inherit its trust.)
 
 ## What stays private — and what doesn't
 
-Protected pages are kept out of every discovery surface aardvark emits: the **sitemap**,
+Protected pages are kept out of every discovery surface Aardvark emits: the **sitemap**,
 **on‑site search index**, **`llms.txt` / `llms-full.txt`**, **hover cards**, **Open Graph
 cards**, **RSS feeds**, and their plaintext **`.md` siblings**. Search engines and the AI
 assistant never see their contents.
@@ -120,7 +120,7 @@ Two things are *not* encrypted, so don't rely on them being secret:
   history and CI logs, and prefer your platform's secret store over a checked‑in value.
 - **Encrypted blobs are served `no-store`.** Each rebuild mints a fresh salt, so the `.enc`
   payload changes — but the cached key (above) would still decrypt a *stale* blob carrying the
-  old salt, silently showing outdated content in an open tab. To prevent that, aardvark adds a
+  old salt, silently showing outdated content in an open tab. To prevent that, Aardvark adds a
   `Cache-Control: no-store` rule for `/*.enc` to the generated `_headers` file, so the browser and
   CDN always fetch the current blob (a rotated salt then re‑prompts instead). The `_headers` file is
   honored by **Cloudflare Pages** and **Netlify**, whose `*` wildcard also matches across `/` so the

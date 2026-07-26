@@ -1,5 +1,5 @@
 ---
-description: Build-time Python in aardvark — inline blocks that compute part of a page
+description: Build-time Python in Aardvark — inline blocks that compute part of a page
   (fetch an API, loop over data) and generation scripts that emit whole page sets.
 icon: fa-solid fa-code
 menu: docs
@@ -9,7 +9,7 @@ weight: 20.8
 
 # Build-time Python
 
-aardvark runs *your* Python at build time in two places:
+Aardvark runs *your* Python at build time in two places:
 
 - **Inline `{% raw %}{% … %}{% endraw %}` blocks** inside any page — to compute *part* of
   a page: fetch an API, loop over your `data/`, assemble a table.
@@ -26,8 +26,8 @@ script that writes files. This page you're reading uses an inline block (the liv
 below).
 
 Because a generation script can write **any** file the build serves — not just Markdown
-pages, and not just the formats aardvark templates into (HTML, `sitemap.xml`, `llms.txt`) —
-build-time Python is aardvark's escape hatch for producing whatever a static host can serve:
+pages, and not just the formats Aardvark templates into (HTML, `sitemap.xml`, `llms.txt`) —
+build-time Python is Aardvark's escape hatch for producing whatever a static host can serve:
 a machine-readable data feed, a `robots`-style text file, a generated diagram, a binary
 download. If you can compute it in Python, you can publish it.
 
@@ -81,7 +81,7 @@ mutate them** — a mutation in one leaks into everything that runs after it.
 
 The viewer below isn't checked in — it's built when this page is. The block fetches
 [`metadata.json`](https://aardvarkdocs.com/metadata.json) (the agent-discovery artifact
-aardvark publishes for *this very site*) and renders it with the built-in
+Aardvark publishes for *this very site*) and renders it with the built-in
 [`{% raw %}{% jsontree %}{% endraw %}`](/components/community/jsontree/) viewer — the same
 interactive JSON tree the API reference uses for OpenAPI response examples:
 
@@ -135,7 +135,7 @@ When the output is a whole file — a page, a page *set*, or a downloadable data
 Python into a `generators/` directory at your project root. A generation script is just
 build-time Python — the **whole file runs**, top to bottom; there's no entry function to
 define. Each script gets two writers: `generate()` for **pages** and `emit()` for **any other
-file**. For pages, on every build aardvark:
+file**. For pages, on every build Aardvark:
 
 1. **runs** each `generators/*.py` (in alphabetical order) and collects every page it emits;
 2. **reconciles** that against `content/`: changed pages are rewritten, pages no longer
@@ -191,10 +191,10 @@ generated_by: generators/pricing.py
 ```
 
 These keys are **reserved**. If your `frontmatter` sets either one yourself, the build
-**fails** and tells you which key collided — the marker is what lets aardvark find and wipe
+**fails** and tells you which key collided — the marker is what lets Aardvark find and wipe
 generated pages, so a script can't forge or override it.
 
-Because the marker is how aardvark tells generated pages from hand-authored ones, a file
+Because the marker is how Aardvark tells generated pages from hand-authored ones, a file
 that carries both keys is treated as generator output: on the next build it's overwritten
 if a generator re-emits it, or deleted if none does. So if you ever want to **keep a
 generated page permanently as hand-authored** (commit it and edit it by hand), remove both
@@ -236,7 +236,7 @@ The rules are few and strict:
 
 - **`content` is written verbatim.** A `str` is encoded UTF-8; pass **`bytes`** (or a
   `bytearray`) for a binary format (an image, a PDF, a Parquet file) and the bytes land
-  untouched — aardvark never parses, renders, or rewrites an emitted file, so what you emit is
+  untouched — Aardvark never parses, renders, or rewrites an emitted file, so what you emit is
   exactly what's served.
 - **`path` is a clean relative path** under the site root — an absolute path or one
   containing `..` is rejected. `emit("data/x.json", …)` is served at `/data/x.json`.
@@ -257,7 +257,7 @@ directory. Because the whole output tree is rebuilt every build, there's no stal
 bookkeeping: a file you stop emitting simply stops appearing.
 
 {% callout severity='info' title='No new formats to learn' %}
-This is why aardvark doesn't need Hugo-style "output formats" or per-page alternate
+This is why Aardvark doesn't need Hugo-style "output formats" or per-page alternate
 templates. Anything a static host can serve, a generator can write with a few lines of
 ordinary Python — `csv`, `json`, `yaml`, `PIL`, whatever's on PyPI — reading from the same
 `data/` your pages use.

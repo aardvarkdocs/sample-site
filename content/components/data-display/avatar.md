@@ -8,7 +8,7 @@ description: "The built-in avatar tag — a user image with a graceful initials/
 A user avatar: an image that degrades gracefully to initials or a placeholder when the image
 is missing or fails to load. Point `src` at an image; when there's no `src` (or it can't
 load), the block body — or, with a `name`, auto-generated initials — is shown instead. It
-ships with aardvark, so it's a single tag with no setup.
+ships with Aardvark, so it's a single tag with no setup.
 
 Use it as `{% raw %}{% avatar %}{% endraw %}` in Markdown, or call it from Python logic
 (loops, snippets) via `component('aardvark', 'avatar', …)`.

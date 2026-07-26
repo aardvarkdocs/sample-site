@@ -7,7 +7,7 @@ description: "The built-in alphaslider tag — pick an alpha (opacity, 0–1) fo
 
 A **built-in** tag for an alpha slider — a thin track that fades a color from transparent to
 opaque, for picking an alpha (opacity) from 0 to 1. It's one of Mantine's color-picker
-building blocks. It ships with aardvark, so it's a single tag with no setup. Set the base
+building blocks. It ships with Aardvark, so it's a single tag with no setup. Set the base
 `color` so the track can show the fade, and `defaultValue` for the starting opacity.
 
 Use it as `{% raw %}{% alphaslider %}{% endraw %}` in Markdown, or call it from Python logic

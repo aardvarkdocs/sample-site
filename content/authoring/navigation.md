@@ -165,7 +165,7 @@ this sidebar shows both. A value is read **exactly like an [{% raw %}`{% icon %}
 
 - **A [Tabler](https://tabler.io/icons) icon name** — a bare lowercase name like `rocket`
   or `brand-github` (the default for a bare name). Aardvark bakes Tabler glyphs directly into the
-  static navigation — from the outline set bundled with aardvark, or your locally installed
+  static navigation — from the outline set bundled with Aardvark, or your locally installed
   `@tabler/icons` package when you've pinned a different `theme.iconVersion` — so they paint with
   the page and tint with the link color, with no JavaScript or icon request on the normal path.
 - **A Font Awesome class** — explicit, e.g. `fa-solid fa-rocket`, `fab fa-github`.
@@ -190,6 +190,6 @@ exactly as in the [{% raw %}`{% icon %}`{% endraw %}](/components/data-display/i
 stylesheet loaded: set `theme.fontawesome: true` in `aardvark.config.yaml` (this site does),
 or pass a kit/CDN URL to self-host or use Pro. Tabler, image, and emoji icons need none of that.
 A custom `theme.iconCdn` is authoritative (it may serve different SVGs): navigation uses its runtime
-loader and `vark build` stays quiet. A `theme.iconVersion` that is neither bundled with aardvark nor
+loader and `vark build` stays quiet. A `theme.iconVersion` that is neither bundled with Aardvark nor
 installed locally also falls back to the runtime loader — but there `vark build` warns which glyphs
 it couldn't bake.

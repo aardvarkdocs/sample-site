@@ -7,7 +7,7 @@ description: "The built-in colorpicker tag — an inline saturation + hue (+ alp
 
 A **built-in** tag for an inline color picker — a saturation field plus a hue slider (and, for
 the alpha formats, an opacity slider), shown directly on the page rather than in a dropdown.
-It ships with aardvark, so it's a single tag with no setup. Set a `format`, an optional
+It ships with Aardvark, so it's a single tag with no setup. Set a `format`, an optional
 `defaultValue`, and optional preset `swatches`.
 
 Use it as `{% raw %}{% colorpicker %}{% endraw %}` in Markdown, or call it from Python logic

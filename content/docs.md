@@ -3,7 +3,7 @@ aliases:
   - /resources/
   - from: /getting-started/quickstart/
     to: "#quickstart"
-description: aardvark is a Mantine-powered static site generator — author in Markdown,
+description: Aardvark is a Mantine-powered static site generator — author in Markdown,
   build to fast static HTML with interactive React islands.
 heading: Getting Started
 heading-icon: fa-solid fa-flag
@@ -13,20 +13,20 @@ title: Introduction
 weight: 10
 ---
 
-# aardvark
+# Aardvark
 
-**aardvark** is a documentation-focused static site generator. You author in
+**Aardvark** is a documentation-focused static site generator. You author in
 Markdown and build to static HTML. Interactive UI is delivered as **islands**:
-aardvark emits the HTML, and Mantine + your own React components render in the
+Aardvark emits the HTML, and Mantine + your own React components render in the
 browser from a single bundled runtime.
 
-This very site is built with aardvark.
+This very site is built with Aardvark.
 
 {% card variant="gradient" gradient="indigo,grape,135" icon="rocket" title="Build your first site in a minute" cta="Start the quickstart" href="/docs/#quickstart" %}
 Markdown in, fast static HTML out — with interactive Mantine islands. No build config to write.
 {% endCard %}
 
-## Why aardvark
+## Why Aardvark
 
 - **Markdown in, HTML out** — pretty URLs, a TOC, and a clean default theme.
 - **Real Python templating** — logic lives in `{% raw %}{% %}{% endraw %}` tags and is actual
@@ -67,7 +67,7 @@ Live examples of every Mantine component, callable straight from Markdown.
 
 ## Quickstart {#quickstart}
 
-Once you've [installed aardvark](/getting-started/installation/), you can scaffold,
+Once you've [installed Aardvark](/getting-started/installation/), you can scaffold,
 preview, and build your first site in a few commands.
 
 ### 1. Scaffold a site
@@ -86,7 +86,7 @@ theme, an example snippet, and a `package.json` for the islands.
 npm install
 ```
 
-This installs React, Mantine, and esbuild, which aardvark uses to bundle the
+This installs React, Mantine, and esbuild, which Aardvark uses to bundle the
 components you embed.
 
 ### 3. Develop with live reload
@@ -107,7 +107,7 @@ vark build      # outputs static HTML to ./build
 
 ### Create your first page
 
-An aardvark page is Markdown with optional YAML frontmatter. Logic is real
+An Aardvark page is Markdown with optional YAML frontmatter. Logic is real
 Python inside `{% raw %}{% %}{% endraw %}` tags:
 
 {% raw %}

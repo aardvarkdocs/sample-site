@@ -6,7 +6,7 @@ description: "The built-in hueslider tag — pick a hue (0–360) along the colo
 # HueSlider
 
 A **built-in** tag for a hue slider — a thin track of the full color spectrum for picking a
-hue from 0 to 360. It's one of Mantine's color-picker building blocks. It ships with aardvark,
+hue from 0 to 360. It's one of Mantine's color-picker building blocks. It ships with Aardvark,
 so it's a single tag with no setup. Set `defaultValue` for the starting hue, and tune the
 track with `size` and `radius`.
 

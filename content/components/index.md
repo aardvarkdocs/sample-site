@@ -9,7 +9,7 @@ title: Built-in Components
 Aardvark ships a built-in `{% raw %}{% tag %}{% endraw %}` for **every Mantine core
 component** — no setup, no JavaScript to write. They're grouped by category in the left nav,
 mirroring Mantine's own groupings, so you can browse by what a component _does_. On top of the
-Mantine set, aardvark adds a handful of **native** components built just for documentation sites,
+Mantine set, Aardvark adds a handful of **native** components built just for documentation sites,
 plus a growing **Community Components** catalog: eligible third-party Mantine extensions are
 wrapped as built-in tags, while notable policy exclusions are documented explicitly.
 
@@ -67,7 +67,7 @@ Third-party Mantine extensions — bundled tags that pass the license and compat
 
 When the built-ins don't cover it, define your **own** component in your project — that's a [custom component](/authoring/custom-components/), and it's where the real flexibility is. Drop a React component in `snippets/` and call it from Markdown exactly like a built-in:
 
-{% component('ProductCard', product='aardvark', tagline='Markdown in, static site out.', badge='v1.0', href='/docs/#quickstart') %}
+{% component('ProductCard', product='Aardvark', tagline='Markdown in, static site out.', badge='v1.0', href='/docs/#quickstart') %}
 
 `snippets/ProductCard.jsx` freely blends **plain HTML** (`<div>`, `<h3>`, `<p>`) with Mantine components (`Card`, `Group`, `Badge`, `Button`) — inside a snippet it's just React, so any blend of HTML and Mantine you choose works. See [Components & snippets](/authoring/components-and-snippets/) for the full authoring guide.
 

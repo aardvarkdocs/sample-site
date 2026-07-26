@@ -5,7 +5,7 @@ description: "Built-in image handling — Mantine Image with a no-upscale defaul
 
 # Image
 
-Images render through Mantine's `Image` component with two extras aardvark adds on top: they
+Images render through Mantine's `Image` component with two extras Aardvark adds on top: they
 fill the content width **without** being upscaled past their natural size, and — when there's
 more detail to reveal — clicking one opens it in a **dimmed full-image lightbox**. A plain
 Markdown image on its own line gets this automatically; use the `{% raw %}{% image %}{% endraw %}`

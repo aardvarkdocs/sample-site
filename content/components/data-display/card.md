@@ -22,7 +22,7 @@ accent borders — and all of it is reduced-motion-safe and looks right in light
 
 A title and a Markdown body. Standalone, a card is a full-width block:
 
-{% card title="What is aardvark?" %}
+{% card title="What is Aardvark?" %}
 A documentation-focused static site generator — **Markdown in, static HTML out**, with
 interactive [Mantine](https://mantine.dev) islands.
 {% endCard %}
@@ -33,7 +33,7 @@ interactive [Mantine](https://mantine.dev) islands.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% card title="What is aardvark?" %}
+{% card title="What is Aardvark?" %}
 A documentation-focused static site generator — **Markdown in, static HTML out**, with
 interactive [Mantine](https://mantine.dev) islands.
 {% endCard %}
@@ -42,7 +42,7 @@ interactive [Mantine](https://mantine.dev) islands.
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'card', title='What is aardvark?',
+component('aardvark', 'card', title='What is Aardvark?',
           children='A documentation-focused static site generator — **Markdown in, '
                    'static HTML out**, with interactive [Mantine](https://mantine.dev) islands.')
 ```
@@ -475,7 +475,7 @@ Target the rendered element through its island marker — `[data-aardvark-island
 `card` also exposes a dedicated `onclick` shortcut for the common click case; in Python it
 rides this same channel as `attr={'onclick': …}`.
 
-{% card title="What is aardvark?" onclick="alert(this.innerText)" %}
+{% card title="What is Aardvark?" onclick="alert(this.innerText)" %}
 A documentation-focused static site generator.
 {% endCard %}
 
@@ -485,7 +485,7 @@ A documentation-focused static site generator.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% card title="What is aardvark?" onclick="alert(this.innerText)" %}
+{% card title="What is Aardvark?" onclick="alert(this.innerText)" %}
 A documentation-focused static site generator.
 {% endCard %}
 ```
@@ -493,7 +493,7 @@ A documentation-focused static site generator.
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'card', title='What is aardvark?',
+component('aardvark', 'card', title='What is Aardvark?',
           children='A documentation-focused static site generator.',
           attr={'onclick': 'alert(this.innerText)'})
 ```

@@ -29,7 +29,7 @@ omit `image` and image-led variants render as clean text cards rather than leavi
 on top, the badge floating over its corner in a gradient chip, title, a four-line teaser,
 and a footer with the byline on the left and the date on the right:
 
-{% articleCard variant="horizontal" title="Introducing Ask AI, the reader assistant" href="/blog/introducing-ask-ai/" image="/landscape.jpg" imageAlt="" badge="Product" authorName="The aardvark team" authorAvatar="/favicon.svg" date="2026-05-05" tags="ai, product" %}
+{% articleCard variant="horizontal" title="Introducing Ask AI, the reader assistant" href="/blog/introducing-ask-ai/" image="/landscape.jpg" imageAlt="" badge="Product" authorName="The Aardvark team" authorAvatar="/favicon.svg" date="2026-05-05" tags="ai, product" %}
 A native Ask AI panel that answers reader questions from your own docs, with cited
 sources and metered, dollar-based billing.
 {% endArticleCard %}
@@ -40,7 +40,7 @@ sources and metered, dollar-based billing.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% articleCard variant="horizontal" title="Introducing Ask AI, the reader assistant" href="/blog/introducing-ask-ai/" image="/landscape.jpg" imageAlt="" badge="Product" authorName="The aardvark team" authorAvatar="/favicon.svg" date="2026-05-05" tags="ai, product" %}
+{% articleCard variant="horizontal" title="Introducing Ask AI, the reader assistant" href="/blog/introducing-ask-ai/" image="/landscape.jpg" imageAlt="" badge="Product" authorName="The Aardvark team" authorAvatar="/favicon.svg" date="2026-05-05" tags="ai, product" %}
 A native Ask AI panel that answers reader questions from your own docs, with cited
 sources and metered, dollar-based billing.
 {% endArticleCard %}
@@ -52,7 +52,7 @@ sources and metered, dollar-based billing.
 component('aardvark', 'articleCard', variant='horizontal',
           title='Introducing Ask AI, the reader assistant', href='/blog/introducing-ask-ai/',
           image='/landscape.jpg', imageAlt='', badge='Product',
-          authorName='The aardvark team', authorAvatar='/favicon.svg',
+          authorName='The Aardvark team', authorAvatar='/favicon.svg',
           date='2026-05-05', tags='ai, product',
           children='A native Ask AI panel that answers reader questions from your own '
                    'docs, with cited sources and metered, dollar-based billing.')
@@ -67,7 +67,7 @@ teaser into a separated border-top footer strip — good for uniform grids. Note
 **initials fallback**: no `authorAvatar` here, so the byline draws a disc from the
 author's initials:
 
-{% articleCard variant="footer" title="Why aardvark rebuilds every page (for now)" href="/blog/how-incremental-builds-work/" badge="Engineering" authorName="aardvark engineering" date="2026-06-02" tags="build, performance" %}
+{% articleCard variant="footer" title="Why Aardvark rebuilds every page (for now)" href="/blog/how-incremental-builds-work/" badge="Engineering" authorName="Aardvark engineering" date="2026-06-02" tags="build, performance" %}
 Where the dev loop's speed actually comes from, and why per-page skipping is a harder
 promise than it looks.
 {% endArticleCard %}
@@ -78,7 +78,7 @@ promise than it looks.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% articleCard variant="footer" title="Why aardvark rebuilds every page (for now)" href="/blog/how-incremental-builds-work/" badge="Engineering" authorName="aardvark engineering" date="2026-06-02" tags="build, performance" %}
+{% articleCard variant="footer" title="Why Aardvark rebuilds every page (for now)" href="/blog/how-incremental-builds-work/" badge="Engineering" authorName="Aardvark engineering" date="2026-06-02" tags="build, performance" %}
 Where the dev loop's speed actually comes from, and why per-page skipping is a harder
 promise than it looks.
 {% endArticleCard %}
@@ -114,8 +114,8 @@ screens), an uppercase category caption, the title, and a compact `author • da
 Here two of them ride a `{% raw %}{% cardGrid %}{% endraw %}`:
 
 {% cardGrid colsBase=1 colsSm=2 %}
-{% articleCard variant="vertical" title="Anatomy of a Mantine island" href="/blog/anatomy-of-a-mantine-island/" image="/img/sample-landscape.svg" imageAlt="" badge="Deep dive" authorName="aardvark engineering" authorAvatar="/img/sample-square.svg" date="2026-06-18" tags="components, engineering" %}{% endArticleCard %}
-{% articleCard variant="vertical" title="vark 0.9 release roundup" href="/blog/vark-0-9-release-roundup/" image="/landscape.jpg" imageAlt="" badge="Release" authorName="The aardvark team" authorAvatar="/favicon.svg" date="2026-05-30" tags="release, cli" %}{% endArticleCard %}
+{% articleCard variant="vertical" title="Anatomy of a Mantine island" href="/blog/anatomy-of-a-mantine-island/" image="/img/sample-landscape.svg" imageAlt="" badge="Deep dive" authorName="Aardvark engineering" authorAvatar="/img/sample-square.svg" date="2026-06-18" tags="components, engineering" %}{% endArticleCard %}
+{% articleCard variant="vertical" title="vark 0.9 release roundup" href="/blog/vark-0-9-release-roundup/" image="/landscape.jpg" imageAlt="" badge="Release" authorName="The Aardvark team" authorAvatar="/favicon.svg" date="2026-05-30" tags="release, cli" %}{% endArticleCard %}
 {% endCardGrid %}
 
 <br>
@@ -125,8 +125,8 @@ Here two of them ride a `{% raw %}{% cardGrid %}{% endraw %}`:
 {% raw %}
 ```aardvark
 {% cardGrid colsBase=1 colsSm=2 %}
-{% articleCard variant="vertical" title="Anatomy of a Mantine island" href="/blog/anatomy-of-a-mantine-island/" image="/img/sample-landscape.svg" imageAlt="" badge="Deep dive" authorName="aardvark engineering" authorAvatar="/img/sample-square.svg" date="2026-06-18" tags="components, engineering" %}{% endArticleCard %}
-{% articleCard variant="vertical" title="vark 0.9 release roundup" href="/blog/vark-0-9-release-roundup/" image="/landscape.jpg" imageAlt="" badge="Release" authorName="The aardvark team" authorAvatar="/favicon.svg" date="2026-05-30" tags="release, cli" %}{% endArticleCard %}
+{% articleCard variant="vertical" title="Anatomy of a Mantine island" href="/blog/anatomy-of-a-mantine-island/" image="/img/sample-landscape.svg" imageAlt="" badge="Deep dive" authorName="Aardvark engineering" authorAvatar="/img/sample-square.svg" date="2026-06-18" tags="components, engineering" %}{% endArticleCard %}
+{% articleCard variant="vertical" title="vark 0.9 release roundup" href="/blog/vark-0-9-release-roundup/" image="/landscape.jpg" imageAlt="" badge="Release" authorName="The Aardvark team" authorAvatar="/favicon.svg" date="2026-05-30" tags="release, cli" %}{% endArticleCard %}
 {% endCardGrid %}
 ```
 {% endraw %}
