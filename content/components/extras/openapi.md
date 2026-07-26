@@ -72,9 +72,9 @@ page, with every operation wired into the left-hand nav. It renders this site's 
 Aardvark gateway API, so it doubles as a live reference and a demonstration.
 
 Operations are grouped in the nav by their first OpenAPI `tag`. The bucket heading
-is the tag's `description` when it has one (else its `x-displayName`, else the
-sentence-cased tag name) — so a tag like `pet` reads as **Everything about your
-Pets** rather than a bare lowercase `pet`.
+is the tag's Redoc-style `x-displayName` when set (else the first line of its
+`description`, else the sentence-cased tag name) — so a tag like `pet` reads as
+**Pets!** rather than a bare lowercase `pet` when both fields are present.
 
 ## Responses
 
