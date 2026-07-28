@@ -140,7 +140,7 @@ map:
   # rateLimit: 1.0             # requests per second
   # timeout: 10                # seconds per geocoder request
   style: liberty               # default basemap
-  # maplibreVersion: "5.24.0"  # pin a different MapLibre release
+  # maplibreVersion: "6.0.0"  # pin a different MapLibre release
 ```
 {% endraw %}
 

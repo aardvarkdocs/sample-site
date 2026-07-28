@@ -314,7 +314,7 @@ footer:
 #   # timeout: 10                # seconds per geocoder request
 #   style: liberty               # liberty | bright | positron | a full MapLibre style URL
 #   height: 400                  # default map height in px
-#   # maplibreVersion: "5.24.0"  # pin a different MapLibre GL JS release
+#   # maplibreVersion: "6.0.0"  # pin a different MapLibre GL JS release
 
 # Accessibility: a non-fatal, build-time WCAG color-contrast audit of your theme's palette
 # (light + dark), read from themes/<name>/theme.scss. On by default; the shipped default
