@@ -336,16 +336,63 @@ Mintlify show:
   nowhere);
 - **Ask-AI escalation rate** — how often a search turned into an assistant question;
 - **top clicked results**, a **language** breakdown, and **search latency**;
+- periodic deterministic **search themes** and **content gaps** summarized per normalized term from a
+  bounded recent sample (up to 50,000 stored queries and the latest 50,000 click candidates considered
+  per source period; clicks need not duplicate their query text and count only when their exact nearest
+  owner is one of those sampled queries), with concrete documentation
+  recommendations that remain available after the raw event-retention window;
 - **CSV export** of the top terms.
 
-Query text is stored by default (bounded; the raw rows are swept after a retention window — **90 days
-by default**, configurable via the gateway's `SEARCH_EVENT_RETENTION_DAYS`, after which only the
-aggregate trends remain) so you get the term-level drill-down. Set `search.analytics.store_terms: false`
+Query text is stored by default (bounded; the base raw-row retention window is **90 days by default**
+and configurable via the gateway's `SEARCH_EVENT_RETENTION_DAYS`). When that window is shorter than the
+active calendar period, the gateway retains only the latest 50,000 stored queries, latest 50,000 click
+candidates, and at most one preceding stored-query owner per retained click for each account — no more
+than 150,000 extended source rows per retained source period, and normally fewer. This is the same bounded
+source used to rebuild the active theme/gap snapshot. If activity arrives after a period's last refresh,
+at most one recently completed pending period keeps its own bounded sample while the fair queue finalizes
+that tail; later expired backlog periods are dropped. Active plus pending samples therefore cap transient
+extended storage at 300,000 rows per account. Anonymous queries and Ask-AI rows still follow the base
+window. Lowering `SEARCH_EVENT_RETENTION_DAYS` makes older rows eligible immediately, but does not purge them
+synchronously: the oldest-first minute sweep drains bounded pages fairly across accounts, so a large existing
+backlog ages out gradually. After those source rows expire, the live term-level
+drill-down ages out while a previously generated theme/gap snapshot can remain. Those snapshots cover their
+latest calendar period independently of the dashboard's selected 24-hour/7/30/90-day live
+window. The live KPIs and volume trend are
+computed from those raw rows, so they age out with the rows rather than becoming a separate permanent
+aggregate. The durable summary applies its source-row cap before grouping, so displayed theme/gap counts
+are counts within that recent sample when an account or period is busier than the cap. Result clicks follow
+the nearest preceding stored-term query in the same tab session, whether or not the click beacon repeats
+the term. A sampled click contributes only when that exact owner is also in the capped query sample; an
+omitted or out-of-period owner remains as an attribution barrier so retention cannot lend the click to an
+older sampled query. A click affects a durable snapshot only when its raw beacon timestamp falls inside
+the owning query's calendar period plus the five-minute boundary/reordering window; a later same-tab click
+remains part of live analytics but does not reopen or extend that snapshot. Anonymous queries stay outside this
+durable term-insight attribution. If that source period's click-candidate lane reaches its cap and
+a sampled query has no attributed click, or a click candidate for the same normalized term belongs
+to a same-period owner outside the capped query sample, its click count is treated as unknown rather than
+manufacturing a no-click content gap. The same conservative unknown applies when a delayed query takes
+ownership of a click below its new period's five-minute window: that older click is not counted in the new
+period, but it cannot manufacture an exact no-click gap there. A durable snapshot
+retains a representative query-term label and example for each normalized term bucket, and a content-gap
+recommendation may quote that label, after the underlying raw rows are
+deleted. The active-period snapshot remains alongside the source-row floor described above. After that
+period closes, the scheduled sweep removes snapshots whose generation time falls outside
+`SEARCH_EVENT_RETENTION_DAYS`, bounding derived query text to the active period plus the configured
+window. Snapshots can survive `/admin/delete-account`, which archives the account, only until that
+cutoff; an underlying hard delete removes them immediately. Set
+`search.analytics.store_terms: false`
 to log only the anonymous funnel (counts, rates,
 positions, latency — no raw text), or `search.analytics: false` to turn the dashboard capture off
 entirely. Readers with **Do-Not-Track** or **Save-Data** set are never logged by the shipped search
 widget — it sends no beacon (a client-side check, like `store_terms` above). (This is independent of the
 GA events above — you can run either, both, or neither.)
+
+Search-theme and content-gap summaries require stored query terms. With
+`search.analytics.store_terms: false`, the dashboard can show the anonymous live funnel while its raw
+events remain. After the rebuilt setting is deployed, the shipped widget omits term text from newly
+emitted events, so those events cannot seed a term-based theme or gap. The setting does not erase
+term-bearing events already received or snapshots already written: eligible earlier rows can still be
+summarized before they expire, and existing snapshots remain until their active-period/retention cutoff.
 
 `store_terms: false` is a **client-side, best-effort** control: your site's search widget omits the query
 text before sending, so with the shipped widget a reader's query text isn't transmitted. The gateway does

@@ -9925,7 +9925,7 @@
         ],
         "summary": "Search analytics",
         "operationId": "getV1SearchAnalytics",
-        "description": "On-site search analytics over a window of `days` (default 30, max 90): top searches, zero-result queries, click-through, average clicked position, searches-per-session, no-click rate, Ask-AI escalation rate, top clicked pages, a language split, and a bucketed volume series (hourly for ≤2 days, daily otherwise).",
+        "description": "On-site search analytics over a window of `days` (default 30, max 90): top searches, zero-result queries, click-through, average clicked position, searches-per-session, no-click rate, Ask-AI escalation rate, top clicked pages, a language split, and a bucketed volume series (hourly for ≤2 days, daily otherwise). The response also includes the latest durable calendar-period search-theme/content-gap snapshot, which is independent of the requested live-event window.",
         "security": [
           {
             "sessionCookie": []
@@ -10101,6 +10101,104 @@
                           }
                         }
                       }
+                    },
+                    "insights": {
+                      "type": "object",
+                      "properties": {
+                        "generated_ts": {
+                          "type": "integer",
+                          "description": "Epoch-ms time the search-insights snapshot was generated, or null before the first pass.",
+                          "nullable": true
+                        },
+                        "period": {
+                          "type": "object",
+                          "properties": {
+                            "kind": {
+                              "type": "string",
+                              "description": "Calendar period kind (`week`, `month`, or `quarter`)."
+                            },
+                            "start": {
+                              "type": "integer",
+                              "description": "Inclusive UTC start of the calendar period, epoch-ms."
+                            },
+                            "end": {
+                              "type": "integer",
+                              "description": "Exclusive UTC end of the calendar period, epoch-ms."
+                            }
+                          },
+                          "nullable": true,
+                          "description": "Calendar period covered by the latest snapshot, or null before the first pass; it does not follow the `days` query parameter."
+                        },
+                        "themes": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "label": {
+                                "type": "string",
+                                "description": "Representative display term retained for the normalized search-term bucket."
+                              },
+                              "finding": {
+                                "type": "string",
+                                "description": "Deterministic query, click-through, and zero-result summary for the term.",
+                                "nullable": true
+                              },
+                              "recommendation": {
+                                "type": "string",
+                                "description": "Optional documentation recommendation for the theme; it may quote the representative term.",
+                                "nullable": true
+                              },
+                              "count": {
+                                "type": "integer",
+                                "description": "Approximate query count behind the theme."
+                              },
+                              "examples": {
+                                "type": "array",
+                                "description": "Representative query-term text retained for the theme.",
+                                "items": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          },
+                          "description": "Highest-volume normalized search-term summaries, biggest first."
+                        },
+                        "gaps": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "label": {
+                                "type": "string",
+                                "description": "Representative display term retained for the gap's normalized search-term bucket."
+                              },
+                              "finding": {
+                                "type": "string",
+                                "description": "Deterministic summary explaining the missing/no-click signal.",
+                                "nullable": true
+                              },
+                              "recommendation": {
+                                "type": "string",
+                                "description": "Suggested documentation change; it may quote the representative term.",
+                                "nullable": true
+                              },
+                              "count": {
+                                "type": "integer",
+                                "description": "Approximate severity count behind the gap."
+                              },
+                              "examples": {
+                                "type": "array",
+                                "description": "Representative query-term text retained for the gap.",
+                                "items": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          },
+                          "description": "Deterministic search-driven content gaps derived from zero-result or repeated no-click normalized terms."
+                        }
+                      },
+                      "description": "Latest durable, deterministic per-normalized-term search themes and content gaps. This calendar-period snapshot is independent of the `days` live-event window and retains representative query-term text after raw search-event rows expire. Before grouping, the scheduled pass samples at most the latest 50,000 stored query rows and the latest 50,000 click candidates considered for the source period. Each click candidate follows the nearest preceding stored-term query in the same tab session and need not duplicate that query's term. It contributes only when that exact owner is also in the capped query sample; an omitted or out-of-period owner remains as an attribution barrier so retention cannot lend the click to an older sampled query. A click affects a durable snapshot only when its raw beacon timestamp falls inside the owning query's calendar period plus the five-minute boundary/reordering window; later same-tab clicks remain part of live analytics but do not reopen or extend that snapshot. Anonymous queries stay outside this durable term-insight attribution, and theme/gap counts are sample counts above those bounds. If that source period's click-candidate lane reaches its cap and a sampled query has no attributed click, or a click candidate for the same normalized term belongs to a same-period owner outside the capped query sample, that click count is treated as unknown rather than manufacturing a no-click content gap. The same conservative unknown applies when a delayed query takes ownership of a click below its new period's five-minute window: that older click is not counted in the new period, but it cannot manufacture an exact no-click gap there. `SEARCH_EVENT_RETENTION_DAYS` is the base raw-row window. Beyond it, the active calendar period keeps only those two 50,000-row lanes plus at most one stored-query owner per retained click, bounding extended source storage to 150,000 rows per retained source period and normally fewer. At most one recently completed pending period keeps its own bounded sample while the fair queue finalizes activity that arrived after its last refresh; later expired backlog periods are dropped, so active plus pending samples cap transient extended storage at 300,000 rows per account. The active-period snapshot receives the same floor; after the period closes, snapshots whose generation time falls outside that duration are swept. They can survive `/admin/delete-account`, which archives rather than hard-deletes account data, only until that cutoff; a physical account deletion removes them immediately. After a rebuilt shipped widget enables `store_terms: false`, newly emitted queries contain no term text and cannot seed term summaries; termless clicks can still attach to a preceding stored-term query. The setting does not erase previously received term-bearing rows or existing snapshots, so eligible earlier rows can still be summarized before they expire and snapshots remain until their normal active-period/retention cutoff."
                     }
                   }
                 }
