@@ -70,6 +70,8 @@ Every build prints a per-phase timing summary — how many pages and components 
 
 A link to a missing page or a missing local image — in any language — always fails the build (the same check `vark link-check` runs without producing output). A link to a missing `#anchor` on a page that DOES exist is warn-only by default (it still lands on the right page); set `links: {strictAnchors: true}` in config to make those fail too. Unknown component references never fail the build: each renders as an HTML comment and is reported as a warning on stderr — usually a typo, a missing `npm install`, or a snippet you haven't created yet.
 
+`--log-file PATH` also appends this build's summary, warnings, and any failure to a plain-text file — what `vark build > summary.txt` captures, plus the warnings and the error (`-v`'s per-phase streaming stays on stderr and is not written to the file). It exists mainly for symmetry with `vark dev --log-file`, where a pipe isn't an option because it turns the dashboard off. Runs are appended under a `=== vark build … started … ===` banner.
+
 | Option | Default | Effect |
 | --- | --- | --- |
 | `--root DIRECTORY` | `.` | Project directory (defaults to the current directory). |
@@ -82,6 +84,7 @@ A link to a missing page or a missing local image — in any language — always
 | `--generators / --no-generators` | `--generators` | Run generation scripts in generators/ (write Markdown pages before the build). |
 | `-v, --verbose` | off | Stream per-phase progress as the build runs. |
 | `--plain / --no-plain` | auto | Force plain (or rich) output. Auto-detected off a TTY, or under CI / NO_COLOR. |
+| `--log-file PATH` | — | Append this build's log — the summary, warnings, and any failure — to PATH as plain text. Off unless you pass it. |
 
 Examples:
 
@@ -97,6 +100,8 @@ Serve the site locally and rebuild on change.
 
 Builds once, serves the result, watches your sources, and live-reloads the browser on every change. Your browser opens to the site automatically when the server starts (pass `--no-open` to skip that). The per-phase timing summary prints on the first build and on every rebuild, so you can see exactly what each change cost. Generation scripts run on every rebuild; pass `--no-generators` for a fully offline loop when a generator's network call is slow or its cache is cold.
 
+The live dashboard paints on the terminal's alternate screen, so its log vanishes when you quit and can't be piped anywhere (piping `vark dev` turns the dashboard off entirely). Drag-select copies what the pane still shows (2,000 wrapped lines); `s` saves from a separate, larger record of 5,000 unwrapped lines, so it keeps output the pane has already scrolled past. Both are still capped. Pass `--log-file dev.log` to also write the same events — every build summary, warning, broken-link report, and traceback — to a plain-text file you can paste from, with no cap at all. Runs are appended, each under a `=== vark dev … started … ===` banner, so restarting never discards the output you were trying to keep.
+
 | Option | Default | Effect |
 | --- | --- | --- |
 | `--root DIRECTORY` | `.` | Project directory (defaults to the current directory). |
@@ -105,6 +110,7 @@ Builds once, serves the result, watches your sources, and live-reloads the brows
 | `--generators / --no-generators` | `--generators` | Run generation scripts on each rebuild. Pass --no-generators for a faster, fully offline dev loop when a generator makes a slow/uncached network call. |
 | `-v, --verbose` | off | Stream per-phase progress on every rebuild. |
 | `--plain` | off | Disable the live dashboard; use plain line-by-line output (also implied off a TTY or under CI / NO_COLOR). |
+| `--log-file PATH` | — | Append this run's log — builds, warnings, and errors — to PATH as plain text, so the dashboard's output can be copied into a bug report. Off unless you pass it; PATH must be outside the build output directory, which every build replaces. |
 
 Examples:
 
@@ -112,6 +118,7 @@ Examples:
 vark dev               # serve ./ at http://localhost:8000, live-reload
 vark dev --port 3000   # serve on a different port
 vark dev --no-open     # don't open a browser when the server starts
+vark dev --log-file dev.log   # also append the log to a file you can paste from
 ```
 
 ## `vark link-check`

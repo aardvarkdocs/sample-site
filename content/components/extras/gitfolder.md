@@ -13,11 +13,14 @@ GitHub**, and a **Download&nbsp;ZIP** of the **whole repository**. The repo's de
 **license** is shown at the bottom, so readers know the terms before reusing the code. It's
 perfect for showing an example project inline without copy-pasting every file into the page.
 
-The folder is fetched **at build time** — only the requested subfolder, over the GitHub API,
-never a `git clone` — and then **cached**, so a rebuild never re-downloads a folder it already
-has. The reader's browser loads nothing from GitHub: the files, their highlighting, the
-rendered previews, and any displayed images are all baked into the page or served from your
-own site; the zip is a static file too.
+The files are fetched **at build time** — one archive download of the repo, from which only
+the requested subfolder is kept; never a `git clone` — and then **cached**, so a rebuild never
+re-downloads a folder it already has. **Browsing** loads nothing from GitHub: the file tree,
+the source and its highlighting, the rendered previews, and any displayed images are all baked
+into the page or served from your own site, so the widget works offline and stays fast. The
+one exception is the **Download ZIP** button, which links to GitHub's own archive URL for the
+repo — clicking it does reach GitHub, and it gives the reader the whole repository rather than
+just the folder shown.
 
 ## Usage
 
@@ -38,10 +41,11 @@ Click a file in the tree to view it on the right; folders collapse. Code is synt
 images show inline, and Markdown / SVG get a **Source ⟷ Preview** toggle — all with per-file
 copy / download and a link to the **source on GitHub**.
 
-With no `folder`, the whole repo is grabbed as a **single archive download** — fast, and it
-never touches GitHub's API rate limit. Only the file *contents* are embedded in the page (up to
-`maxFiles`, default 300), so a very large repo makes a heavy page; scope to a `folder` (below)
-when you only need part of a big repo.
+Both forms fetch the same thing — **one archive download** of the repo — so the choice is
+about the *page*, not the network. With no `folder`, every file in the repo is embedded (up to
+`maxFiles`, default 300), which makes a very large repo a heavy page. Scope to a `folder`
+(below) to embed just that subtree: a lighter page, and the `maxFiles` cap applies to the
+subtree rather than the whole repo.
 
 ## Scope to a folder
 
@@ -53,14 +57,12 @@ Add a `folder` (a path within the repo) to show just that subtree:
 ```
 {% endraw %}
 
-**Folder mode uses the GitHub API.** Listing a folder goes through GitHub's contents API, which
-is **rate-limited to 60 requests/hour per IP** for anonymous builds. On a **shared-IP CI build**
-(Cloudflare Pages, Netlify, GitHub Actions, …) that ceiling is shared across every project on the
-runner, so even one `folder` fetch can hit it — the widget then shows a "load failed — view on
-GitHub" fallback instead of the browser. Set a **`GITHUB_TOKEN`** (or `GH_TOKEN`) in your build
-environment to raise it to 5,000/hour (more under the **Rate limits** note below); the whole-repo
-form above uses the archive download and is never rate-limited. (This page renders the whole-repo
-form above for exactly that reason — so it works on CI without a token.)
+**Folder mode downloads the same archive.** A `folder=` browse fetches the repo's single zip
+archive and keeps only that subtree — the same one request the whole-repo form makes, to a host
+with no REST quota. **No `GITHUB_TOKEN` is needed** for either form, on CI or anywhere else.
+What `folder=` changes is the *page*: only that subtree's files are embedded, and the `maxFiles`
+cap applies to the subtree. The whole repo is still transferred to your build machine either
+way, so a `folder=` on a very large repo is a lighter page but not a lighter download.
 
 ## Downloads & licensing
 
@@ -117,16 +119,18 @@ of a network round-trip (and longer builds) each time:
 ```
 {% endraw %}
 
-With `cache="false"`, the build prints a warning each time noting that it's re-fetching and
-**how long** the download took, so a slow build is never a mystery.
+With `cache="false"`, the build prints a note each time (`Aardvark: note: …`) saying that it's
+re-fetching and **how long** the download took, so a slow build is never a mystery. It's a
+status line, not a warning — re-fetching is what you asked for — so it isn't counted in the
+build summary's warning total.
 
 ## Options
 
 | Attribute | Effect |
 | --- | --- |
 | `github="owner/repo"` | The **public** repo (required). A full `https://github.com/owner/repo` URL or a trailing `.git` is tolerated. |
-| `folder="path/in/repo"` | The folder to show, relative to the repo root. **Optional** — omit it to browse the whole repo root (the zip then links to GitHub's archive). A leading `/` is fine. |
-| `cache="false"` | Re-download every build (ephemeral, always latest) with a timed warning. Default `true`: download once, then reuse the local cache. |
+| `folder="path/in/repo"` | The folder to show, relative to the repo root. **Optional** — omit it to browse the whole repo root. A leading `/` is fine. |
+| `cache="false"` | Re-download every build (ephemeral, always latest), with a timed note in the build output. Default `true`: download once, then reuse the local cache. |
 | `ref="…"` / `branch="…"` | Pin a branch, tag, or commit SHA. Default: the repo's **default branch**. |
 | `label="…"` | Accessible name for the widget (sets `aria-label`); useful when a page has more than one. |
 | `height="480"` | Override the panel height (pixels, or any CSS length). |
@@ -138,15 +142,17 @@ With `cache="false"`, the build prints a warning each time noting that it's re-f
 - **The widget is wide.** It works at the default content width, but a file browser has more
   room to breathe on a `mode: wide` (or `mode: full`) page — set that in the page's
   front-matter.
-- **Rate limits (folder mode).** Listing a specific `folder` uses GitHub's API: **60 requests/hour
-  per IP** for anonymous builds (downloading the file *contents* doesn't count, and whole-repo
-  mode uses a single archive download that never touches the API). The catch is **shared-IP CI** —
-  on Cloudflare Pages, Netlify, GitHub Actions and the like, that 60/hour is shared across every
-  project on the runner, so even one `folder` fetch can come back **HTTP 403** and the widget
-  falls back to its "view on GitHub" note. Set a **`GITHUB_TOKEN`** (or `GH_TOKEN`) environment
-  variable — or `gitfolder.token` in config — to authenticate and raise the ceiling to
-  **5,000/hour** (a public repo needs no token scopes). Whole-repo mode, and a primed local
-  cache, never hit this.
+- **No API rate limit to worry about.** File content comes from one archive download, which
+  has no REST quota — so neither form needs a `GITHUB_TOKEN`, including on shared-IP CI
+  (Cloudflare Pages, Netlify, GitHub Actions), where an anonymous 60/hour API ceiling is shared
+  across every project on the runner. The only REST call left is a single memoized `/license`
+  lookup per repo, used for the footer; if that one gets rate-limited the files still render and
+  only the license line is missing. To get that line back on a shared-IP build, set
+  `GITHUB_TOKEN` (or `gitfolder.token`) **and** list the repo's owner under
+  `github.allowedOwners` — Aardvark only ever sends a credential to an approved owner, and an
+  absent `allowedOwners` approves nobody, so the token on its own changes nothing. The gate is
+  deliberate: `owner/repo` comes from page content, so an unapproved owner gets an anonymous
+  fetch instead of your credential.
 - **Resilient by design.** If a repo or folder can't be fetched (offline build, a typo, a
   rate-limit), the build prints a warning and the widget renders nothing — it never fails the
   whole build.

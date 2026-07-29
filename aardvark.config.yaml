@@ -402,6 +402,25 @@ github:
   editPage: true
   reportIssue: true
 
+# The {% gitfolder %} docs page demos WHOLE-REPO mode against this site's own published
+# mirror (aardvarkdocs/sample-site), which has grown past the 300-file default — so the live
+# demo was rendering the first 300 of 401 files with nothing on the page saying so. A
+# truncated demo of a file browser lies about the repo it is browsing, which is worse than a
+# smaller complete one, so lift the cap above the mirror's size.
+#
+# Why not the alternatives: the headline demo is deliberately the whole-repo form, because
+# that is the form whose page-weight behaviour this cap exists to bound — a `folder=` demo
+# shows only a subtree and would never exercise maxFiles at all. (Both forms now download the
+# same repo archive, so this is no longer a rate-limit question.) Raising the product default
+# was rejected too: 300 is right for a page that embeds every file's contents, and this site is
+# knowingly opting into a heavier page to keep its own demo honest.
+#
+# This needs raising again as the mirror grows — intentionally, and not silently: the
+# `sample-warnings` CI job fails on the truncation warning the moment the mirror outgrows
+# this number, because scripts/check-sample-site-warnings.py no longer allowlists it.
+gitfolder:
+  maxFiles: 500
+
 # Call-to-action buttons in the top-right of the header. Each is a Mantine Button
 # island (same wrapper as the built-in `{% button %}` tag): `text`, `url`, `variant`
 # (any Mantine Button variant — filled, outline, light, subtle, default, transparent,
