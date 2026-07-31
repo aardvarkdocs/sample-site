@@ -143,7 +143,8 @@
 
 /* :focus-within companions to every :hover reveal so keyboard users reach the type popups —
  * the renderer stamps tabindex="0" on the hover triggers (twoslash_render.mjs), so tabbing onto
- * one fires :focus-within here. Required for keyboard operability (AGENTS.md / WCAG 2.1 AA). */
+ * one fires :focus-within here. Required for keyboard operability
+ * (the theme accessibility rules / WCAG 2.1 AA). */
 .twoslash .twoslash-hover:hover .twoslash-popup-container,
 .twoslash .twoslash-hover:focus-within .twoslash-popup-container,
 .twoslash .twoslash-error-hover:hover .twoslash-popup-container,

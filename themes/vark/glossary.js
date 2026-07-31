@@ -120,7 +120,8 @@
   // bubble, so delegation works); the SHOW_MS dwell debounces tabbing straight through.
   document.addEventListener('focusin', onOver);
   document.addEventListener('focusout', onOut);
-  // Escape dismisses the card without moving focus (AGENTS.md: "Escape closes overlays").
+  // Escape dismisses the card without moving focus (the theme accessibility rules:
+  // "Escape closes overlays").
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && shownTerm) hide(); });
   window.addEventListener('scroll', onViewportChange, { passive: true });
   window.addEventListener('resize', onViewportChange);

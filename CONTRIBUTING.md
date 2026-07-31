@@ -47,10 +47,15 @@ acknowledgement commit before isolated CI starts.
 
 Ordinary sample-site files and top-level files already owned by the private
 overlay—currently `README.md`, `CONTRIBUTING.md`, and `LICENSE`—can be proposed
-through this flow. For safety, the sync refuses changes at the repository root
-under `.github/`, `.claude/`, and `worker/`, as well as any path component named
-`.git`, symlinks, submodules, unsafe paths, and changes that exceed its size
-limits. A refused pull request receives a generic explanation; open an issue if a
+through this flow. Agent instruction files are the exception — `AGENTS.md`,
+`AGENTS.override.md`, `CLAUDE.md`, and `CLAUDE.local.md`. Coding agents load them
+wherever they sit, so they publish outbound from the source repository only and
+the sync refuses an inbound change to one at any depth. The same goes for the
+agent toolchains' own config directories — `.claude/`, `.codex/` and `.cursor/`,
+plus the legacy `.cursorrules` — which those tools discover by walking the tree. For safety, it also refuses changes at the
+repository root under `.github/` and `worker/`, as well as any path component
+named `.git`, symlinks, submodules, unsafe paths, and changes that exceed its
+size limits. A refused pull request receives a generic explanation; open an issue if a
 maintainer needs to make that change in the source repository.
 
 Public pull requests are never merged into public `main`; that branch accepts
