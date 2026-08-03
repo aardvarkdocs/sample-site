@@ -6,9 +6,9 @@
   <title>{% full_title %}</title>
   {% seo_head %}
   {% base_script %}
-  <script src="/_aardvark/color-scheme.js"></script>
-  {% '<script src="/_aardvark/banner.js"></script>' if banner_id else '' %}
-  <link rel="stylesheet" href="/_aardvark/theme.css" />
+  <script src="{% asset('/_aardvark/color-scheme.js') %}"></script>
+  {% ('<script src="' + asset('/_aardvark/banner.js') + '"></script>') if banner_id else '' %}
+  <link rel="stylesheet" href="{% asset('/_aardvark/theme.css') %}" />
   {% theme_style %}
   <noscript><style>
     /* No JS → the drawer can never open, so restore the pre-PR mobile baseline: hide the (now inert)
@@ -18,7 +18,7 @@
        header's language/CTA controls stay reachable — their hide is gated on a JS-set class. */
     @media (max-width: 760px) { .aardvark-nav-burger, .aardvark-sidebar { display: none !important; } }
   </style></noscript>
-  {% '<link rel="stylesheet" href="/_aardvark/twoslash.css" />' if page_has_twoslash else '' %}
+  {% ('<link rel="stylesheet" href="' + asset('/_aardvark/twoslash.css') + '" />') if page_has_twoslash else '' %}
   {%
   for href in css_files:
       page.print('<link rel="stylesheet" href="' + href + '">')
@@ -143,18 +143,18 @@
        Present at page load so screen readers (notably NVDA) register it; tables.js
        writes here rather than into a JS-injected region, which some AT ignore. -->
   <div id="aardvark-live" class="aardvark-visually-hidden" role="status" aria-live="polite"></div>
-  <script src="/_aardvark/tabs.js" defer></script>
-  <script src="/_aardvark/nav.js" defer></script>
-  <script src="/_aardvark/drawer.js" defer></script>
-  <script src="/_aardvark/toc.js" defer></script>
-  <script src="/_aardvark/ai-layout.js" defer></script>
-  {% '<script src="/_aardvark/md-menu.js" defer></script>' if markdown_menu_html else '' %}
-  <script src="/_aardvark/tables.js" defer></script>
-  <script src="/_aardvark/code-blocks.js" defer></script>
-  <script src="/_aardvark/language-switcher.js" defer></script>
-  {% '<script src="/_aardvark/version-switcher.js" defer></script>' if versions_enabled else '' %}
-  {% '<script src="/_aardvark/hovercard.js" defer></script>' if hovercards_enabled else "" %}
-  {% '<script src="/_aardvark/glossary.js" defer></script>' if glossary_enabled else "" %}
+  <script src="{% asset('/_aardvark/tabs.js') %}" defer></script>
+  <script src="{% asset('/_aardvark/nav.js') %}" defer></script>
+  <script src="{% asset('/_aardvark/drawer.js') %}" defer></script>
+  <script src="{% asset('/_aardvark/toc.js') %}" defer></script>
+  <script src="{% asset('/_aardvark/ai-layout.js') %}" defer></script>
+  {% ('<script src="' + asset('/_aardvark/md-menu.js') + '" defer></script>') if markdown_menu_html else '' %}
+  <script src="{% asset('/_aardvark/tables.js') %}" defer></script>
+  <script src="{% asset('/_aardvark/code-blocks.js') %}" defer></script>
+  <script src="{% asset('/_aardvark/language-switcher.js') %}" defer></script>
+  {% ('<script src="' + asset('/_aardvark/version-switcher.js') + '" defer></script>') if versions_enabled else '' %}
+  {% ('<script src="' + asset('/_aardvark/hovercard.js') + '" defer></script>') if hovercards_enabled else "" %}
+  {% ('<script src="' + asset('/_aardvark/glossary.js') + '" defer></script>') if glossary_enabled else "" %}
   <!-- The mermaid and markdeep diagram scripts are injected automatically by the builder,
        just before the closing body tag, and only on pages that actually contain a diagram,
        so there is no script tag to place here and no ordering for a template author to get
