@@ -147,12 +147,14 @@
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
   }
 
-  function button(label, icon, onClick) {
+  function button(label, icon, onClick, action) {
     var b = document.createElement('button');
     b.type = 'button';
     b.className = 'aardvark-code-btn';
     b.setAttribute('aria-label', label);
     b.title = label;
+    // Machine action for Content Reach / analytics — do not key off the localized aria-label.
+    if (action) b.setAttribute('data-aardvark-code-action', action);
     setIcon(b, icon);
     b.addEventListener('click', onClick);
     return b;
@@ -260,8 +262,8 @@
     var ext = langExt(pre, code);
     var actions = document.createElement('div');
     actions.className = 'aardvark-code-actions';
-    actions.appendChild(button('Copy code', ICON_COPY, function (e) { copy(codeText(pre, code), e.currentTarget); }));
-    actions.appendChild(button('Download code', ICON_DOWNLOAD, function () { download(codeText(pre, code), ext); }));
+    actions.appendChild(button('Copy code', ICON_COPY, function (e) { copy(codeText(pre, code), e.currentTarget); }, 'copy'));
+    actions.appendChild(button('Download code', ICON_DOWNLOAD, function () { download(codeText(pre, code), ext); }, 'download'));
 
     // Mount the actions in a persistent header bar — filename/title on the left, a language pill
     // and the copy/download buttons on the right — rather than floating them over the code. A

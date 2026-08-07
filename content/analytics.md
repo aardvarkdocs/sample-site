@@ -105,6 +105,14 @@ integrations:
 > Mintlify's `cookies` and `telemetry` entries aren't analytics platforms — `telemetry` is
 > Mintlify-internal, and for a cookie-consent banner use a [custom snippet](#anything-else-inject-any-snippet).
 
+## Which parts of a page readers reach
+
+The events above tell you a page was opened and how it was rated. To see *which sections*
+of it readers actually got to — and which install commands were copied, which CTAs were
+clicked — turn on [Content Reach](/content-reach/) (Business and Enterprise). It records
+section visibility using your page's own heading anchors, with no cookies, no
+coordinates, and no visitor identity.
+
 ## Anything else? Inject any snippet
 
 For a tracker not in the table above — or any other third-party tag — paste its snippet into

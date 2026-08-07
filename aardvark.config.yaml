@@ -749,3 +749,19 @@ mcp: true
 protected:
   - path: /secretpage
     passwordEnv: SECRET_PAGE_PW
+
+# Content Reach (Business/Enterprise): section-level VISIBILITY and INTERACTION analytics for the
+# owner dashboard — which sections of each page readers actually reach, how long each one holds the
+# reader's position, and which controls they use. Opt-in and default OFF; it rides `ai-config.json`
+# for the gateway endpoint and the public key, so it only takes effect on an AI-enabled site.
+#
+# On here because this site is the feature's own documentation, and a measurement product that its
+# authors do not run is one whose blind spots nobody finds. Reader-facing behaviour is unchanged:
+# the client honours Do-Not-Track and Save-Data, records no coordinates, no viewport size, no DOM or
+# clipboard text, no query text and no identifier that outlives one browser tab.
+#
+#   requireConsent: true   # hold all measurement until `window.aardvarkConsent` is true
+#   sampleRate: 0.25       # measure a stable quarter of tab sessions (drawn once per tab)
+#   targetsOnly: true      # only `{% target %}` regions, never heading sections
+contentReach:
+  enabled: true

@@ -24,6 +24,7 @@ drop straight into Markdown.
 - [OpenAPI](/components/extras/openapi/) — splice a single endpoint from an OpenAPI spec inline next to your prose, or render a whole spec as a full reference.
 - [Panel](/components/extras/panel/) — a supplementary side panel that floats beside the main content on a wide viewport and stacks below it on a narrow one.
 - [Prompt](/components/extras/prompt/) — a copyable AI-prompt block: the prompt text with a copy button plus "Open in ChatGPT / Claude / Cursor" deep-link buttons that pre-fill the prompt.
+- [Target](/components/extras/target/) — name a region of a page so Content Reach reports on it as its own section, alongside the ones your headings already create.
 - [Taxonomy](/components/extras/taxonomy/) — render tagged member pages as a changelog timeline, a knowledge base, or a blog-style article list, with tag filtering and an RSS feed for changelog and article listings.
 - [Update](/components/extras/update/) — an inline release-note / changelog entry on a timeline rail: a version or date label on the left, the Markdown body beside it.
 - [Visibility](/components/extras/visibility/) — show or hide a block of Markdown depending on whether a human is reading the HTML page or an AI agent is reading its Markdown twin.

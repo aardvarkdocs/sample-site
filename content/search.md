@@ -406,6 +406,14 @@ low-risk. It isn't an absolute gate (a determined caller scripting requests outs
 reader's query. In short: the widget + `store_terms` protect readers' text client-side, and the origin
 allowlist is the server-side backstop that keeps other sites out.
 
+Search analytics answers "what did readers look for". Its companion,
+[Content Reach](/content-reach/) (Business and Enterprise), answers "which parts of the
+page did they get to once they landed" — including how often a search result click leads
+to a section actually coming into view. The two use **separate** tab-session ids on
+purpose, and no query text ever crosses into Content Reach. They do both record the page
+path and a timestamp, though, so on a quiet page the two datasets can still be lined up by
+someone reading both — see [Content Reach's Privacy section](/content-reach/#privacy).
+
 ## Index size
 
 The index is gzipped at build time — `search-index.json.gz` is written next to the

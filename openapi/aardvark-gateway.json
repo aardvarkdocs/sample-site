@@ -3586,7 +3586,7 @@
                 "example": {
                   "error": {
                     "code": "bad_request",
-                    "message": "Invalid JSON body."
+                    "message": "comment is required."
                   }
                 }
               }
@@ -3635,6 +3635,38 @@
                   "error": {
                     "code": "origin_forbidden",
                     "message": "Origin not allowed for this key."
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload too large — `payload_too_large`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "Request body is too large."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited — `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Too many telemetry beacons. Please retry shortly."
                   }
                 }
               }
@@ -4212,7 +4244,7 @@
                 "example": {
                   "error": {
                     "code": "bad_request",
-                    "message": "Invalid JSON body."
+                    "message": "conversation_id is required."
                   }
                 }
               }
@@ -4261,6 +4293,38 @@
                   "error": {
                     "code": "origin_forbidden",
                     "message": "Origin not allowed for this key."
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload too large — `payload_too_large`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "Request body is too large."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited — `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Too many telemetry beacons. Please retry shortly."
                   }
                 }
               }
@@ -4465,7 +4529,7 @@
                 "example": {
                   "error": {
                     "code": "bad_request",
-                    "message": "Invalid JSON body."
+                    "message": "vote must be 'up' or 'down'."
                   }
                 }
               }
@@ -4514,6 +4578,38 @@
                   "error": {
                     "code": "origin_forbidden",
                     "message": "Origin not allowed for this key."
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload too large — `payload_too_large`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "Request body is too large."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited — `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Too many telemetry beacons. Please retry shortly."
                   }
                 }
               }
@@ -9756,7 +9852,7 @@
                 "example": {
                   "error": {
                     "code": "bad_request",
-                    "message": "Invalid JSON body."
+                    "message": "rating must be an integer from 1 to 5."
                   }
                 }
               }
@@ -9805,6 +9901,675 @@
                   "error": {
                     "code": "origin_forbidden",
                     "message": "Origin not allowed for this key."
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload too large — `payload_too_large`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "Request body is too large."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited — `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Too many telemetry beacons. Please retry shortly."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/reach-analytics": {
+      "get": {
+        "tags": [
+          "Dashboard Analytics"
+        ],
+        "summary": "Content Reach analytics",
+        "operationId": "getV1ReachAnalytics",
+        "description": "Aggregate Content Reach over a window of `days` (default 30, max 90): page-view and session totals, average foreground-visible time, average sections reached, totals for each of the five tracked actions, and a per-page table with reach completion. Plan-gated to Business/Enterprise (`403 plan_required`). Averages are clamped means — the clamp is applied at ingest, so a tab left open cannot drag them. Everything is aggregate: there is no endpoint returning an individual reader's path, because there is no durable visitor identity to build one from.",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "secretKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Window in days (1–90; default 30)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "window_days": {
+                      "type": "number",
+                      "description": "Resolved look-back window in days (`?days=`, default `30`, capped at `90`)."
+                    },
+                    "since": {
+                      "type": "integer",
+                      "description": "Epoch-ms start of the window (inclusive)."
+                    },
+                    "until": {
+                      "type": "integer",
+                      "description": "Epoch-ms end of the window (exclusive)."
+                    },
+                    "totals": {
+                      "type": "object",
+                      "properties": {
+                        "pageviews": {
+                          "type": "integer",
+                          "description": "Page views recorded in the window. Counts views that produced a measurement: a visit with no foreground time and no section reached sends no beacon, so this runs slightly below a page-tag analytics count rather than matching it."
+                        },
+                        "pages": {
+                          "type": "integer",
+                          "description": "Distinct pages with at least one recorded page view."
+                        },
+                        "sessions": {
+                          "type": "integer",
+                          "description": "Distinct tab sessions. NOT unique visitors — a session ends with the browser tab."
+                        },
+                        "avg_visible_ms": {
+                          "type": "number",
+                          "description": "Mean foreground-visible time per page view, in ms."
+                        },
+                        "avg_sections_reached": {
+                          "type": "number",
+                          "description": "Mean number of sections that qualified per page view."
+                        },
+                        "avg_sections_total": {
+                          "type": "number",
+                          "description": "Mean number of sections the viewed pages contained."
+                        }
+                      }
+                    },
+                    "actions": {
+                      "type": "object",
+                      "properties": {
+                        "copy_code": {
+                          "type": "integer",
+                          "description": "Times a code-block copy control was used."
+                        },
+                        "cta": {
+                          "type": "integer",
+                          "description": "Times a link or button inside a marked high-value region was clicked."
+                        },
+                        "toc_jump": {
+                          "type": "integer",
+                          "description": "Times an On-this-page link jumped to a section."
+                        },
+                        "search_click": {
+                          "type": "integer",
+                          "description": "Times a reader arrived at a section from the search box."
+                        },
+                        "expand": {
+                          "type": "integer",
+                          "description": "Times an accordion or tab control inside a section was used."
+                        }
+                      },
+                      "description": "Totals for the closed action taxonomy across the window."
+                    },
+                    "pages": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "page_url": {
+                            "type": "string"
+                          },
+                          "pageviews": {
+                            "type": "integer"
+                          },
+                          "avg_visible_ms": {
+                            "type": "number"
+                          },
+                          "sections_total": {
+                            "type": "integer"
+                          },
+                          "avg_sections_reached": {
+                            "type": "number"
+                          },
+                          "completion": {
+                            "type": "number"
+                          }
+                        }
+                      },
+                      "description": "Per-page rows, busiest first (≤50). Each carries `page_url`, `pageviews`, `avg_visible_ms`, `sections_total`, `avg_sections_reached`, and `completion` — the fraction of the page's sections reached, averaged over its page views (0–1), or `0` for a page with no anchored sections."
+                    },
+                    "pages_truncated": {
+                      "type": "boolean",
+                      "description": "True when more distinct pages had traffic in the window than `pages` returns, so its tail is missing. Compare with `totals.pages` for the true count. Without this, a page absent because it ranked 51st is indistinguishable from a page nobody visited."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated — `invalid_key`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "invalid_key",
+                    "message": "A secret key (aardvark_secret_…) is required."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — `forbidden_key`, `plan_required`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "forbidden_key",
+                    "message": "This credential can't manage the account."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/reach-event": {
+      "post": {
+        "tags": [
+          "Reader Telemetry"
+        ],
+        "summary": "Content Reach beacon",
+        "operationId": "postV1ReachEvent",
+        "description": "Public-key beacon (migration 0091): one page-view's worth of SECTION-level visibility and interaction evidence, posted by `/_aardvark/reach.js`. Records which of a page's own semantic sections (heading slugs, `target`-tag ids, and the synthetic `__intro`) became at least 50% visible for at least 1 second, how long each was the section under the reader's trigger line, and counts for a closed five-value action taxonomy. It carries no coordinates, scroll offsets, DOM snapshots, element text, or query text, and no identifier durable beyond one browser tab — so it is visibility and interaction evidence, never a measure of gaze, comprehension, or attention. Unlike the other reader-write endpoints this one is PLAN-GATED to Business/Enterprise (`403 plan_required`); the gateway is authoritative because a static build holds only the public key and cannot read the account's plan. Repeat posts of the same `(session_id, session_seq)` are expected — the client flushes on tab-hide and again on pagehide — and are idempotent, only ever moving stored values forward.",
+        "security": [
+          {
+            "publicKey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "session_id": {
+                    "type": "string",
+                    "description": "Per-tab random id from the client's `sessionStorage` — NOT a durable visitor id, and deliberately distinct from the search session id so reach data cannot be joined to query text. Rejected rather than truncated above 100 chars, because it is part of the dedup identity."
+                  },
+                  "session_seq": {
+                    "type": "integer",
+                    "description": "Page-view ordinal within the tab session (0–10000000). Rejected rather than floored when out of range, for the same dedup-identity reason."
+                  },
+                  "page_url": {
+                    "type": "string",
+                    "description": "Site path of the page. Normalized with `safePathname`, which rejects an off-origin URL and strips query and hash."
+                  },
+                  "visible_ms": {
+                    "type": "integer",
+                    "description": "Foreground, non-idle time on the page, clamped to 3600000. Excludes time while the tab was hidden and time after 60s without interaction."
+                  },
+                  "sections_total": {
+                    "type": "integer",
+                    "description": "How many sections the page has — the denominator for reach completion."
+                  },
+                  "sections": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "ordinal": {
+                          "type": "integer"
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "heading",
+                            "target",
+                            "intro"
+                          ]
+                        },
+                        "reached": {
+                          "type": "boolean"
+                        },
+                        "dwell_ms": {
+                          "type": "integer"
+                        },
+                        "copy_code": {
+                          "type": "integer"
+                        },
+                        "cta": {
+                          "type": "integer"
+                        },
+                        "toc_jump": {
+                          "type": "integer"
+                        },
+                        "search_click": {
+                          "type": "integer"
+                        },
+                        "expand": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "description": "Sections that qualified OR carried an action, in document order (≤40 per beacon; extras and malformed entries are dropped without failing the beacon). Each entry carries `id`, `ordinal`, `kind` (`heading` | `target` | `intro`), `reached` (true only after the ≥50%/≥1s hold — action-only rows are `false`), `dwell_ms`, and a count for each of `copy_code`, `cta`, `toc_jump`, `search_click`, `expand`. The exit proxy is derived server-side from the furthest *qualified* stored section, not sent."
+                  },
+                  "catalog": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "ordinal": {
+                          "type": "integer"
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "heading",
+                            "target",
+                            "intro"
+                          ]
+                        }
+                      }
+                    },
+                    "description": "Optional. The page's section CATALOGUE — every measurable section, reached or not, as `id`/`ordinal`/`kind` with no metrics (≤40, same alphabet as `sections`). `sections` carries only what happened, so it can never say which sections nobody reached; this can. Sent on a page view's FIRST flush only, because it describes the page rather than the visit and is stored per (page, section). Omitting it is a no-op, never an error."
+                  }
+                },
+                "required": [
+                  "session_id",
+                  "session_seq",
+                  "page_url"
+                ]
+              },
+              "example": {
+                "session_id": "r_abc",
+                "session_seq": 3,
+                "page_url": "/guide/install/",
+                "visible_ms": 41200,
+                "sections_total": 12,
+                "sections": [
+                  {
+                    "id": "install-the-cli",
+                    "ordinal": 3,
+                    "kind": "heading",
+                    "reached": true,
+                    "dwell_ms": 9800,
+                    "copy_code": 1,
+                    "cta": 0,
+                    "toc_jump": 1,
+                    "search_click": 0,
+                    "expand": 0
+                  }
+                ],
+                "catalog": [
+                  {
+                    "id": "overview",
+                    "ordinal": 1,
+                    "kind": "heading"
+                  },
+                  {
+                    "id": "install-the-cli",
+                    "ordinal": 3,
+                    "kind": "heading"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "description": "Always `true` on accept; a deduped, refreshed, over-cap, or empty beacon still ACKs 200. Two refusals are actionable to the shipped client: `403 plan_required` latches Content Reach off for the browser tab, and `429 rate_limited` pauses posting for `Retry-After` (the shared reader-ingest limiter, which every public-key ingest endpoint carries)."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request — `bad_request`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "bad_request",
+                    "message": "session_id is required."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated — `invalid_key`, `revoked_key`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "invalid_key",
+                    "message": "Missing or malformed API key."
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Payment required — `account_inactive`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_inactive",
+                    "message": "This account is not active."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — `origin_forbidden`, `plan_required`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "origin_forbidden",
+                    "message": "Origin not allowed for this key."
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload too large — `payload_too_large`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "Request body is too large."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited — `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Too many telemetry beacons. Please retry shortly."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/reach-page": {
+      "get": {
+        "tags": [
+          "Dashboard Analytics"
+        ],
+        "summary": "Content Reach for one page",
+        "operationId": "getV1ReachPage",
+        "description": "Per-page Content Reach drill-in — the data behind the dashboard's section heat strip. Returns one row per section in document order with its reach rate, median foreground dwell, and action counts, plus the distribution of last-reached sections. Reach counts and action totals are exact over the window; the dwell statistic is a MEDIAN over a bounded sample, so one long-parked tab cannot skew it. Plan-gated to Business/Enterprise (`403 plan_required`).",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "secretKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "path",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Site path of the page to inspect, normalized the same way the ingest normalized it."
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Window in days (1–90; default 30)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "window_days": {
+                      "type": "number",
+                      "description": "Resolved look-back window in days (`?days=`, default `30`, capped at `90`)."
+                    },
+                    "since": {
+                      "type": "integer",
+                      "description": "Window start, epoch-ms (inclusive)."
+                    },
+                    "until": {
+                      "type": "integer",
+                      "description": "Window end, epoch-ms (exclusive); the request time."
+                    },
+                    "page_url": {
+                      "type": "string",
+                      "description": "The normalized path that was inspected."
+                    },
+                    "pageviews": {
+                      "type": "integer",
+                      "description": "Page views of this page in the window — the denominator for each section's reach rate."
+                    },
+                    "avg_visible_ms": {
+                      "type": "number",
+                      "description": "Mean foreground-visible time on this page, in ms."
+                    },
+                    "sections_total": {
+                      "type": "integer",
+                      "description": "The largest section count observed for this page in the window."
+                    },
+                    "exits": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "section_id": {
+                            "type": "string"
+                          },
+                          "count": {
+                            "type": "integer"
+                          }
+                        }
+                      },
+                      "description": "Last-reached section counts, most common first (≤10). An exit PROXY, not a drop-off measurement."
+                    },
+                    "sections": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "section_id": {
+                            "type": "string"
+                          },
+                          "ordinal": {
+                            "type": "integer"
+                          },
+                          "kind": {
+                            "type": "string"
+                          },
+                          "current": {
+                            "description": "True when the page's CURRENT catalogue still names this section; false for an id only history remembers, such as a heading renamed during the window. Count completion against the current rows alone — a historical id is real recorded reach, but it is not a gap in the page as it stands today.",
+                            "type": "boolean"
+                          },
+                          "reached": {
+                            "type": "integer"
+                          },
+                          "reach_rate": {
+                            "type": "number"
+                          },
+                          "median_dwell_ms": {
+                            "type": "integer"
+                          },
+                          "actions": {
+                            "type": "object",
+                            "properties": {
+                              "copy_code": {
+                                "type": "integer"
+                              },
+                              "cta": {
+                                "type": "integer"
+                              },
+                              "toc_jump": {
+                                "type": "integer"
+                              },
+                              "search_click": {
+                                "type": "integer"
+                              },
+                              "expand": {
+                                "type": "integer"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "description": "One row per section the page HAS, in document order — including sections nobody reached, which come back with `reached: 0` rather than being omitted, so \"nobody got here\" is distinguishable from \"no such section\". Membership comes from the page's catalogue (see the ingest `catalog` field); a section with recorded history but no catalogue entry (a renamed anchor) is still listed, flagged `current: false`. Each carries `section_id`, `ordinal`, `kind`, `current`, `reached` (page views in which the section qualified), `reach_rate` (`reached` over `pageviews`, 0–1), `median_dwell_ms` (median foreground time with the section under the reader's trigger line), and `actions`."
+                    },
+                    "sections_truncated": {
+                      "type": "boolean",
+                      "description": "True when the page has more distinct sections than `sections` returns, which is capped. Compare `sections.length` against `sections_total` to see how much is missing; without this flag a truncated list is indistinguishable from a complete one."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request — `bad_request`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "bad_request",
+                    "message": "path must be a site path."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated — `invalid_key`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "invalid_key",
+                    "message": "A secret key (aardvark_secret_…) is required."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — `forbidden_key`, `plan_required`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "forbidden_key",
+                    "message": "This credential can't manage the account."
                   }
                 }
               }
@@ -10320,7 +11085,7 @@
                 "example": {
                   "error": {
                     "code": "bad_request",
-                    "message": "Invalid JSON body."
+                    "message": "Body must be { events: [...] }."
                   }
                 }
               }
@@ -10369,6 +11134,38 @@
                   "error": {
                     "code": "origin_forbidden",
                     "message": "Origin not allowed for this key."
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload too large — `payload_too_large`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "Request body is too large."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited — `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Too many telemetry beacons. Please retry shortly."
                   }
                 }
               }
@@ -13643,7 +14440,7 @@
                 "example": {
                   "error": {
                     "code": "bad_request",
-                    "message": "Invalid JSON body."
+                    "message": "question_type must be one of single, multi, rating, text."
                   }
                 }
               }
@@ -13692,6 +14489,38 @@
                   "error": {
                     "code": "origin_forbidden",
                     "message": "Origin not allowed for this key."
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload too large — `payload_too_large`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "Request body is too large."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited — `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Too many telemetry beacons. Please retry shortly."
                   }
                 }
               }
@@ -15087,7 +15916,7 @@
                 "example": {
                   "error": {
                     "code": "bad_request",
-                    "message": "Invalid JSON body."
+                    "message": "conversation_id is required."
                   }
                 }
               }
@@ -15136,6 +15965,38 @@
                   "error": {
                     "code": "origin_forbidden",
                     "message": "Origin not allowed for this key."
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload too large — `payload_too_large`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "Request body is too large."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited — `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Too many telemetry beacons. Please retry shortly."
                   }
                 }
               }

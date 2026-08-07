@@ -187,5 +187,7 @@ carries files, and the true cost is settled when the turn completes.
 
 - [AI assistant & analytics](/ai-assistant/) — enabling the built-in Ask AI panel for readers, and
   the operator analytics dashboard (Insights, Conversations, digests) it feeds.
+- [Content Reach](/content-reach/) — which sections of each page readers reach and which controls
+  they use, on the Business and Enterprise plans. Carries no spend: it is telemetry, not metered AI.
 - [Build-time AI](/ai-features/) — opt-in features that run during the build, also via OpenRouter.
 - [Self-hosting & MCP](/self-hosting/) — running a built site (and its MCP server) yourself.
