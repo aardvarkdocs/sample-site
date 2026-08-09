@@ -332,8 +332,11 @@ page.print(component('aardvark', 'cardGrid', cols=3, children=cards))
 ### The grid
 
 `{% raw %}{% cardGrid %}{% endraw %}` lays cards out in a responsive grid that collapses to one
-column on mobile. Use `cols=N` for a fixed wide-screen count, or `colsBase`/`colsSm`/`colsMd`/
-`colsLg` for full control; `spacing` sets the gap.
+column on mobile. `cols=N` sets the desktop count and steps down on its own — two columns on a
+tablet, one on a phone — so the cards wrap instead of shrinking. Use
+`colsBase`/`colsSm`/`colsMd`/`colsLg` when you want to pin each breakpoint yourself (`colsBase=N`
+alone gives a genuinely fixed `N` at every width); a `cols=N` written alongside them still means
+the desktop count, and any breakpoint you pin wins. `spacing` sets the gap.
 
 ### From a loop or a data file
 
@@ -448,8 +451,8 @@ Set what you need, omit the rest.
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `cols` | integer | Columns on wide screens (collapses to 1 on mobile, 2 on tablet). Default `{base:1, sm:2, lg:3}`. |
-| `colsBase` `colsSm` `colsMd` `colsLg` `colsXl` | integer | Per-breakpoint column counts. |
+| `cols` | integer | Columns on desktop (collapses to 2 on tablet, 1 on mobile). Default `{base:1, sm:2, lg:3}`. |
+| `colsBase` `colsSm` `colsMd` `colsLg` `colsXl` | integer | Per-breakpoint column counts. On their own they define the grid outright (no step-down); alongside `cols` they override just those breakpoints and the rest of the step-down stays. |
 | `spacing` | Mantine spacing token or CSS size | Horizontal gap between cards. |
 | `verticalSpacing` | Mantine spacing token or CSS size | Vertical gap between cards. |
 

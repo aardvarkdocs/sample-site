@@ -99,7 +99,7 @@ changelog- or blog-style listing usually wants a wide layout (`mode: full` or
 | `limitEntries=20` | Show at most *N* entries (after the newest-first sort). `limit` is an alias. |
 | `limitDays=90` | Changelog type only — show only entries from the last *N* days, counted from the build date. |
 | `combineByDay` | Changelog type only — merge all of a day's entries into one timeline entry. The day becomes the atomic item, so the tag cloud / `#tag=` filter then works at day granularity (selecting a tag keeps any day that carries it, showing that day's other entries too). |
-| `cols=3` | Column count for article-card grids. |
+| `cols=3` | Column count for article-card grids, on desktop. Like [`{% raw %}{% cardGrid %}{% endraw %}`](/components/data-display/card/), the grid steps down on its own — two columns on a tablet, one on a phone — so the cards wrap instead of shrinking. |
 | `topCount=5` | Knowledge base only — how many featured **top questions** to surface (`topCount=0` drops the section). |
 | `emptyText="…"` | The no-matches message, on every listing type. Override it to localize the listing's chrome. |
 | `filterLabel=` / `clearLabel=` | Changelog/articles — the tag cloud's "Filter by tag" heading and its "Clear" button. Override to localize. |
