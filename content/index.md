@@ -17,7 +17,9 @@ reportIssue: false
 <div class="wa">
 
 <style>
-/* Literal colours only — CSS var()/color-mix break xhtml2pdf (the whole-site PDF), so do not convert this block to CSS variables. */
+/* Literal colours only — CSS var()/color-mix break xhtml2pdf (the whole-site PDF), so do not convert this block to CSS variables.
+   Scheme-dependent colours (anything that differs between light and dark) do NOT belong in these static rules —
+   they live in the wa_scheme table at the end of this block, which emits the light, dark, and snapshot-fallback rules. */
 .wa *{box-sizing:border-box;}
 .wa-container{max-width:1100px;margin:0 auto;padding:0 32px;}
 /* text-decoration uses !important: these buttons are <a>s inside .aardvark-content, where the theme underlines prose links with a more specific selector. */
@@ -45,45 +47,28 @@ reportIssue: false
 .wa-terminal .c-cmd{color:#ffffff;}
 .wa-terminal .c-ok{color:#63e6be;}
 .wa-terminal .c-mut{color:#b9a8ff;}
-.wa-strip{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;padding:28px 24px;border-bottom:1px solid #e8e6f0;background:#f5f3ff;}
-.wa-chip{display:inline-flex;align-items:center;font-size:13px;font-weight:600;color:#7048e8;background:#ece7fd;border-radius:999px;padding:6px 14px;}
+.wa-strip{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;padding:28px 24px;border-bottom:1px solid;}
+.wa-chip{display:inline-flex;align-items:center;font-size:13px;font-weight:600;border-radius:999px;padding:6px 14px;}
 .wa-section{padding:80px 0;}
 .wa-section-head{text-align:center;max-width:640px;margin:0 auto 44px;}
-.wa-kicker{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#7048e8;}
+.wa-kicker{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;}
 .wa-section-head h2{font-size:2.2rem;font-weight:800;letter-spacing:-.01em;margin:10px 0 12px;}
-.wa-section-head p{font-size:1.1rem;color:#6b7280;margin:0;}
+.wa-section-head p{font-size:1.1rem;margin:0;}
 .wa-features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-.wa-feature{background:#ffffff;border:1px solid #e8e6f0;border-radius:8px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.06);}
-.wa-feature__ico{width:42px;height:42px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;background:#ece7fd;color:#7048e8;font-size:19px;margin-bottom:14px;}
+.wa-feature{border:1px solid;border-radius:8px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.06);}
+.wa-feature__ico{width:42px;height:42px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:14px;}
 .wa-feature h3{font-size:1.05rem;font-weight:600;margin:0 0 6px;}
-.wa-feature p{font-size:14px;color:#6b7280;margin:0;line-height:1.55;}
-.wa-showcase{background:#f5f3ff;}
+.wa-feature p{font-size:14px;margin:0;line-height:1.55;}
 .wa-split{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
 .wa-split h2{font-size:1.9rem;font-weight:800;letter-spacing:-.01em;margin:8px 0 14px;}
-.wa-split p{font-size:1.05rem;color:#6b7280;margin:0 0 18px;}
+.wa-split p{font-size:1.05rem;margin:0 0 18px;}
 .wa-checklist{list-style:none;margin:0 0 24px;padding:0;display:flex;flex-direction:column;gap:10px;}
 .wa-checklist li{display:flex;align-items:center;gap:10px;font-size:15px;}
 .wa-checklist i{color:#0ca678;}
-.wa-code{background:#ffffff;border:1px solid #e8e6f0;border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.06);}
-.wa-code__bar{display:flex;border-bottom:1px solid #e8e6f0;}
-.wa-code__tab{padding:10px 16px;font-size:13px;font-weight:600;color:#6b7280;border-bottom:2px solid transparent;}
-.wa-code__tab.is-on{color:#7048e8;border-bottom-color:#7048e8;}
-.wa-code pre{margin:0;padding:18px 20px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13.5px;line-height:1.7;overflow-x:auto;color:#1a1b1e;}
-.wa-code .t-cm{color:#a0a1a7;}
-.wa-code .t-kw{color:#a626a4;}
-:root[data-mantine-color-scheme="dark"] .wa-strip{background:#221d33;border-bottom-color:#2f2a3d;}
-:root[data-mantine-color-scheme="dark"] .wa-chip{color:#a78bfa;background:#2c2640;}
-:root[data-mantine-color-scheme="dark"] .wa-kicker{color:#a78bfa;}
-:root[data-mantine-color-scheme="dark"] .wa-code__tab.is-on{color:#a78bfa;border-bottom-color:#a78bfa;}
-:root[data-mantine-color-scheme="dark"] .wa-section-head p,:root[data-mantine-color-scheme="dark"] .wa-split p,:root[data-mantine-color-scheme="dark"] .wa-feature p,:root[data-mantine-color-scheme="dark"] .wa-code__tab{color:#909296;}
-:root[data-mantine-color-scheme="dark"] .wa-feature,:root[data-mantine-color-scheme="dark"] .wa-code{background:#141517;border-color:#2f2a3d;}
-:root[data-mantine-color-scheme="dark"] .wa-feature__ico{background:#2c2640;color:#a78bfa;}
-:root[data-mantine-color-scheme="dark"] .wa-feature h3,:root[data-mantine-color-scheme="dark"] .wa-code pre{color:#c9c9c9;}
-:root[data-mantine-color-scheme="dark"] .wa-showcase{background:#221d33;}
-:root[data-mantine-color-scheme="dark"] .wa-code{border-color:#2f2a3d;}
-:root[data-mantine-color-scheme="dark"] .wa-code__bar{border-bottom-color:#2f2a3d;}
-:root[data-mantine-color-scheme="dark"] .wa-code .t-cm{color:#5c6370;}
-:root[data-mantine-color-scheme="dark"] .wa-code .t-kw{color:#c678dd;}
+.wa-code{border:1px solid;border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.06);}
+.wa-code__bar{display:flex;border-bottom:1px solid;}
+.wa-code__tab{padding:10px 16px;font-size:13px;font-weight:600;border-bottom:2px solid transparent;}
+.wa-code pre{margin:0;padding:18px 20px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13.5px;line-height:1.7;overflow-x:auto;}
 @media (max-width:900px){.wa-features{grid-template-columns:repeat(2,1fr);}}
 @media (max-width:860px){.wa-split{grid-template-columns:1fr;gap:28px;}}
 @media (max-width:600px){.wa-features{grid-template-columns:1fr;}.wa-hero h1{font-size:2.6rem;}}
@@ -93,29 +78,70 @@ reportIssue: false
 /* --- proof stats --- */
 .wa-stats{display:flex;flex-wrap:wrap;justify-content:center;gap:18px 56px;padding:44px 24px;max-width:1000px;margin:0 auto;}
 .wa-stat{text-align:center;min-width:120px;}
-.wa-stat__n{display:block;font-size:2.5rem;font-weight:800;letter-spacing:-.02em;color:#7048e8;line-height:1;}
-.wa-stat__l{display:block;font-size:13px;font-weight:600;color:#6b7280;margin-top:8px;}
+.wa-stat__n{display:block;font-size:2.5rem;font-weight:800;letter-spacing:-.02em;line-height:1;}
+.wa-stat__l{display:block;font-size:13px;font-weight:600;margin-top:8px;}
 /* --- logo marquee (pills; scrolling handled by the built-in marquee tag) --- */
-.wa-logo{flex:0 0 auto;display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 30px;font-size:15px;font-weight:600;color:#586174;white-space:nowrap;}
+.wa-logo{flex:0 0 auto;display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 30px;font-size:15px;font-weight:600;white-space:nowrap;}
 /* Explicit 24x24 (every logo is a square 0 0 24 24 SVG) so the row reserves each logo's box
    BEFORE the SVG loads. With width:auto the pills are zero-width until each image loads, and
    the marquee's translate distance is a % of total content width — so logos loading in would
    reflow the row and make the scroll visibly jump. Fixed dimensions keep the loop steady. */
-.wa-logo img{width:24px;height:24px;opacity:.58;filter:grayscale(1);}
+.wa-logo img{width:24px;height:24px;}
 /* gap='0' on the marquee tags below gives padding-only spacing between pills; the seam fix
    itself lives in the marquee macro, which renders the body inline so pills are direct flex
    children of the repeating row. */
-.wa-marquee-head{text-align:center;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7048e8;margin:6px 0 16px;}
+.wa-marquee-head{text-align:center;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin:6px 0 16px;}
 /* --- free / pay-as-you-go line --- */
 .wa-payline{max-width:660px;margin:36px auto 4px;text-align:center;}
-.wa-payline p{font-size:1.05rem;line-height:1.6;color:#4b5563;margin:0;}
-.wa-payline strong{color:#1a1b1e;}
-:root[data-mantine-color-scheme="dark"] .wa-stat__n{color:#a78bfa;}
-:root[data-mantine-color-scheme="dark"] .wa-stat__l,:root[data-mantine-color-scheme="dark"] .wa-payline p{color:#909296;}
-:root[data-mantine-color-scheme="dark"] .wa-payline strong{color:#e7e1ff;}
-:root[data-mantine-color-scheme="dark"] .wa-logo{color:#9aa0aa;}
-:root[data-mantine-color-scheme="dark"] .wa-logo img{filter:grayscale(1) invert(1);opacity:.72;}
-:root[data-mantine-color-scheme="dark"] .wa-marquee-head{color:#a78bfa;}
+.wa-payline p{font-size:1.05rem;line-height:1.6;margin:0;}
+{%
+# THE one source of truth for this page's scheme-dependent colours: (selector, light decls,
+# dark decls). The static rules above keep only scheme-INVARIANT declarations (colorless
+# `border:1px solid` shorthands included — the colour arrives from this table). Emitted four
+# ways: base light (also what the PDF renders), explicit dark, the OS-dark snapshot fallback,
+# and the explicit-light win-back — the why of that shape is documented on
+# /theming/dark-mode/. Homepage-specific constraints, all verified against the whole-site
+# PDF's CSS engine (xhtml2pdf): literal colours only (var()/color-mix break it — same rule as
+# the block above); no attribute selector inside :not(...) (hard parse error); and the media
+# query must keep its `screen` type (xhtml2pdf applies bare feature queries as `all` but
+# drops `screen` blocks, keeping the PDF on the light palette).
+wa_scheme = [
+    ('.wa-strip', 'background:#f5f3ff;border-bottom-color:#e8e6f0;', 'background:#221d33;border-bottom-color:#2f2a3d;'),
+    ('.wa-chip', 'color:#7048e8;background:#ece7fd;', 'color:#a78bfa;background:#2c2640;'),
+    ('.wa-kicker', 'color:#7048e8;', 'color:#a78bfa;'),
+    ('.wa-code__tab.is-on', 'color:#7048e8;border-bottom-color:#7048e8;', 'color:#a78bfa;border-bottom-color:#a78bfa;'),
+    ('.wa-section-head p,.wa-split p,.wa-feature p,.wa-code__tab', 'color:#6b7280;', 'color:#909296;'),
+    ('.wa-feature,.wa-code', 'background:#ffffff;border-color:#e8e6f0;', 'background:#141517;border-color:#2f2a3d;'),
+    ('.wa-feature__ico', 'background:#ece7fd;color:#7048e8;', 'background:#2c2640;color:#a78bfa;'),
+    ('.wa-feature h3', 'color:inherit;', 'color:#c9c9c9;'),
+    ('.wa-code pre', 'color:#1a1b1e;', 'color:#c9c9c9;'),
+    ('.wa-showcase', 'background:#f5f3ff;', 'background:#221d33;'),
+    ('.wa-code__bar', 'border-bottom-color:#e8e6f0;', 'border-bottom-color:#2f2a3d;'),
+    ('.wa-code .t-cm', 'color:#a0a1a7;', 'color:#5c6370;'),
+    ('.wa-code .t-kw', 'color:#a626a4;', 'color:#c678dd;'),
+    ('.wa-stat__n', 'color:#7048e8;', 'color:#a78bfa;'),
+    ('.wa-stat__l', 'color:#6b7280;', 'color:#909296;'),
+    ('.wa-payline p', 'color:#4b5563;', 'color:#909296;'),
+    ('.wa-payline strong', 'color:#1a1b1e;', 'color:#e7e1ff;'),
+    ('.wa-logo', 'color:#586174;', 'color:#9aa0aa;'),
+    ('.wa-logo img', 'filter:grayscale(1);opacity:.58;', 'filter:grayscale(1) invert(1);opacity:.72;'),
+    ('.wa-marquee-head', 'color:#7048e8;', 'color:#a78bfa;'),
+]
+dark_attr = ':root[data-mantine-color-scheme="dark"]'
+light_attr = ':root[data-mantine-color-scheme="light"]'
+css = []
+for sel, light, _dark in wa_scheme:
+    css.append(sel + '{' + light + '}')
+for sel, _light, dark in wa_scheme:
+    css.append(','.join(dark_attr + ' ' + s for s in sel.split(',')) + '{' + dark + '}')
+css.append('@media screen and (prefers-color-scheme: dark){')
+for sel, _light, dark in wa_scheme:
+    css.append(sel + '{' + dark + '}')
+for sel, light, _dark in wa_scheme:
+    css.append(','.join(light_attr + ' ' + s for s in sel.split(',')) + '{' + light + '}')
+css.append('}')
+page.print('\n'.join(css))
+%}
 </style>
 
 <section class="wa-hero">

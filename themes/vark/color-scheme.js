@@ -7,12 +7,22 @@
   var KEY = 'aardvark-color-scheme';
   var mql = window.matchMedia('(prefers-color-scheme: dark)');
 
+  // In-session shadow of the stored pref: localStorage may refuse the write (private
+  // browsing, quota) and would then keep reporting the STALE value, so a choice that
+  // failed to persist would be reverted by the next OS flip or provider sync.
+  var memPref = null;
+
   function pref() {
-    try {
-      return localStorage.getItem(KEY) || 'auto';
-    } catch (e) {
-      return 'auto';
+    var v = memPref;
+    if (!v) {
+      try {
+        v = window.localStorage.getItem(KEY);
+      } catch (e) {
+        v = null;
+      }
     }
+    // Sanitized on read, not just on write: anything on the page can scribble on localStorage.
+    return v === 'light' || v === 'dark' ? v : 'auto';
   }
 
   function resolve(p) {
@@ -81,20 +91,41 @@
   // startViewTransition's callback is async, so work that must run AFTER the scheme
   // flips (e.g. updateButtons) is threaded through `afterApply` and invoked there.
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  function applyAnimated(p, afterApply) {
+  // Applies the CURRENT pref at callback time, never one captured at scheduling time: callers
+  // persist first, so a stacked transition settles on the newest choice, not a superseded one.
+  function applyAnimated(afterApply) {
     if (!document.startViewTransition || reduceMotion.matches) {
-      apply(p);
+      apply(pref());
       if (afterApply) afterApply();
       return;
     }
-    document.startViewTransition(function () { apply(p); if (afterApply) afterApply(); });
+    try {
+      var vt = document.startViewTransition(function () {
+        apply(pref());
+        if (afterApply) afterApply();
+      });
+      // Skipped/interrupted transitions (rapid toggles, a nav mid-fade) reject these: normal
+      // shedding, not an error to surface.
+      vt.ready.catch(function () {});
+      vt.finished.catch(function () {});
+    } catch (e) {
+      // Synchronous startViewTransition failure: settle instantly instead.
+      apply(pref());
+      if (afterApply) afterApply();
+    }
+  }
+
+  // The one persist path: memPref keeps pref() truthful even when the storage write fails.
+  function persist(p) {
+    memPref = p;
+    try {
+      window.localStorage.setItem(KEY, p);
+    } catch (e) {}
   }
 
   function setPref(p) {
-    try {
-      localStorage.setItem(KEY, p);
-    } catch (e) {}
-    applyAnimated(p, updateButtons);
+    persist(p);
+    applyAnimated(updateButtons);
   }
 
   function updateButtons() {
@@ -117,10 +148,43 @@
   // script has already bound the static .aardvark-theme-toggle buttons) can flip the scheme
   // through the SAME path — reusing the persisted pref + View-Transitions cross-fade instead
   // of duplicating it. Callers read the current scheme off the <html> attribute directly.
+  // set/clear route Mantine's own setColorScheme/clearColorScheme (a custom snippet may call
+  // them) through this one write path; without them such a call flips the attribute but never
+  // persists, and the next navigation reverts the reader's choice.
+  //
+  // Their shared tail: Mantine writes the resolved attribute before calling the manager, so
+  // when the visible scheme is already right, just refresh the labels — no no-op animation.
+  function settle(p) {
+    if (document.documentElement.getAttribute('data-mantine-color-scheme') === resolve(p)) {
+      updateButtons();
+      return;
+    }
+    applyAnimated(updateButtons);
+  }
+
   window.aardvarkColorScheme = {
+    get: function () {
+      return pref();
+    },
+    resolve: function (p) {
+      return resolve(p);
+    },
     toggle: function () {
       var resolved = document.documentElement.getAttribute('data-mantine-color-scheme');
       setPref(resolved === 'dark' ? 'light' : 'dark');
+    },
+    set: function (p) {
+      if (p !== 'light' && p !== 'dark' && p !== 'auto') return;
+      // No same-pref early return: settle also repairs a lagging or overwritten attribute.
+      persist(p);
+      settle(p);
+    },
+    clear: function () {
+      memPref = 'auto';
+      try {
+        window.localStorage.removeItem(KEY);
+      } catch (e) {}
+      settle('auto');
     },
   };
 
@@ -133,7 +197,7 @@
     updateButtons();
     // Follow OS changes only while the user hasn't made an explicit choice.
     mql.addEventListener('change', function () {
-      if (pref() === 'auto') applyAnimated('auto', updateButtons);
+      if (pref() === 'auto') applyAnimated(updateButtons);
     });
   }
 
