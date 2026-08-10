@@ -85,6 +85,16 @@ propagates the loader's nonce onto the revived island module scripts, so they mo
 propagation those scripts would be silently CSP-blocked. (A `'strict-dynamic'` policy needs no
 nonce on the island scripts — they're created by the already-trusted loader and inherit its trust.)
 
+The loader also carries a tiny **inline** `<head>` script and stylesheet that apply your saved
+light/dark choice before the page paints, so a protected page doesn't flash the wrong scheme
+while the unlock client downloads. The stylesheet handles anyone following their system setting;
+the script is only needed to honor an explicit choice that *differs* from it. Each is covered by
+its own CSP directive, so a nonce policy can cost you one or both: if your edge layer stamps its
+nonce only onto script tags with a `src`, `script-src` blocks the inline script and just the
+readers who overrode their system setting see the old flash — but a nonce-based **`style-src`**
+blocks the inline stylesheet as well, and then everyone does. Stamp the request nonce onto both
+inline elements (or allow them explicitly) to keep the pre-paint fix.
+
 ## What stays private — and what doesn't
 
 Protected pages are kept out of every discovery surface Aardvark emits: the **sitemap**,
