@@ -110,6 +110,63 @@ fetch, and `cache="true"` vs `cache="false"` makes little practical difference t
 the cache is what keeps repeat builds fast and offline-friendly. (If your CI persists build
 directories between runs, the cache can carry over there too — clear it to force a refresh.)
 
+**A warm cache doesn't hide files being too large.** If files were skipped for size, or the
+folder was cut by `maxFiles`, *every* build says so — not just the one that downloaded. You never
+have to clear the cache to find out what the widget isn't previewing.
+
+One question a warm build can't always answer: if you *lower* `maxFileBytes` on a folder that was
+itself cut by `maxFiles`, the files past that cut aren't on disk to re-check. The build says which
+figures it can't give you rather than quoting one it can't stand behind — delete the cache for
+exact numbers.
+
+**Two notices only a downloading build can give**, because they describe archive entries that
+were never written to the cache: a file skipped for an unsafe path, and one skipped as corrupt
+or over-large when unpacked. A warm build renders exactly what a cold one would, but stays
+silent about both. If you're chasing either, delete `.aardvark-cache/gitfolder` and rebuild.
+
+**A warm build shows the same files a fresh download would** — including after you *lower*
+`maxFiles`. One shape of cache can't promise that, and says so instead of guessing: the message
+tells you the list may differ and leaves the call to you. One re-download retires it for good.
+
+**Upgrading Aardvark never re-downloads.** A folder cached by an older version may not be able to
+answer the questions above; the build says so and leaves your cached files alone rather than
+silently replacing them with whatever the branch points at today. Delete
+`.aardvark-cache/gitfolder` to refresh it.
+
+What *does* re-download is **changing a limit**, and not every change:
+
+- **Raising `maxFiles` or `maxFileBytes` re-downloads.** You've asked for more than the snapshot
+  holds. (A cache old enough not to record the limits it was fetched under can't hear the ask and
+  stays warm; delete it once, and every build after that answers normally.)
+- **Lowering `maxFileBytes` re-downloads only when the lower cap leaves the snapshot short.** If
+  enough cached files still fit under it, the stored copy already *is* what a fresh download
+  would show, and nothing is fetched. Those builds do re-check the whole cached folder, though,
+  to work out which files the lower cap now hides — a cost a big folder keeps paying on every
+  build until something re-fetches it.
+- **Lowering `maxFiles` alone never re-downloads.** It shows fewer of the files already cached.
+
+A re-download on an unpinned `ref` brings today's contents. Pin a `ref=` if that matters, or
+delete the cache first so the refresh is one you chose.
+
+**A half-written cache is re-downloaded, not served.** If a build was killed mid-save, or the
+cache was half-deleted by hand, there's no telling how much of the folder is missing — so the
+build fetches it again rather than quietly rendering whatever happens to be on disk. (A build
+that is *currently* saving that folder is recognized and passes without complaint.)
+
+**Two builds can share a project safely.** A `vark dev` running beside a `vark build` — or two
+dev servers, or CI beside a shell — can't corrupt each other's cached folders: the one that gets
+there first saves the folder and the other leaves it alone, mentioning that it did. Nothing
+waits, so an overlap costs one extra download rather than a stalled page.
+
+The one case worth knowing about: a build **killed while saving** leaves a lock file behind at
+`.aardvark-cache/gitfolder/<key>.json.lock`, and nothing ever removes a lock it doesn't own.
+Nothing new can be cached for that folder until the file goes. Whether that means re-downloading
+depends on what the interrupted build had already done: a snapshot it had finished publishing
+keeps being served, but one cut off mid-save took its sidecar with it, and that folder does
+re-download on every build. After a few minutes the build warns and names the exact path. Check
+that no `vark` process is still running, then delete it — with nothing running that's safe, and
+the next build caches normally.
+
 Set `cache="false"` to re-download on **every** build — you always get the latest, at the cost
 of a network round-trip (and longer builds) each time:
 
