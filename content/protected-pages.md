@@ -62,7 +62,10 @@ decrypted and rendered in place — fully interactive, exactly as if it had load
 The password is remembered for the rest of the browser‑tab session, so other protected pages
 in the same area open without re‑prompting. After three wrong guesses the box stops asking;
 because the attempt count is saved in your browser, reloading the page won't reset it — to try
-again, clear the site's saved data in your browser.
+again, clear the site's saved data in your browser. Where the browser won't let the page save that
+count — a sandboxed frame, a cookies‑blocked profile, a full storage quota — the three‑guess limit
+is still enforced, from memory, and the message tells you to reload the page to try again rather
+than to clear data that was never written.
 
 On a multilingual site, a directory and all its translations share one password (protection
 is matched on the language‑agnostic source path), so unlocking, say, `/en/internal/` in a tab

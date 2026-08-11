@@ -12,12 +12,61 @@
   // failed to persist would be reverted by the next OS flip or provider sync.
   var memPref = null;
 
+  // localStorage is a best-effort side channel for that pref, and the three accesses below absorb
+  // the browser REFUSING it — nothing else. Touching `window.localStorage` at all throws
+  // SecurityError on an opaque origin or when the reader blocks site data (private browsing,
+  // "block cookies"); a write throws QuotaExceededError when the origin is out of quota (Safari's
+  // private mode reports a 0-byte one), and Firefox surfaces a blocked or corrupt store as
+  // NS_ERROR_DOM_QUOTA_REACHED / NS_ERROR_FILE_CORRUPTED. Matched by NAME rather than
+  // `instanceof DOMException`, which would both over-match (InvalidStateError is a defect, not a
+  // refusal) and under-match a refusal thrown from another realm. Anything else IS a defect — a
+  // mistyped key, a renamed API — and is reported instead of hiding as a preference that quietly
+  // stops persisting. Reported, never rethrown: this script is render-blocking in <head>, and an
+  // escaping throw abandons the rest of it, so `window.aardvarkColorScheme`, the toggle wiring and
+  // the view-transition guards would never install — a dead theme toggle and a scheme flash on
+  // every navigation. The islands runtime's fallback persist path (client.js, used only when this
+  // script is absent) needs the same rule, and cannot share this one: it is concatenated verbatim
+  // into the generated bundle entry while this is a separately served theme asset, so neither file
+  // can import the other. If a copy grows there, change both together.
+  var STORAGE_DENIED_NAMES = [
+    'SecurityError',
+    'QuotaExceededError',
+    'NS_ERROR_DOM_QUOTA_REACHED',
+    'NS_ERROR_FILE_CORRUPTED',
+  ];
+  // Reported once per (message, error name) pair: pref() re-probes storage on every call until
+  // the reader picks a scheme, so a persistently broken store would otherwise log the same
+  // defect on every island mount and every scheme change. Keyed on the name too — not the
+  // message alone — so a second, DIFFERENT defect at an already-reported site still surfaces
+  // instead of being consumed by the first one's latch.
+  var reported = {};
+  function reportUnlessDenied(what, e) {
+    if (e && STORAGE_DENIED_NAMES.indexOf(e.name) !== -1) return;
+    var key = what + '|' + (e && e.name);
+    if (reported[key]) return;
+    reported[key] = true;
+    if (window.console && console.error) console.error('Aardvark: ' + what, e);
+  }
+  // The store, or null when it is absent or unreadable — reading the property is itself an access
+  // that can throw, and an Android WebView built without DOM storage leaves it null outright.
+  function storage() {
+    try {
+      return window.localStorage || null;
+    } catch (e) {
+      reportUnlessDenied('could not reach localStorage', e);
+      return null;
+    }
+  }
+
   function pref() {
     var v = memPref;
-    if (!v) {
+    var store = v ? null : storage();
+    if (store) {
       try {
-        v = window.localStorage.getItem(KEY);
+        v = store.getItem(KEY);
       } catch (e) {
+        // Refused read: fall through to 'auto', which is what a first-time reader gets anyway.
+        reportUnlessDenied('could not read the saved color scheme', e);
         v = null;
       }
     }
@@ -47,7 +96,11 @@
   try {
     var apple = /Mac|iPhone|iPad|iPod/.test(navigator.userAgent || '');
     document.documentElement.setAttribute('data-aardvark-platform', apple ? 'mac' : 'other');
-  } catch (e) {}
+  } catch (e) {
+    // No expected failure here, so anything caught is a defect; the keycap just keeps its Ctrl
+    // default, which is not worth abandoning the rest of this render-blocking script over.
+    if (window.console && console.error) console.error('Aardvark: could not detect the platform', e);
+  }
 
   // The site-wide cross-document @view-transition (theme.css `@view-transition { navigation: auto }`)
   // cross-fades the old page into a snapshot of the new one. Chromium captures that inbound snapshot
@@ -118,9 +171,15 @@
   // The one persist path: memPref keeps pref() truthful even when the storage write fails.
   function persist(p) {
     memPref = p;
+    var store = storage();
+    if (!store) return;
     try {
-      window.localStorage.setItem(KEY, p);
-    } catch (e) {}
+      store.setItem(KEY, p);
+    } catch (e) {
+      // Refused write: memPref above already keeps pref() truthful, so only durability across a
+      // reload is lost — in a browser the reader configured to forget site data.
+      reportUnlessDenied('could not save the color scheme', e);
+    }
   }
 
   function setPref(p) {
@@ -181,9 +240,13 @@
     },
     clear: function () {
       memPref = 'auto';
+      var store = storage();
       try {
-        window.localStorage.removeItem(KEY);
-      } catch (e) {}
+        if (store) store.removeItem(KEY);
+      } catch (e) {
+        // Refused remove: memPref shadows the stale stored value for the rest of the session.
+        reportUnlessDenied('could not clear the saved color scheme', e);
+      }
       settle('auto');
     },
   };
