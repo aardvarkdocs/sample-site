@@ -16,15 +16,15 @@ Network-optional: this generator never fails the build, and always reports what 
 to. Four rules; `tests/test_pricing_generator_degradation.py` enforces them, and the
 per-function docs below do not restate them.
 
-1. **Every failure is named**, with the :data:`_KINDS` label that distinguishes it, and says
-   what the page will show as a result.
+1. **Every failure is named**, with an accepted :data:`_KINDS` label — or the internal-defect
+   sentinel ``unknown`` — that distinguishes it and says what the page will show as a result.
 
 2. **The channel follows the PAGE.** A complete table served from a stale snapshot is an
-   `info` note — nothing is broken and nobody has anything to fix. Missing or unusable data —
-   an empty table, a dropped Quality column, a corrupt snapshot, a schema that moved — is a
-   `warn`. This also keeps `scripts/check-sample-site-warnings.py` honest, whose doctrine is
-   that "a build warning a cache can silence is a bug in the warning": every warning here
-   describes the page, so a warm cache can only silence one by changing what the page holds.
+   `info` note — unless the failure carries the internal-defect sentinel ``unknown``, which
+   remains a `warn`. Missing or unusable data — an empty table, a dropped Quality column, a
+   corrupt snapshot, a schema that moved — is also a `warn`. This keeps
+   `scripts/check-sample-site-warnings.py` honest: ordinary upstream failures follow the page,
+   while a programming error remains actionable even when cached data keeps the page complete.
 
 3. **Nothing is cached until it is known to be usable**, and a cache write is atomic. A
    payload is validated all the way to the rows it will render before it is written, and it
@@ -85,16 +85,31 @@ ARTIFICIAL_ANALYSIS_HOSTS = frozenset({"artificialanalysis.ai"})
 AA_KEY_ENV = "ARTIFICIAL_ANALYSIS_API_KEY"
 
 
+#: The accepted failure taxonomy. Undeclared internal labels normalize to ``unknown`` so an
+#: already-degraded path remains nonfatal while the resulting warning stays actionable.
+_KINDS = (
+    "network",  # transport never produced a response (DNS, refused, TLS, timeout, reset)
+    "http",     # a response arrived carrying an error status
+    "json",     # a body or snapshot that is not parseable JSON
+    "schema",   # parseable, but not a catalog this page can render
+    "cache",    # a snapshot on disk that could not be read, or could not be replaced
+    "redirect", # upstream pointed us off the allowlist or off HTTPS; refused before contact
+)
+
+
 class CatalogError(Exception):
     """A fetch, parse or validation failure, tagged with its :data:`_KINDS` ``kind``.
 
-    Not validated at construction on purpose: it is raised only on paths that are already
-    degrading, so a typo'd kind must not be what turns a degraded page into a failed build.
-    The suite enforces the taxonomy behaviourally instead — it drives each failure and
-    compares the kinds actually reported against :data:`_KINDS`, in both directions.
+    An undeclared label becomes ``unknown`` rather than raising: this class is constructed only
+    on paths that are already degrading, so a typo must not turn a degraded page into a failed
+    build. The original label remains in the detail for diagnosis, while the warning gate treats
+    ``unknown`` as actionable instead of allowing it as a transient upstream failure.
     """
 
     def __init__(self, kind, detail):
+        if kind not in _KINDS:
+            detail = f"{detail}; internal failure kind {kind!r} is not declared"
+            kind = "unknown"
         super().__init__(detail)
         self.kind = kind
 
@@ -109,16 +124,6 @@ class MissingSnapshot(CatalogError):
 #: Human names for the two upstreams, used in every message so a reader knows which one broke.
 OPENROUTER = "OpenRouter"
 ARTIFICIAL_ANALYSIS = "Artificial Analysis"
-
-#: The failure taxonomy. Every degraded path in this file reports exactly one of these.
-_KINDS = (
-    "network",  # transport never produced a response (DNS, refused, TLS, timeout, reset)
-    "http",     # a response arrived carrying an error status
-    "json",     # a body or snapshot that is not parseable JSON
-    "schema",   # parseable, but not a catalog this page can render
-    "cache",    # a snapshot on disk that could not be read, or could not be replaced
-    "redirect", # upstream pointed us off the allowlist or off HTTPS; refused before contact
-)
 
 
 def _fetch_json(url, headers, allowed_hosts):
@@ -608,11 +613,11 @@ def _load(cache_path, url, headers, allowed_hosts, *, source, parse, subject, co
           stale_note, missing_from, empty):
     """Fetch-with-cache for one upstream, returning ``(result, failure)``.
 
-    ``failure`` is the :data:`_KINDS` name of what degraded this run, or ``None`` when nothing
-    did — a clean fetch, or a cache hit inside the TTL. ``parse`` turns a payload into that upstream's usable
-    result and raises when there isn't one; ``empty`` is what "nothing usable" looks like to
-    the caller. Shared by both upstreams so the rules cannot hold for one and drift for the
-    other.
+    ``failure`` is the accepted :data:`_KINDS` name of what degraded this run (or the ``unknown``
+    sentinel for an internal labelling defect), and is ``None`` when nothing did — a clean fetch
+    or a cache hit inside the TTL. ``parse`` turns a payload into that upstream's usable result
+    and raises when there isn't one; ``empty`` is what "nothing usable" looks like to the caller.
+    Shared by both upstreams so the rules cannot hold for one and drift for the other.
     """
     age = _snapshot_age(cache_path, source)
     if age is not None and age < CACHE_TTL_SECONDS:
@@ -664,8 +669,10 @@ def _stale_fallback(cache_path, exc, *, source, parse, subject, consequence, sta
             f"[{cache_exc.kind}] — {cache_exc}, so {consequence}."
         )
         return empty
-    # A complete page: a note, not a warning (rule 2) — but one that says how old it is.
-    info(
+    # A complete page normally takes the note channel (rule 2). The `unknown` sentinel means
+    # our own taxonomy is broken, so cached data must not hide it from the warning gate.
+    emit = warn if exc.kind == "unknown" else info
+    emit(
         f"{lead} falling back to the cached snapshot ({cache_path.name}, "
         f"{_age_label(_snapshot_age(cache_path, source, report=False))}), so {stale_note}."
     )
