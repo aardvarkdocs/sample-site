@@ -222,21 +222,27 @@ def _entries(payload, source, *, key_required=True):
     """
     if isinstance(payload, list):
         if key_required:
-            raise CatalogError("schema", 'the response was a bare list, not a {"data": …} object')
+            raise CatalogError(
+                "schema", f'the {source} response was a bare list, not a {{"data": …}} object'
+            )
         data = payload
     elif not isinstance(payload, dict):
         raise CatalogError(
-            "schema", f"the response was a JSON {type(payload).__name__}, not an object"
+            "schema", f"the {source} response was a JSON {type(payload).__name__}, not an object"
         )
     elif "data" not in payload:
         raise CatalogError(
-            "schema", 'the response object has no "data" key (upstream changed its shape?)'
+            "schema",
+            f'the {source} response object has no "data" key '
+            "(upstream changed its shape?)",
         )
     else:
         data = payload["data"]
         if not isinstance(data, list):
             raise CatalogError(
-                "schema", f'"data" held a JSON {type(data).__name__}, not a list of models'
+                "schema",
+                f'the {source} response "data" held a JSON '
+                f"{type(data).__name__}, not a list of models",
             )
     objects = [m for m in data if isinstance(m, dict)]
     # Every reader downstream calls .get on a model, so a non-object entry would crash the
@@ -310,7 +316,7 @@ def _number(value, field):
         return None, None
     if isinstance(value, bool):
         return None, f"{field} given as the boolean {value!r}"
-    if isinstance(value, (int, float, str)) and not isinstance(value, bool):
+    if isinstance(value, (int, float, str)):
         try:
             number = float(value)
         except ValueError:
@@ -444,7 +450,8 @@ _Unreadable = collections.namedtuple("_Unreadable", "mid problem dropped")
 
 #: What a parse produced: the usable ``result``, what it could not read, and the RAW entry
 #: count it read them out of — raw because ``unreadable`` includes non-object entries, so a
-#: models-only denominator would let "3 of 2" happen. Parsing does not WARN — a payload that is parsed and then discarded (a live
+#: models-only denominator would let "3 of 2" happen.
+#: Parsing does not WARN — a payload that is parsed and then discarded (a live
 #: response that turns out to be unusable, superseded by a snapshot) must not leave warnings
 #: behind about a page the reader never sees. Only the caller knows which payload it kept, so
 #: only the caller reports (see :func:`_load`).
