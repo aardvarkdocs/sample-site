@@ -100,6 +100,8 @@ Serve the site locally and rebuild on change.
 
 Builds once, serves the result, watches your sources, and live-reloads the browser on every change. Your browser opens to the site automatically when the server starts (pass `--no-open` to skip that). The per-phase timing summary prints on the first build and on every rebuild, so you can see exactly what each change cost. Generation scripts run on every rebuild; pass `--no-generators` for a fully offline loop when a generator's network call is slow or its cache is cold.
 
+When the site prerenders islands (`islands.ssr`), each page's baked markup is cached and reused until that page — or the islands toolchain — actually changes, so a rebuild only re-renders what you edited. Pass `--no-ssr` to skip the prerender altogether for the fastest loop, accepting that dev pages then mount client-side and no longer match what `vark build` publishes.
+
 The live dashboard paints on the terminal's alternate screen, so its log vanishes when you quit and can't be piped anywhere (piping `vark dev` turns the dashboard off entirely). Drag-select copies what the pane still shows (2,000 wrapped lines); `s` saves from a separate, larger record of 5,000 unwrapped lines, so it keeps output the pane has already scrolled past. Both are still capped. Pass `--log-file dev.log` to also write the same events — every build summary, warning, broken-link report, and traceback — to a plain-text file you can paste from, with no cap at all. Runs are appended, each under a `=== vark dev … started … ===` banner, so restarting never discards the output you were trying to keep.
 
 | Option | Default | Effect |
@@ -108,6 +110,7 @@ The live dashboard paints on the terminal's alternate screen, so its log vanishe
 | `--port INTEGER` | `8000` | Port to serve the site on. |
 | `--open / --no-open` | `--open` | Open the site in your browser when the server starts. |
 | `--generators / --no-generators` | `--generators` | Run generation scripts on each rebuild. Pass --no-generators for a faster, fully offline dev loop when a generator makes a slow/uncached network call. |
+| `--ssr / --no-ssr` | auto | Prerender islands on each rebuild (defaults to the site's islands.ssr setting). Pass --no-ssr to skip both the SSR renderer build and the prerender: islands then mount client-side, so dev pages flash on load and no longer match production output. |
 | `-v, --verbose` | off | Stream per-phase progress on every rebuild. |
 | `--plain` | off | Disable the live dashboard; use plain line-by-line output (also implied off a TTY or under CI / NO_COLOR). |
 | `--log-file PATH` | — | Append this run's log — builds, warnings, and errors — to PATH as plain text, so the dashboard's output can be copied into a bug report. Off unless you pass it; PATH must be outside the build output directory, which every build replaces. |
