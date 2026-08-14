@@ -9,8 +9,8 @@ A **built-in** tag that embeds a small IDE-style browser for a folder in a **pub
 repo: a file tree on the left, the selected file on the right — **syntax-highlighted** source
 for code, **inline display** for images, and a **Source&nbsp;⟷&nbsp;Preview** toggle for
 Markdown and SVG — plus per-file **copy** / **download**, a link to each file's **source on
-GitHub**, and a **Download&nbsp;ZIP** of the **whole repository**. The repo's detected
-**license** is shown at the bottom, so readers know the terms before reusing the code. It's
+GitHub**, and a **Download&nbsp;ZIP** of the **whole repository**. The repo's **license file**
+is linked at the bottom, so readers know the terms before reusing the code. It's
 perfect for showing an example project inline without copy-pasting every file into the page.
 
 The files are fetched **at build time** — one archive download of the repo, from which only
@@ -69,9 +69,39 @@ way, so a `folder=` on a very large repo is a lighter page but not a lighter dow
 The **Download&nbsp;ZIP** button **always** fetches the **whole repository** from GitHub's own
 archive — even when you're browsing a single subfolder. That's deliberate: a zip of just part
 of a repo could leave out the `LICENSE`, and someone might reuse the code without realizing the
-terms. For the same reason, the repo's **detected license** (e.g. *MIT License*) is shown in
-the widget's footer, linked to the license file on GitHub — or, if no license is found, a
-reminder that the code is *all rights reserved* by default.
+terms. For the same reason the widget's footer points at the repo's license file, so the terms
+are one click from the code they govern.
+
+**The footer quotes your license file; it does not classify it.** Aardvark reads the
+root-level license file out of the same downloaded archive that provides the file previews,
+takes the **title line the file gives itself**, and shows that, linked — no GitHub API, so
+nothing to authenticate and nothing to be rate-limited. It never decides *which* license you
+are under, so it can never name the wrong one and there is no list of known licenses to fall
+off: a brand-new SPDX id or your own bespoke terms appear exactly as your file words them.
+
+The footer has three things it can say:
+
+- **the title, linked** — `MIT License`, `GNU AFFERO GENERAL PUBLIC LICENSE`, `The Acme Public
+  License v3`, whatever your first line says (Markdown heading marks and underlines come off;
+  the words don't).
+- **`License`, linked** — the file is there but doesn't name itself: it opens with a copyright
+  notice (BSD, ISC and many MIT copies do), or it's a symlink, a binary, or too large to read.
+  You still get the link, which is the part that matters.
+- **no license detected — assume all rights reserved** — the repo root has no license file.
+  This is only ever said about a repo that was actually read: a fetch that failed has no files
+  either, so that widget shows its usual "couldn't fetch this" fallback instead of a footer.
+- **no footer at all** — nothing read this repo's root, so there is nothing honest to say. You
+  see this in one narrow case: you upgraded Aardvark, the cached copy of the repo was written
+  by the older version, and this build couldn't reach GitHub to re-read the license. The files
+  are still shown (they are exactly what the previous build stored) and the build warns; the
+  next build that reaches GitHub settles the license and the footer comes back.
+
+Only the best-named root file is read — `LICENSE`, then `LICENCE`, `COPYING`, `UNLICENSE`, then
+any name that carries one of those words (`LICENSE-MIT`, `MIT-LICENSE`, `COPYING-LGPL` — the
+generic word decides, never the qualifier). A repo carrying several is quoting itself, not
+disagreeing with itself, so the link goes to the best-ranked one. A bare `COPYRIGHT` is **not**
+one of them: it states who owns the code, not what you may do with it, so a repo whose root
+holds only that gets the all-rights-reserved footer rather than a link labelled `License`.
 
 **The license you see is a cached snapshot.** The footer's license — like the file previews —
 comes from the fetch that filled the [cache](#caching), so it describes the code you actually
@@ -128,12 +158,22 @@ silent about both. If you're chasing either, delete `.aardvark-cache/gitfolder` 
 `maxFiles`. One shape of cache can't promise that, and says so instead of guessing: the message
 tells you the list may differ and leaves the call to you. One re-download retires it for good.
 
-**Upgrading Aardvark never re-downloads.** A folder cached by an older version may not be able to
-answer the questions above; the build says so and leaves your cached files alone rather than
+**Upgrading Aardvark re-downloads once, and only for the license.** A cache written before
+Aardvark read licenses out of the archive carries an answer from GitHub's old API — including
+"no license", which that API also recorded when it simply couldn't reach GitHub. This version
+repeats neither: the first build after the upgrade fetches that repo once, reads the license
+out of the archive, and stays warm from then on. If that one build can't reach GitHub, your
+cached files still render — the failure costs you the footer, not the widget: Aardvark warns,
+shows the files it already has, and renders no license line at all, because it has no honest
+answer to put there. The next successful build settles it.
+
+Nothing else re-downloads on an upgrade: a folder cached by an older version may not be able to
+answer the questions above, and the build says so and leaves your cached files alone rather than
 silently replacing them with whatever the branch points at today. Delete
 `.aardvark-cache/gitfolder` to refresh it.
 
-What *does* re-download is **changing a limit**, and not every change:
+Besides that one-time license migration, what re-downloads is **changing a limit**, and not
+every change:
 
 - **Raising `maxFiles` or `maxFileBytes` re-downloads.** You've asked for more than the snapshot
   holds. (A cache old enough not to record the limits it was fetched under can't hear the ask and
@@ -199,20 +239,18 @@ build summary's warning total.
 - **The widget is wide.** It works at the default content width, but a file browser has more
   room to breathe on a `mode: wide` (or `mode: full`) page — set that in the page's
   front-matter.
-- **No API rate limit to worry about.** File content comes from one archive download, which
-  has no REST quota — so neither form needs a `GITHUB_TOKEN`, including on shared-IP CI
-  (Cloudflare Pages, Netlify, GitHub Actions), where an anonymous 60/hour API ceiling is shared
-  across every project on the runner. The only REST call left is a single memoized `/license`
-  lookup per repo, used for the footer; if that one gets rate-limited the files still render and
-  only the license line is missing. To get that line back on a shared-IP build, set
-  `GITHUB_TOKEN` (or `gitfolder.token`) **and** list the repo's owner under
-  `github.allowedOwners` — Aardvark only ever sends a credential to an approved owner, and an
-  absent `allowedOwners` approves nobody, so the token on its own changes nothing. The gate is
-  deliberate: `owner/repo` comes from page content, so an unapproved owner gets an anonymous
-  fetch instead of your credential.
+- **No API rate limit to worry about — at all.** Everything the widget shows comes from one
+  archive download, which has no REST quota: the file content *and* the footer's license,
+  which is [detected locally](#downloads-licensing) from the archive's own license file. The
+  widget makes **no GitHub API call**, so no `GITHUB_TOKEN` is needed on any host — including
+  shared-IP CI (Cloudflare Pages, Netlify, GitHub Actions), where the anonymous 60/hour API
+  ceiling is shared across every project on the runner and used to cost the footer its license
+  line. There is no credential to configure and nothing for someone else's builds to exhaust.
+  (The old `gitfolder.token` config key is retired; a leftover one warns so you remember to
+  remove it.)
 - **Resilient by design.** If a repo or folder can't be fetched (offline build, a typo, a
-  rate-limit), the build prints a warning and the widget renders nothing — it never fails the
-  whole build.
+  private or deleted repo, a network failure), the build prints a warning and the widget renders
+  nothing — it never fails the whole build.
 - **Turn it off site-wide** with `gitfolder: false` in `aardvark.config.yaml`.
 
 ## CSS Selectors

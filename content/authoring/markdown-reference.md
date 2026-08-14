@@ -583,55 +583,55 @@ a pasted GitHub URL reaches any public repo. Pin a version with `ref=` — a bra
 
 Here's a real one — [`yocto-queue`](https://github.com/sindresorhus/yocto-queue)'s `index.js`, pinned
 to a commit and pulled **live** at build time. The header shows the source repo and filename — each
-linking to GitHub, next to a GitHub mark — and a footer shows the repo's license, detected
-automatically, so an embedded file always carries its provenance and attribution (it's `expandable`,
-so it opens on click):
+linking to GitHub, next to a GitHub mark — and a footer quotes the repo's license file, so an
+embedded file always carries its provenance and attribution (it's `expandable`, so it opens on
+click):
 
 ```js github="sindresorhus/yocto-queue/index.js" ref="b07eac099753833b29d06c614149904445739776" expandable
 ```
 
-A commit-pinned fetch is cached across builds; a branch or tag is re-fetched each build so it never
-goes stale. Fetches happen at build time over the network, one after another — each distinct file is
-fetched once per build — so a page with many unique `github=` files spends real network time; pin
-commit SHAs (so the disk cache carries them across builds) or limit how many unique `github=` files a
-large site pulls. Each distinct **repo** also costs one license-API lookup for the footer — deduped
-per repo within a build, and disk-cached for a SHA-pinned ref like the file. A ref counts as an
-immutable commit — cached across builds — only when it is a full
-40- or 64-character hex SHA; don't name a branch as a bare 40/64-hex string, or it would be cached as
-if it were a commit and never re-fetched. Set the `AARDVARK_GITHUB_TOKEN` environment variable (or
-`GITHUB_TOKEN`, which CI provides automatically) to use GitHub's higher authenticated rate limit — and
-to read files from a **private** repo. For a branch or tag whose name contains a slash (`release/2.0`),
+A commit-pinned fetch is cached across builds; a branch or tag is re-read each build so it never
+goes stale.
+
+**It reads the repo's archive, not the GitHub API.** Aardvark downloads the repo's zip — the same
+one `{% raw %}{% gitfolder %}{% endraw %}` uses — and reads your file out of it. One download
+serves every fence and widget naming that repo **at that ref**; since a fence defaults to `main`
+and the widget to the repo's default branch, name the same `ref` on both if you want them to share
+one. That means **no GitHub API request, no rate limit, and no token**: nothing
+here can lose the anonymous 60-requests-per-hour race that a shared CI IP makes easy to lose. The
+trade is bytes: the whole repo transfers even when you embed one file, so many files from one repo
+cost one download, while one file from a giant monorepo costs its whole archive. Pinning a commit
+SHA is the fix worth knowing — it's cached across builds, so it downloads once ever.
+
+That cache is also what keeps a CI job from paying twice: `vark link-check` renders your pages,
+so it reads the fence's file too. Pinned to a SHA, the check fills the cache and the build that
+follows reads it; pinned to a branch, nothing is cached across processes and each command
+downloads the archive once.
+
+A ref counts as an immutable commit — cached across builds — only when it is a full 40- or
+64-character hex SHA; don't name a branch as a bare 40/64-hex string, or it would be cached as if it
+were a commit and never re-read. For a branch or tag whose name contains a slash (`release/2.0`),
 pass it as `ref=` rather than burying it in a pasted URL, so Aardvark can tell where the branch ends
 and the file path begins.
 
-{% callout title="Tokens and private repos" severity="caution" %}
-If `AARDVARK_GITHUB_TOKEN` / `GITHUB_TOKEN` in your build environment can read **private** repos, treat
-`github=` like any other code that runs at build time: an untrusted pull request could add a fence that
-embeds a private file's contents into the rendered output. Because CI injects `GITHUB_TOKEN`
-automatically, Aardvark **refuses an authenticated `github=` fetch unless you scope it** — set
-`github.allowedOwners` so `github=` may only fetch from owners you list (the configured `github.repo`
-owner is always allowed):
+**The footer quotes the repo's license file.** The archive read that fetched your file also finds
+the repo's root license file and shows the title that file gives itself, linked — the same
+quote-don't-classify contract the [gitfolder](/components/extras/gitfolder#downloads-licensing)
+footer has, and at the same ref as the code above it. A repo with no license file simply gets no
+footer.
 
-```yaml
-github:
-  repo: myorg/docs
-  allowedOwners: [myorg]   # a github= fence may only fetch from myorg
-```
-
-An empty list (`allowedOwners: []`) still counts as configured, but it is **not** a hard deny-all:
-your configured `github.repo`'s own owner is **always** permitted, so `allowedOwners: []` blocks every
-*other* owner while still allowing fetches from your own repo (it denies everything only when no
-`github.repo` is set). Omit the key entirely to leave `github=` unrestricted.
-
-If you genuinely need unrestricted authenticated fetches, set `AARDVARK_UNSAFE_GITHUB_FETCH=1` to opt
-back in (a build-time warning then reminds you the allowlist guard is off). With no token in the
-environment, `github=` fetches are anonymous and can read only public files, so no allowlist is needed.
+{% callout title="Public repos only" severity="note" %}
+`github=` reads **public** repos anonymously. It sends no credential, so it cannot read a private
+repo — and cannot be made to leak one either: an untrusted pull request adding a `github=` fence
+gets exactly what any anonymous visitor would get. The old `github.allowedOwners` key existed to
+scope an authenticated fetch; there is no token to scope now, so it is retired and a leftover key
+warns.
 {% endCallout %}
 
 #### One source per block
 
 A block displays exactly one thing, so naming more than one of an inline body, `src=`, or `github=`
-**fails the build** — as does a missing file, an unknown snippet name, or a failed fetch. A broken
+**fails the build** — as does a missing file, an unknown snippet name, or a failed read. A broken
 reference surfaces at build time instead of shipping an empty or stale block.
 
 ## Diagrams
