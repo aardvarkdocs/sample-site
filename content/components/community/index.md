@@ -34,7 +34,8 @@ author, and we bundle one only on these terms:
 
 The catalog is kept current by an **automated monitor** — the `refresh-community-extensions`
 workflow (and its companion skill) watches the upstream Mantine extensions list and opens a PR as
-new extensions pass both gates or existing ones move. Rejected projects remain recorded in the
+new extensions pass the license, framework, and conversion-architecture gates or existing ones
+move. Rejected projects remain recorded in the
 source manifest so the monitor does not repeatedly propose them.
 
 ## Bundled components
@@ -72,7 +73,11 @@ the npm package it bundles, and live examples.
 - [Lightbox](/components/community/lightbox/) — a full-screen image lightbox.
 - [DataTable](/components/community/datatable/) — a feature-rich sortable, paginated data table.
 
-## Not bundled
+## Not bundled as Community Components
+
+- **Mantine Map** — used only as an audited implementation dependency of Aardvark's native
+  {% raw %}`{% map %}`{% endraw %} block. It is deliberately not converted into a separate
+  Community Component, and no {% raw %}`{% mantineMap %}`{% endraw %} tag exists.
 
 - [BlockNote](/components/community/blocknote/) — compatible with the current framework, but
   excluded by the permissive-license policy because it is MPL-2.0 licensed.

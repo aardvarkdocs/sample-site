@@ -304,9 +304,13 @@ footer:
 #   filterable: true
 
 # Embedded maps: the {% map %} / {% pin %} tag renders an OpenFreeMap / MapLibre map
-# with a marker per location (see /components/map/). On by default; a bare `map: false`
-# disables the tag. `address` pins are geocoded at build time by Nominatim (free, no
-# key) and cached under .aardvark-cache/; `lat`/`lng` pins skip geocoding entirely.
+# with a marker per location (see /components/extras/map/). The native island uses the audited
+# mantine-map package internally; its exact direct maplibre-gl dependency, CSS, and worker are
+# bundled and served locally. Remote styles, tiles, glyphs, and sprites are provider data, not
+# executable CDN runtime.
+# On by default; a bare `map: false` disables the tag. `address` pins are geocoded at
+# build time by Nominatim (free, no key) and cached under .aardvark-cache/; `lat`/`lng`
+# pins skip geocoding entirely.
 # map:
 #   geocoder: nominatim          # default; or "google" (then set googleApiKey)
 #   # googleApiKey: "…"
@@ -314,7 +318,6 @@ footer:
 #   # timeout: 10                # seconds per geocoder request
 #   style: liberty               # liberty | bright | positron | a full MapLibre style URL
 #   height: 400                  # default map height in px
-#   # maplibreVersion: "6.0.0"  # pin a different MapLibre GL JS release
 
 # Accessibility: a non-fatal, build-time WCAG color-contrast audit of your theme's palette
 # (light + dark), read from themes/<name>/theme.scss. On by default; the shipped default

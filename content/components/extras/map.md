@@ -10,6 +10,14 @@ It renders [OpenFreeMap](https://openfreemap.org) vector tiles with
 [MapLibre GL JS](https://maplibre.org) — both **free and keyless** — so a map *just
 works* with nothing to sign up for.
 
+Aardvark uses the audited `mantine-map` package as an internal implementation dependency;
+it does not expose a second community tag. {% raw %}`{% map %}`{% endraw %} is the only map
+authoring surface. The MapLibre browser runtime and stylesheet are bundled from the exact
+version installed in your project, and Aardvark publishes its content-hashed worker locally.
+The executable map engine therefore loads from your own site rather than a JavaScript CDN.
+The selected remote style, tiles, glyphs, and sprites are provider data, not executable CDN
+runtime.
+
 Drop a pin by **street address** and the address is turned into coordinates once, at
 build time, by the free [Nominatim](https://nominatim.org) (OpenStreetMap) geocoder —
 cached so a rebuild never re-looks-up an address it already knows. Prefer to be exact
@@ -58,8 +66,9 @@ renders, live:
 {% pin lat=51.5014 lng=-0.1419 label="Buckingham Palace" color="#c2255c" %}
 {% endMap %}
 
-Click a marker for its popup. The map keeps the **© OpenStreetMap contributors** and
-**OpenFreeMap** attribution in the corner — that crediting is required, so don't remove it.
+Click a marker for its popup. The map keeps **MapLibre | OpenFreeMap © OpenMapTiles | ©
+OpenStreetMap contributors** attribution in the corner — that crediting is required, so don't
+remove it.
 
 ## Pinning a location
 
@@ -140,22 +149,22 @@ map:
   # rateLimit: 1.0             # requests per second
   # timeout: 10                # seconds per geocoder request
   style: liberty               # default basemap
-  # maplibreVersion: "6.0.0"  # pin a different MapLibre release
 ```
 {% endraw %}
 
-MapLibre GL JS loads from a pinned CDN release whose [Subresource Integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity)
-hash the browser verifies. If you override `maplibreVersion` (or point `maplibreJs` /
-`maplibreCss` at your own URLs), Aardvark can't know the hash and ships **no** SRI for it —
-you then own the supply-chain integrity of whatever that release serves.
+`mantine-map` and MapLibre GL JS are exact dependencies in a scaffolded site's
+`package.json`: the former is the audited internal adapter, while the direct MapLibre pin
+keeps worker resolution on the same installed tree. During the islands build Aardvark
+bundles that runtime and CSS and emits a self-contained, content-hashed worker under
+`/_aardvark/maplibre/`. There is no runtime JavaScript or CSS CDN dependency to configure.
 
-**Content-Security-Policy:** SRI checks the bytes but doesn't grant permission to fetch them. If
-your site sends a CSP, the browser blocks MapLibre's `<script>` and `<link>` unless their origin
-is allow-listed — and the map silently drops to the fallback list below with a console error. The
-default release loads from `cdn.jsdelivr.net`, so add `https://cdn.jsdelivr.net` to both
-`script-src` and `style-src`, or point `maplibreJs` / `maplibreCss` at a self-hosted copy so no
-third-party origin is needed. (Cloud hosts and WAFs sometimes set a CSP for you — check there if a
-map renders fine locally but vanishes once deployed.)
+**Content-Security-Policy:** allow the local worker with `worker-src 'self'`, and allow
+MapLibre's image forms with `img-src 'self' data: blob:`. The basemap style still names its
+own remote style, tile, glyph, sprite, and image providers, so add those origins under
+`connect-src` and `img-src` as appropriate. These responses are map data, not executable
+runtime fetched from a CDN. The default OpenFreeMap styles use OpenFreeMap-hosted resources.
+(Cloud hosts and WAFs sometimes set a CSP for you — check there if a map renders locally but
+loses its basemap after deployment.)
 
 No JavaScript? A reader (or a search crawler) without the map still gets an accessible
 list of the pinned locations, each linking to its spot on OpenStreetMap — the same list
