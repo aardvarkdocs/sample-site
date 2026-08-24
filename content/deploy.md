@@ -24,6 +24,9 @@ Install the CLI first — see [Installation](/getting-started/installation/) —
 {% card title="Deployment" icon="rocket" accent="grape" href="/deployment/" cta="Host the build" %}
 Hand the static `build/` directory to any host — Cloudflare Pages, Netlify, Vercel, GitHub Pages, S3 — or ship Aardvark itself as one compiled binary.
 {% endCard %}
+{% card title="Managed hosting" icon="cloud-upload" accent="grape" href="/hosting-onboarding/" cta="Let Aardvark host it" %}
+On Pro and up, Aardvark cloud builds and serves your docs for you — push-to-deploy from GitHub, branch previews, and your own custom domain with SSL.
+{% endCard %}
 {% card title="CLI reference" icon="terminal-2" accent="grape" href="/cli/" cta="Every command" %}
 `build`, `dev`, `serve`, `link-check`, and the rest — and the exact flags each command takes.
 {% endCard %}

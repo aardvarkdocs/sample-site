@@ -12,7 +12,8 @@ weight: 20
 
 The **Aardvark cloud gateway** is the managed metering proxy that sits behind the built-in
 **"Ask AI"** assistant. The assistant in a reader's browser never talks to a model directly — it
-calls the gateway, which proxies the request to the model behind Aardvark's managed keys,
+calls the gateway, which proxies the request to the model behind Aardvark's managed keys
+(or, for an Enterprise account that registered one, its own provider key),
 **meters** the spend at Aardvark's published [per-model rates](/pricing/models/)
 (subscription plans meter at a member discount), and **cuts off** an account that has run out
 of credit.

@@ -35,8 +35,9 @@ your score** — it only applies to shopping/checkout sites, so a docs or market
 
 Most are emitted on **every build** with no configuration — set [`baseUrl`](/llms-and-sitemap/) in
 `aardvark.config.yaml`, deploy over HTTPS, and they pass. A few are conditional, as the Notes column
-calls out: WebMCP rides on `mcp: true` (MCP is opt-in), the API catalog appears once you embed
-OpenAPI specs, and the Agent Skills index lists whatever `skills/` you ship.
+calls out: WebMCP rides on `mcp: true` (MCP is opt-in), the MCP Server Card needs `mcp: true`
+plus a `baseUrl`, the API catalog appears once you embed OpenAPI specs, and the Agent Skills
+index lists whatever `skills/` you ship.
 
 | Check | Endpoint / signal | Notes |
 | --- | --- | --- |
@@ -45,7 +46,7 @@ OpenAPI specs, and the Agent Skills index lists whatever `skills/` you ship.
 | Sitemap | `/sitemap.xml` | Every page, with `lastmod` |
 | Link headers | `Link: …; rel="service-desc" / "describedby" / "api-catalog"` | Added by `vark serve` and the generated `_headers` |
 | Markdown negotiation | `/<page>.md` + "View as Markdown" | Agents fetch the clean Markdown of any page |
-| MCP Server Card | `/.well-known/mcp/server-card.json` | Advertises the MCP server `vark serve --mcp` hosts |
+| MCP Server Card | `/.well-known/mcp/server-card.json` | Advertises the MCP server `vark serve --mcp` hosts — **opt-in**, requires `mcp: true` + a `baseUrl` |
 | WebMCP | `/_aardvark/webmcp-<sha>.js` | In-page tools agents can call — **opt-in**, requires `mcp: true`; generated pages are rewritten to the fingerprinted file |
 | OAuth / OIDC discovery | `/.well-known/oauth-authorization-server`, `/.well-known/openid-configuration` | See "Point OAuth at your IdP" below |
 | OAuth Protected Resource | `/.well-known/oauth-protected-resource` | RFC 9728 |
@@ -193,7 +194,7 @@ Every scanner check, who handles it, and where to configure it:
 | OAuth/OIDC discovery | Discovery | Aardvark | Point at your IdP (step 3) |
 | OAuth Protected Resource | Discovery | Aardvark | Nothing |
 | auth.md | Discovery | Aardvark | Fill `oauth.agentAuth` for full credit |
-| MCP Server Card | Discovery | Aardvark | Nothing |
+| MCP Server Card | Discovery | Aardvark | Enable `mcp: true` + set `baseUrl` (opt-in) |
 | Agent Skills | Discovery | Aardvark | Add `skills/<name>/SKILL.md` (see [Build-time AI](/ai-features/)) |
 | WebMCP | Discovery | Aardvark | Enable `mcp: true` (opt-in) |
 | A2A Agent Card | Discovery | *Not yet* | Aardvark does not emit an A2A agent card today |

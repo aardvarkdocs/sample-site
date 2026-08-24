@@ -1,8 +1,8 @@
 """Generate the Pricing page from OpenRouter's live model catalog.
 
-Aardvark itself is free; only its optional built-in AI features — the reader-facing
-Ask AI assistant and the author-assisting tools — cost anything, billed per token
-through Aardvark's metered gateway. Aardvark is a pass-through: any OpenRouter model
+Aardvark itself is free to use and self-host; its optional built-in AI features — the
+reader-facing Ask AI assistant and the author-assisting tools — are billed per token
+through Aardvark's metered gateway (paid plans add managed hosting, seats, and support). Aardvark is a pass-through: any OpenRouter model
 works for `ai.model` / `ai.assistant.model`, so this script lists the whole chat-model
 catalog (with context window + modality) at Aardvark's published per-token rates.
 
@@ -1088,8 +1088,9 @@ def _build():
         # consequence in one sentence, and an empty result can only reach this branch through
         # one of those reporting paths.
         body = (
-            "Aardvark is **free and open**; only its optional built-in AI features are "
-            "billed. Live model prices couldn't be fetched for this build.\n\n"
+            "Aardvark is **free to use and self-host**; AI usage is billed per token, and "
+            "paid plans add managed hosting, seats, and support. Live model prices couldn't "
+            "be fetched for this build.\n\n"
             "{% callout severity='info' %}\n"
             "Current per-model rates will reappear here on the next build; see "
             "[Plans & pricing](/pricing/) for what each plan includes.\n"

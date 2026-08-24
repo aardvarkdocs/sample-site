@@ -13,14 +13,15 @@ Call `component('Name', **props)` to drop a React component into a page. At
 build time Aardvark records a mount point and bundles the component; in the browser
 it mounts as an **island** wrapped in a Mantine provider.
 
-> **How islands render:** components are **client-rendered** — the bundled
-> runtime mounts each one with React (`createRoot`) on load. Enabling
-> `islands: { ssr: true }` additionally prerenders the widgets to static HTML at
-> build time, so crawlers and no-JS readers see real markup; the client still
-> re-renders on load (it does **not** *hydrate* / attach to that markup, so
-> there's no server/client mismatch to worry about). This isn't Astro-style
-> partial hydration — the whole component bundle ships and every island
-> re-renders.
+> **How islands render:** by default the build **prerenders** each widget to
+> static HTML (`islands.ssr`, on out of the box), so crawlers and no-JS readers
+> see real markup and the first paint doesn't shift; the bundled runtime then
+> hydrates that markup on load. Set `islands: false` to skip the prerender —
+> islands then mount client-side with React (`createRoot`) on load. A build
+> *without* the Node toolchain is a different case: it can't produce the bundle
+> either, so it warns and island widgets don't render at all. This isn't
+> Astro-style partial hydration — the whole component bundle ships and every
+> island mounts.
 
 ## Mantine components
 

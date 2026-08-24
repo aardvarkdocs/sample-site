@@ -1,6 +1,7 @@
 ---
-description: Always-on agent-discovery endpoints — an MCP Server Card, OAuth/OIDC discovery, OAuth
-  Protected Resource metadata, auth.md, and DNS-AID records — emitted by every build.
+description: Agent-discovery endpoints — OAuth/OIDC discovery, OAuth Protected Resource metadata,
+  auth.md, and DNS-AID records on every build, plus an MCP Server Card when MCP is enabled and
+  a baseUrl is set.
 icon: fa-solid fa-compass
 menu: ai
 title: Agent discovery
@@ -17,20 +18,26 @@ clearly-labelled **example** values derived from your `baseUrl`.
 
 | Endpoint | What it tells an agent |
 | --- | --- |
-| `/.well-known/mcp/server-card.json` | This site exposes an MCP server, where, and what it can do |
 | `/.well-known/oauth-authorization-server` | OAuth 2.1 authorization-server metadata (RFC 8414) |
 | `/.well-known/openid-configuration` | The OpenID Connect flavour of the same metadata |
 | `/.well-known/oauth-protected-resource` | Which authorization server guards this resource (RFC 9728) |
 | `/auth.md` | A human- and agent-readable summary of how to authenticate |
 | `/.well-known/dns-aid/records.json` + `records.zone` | DNS records for agent-interface discovery |
 
+One more discovery endpoint is **opt-in** rather than always-on: the MCP Server Card below is
+emitted only when `mcp:` is enabled **and** a `baseUrl` is set.
+
 ## MCP Server Card
 
 `/.well-known/mcp/server-card.json` advertises the Model Context Protocol server that
 [`vark serve --mcp`](/self-hosting/) hosts — its transport endpoint and the read-only documentation
 tools it exposes (`search_documentation`, `fetch_document`, `list_documentation`,
-`get_full_corpus`). The card is written on every build, so an agent can discover the server even on
-a static Cloudflare Pages / Netlify deploy where no live `/mcp` is running.
+`get_full_corpus`). Unlike the endpoints above, the card is written only when
+[`mcp: true`](/self-hosting/) is set alongside a `baseUrl`. Publishing the card is an opt-in
+declaration, not a liveness check: `mcp: true` is what makes the build write the search/metadata
+corpus the MCP tools serve, and the `baseUrl` makes the advertised endpoint an absolute URL —
+whether `/mcp` is actually served remains [`vark serve`](/self-hosting/)'s own `--mcp/--no-mcp`
+runtime decision.
 
 ```json
 {
@@ -43,8 +50,8 @@ a static Cloudflare Pages / Netlify deploy where no live `/mcp` is running.
 }
 ```
 
-The endpoint is `{baseUrl}/mcp`. No configuration is required — the card reflects the tools the MCP
-server actually serves.
+The endpoint is `{baseUrl}/mcp`. Beyond `mcp: true` and `baseUrl`, no configuration is required —
+the card reflects the tools the MCP server actually serves.
 
 ## OAuth / OIDC discovery
 
@@ -192,5 +199,5 @@ substitute for publishing the records at DNS.
 OAuth/OIDC paths get dedicated [`vark serve`](/self-hosting/) routes (a suffix-less path is treated
 as an HTML request by the resolver, so the raw file would otherwise 404). On Cloudflare Pages /
 Netlify the generated [`_headers`](/llms-and-sitemap/) rules set `Content-Type: application/json`
-(with open CORS) on each. The homepage also advertises the MCP server card and the Protected
-Resource metadata via an RFC 8288 `Link` header.
+(with open CORS) on each. The homepage also advertises the Protected Resource metadata — and, when
+the card is emitted, the MCP server card — via an RFC 8288 `Link` header.

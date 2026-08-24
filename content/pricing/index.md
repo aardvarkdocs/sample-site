@@ -2,8 +2,9 @@
 title: Plans & pricing
 navtitle: Plans
 description: >-
-  Aardvark is free and open. Paid plans add managed hosting, seats, support,
-  and a monthly included-AI allowance metered in real dollars — never opaque credits.
+  Aardvark is free to use forever — prebuilt binaries for macOS, Linux, and Windows,
+  self-host anywhere. Paid plans add managed hosting, seats, support, and a monthly
+  included-AI allowance metered in real dollars — never opaque credits.
 icon: fa-solid fa-tags
 menu: pricing
 weight: 1
@@ -23,7 +24,8 @@ mode: full
 }
 </style>
 
-Aardvark is **free and open**: author, build, and self-host your docs at no cost, forever.
+Aardvark is **free to use, forever**: prebuilt binaries for macOS, Linux, and Windows,
+self-hosting anywhere at no cost, and an open contribution mirror for these docs.
 Paid plans are for teams that want a **predictable monthly bill** — managed hosting, more
 seats, real support, and a monthly **included-AI allowance in dollars**, keeping pricing
 simple and dollar-based. Your Aardvark key also grants you access to hundreds of AI models
@@ -110,7 +112,9 @@ Every competitor meters AI in credits you can't reason about. Aardvark bills AI 
 answer on every plan — real figures, no conversion math. Subscribers pay less per metered
 dollar the more they commit (≈7% off on Pro, ≈13% on Business, 20% on Enterprise), on top
 of the allowance their plan includes. All of it runs on **Aardvark's managed keys** — you
-never create, rotate, or secure a model-provider key on any plan.
+never create, rotate, or secure a model-provider key. Enterprise accounts can optionally
+register their own provider key so upstream calls run on their own provider contract; the
+metered price is the same either way, so it is a contracting choice, not a discount.
 
 Your included allowance is denominated in those same billed dollars:
 

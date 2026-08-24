@@ -406,7 +406,7 @@ the copy/download buttons and the expand toggle layer on top.
 | Wrap | `wrap` | Soft-wraps long lines instead of scrolling. |
 | Expandable | `expandable` | Collapses a tall block behind a *Show more* toggle. |
 | Local file | `src="path"` | Fills the block from a local file — leave the body empty. |
-| GitHub file | `github="owner/repo/path"` | Fills the block from a public GitHub file — leave the body empty. |
+| GitHub / GitLab file | `github="owner/repo/path"` | Fills the block from a public GitHub file (a full `gitlab.com` URL reads GitLab) — leave the body empty. |
 | Snippet | `snippet="name"` | With `src=`/`github=`, shows only the named [Bluehawk](https://github.com/mongodb-university/Bluehawk) region. |
 
 The first bare words after the language become the title, so `lines`, `wrap`, and the other flags
@@ -613,6 +613,28 @@ A ref counts as an immutable commit — cached across builds — only when it is
 were a commit and never re-read. For a branch or tag whose name contains a slash (`release/2.0`),
 pass it as `ref=` rather than burying it in a pasted URL, so Aardvark can tell where the branch ends
 and the file path begins.
+
+**GitLab too.** Paste a **gitlab.com** file URL into the same `github=` attribute — the host
+picks the provider, and everything above (the archive read, the cache, the license footer, the
+linked header — with a GitLab mark) works identically:
+
+````markdown
+```python github="https://gitlab.com/owner/repo/-/blob/main/src/app/main.py"
+```
+````
+
+Nested groups work (`https://gitlab.com/group/subgroup/repo/-/blob/…` — everything before the
+`/-/` is the project's namespace). The bare `owner/repo/path` shorthand and a leading `/` still
+mean GitHub, since they carry no host — unless your `github:` config block says
+`provider: gitlab`, which points both host-less forms (and your configured `github.repo`) at
+gitlab.com instead. Only gitlab.com is supported: a self-managed GitLab host would be an
+arbitrary download host, which the build's host allowlist deliberately refuses.
+
+A `provider` value that is neither `github` nor `gitlab` **fails the build** on any page with a
+`github=` fence — while the same typo only switches the "Edit this page" / "Report an issue" links
+off, with a warning. That difference is deliberate: a missing link degrades to nothing, but a fence
+embeds code, so refusing beats fetching from a forge you never configured or shipping a page with a
+hole in it.
 
 **The footer quotes the repo's license file.** The archive read that fetched your file also finds
 the repo's root license file and shows the title that file gives itself, linked — the same

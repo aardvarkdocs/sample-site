@@ -39,7 +39,7 @@ Run `vark serve` to expose a live MCP server and serve each page as Markdown via
 A checklist for making your site agent-ready — what Aardvark publishes on every build, and the few steps only you can do.
 {% endCard %}
 {% card title="Agent discovery" icon="compass" accent="teal" href="/agent-discovery/" cta="Be discoverable" %}
-Always-on discovery endpoints — an MCP Server Card, OAuth/OIDC metadata, `auth.md`, and DNS-AID records — emitted by every build.
+Discovery endpoints for agents — OAuth/OIDC metadata, `auth.md`, and DNS-AID records on every build, plus an MCP Server Card when MCP is enabled and a `baseUrl` is set.
 {% endCard %}
 {% card title="Web Bot Auth" icon="shield" accent="teal" href="/web-bot-auth/" cta="Prove identity" %}
 Publish a key directory so your site can identify itself when an agent sends signed requests on its behalf.

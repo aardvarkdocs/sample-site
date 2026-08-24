@@ -31,8 +31,8 @@ those markers on load and mounts the matching React component — real
 [Mantine](https://mantine.dev) components, with the theme palette seeded from your site's
 SCSS colors.
 
-The interesting part is what happens *between* build and load. With `islands.ssr: true`
-(this site has it on), the build prerenders each island to **static HTML** using Node,
+The interesting part is what happens *between* build and load. With `islands.ssr` (on
+by default), the build prerenders each island to **static HTML** using Node,
 esbuild, and linkedom — so the actual widget markup is baked into the `.html` files. That
 matters for three audiences: crawlers see real content instead of an empty div, no-JS
 readers get a usable page, and everyone else gets a correct first paint instead of a

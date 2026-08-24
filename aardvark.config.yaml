@@ -387,16 +387,22 @@ redirects:
 
 # Prerender React islands to static HTML at build time. The client bundle still
 # re-renders them on load (so they stay interactive); this bakes the real widget
-# markup into the .html files for crawlers / no-JS / first paint. Opt-in; needs
-# Node + esbuild + linkedom (see package.json). Omit to ship client-only islands.
+# markup into the .html files for crawlers / no-JS / first paint. On by default;
+# needs Node + esbuild + linkedom (see package.json). Set `islands: false` to opt out
+# of the prerender — islands then mount client-side instead. Without the toolchain
+# there is no client bundle either, so the build warns and island widgets do not
+# render at all; the rest of the site builds normally.
 islands:
   ssr: true
 
 # "Edit this page" and "Report an issue" links above the right-hand "On this page" TOC.
-# Point `repo` at a GitHub repo (an `owner/repo` shorthand or a full URL), then enable
-# whichever links you want. Edit deep-links to GitHub's web editor for the page's Markdown
-# source on `branch`; Report opens a new-issue form pre-filled (via querystring) with the
-# page's URL and source path. A page can hide either link with `editPage: false` /
+# Point `repo` at a GitHub or GitLab repo, then enable whichever links you want. Edit
+# deep-links to the forge's web editor for the page's Markdown source on `branch`; Report
+# opens a new-issue form pre-filled (via querystring) with the page's URL and source path.
+# A bare `owner/repo` shorthand means GitHub; for GitLab use a full gitlab.com URL (detected
+# automatically), or add `provider: gitlab` — required for a self-managed GitLab domain, and
+# what makes a shorthand mean gitlab.com (the block keeps its `github:` name either way).
+# A page can hide either link with `editPage: false` /
 # `reportIssue: false` in its front matter. Omit the block (or `repo`) to show no links.
 # This points at the sample site's own public source repo (the example site is open;
 # Aardvark itself is not) — see the README note in aardvarkdocs/sample-site.

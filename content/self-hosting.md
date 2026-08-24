@@ -132,6 +132,28 @@ Point any MCP client at `https://your-docs.example.com/mcp`:
 
 A `GET /mcp` returns `405` by design (the server pushes nothing); clients use `POST`.
 
+### MCP on managed hosting
+
+You don't need to run `vark serve` to get a live `/mcp` endpoint: on
+[Aardvark managed hosting](/deployment/), the platform serves MCP for your site
+automatically. When your deploy publishes the MCP server card
+(`/.well-known/mcp/server-card.json` — written when MCP is enabled and a `baseUrl`
+is set, alongside the search and Markdown artifacts the tools read), the same
+four read-only tools answer at your site's
+`/mcp` — same tool names, same ranking, same size guards as `vark serve --mcp`.
+There is nothing to configure and no server to operate; a deploy without the card
+simply has no MCP endpoint. `/mcp` is a reserved path on hosted sites, so a
+`_redirects` rule can't shadow it.
+
+One exception worth knowing before you turn it on: a site with **reader authentication**
+enabled has **no hosted MCP endpoint** — `/mcp` returns 404 for as long as the gate is on,
+even though the build still publishes the server card. MCP is a machine surface with no
+browser to complete the team sign-in, and the serving worker can't verify a session on its
+own, so it refuses rather than serving a private site's whole corpus to any caller.
+Authenticated MCP for gated sites needs a token of its own and isn't in this version. If
+you rely on the hosted `/mcp` integration, gating the site will silently take it away — the
+site's own pages keep working, only the endpoint stops answering.
+
 ### WebMCP — the same tools, in the browser
 
 The same four tools are also exposed to **in-browser AI agents** (Chrome's built-in agent,

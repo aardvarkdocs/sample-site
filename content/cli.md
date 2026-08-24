@@ -40,6 +40,7 @@ vark build              # build the static site into ./build
 | --- | --- |
 | `vark new` | Scaffold a new site in PATH. |
 | `vark build` | Build the site to the output directory. |
+| `vark deploy` | Build the site and publish it to Aardvark cloud managed hosting. |
 | `vark dev` | Serve the site locally and rebuild on change. |
 | `vark link-check` | Check internal links, anchors, and images across the site (a build smoke test). |
 | `vark convert` | Import a docs site built for another platform into an Aardvark site. |
@@ -92,6 +93,30 @@ Examples:
 vark build               # build ./ into ./build
 vark build --no-bundle   # skip the islands JS bundle (no Node needed)
 vark build -v            # stream per-phase progress to stderr
+```
+
+## `vark deploy`
+
+Build the site and publish it to Aardvark cloud managed hosting.
+
+Runs the same full production build as `vark build`, then uploads the output directory to your Aardvark cloud site and makes it live, printing the site's URL. Pass `--no-build` to upload an already-built output directory as-is (it errors if none exists).
+
+This publishes only to a CLI-created site. A site connected to a GitHub repository keeps deploying from that repository, so `vark deploy` refuses it — before running the build, not after.
+
+Authenticates with your Aardvark **secret** key in `AARDVARK_SECRET_KEY` — the same possession-based CLI credential the AI features use, read from the environment or your project's `.env`. On the first deploy of an account with no site, the site is created for you (pass `--slug` to choose its name); an account already hosting a CLI site deploys to that one. If a previous deploy was interrupted, the upload resumes it, and re-uploading an unchanged file is always safe.
+
+| Option | Default | Effect |
+| --- | --- | --- |
+| `--root DIRECTORY` | `.` | Project directory (defaults to the current directory). |
+| `--slug TEXT` | — | Site slug to deploy to. Defaults to the account's only site; when no site matches, one is created with this slug. |
+| `--build / --no-build` | `--build` | Run a full production build first (the same build as vark build). --no-build uploads the existing output directory as-is. |
+
+Examples:
+
+```bash
+vark deploy                     # build, then upload ./build to Aardvark cloud
+vark deploy --no-build          # upload the existing ./build as-is
+vark deploy --slug my-docs      # deploy to (or create) the site my-docs
 ```
 
 ## `vark dev`

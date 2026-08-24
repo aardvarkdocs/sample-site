@@ -1104,6 +1104,334 @@
         }
       }
     },
+    "/v1/account/byok": {
+      "delete": {
+        "tags": [
+          "Other"
+        ],
+        "summary": "DELETE /v1/account/byok",
+        "operationId": "deleteV1AccountByok",
+        "description": "**Owner only.**",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          },
+          {
+            "secretKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "deleted": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated — `invalid_key`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "invalid_key",
+                    "message": "A secret key (aardvark_secret_…) is required."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — `csrf`, `forbidden`, `forbidden_key`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "csrf",
+                    "message": "Missing the dashboard request header on a state-changing request."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited — `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Too many key changes. Please wait a moment."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Other"
+        ],
+        "summary": "GET /v1/account/byok",
+        "operationId": "getV1AccountByok",
+        "description": "**Owner only.**",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {
+            "secretKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "provider": {
+                      "type": "string"
+                    },
+                    "last4": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated — `invalid_key`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "invalid_key",
+                    "message": "A secret key (aardvark_secret_…) is required."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — `forbidden`, `forbidden_key`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "forbidden",
+                    "message": "Only the account owner can perform this action."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found — `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "not_found",
+                    "message": "No BYOK key is registered for this account."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Other"
+        ],
+        "summary": "PUT /v1/account/byok",
+        "operationId": "putV1AccountByok",
+        "description": "**Owner only.**",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          },
+          {
+            "secretKey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "provider": {
+                    "type": "string"
+                  },
+                  "key": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "key"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "provider": {
+                      "type": "string"
+                    },
+                    "last4": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request — `bad_request`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "bad_request",
+                    "message": "A JSON body is required."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated — `invalid_key`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "invalid_key",
+                    "message": "A secret key (aardvark_secret_…) is required."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — `csrf`, `forbidden`, `forbidden_key`, `plan_required`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "csrf",
+                    "message": "Missing the dashboard request header on a state-changing request."
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload too large — `payload_too_large`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "Request body is too large."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited — `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Too many key changes. Please wait a moment."
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable — `encryption_unavailable`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "encryption_unavailable",
+                    "message": "BYOK key encryption isn't configured on this gateway. Ask the operator to set a sufficiently long SSO_SECRET_ENC_KEY secret (>= 32 chars, e.g. `openssl rand -base64 32`), then retry."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/activity": {
       "get": {
         "tags": [
@@ -3475,7 +3803,7 @@
             }
           },
           "502": {
-            "description": "Upstream error — `upstream_error`.",
+            "description": "Upstream error — `byok_key_rejected`, `byok_payment_required`, `upstream_error`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3483,15 +3811,15 @@
                 },
                 "example": {
                   "error": {
-                    "code": "upstream_error",
-                    "message": "Upstream request failed."
+                    "code": "byok_key_rejected",
+                    "message": "OpenRouter rejected this account's own API key. Update the key on the account's BYOK settings (or delete it to use the managed gateway key). The request was not billed."
                   }
                 }
               }
             }
           },
           "503": {
-            "description": "Service unavailable — `pricing_unavailable`.",
+            "description": "Service unavailable — `byok_unavailable`, `pricing_unavailable`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3499,8 +3827,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "pricing_unavailable",
-                    "message": "Could not determine a price for this model (unknown to OpenRouter, or pricing is temporarily unavailable). The request was not billed."
+                    "code": "byok_unavailable",
+                    "message": "This account's own OpenRouter key is registered but cannot be used right now (key decryption is unavailable on this gateway). The request was not billed; re-save the key or contact the operator."
                   }
                 }
               }
@@ -10683,6 +11011,143 @@
         }
       }
     },
+    "/v1/reader-auth/login": {
+      "get": {
+        "tags": [
+          "Hosting"
+        ],
+        "summary": "Reader sign-in redirect",
+        "operationId": "getV1ReaderAuthLogin",
+        "description": "The browser leg of reader authentication — not called with an API key. A reader visiting a gated docs site is 302'd here by the serving worker; with a valid dashboard session whose user is an active member of the site's owning team, the gateway 302s back to the site's `/__reader_auth/callback` with a short-lived signed handoff token (the worker then sets the reader-session cookie and resumes at `next`). Without a session the reader is sent to the dashboard sign-in instead.",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "site",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The gated site's UUID (supplied by the serving worker's redirect)."
+          },
+          {
+            "name": "next",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Path-only return target on the docs site (defaults to `/`); absolute URLs are refused."
+          },
+          {
+            "name": "host",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Which of the site's own hostnames to return to (production, preview, or custom domain — validated against the site; defaults to the production host)."
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "A 302 to the docs site's `/__reader_auth/callback` carrying the 60-second `token` and validated `next` (membership proven), or to the dashboard sign-in when no session is present. Every hop is `Cache-Control: no-store` + `Referrer-Policy: no-referrer`.",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Dashboard URL to follow, carrying `?connected=1` on success or `?error=<code>` otherwise."
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request — `bad_request`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "bad_request",
+                    "message": "`site` must be a valid site id."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — `forbidden`, `sso_required`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "forbidden",
+                    "message": "This docs site is restricted to members of the team that owns it."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found — `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "not_found",
+                    "message": "That site wasn't found."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `reader_auth_not_enabled`, `site_disabled`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "reader_auth_not_enabled",
+                    "message": "Reader authentication isn't active for this site (a recent change may still be propagating). Retry in a minute; if this persists, ask the site owner to re-run the reader-auth toggle."
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable — `encryption_unavailable`, `hosting_unconfigured`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "encryption_unavailable",
+                    "message": "The reader-auth secret can't be decrypted on this gateway (SSO_SECRET_ENC_KEY missing or rotated away). Ask the operator to restore the key."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/search-analytics": {
       "get": {
         "tags": [
@@ -11314,6 +11779,9 @@
                         "slug": {
                           "type": "string"
                         },
+                        "source": {
+                          "type": "string"
+                        },
                         "repo": {
                           "type": "string"
                         },
@@ -11461,7 +11929,7 @@
         ],
         "summary": "Create the hosted site",
         "operationId": "postV1Sites",
-        "description": "Creates the account's hosted site: a dns-safe slug served at `https://<slug>.<base domain>` (in custom-domains-only mode the slug backs preview URLs and production goes live on a custom domain attached afterward — the site is URL-less until then), bound to a repo from the account's GitHub connection. Every push to the repo then builds and deploys automatically (in PSL mode the production branch goes live at `<slug>.<base>`; in custom-domains-only mode production goes live on the attached custom domain; other branches get preview hostnames in both modes). One site per account in v1 (409 `site_exists`); a taken slug returns 409 `slug_taken`. Plan-gated to Pro and above. Owner/admin only.",
+        "description": "Creates the account's hosted site: a dns-safe slug served at `https://<slug>.<base domain>` (in custom-domains-only mode the slug backs preview URLs and production goes live on a custom domain attached afterward — the site is URL-less until then), bound to a repo from the account's GitHub connection. Every push to the repo then builds and deploys automatically (in PSL mode the production branch goes live at `<slug>.<base>`; in custom-domains-only mode production goes live on the attached custom domain; other branches get preview hostnames in both modes). One site per account in v1 (409 `site_exists`); a taken slug returns 409 `slug_taken`. Plan-gated to Pro and above. Owner/admin only. Provide EXACTLY ONE of `repo_id` (a repo-built site — everything above) or `source`:\"cli\" (a CLI-owned site with NO repo binding, deployed by `vark deploy` uploading a locally-built output via `POST /v1/sites/{site_id}/cli-deploys`; `slug` may be omitted to have one generated, and the create returns 201 with the CLI-facing `{site:{site_id, slug, source, repo, urls}}` shape).",
         "security": [
           {
             "sessionCookie": [],
@@ -11472,20 +11940,24 @@
           }
         ],
         "requestBody": {
-          "required": true,
+          "required": false,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "slug": {
+                  "source": {
                     "type": "string",
-                    "description": "The subdomain label: 3-40 chars of a-z, 0-9, and single hyphens; reserved names refused."
+                    "description": "Pass the string `cli` to create a CLI-owned site (no repo binding; deployed via the cli-deploys upload API). Mutually exclusive with `repo_id`."
                   },
                   "repo_id": {
                     "type": "integer",
                     "minimum": 1,
                     "description": "GitHub's numeric repo id, from the connected-repo list on `GET /v1/github/connection`."
+                  },
+                  "slug": {
+                    "type": "string",
+                    "description": "The subdomain label: 3-40 chars of a-z, 0-9, and single hyphens; reserved names refused."
                   },
                   "production_branch": {
                     "type": "string",
@@ -11496,11 +11968,7 @@
                     "nullable": true,
                     "description": "For a monorepo: the repo-relative directory holding the Aardvark project (e.g. `docs`); the build runs there. Blank/omitted = repo root. Relative, shell-safe (no leading `/`, no `..`)."
                   }
-                },
-                "required": [
-                  "slug",
-                  "repo_id"
-                ]
+                }
               },
               "example": {
                 "slug": "acme-docs",
@@ -11518,20 +11986,32 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "created": {
-                      "type": "boolean",
-                      "description": "Always `true` once the site row exists."
-                    },
                     "site": {
                       "type": "object",
                       "properties": {
-                        "id": {
+                        "site_id": {
                           "type": "string"
                         },
                         "slug": {
                           "type": "string"
                         },
+                        "source": {
+                          "type": "string"
+                        },
                         "repo": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "urls": {
+                          "type": "object",
+                          "properties": {
+                            "site": {
+                              "type": "string",
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "id": {
                           "type": "string"
                         },
                         "repo_id": {
@@ -11615,6 +12095,10 @@
                         }
                       },
                       "description": "The created site object (no deploys yet)."
+                    },
+                    "created": {
+                      "type": "boolean",
+                      "description": "Always `true` once the site row exists."
                     }
                   }
                 }
@@ -11631,7 +12115,7 @@
                 "example": {
                   "error": {
                     "code": "bad_request",
-                    "message": "`repo_id` must be a connected repo's numeric id."
+                    "message": "`source` must be the string \"cli\" when present (omit it to create a repo-built site)."
                   }
                 }
               }
@@ -11866,6 +12350,888 @@
           },
           "503": {
             "description": "Service unavailable — `hosting_unconfigured`, `takedown_incomplete`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "hosting_unconfigured",
+                    "message": "Managed hosting is not configured on this gateway."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sites/{site_id}/cli-deploys": {
+      "post": {
+        "tags": [
+          "Hosting"
+        ],
+        "summary": "Open a CLI deploy",
+        "operationId": "postV1SitesSiteIdCliDeploys",
+        "description": "Opens an upload session for a CLI-owned site (`source: cli`): `vark deploy` builds locally, then streams each output file to `PUT .../files/{path}` and flips the deploy live with `POST .../finalize`. One deploy in flight per site — a second begin returns 409 `deploy_in_progress` carrying the blocker's `deploy_id` inside the error object (abort it or wait). The declared totals are a courtesy preflight against the fixed caps; the per-file budget reservation on the deploy row stays authoritative. Only sites created with `source: cli` accept this API (409 `site_not_cli` otherwise); repo-built sites deploy from pushes / Deploy now instead. Plan-gated to Pro and above. Owner/admin only.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          },
+          {
+            "secretKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "site_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The site UUID from `GET /v1/sites` (or the CLI create response)."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file_count": {
+                    "type": "number",
+                    "description": "How many files the CLI is about to upload (positive; at most 10000)."
+                  },
+                  "total_bytes": {
+                    "type": "number",
+                    "description": "Total bytes the CLI is about to upload (at most 524288000)."
+                  }
+                },
+                "required": [
+                  "file_count",
+                  "total_bytes"
+                ]
+              },
+              "example": {
+                "file_count": 128,
+                "total_bytes": 4816321
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "deploy_id": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "deploy_id": {
+                      "type": "string",
+                      "description": "The opened deploy's UUID — the id every files/finalize/abort call names."
+                    },
+                    "limits": {
+                      "type": "object",
+                      "properties": {
+                        "max_file_bytes": {
+                          "type": "string"
+                        },
+                        "max_files": {
+                          "type": "string"
+                        },
+                        "max_total_bytes": {
+                          "type": "string"
+                        }
+                      },
+                      "description": "The fixed upload budgets: `max_file_bytes` (25MB per file), `max_files` (10000), `max_total_bytes` (500MB per deploy)."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request — `bad_request`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "bad_request",
+                    "message": "`file_count` must be a positive integer."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated — `invalid_key`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "invalid_key",
+                    "message": "A secret key (aardvark_secret_…) is required."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — `account_inactive`, `csrf`, `forbidden`, `forbidden_key`, `plan_required`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_inactive",
+                    "message": "This account is on hold — CLI deploys are paused until it's reactivated."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found — `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "not_found",
+                    "message": "No such hosting endpoint."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `deploy_in_progress`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "error"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "required": [
+                        "code",
+                        "message",
+                        "deploy_id"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Error code string."
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "Human-readable error message."
+                        },
+                        "deploy_id": {
+                          "type": "string",
+                          "description": "Computed at runtime."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "error": {
+                    "code": "deploy_in_progress",
+                    "message": "A CLI deploy for this site is already in progress; finalize or abort it first."
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload too large — `deploy_too_large`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "deploy_too_large",
+                    "message": "A deploy may contain at most 10000 files and 524288000 bytes in total."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited — `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Too many deploys. Please wait a moment."
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable — `hosting_unconfigured`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "hosting_unconfigured",
+                    "message": "Managed hosting is not configured on this gateway."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sites/{site_id}/cli-deploys/{deploy_id}": {
+      "delete": {
+        "tags": [
+          "Hosting"
+        ],
+        "summary": "Abort a CLI deploy",
+        "operationId": "deleteV1SitesSiteIdCliDeploysDeployId",
+        "description": "Aborts an in-flight CLI deploy: the deploy row is sealed `failed` (freeing the one-in-flight slot) and the already-uploaded objects are left under the deploy's immutable prefix for out-of-band cleanup. Idempotent — re-aborting an aborted deploy succeeds; a deploy that already went live returns 409 `deploy_not_open`. Available even while new work is paused (a lapsed plan, a held account, or a withdrawn hosting affirmation), so an upload can always be stopped. Owner/admin only.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          },
+          {
+            "secretKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "site_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The site UUID from `GET /v1/sites` (or the CLI create response)."
+          },
+          {
+            "name": "deploy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The deploy UUID to abort."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "aborted": {
+                      "type": "boolean",
+                      "description": "Always `true` once the deploy is sealed failed (idempotent)."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request — `bad_request`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "bad_request",
+                    "message": "`site_id` must be a valid site id."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated — `invalid_key`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "invalid_key",
+                    "message": "A secret key (aardvark_secret_…) is required."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — `csrf`, `forbidden`, `forbidden_key`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "csrf",
+                    "message": "Missing the dashboard request header on a state-changing request."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found — `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "not_found",
+                    "message": "No such hosting endpoint."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `deploy_not_open`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "deploy_not_open",
+                    "message": "This deploy already finished."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited — `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Too many deploys. Please wait a moment."
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable — `hosting_unconfigured`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "hosting_unconfigured",
+                    "message": "Managed hosting is not configured on this gateway."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sites/{site_id}/cli-deploys/{deploy_id}/files/{path}": {
+      "put": {
+        "tags": [
+          "Hosting"
+        ],
+        "summary": "Upload one site file",
+        "operationId": "putV1SitesSiteIdCliDeploysDeployIdFilesPath",
+        "description": "Streams ONE built file into the open deploy; the raw request body is stored under the deploy's immutable prefix with a Content-Type derived from the file extension. `{path}` is the site-relative file path (URL-encode each segment; no `..`, no leading `/`). Idempotent per path with REPLACE semantics: re-PUTting a path overwrites the object and reconciles the byte budget, so a partial-failure retry is a plain re-run. Exceeding the per-file cap returns 413 `file_too_large`; exceeding the per-deploy file/byte budget returns 409 `budget_exceeded`. Owner/admin only.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          },
+          {
+            "secretKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "site_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The site UUID from `GET /v1/sites` (or the CLI create response)."
+          },
+          {
+            "name": "deploy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The open deploy's UUID from the begin call."
+          },
+          {
+            "name": "path",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Site-relative file path inside the built output (e.g. `guide/index.html`)."
+          },
+          {
+            "name": "Content-Length",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "description": "Exact raw-body size in bytes; required for the per-file and per-deploy upload budgets."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "The stored site-relative path (decoded)."
+                    },
+                    "bytes": {
+                      "type": "string",
+                      "description": "The stored object's size in bytes."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request — `bad_path`, `bad_request`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "bad_path",
+                    "message": "`path` must be a relative file path inside the site (no `..`, no leading `/`)."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated — `invalid_key`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "invalid_key",
+                    "message": "A secret key (aardvark_secret_…) is required."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — `account_inactive`, `csrf`, `forbidden`, `forbidden_key`, `plan_required`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_inactive",
+                    "message": "This account is on hold — CLI deploys are paused until it's reactivated."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found — `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "not_found",
+                    "message": "No such hosting endpoint."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `budget_exceeded`, `deploy_not_open`, `path_upload_in_progress`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "budget_exceeded",
+                    "message": "A deploy may contain at most 10000 files and 524288000 bytes in total."
+                  }
+                }
+              }
+            }
+          },
+          "411": {
+            "description": "Error — `length_required`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "length_required",
+                    "message": "Content-Length is required."
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Payload too large — `file_too_large`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "file_too_large",
+                    "message": "A site file may be at most 26214400 bytes."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited — `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Too many file uploads. Please wait a moment."
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable — `hosting_unconfigured`, `storage_unavailable`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "hosting_unconfigured",
+                    "message": "Managed hosting is not configured on this gateway."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sites/{site_id}/cli-deploys/{deploy_id}/finalize": {
+      "post": {
+        "tags": [
+          "Hosting"
+        ],
+        "summary": "Finalize a CLI deploy",
+        "operationId": "postV1SitesSiteIdCliDeploysDeployIdFinalize",
+        "description": "Flips the uploaded deploy LIVE through the same publish pipeline as repo-built deploys: the build's `_headers`/`_redirects` are compiled, the hostname route pointer is written, and the deploy row is promoted atomically. `file_count` must equal the number of files the deploy actually counted (409 `count_mismatch` — a lost upload must not publish a truncated site). A `_headers`/`_redirects` the gateway could not read never blocks the publish, but is surfaced in the response's `warning` and on the deploy's `error` field until a retry reads it cleanly. Idempotent: finalizing an already-live deploy re-writes the pointer and reports it live again. Owner/admin only.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          },
+          {
+            "secretKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "site_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The site UUID from `GET /v1/sites` (or the CLI create response)."
+          },
+          {
+            "name": "deploy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The open deploy's UUID from the begin call."
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file_count": {
+                    "type": "number",
+                    "description": "The number of files the CLI uploaded; must match the server's count exactly."
+                  }
+                }
+              },
+              "example": {
+                "file_count": 128
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "deploy": {
+                      "type": "object",
+                      "properties": {
+                        "deploy_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "url": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      },
+                      "description": "The published deploy: `deploy_id`, `status` (`live`), `url` (where it serves; null in custom-domains-only mode until a domain is attached), and — only when a hosting-config artifact could not be applied — `warning`."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request — `bad_request`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "bad_request",
+                    "message": "`site_id` must be a valid site id."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated — `invalid_key`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "invalid_key",
+                    "message": "A secret key (aardvark_secret_…) is required."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — `account_inactive`, `csrf`, `forbidden`, `forbidden_key`, `plan_required`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_inactive",
+                    "message": "This account is on hold — CLI deploys are paused until it's reactivated."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found — `not_found`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "not_found",
+                    "message": "No such hosting endpoint."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `count_mismatch`, `deploy_not_open`, `empty_deploy`, `site_disabled`, `upload_in_progress`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "count_mismatch",
+                    "message": "`file_count` does not match the number of files uploaded to this deploy."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited — `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Too many deploys. Please wait a moment."
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error — `attach_reconcile_cleanup_failed`, `attach_reconcile_failed`, `detach_cleanup_failed`, `pointer_write_failed`, `takedown_cleanup_failed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "attach_reconcile_cleanup_failed",
+                    "message": "A custom domain that changed during this deploy left routing cleanup pending; retry finalize."
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable — `hosting_unconfigured`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12844,6 +14210,196 @@
                   "error": {
                     "code": "hosting_unconfigured",
                     "message": "Managed hosting is not configured on this gateway."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sites/{site_id}/reader-auth": {
+      "put": {
+        "tags": [
+          "Hosting"
+        ],
+        "summary": "Toggle reader authentication",
+        "operationId": "putV1SitesSiteIdReaderAuth",
+        "description": "Turns reader authentication on or off for the hosted site (v1 `team` mode: only dashboard-team members of the owning account may view it). Enabling mints the site's signing secret on first use (encrypted at rest; the gateway returns `503 encryption_unavailable` rather than store it unprotected) and rewrites the LIVE deploy's route pointers in place, so the gate takes effect without a redeploy; disabling rewrites them back to public serving. **The flip is not instantaneous**: the serving workers cache a resolved route pointer at the edge, and that cache cannot be purged remotely, so an edge that already resolved the pre-change pointer keeps serving the old state until its copy expires. The response returns `propagation_seconds` — the site is private for new edge lookups as soon as this returns, and everywhere within that many seconds. Treat a site as fully private only after the window elapses. Enable is plan-gated to Business/Enterprise; disable is deliberately not (a lapsed plan can always make its own site public again). Note the v1 revocation window: reader sessions are 12-hour cookies verified offline by the serving worker, so removing a teammate does not cut a session they already hold — **in v1 revocation waits for that cookie to expire**. Toggling the site off and back on does NOT revoke: a re-enable reuses the site's existing signing secret and key id, so cookies issued before it become valid again as soon as the gate is back on. (Reader auth also applies to preview and custom-domain hostnames, and a gated site's hosted `/mcp` endpoint returns 404 while the gate is on.) Owner/admin only.",
+        "security": [
+          {
+            "sessionCookie": [],
+            "csrfHeader": []
+          },
+          {
+            "secretKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "site_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The site UUID from `GET /v1/sites`."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "`true` to require reader sign-in on every request to the site; `false` to serve publicly again."
+                  }
+                },
+                "required": [
+                  "enabled"
+                ]
+              },
+              "example": {
+                "enabled": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "enabled": {
+                      "type": "boolean",
+                      "description": "The new state."
+                    },
+                    "mode": {
+                      "type": "string",
+                      "description": "Always `team` in v1: dashboard-team members of the owning account may view."
+                    },
+                    "propagation_seconds": {
+                      "type": "string",
+                      "description": "Upper bound, in seconds, on how long an edge that already resolved the previous route pointer may keep serving the previous state (public before an enable, gated before a disable). `0` when nothing was serving the old state."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request — `bad_request`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "bad_request",
+                    "message": "Body must be JSON."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated — `invalid_key`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "invalid_key",
+                    "message": "A secret key (aardvark_secret_…) is required."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — `csrf`, `forbidden`, `forbidden_key`, `plan_required`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "csrf",
+                    "message": "Missing the dashboard request header on a state-changing request."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `reader_auth_conflict`, `site_disabled`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "reader_auth_conflict",
+                    "message": "Another reader-auth change for this site landed first; re-read the current state and retry if you still want it enabled."
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limited — `rate_limited`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Too many reader-auth changes. Please wait a moment."
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error — `pointer_write_failed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "pointer_write_failed",
+                    "message": "The site's route pointers couldn't be updated; retry enabling reader authentication (or disable it to unlock the site)."
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable — `encryption_unavailable`, `hosting_unconfigured`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "encryption_unavailable",
+                    "message": "Reader-auth secret encryption isn't configured on this gateway. Ask the operator to set a sufficiently long SSO_SECRET_ENC_KEY secret (>= 32 chars, e.g. `openssl rand -base64 32`), then retry."
                   }
                 }
               }

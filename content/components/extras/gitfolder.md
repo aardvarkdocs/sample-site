@@ -1,26 +1,27 @@
 ---
 title: "Gitfolder"
-description: "The built-in gitfolder tag — an embedded browser for a public GitHub repo folder (or the whole repo): a file tree, syntax-highlighted source, inline images, a Markdown/SVG source-vs-preview toggle, per-file copy/download and GitHub links, and a Download ZIP button. Files are fetched once at build time and cached. Usage, caching, options, and a live example."
+description: "The built-in gitfolder tag — an embedded browser for a public GitHub or GitLab repo folder (or the whole repo): a file tree, syntax-highlighted source, inline images, a Markdown/SVG source-vs-preview toggle, per-file copy/download and source links, and a Download ZIP button. Files are fetched once at build time and cached. Usage, caching, options, and a live example."
 ---
 
 # Gitfolder
 
 A **built-in** tag that embeds a small IDE-style browser for a folder in a **public** GitHub
+(or [GitLab](#gitlab-repos))
 repo: a file tree on the left, the selected file on the right — **syntax-highlighted** source
 for code, **inline display** for images, and a **Source&nbsp;⟷&nbsp;Preview** toggle for
-Markdown and SVG — plus per-file **copy** / **download**, a link to each file's **source on
-GitHub**, and a **Download&nbsp;ZIP** of the **whole repository**. The repo's **license file**
+Markdown and SVG — plus per-file **copy** / **download**, a link to each file's **source** on
+its host, and a **Download&nbsp;ZIP** of the **whole repository**. The repo's **license file**
 is linked at the bottom, so readers know the terms before reusing the code. It's
 perfect for showing an example project inline without copy-pasting every file into the page.
 
 The files are fetched **at build time** — one archive download of the repo, from which only
 the requested subfolder is kept; never a `git clone` — and then **cached**, so a rebuild never
-re-downloads a folder it already has. **Browsing** loads nothing from GitHub: the file tree,
-the source and its highlighting, the rendered previews, and any displayed images are all baked
-into the page or served from your own site, so the widget works offline and stays fast. The
-one exception is the **Download ZIP** button, which links to GitHub's own archive URL for the
-repo — clicking it does reach GitHub, and it gives the reader the whole repository rather than
-just the folder shown.
+re-downloads a folder it already has. **Browsing** loads nothing from the repo host: the file
+tree, the source and its highlighting, the rendered previews, and any displayed images are all
+baked into the page or served from your own site, so the widget works offline and stays fast.
+The one exception is the **Download ZIP** button, which links to the host's own archive URL
+for the repo — clicking it does reach github.com (or gitlab.com), and it gives the reader the
+whole repository rather than just the folder shown.
 
 ## Usage
 
@@ -64,18 +65,37 @@ What `folder=` changes is the *page*: only that subtree's files are embedded, an
 cap applies to the subtree. The whole repo is still transferred to your build machine either
 way, so a `folder=` on a very large repo is a lighter page but not a lighter download.
 
+## GitLab repos
+
+The widget browses public **gitlab.com** projects too. Name one with a full URL in the same
+`github` attribute — the host picks the provider, so a bare `owner/repo` shorthand always
+means GitHub:
+
+{% raw %}
+```aardvark wrap
+{% gitfolder github="https://gitlab.com/inkscape/inkscape" folder="share/branding" %}{% endGitfolder %}
+```
+{% endraw %}
+
+Everything works the same way — one anonymous archive download, no API call, no credential,
+the same cache, and the same locally-detected license footer — with the widget's source links
+pointing at gitlab.com. **Nested groups** work: in
+`github="https://gitlab.com/group/subgroup/project"` the whole namespace before the project
+name is the owner. Only gitlab.com is supported — a self-managed GitLab host would be an
+arbitrary page-supplied download host, which the build's host allowlist deliberately refuses.
+
 ## Downloads & licensing
 
-The **Download&nbsp;ZIP** button **always** fetches the **whole repository** from GitHub's own
-archive — even when you're browsing a single subfolder. That's deliberate: a zip of just part
+The **Download&nbsp;ZIP** button **always** fetches the **whole repository** from the repo
+host's own archive — even when you're browsing a single subfolder. That's deliberate: a zip of just part
 of a repo could leave out the `LICENSE`, and someone might reuse the code without realizing the
 terms. For the same reason the widget's footer points at the repo's license file, so the terms
 are one click from the code they govern.
 
 **The footer quotes your license file; it does not classify it.** Aardvark reads the
 root-level license file out of the same downloaded archive that provides the file previews,
-takes the **title line the file gives itself**, and shows that, linked — no GitHub API, so
-nothing to authenticate and nothing to be rate-limited. It never decides *which* license you
+takes the **title line the file gives itself**, and shows that, linked — no GitHub or GitLab
+API, so nothing to authenticate and nothing to be rate-limited. It never decides *which* license you
 are under, so it can never name the wrong one and there is no list of known licenses to fall
 off: a brand-new SPDX id or your own bespoke terms appear exactly as your file words them.
 
@@ -225,7 +245,7 @@ build summary's warning total.
 
 | Attribute | Effect |
 | --- | --- |
-| `github="owner/repo"` | The **public** repo (required). A full `https://github.com/owner/repo` URL or a trailing `.git` is tolerated. |
+| `github="owner/repo"` | The **public** repo (required). A full `https://github.com/owner/repo` URL or a trailing `.git` is tolerated. A full `https://gitlab.com/…` URL browses a [GitLab project](#gitlab-repos) instead. |
 | `folder="path/in/repo"` | The folder to show, relative to the repo root. **Optional** — omit it to browse the whole repo root. A leading `/` is fine. |
 | `cache="false"` | Re-download every build (ephemeral, always latest), with a timed note in the build output. Default `true`: download once, then reuse the local cache. |
 | `ref="…"` / `branch="…"` | Pin a branch, tag, or commit SHA. Default: the repo's **default branch**. |
