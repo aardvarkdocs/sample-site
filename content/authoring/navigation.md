@@ -70,6 +70,25 @@ unless you mean to open a **separate** menu — an `id` on a child names its own
 the same way a top-level tab's does. Point children at pages that already live in
 the section (the `menu: docs` pages, here) so their landing links stay in sync.
 
+## Hidden tabs
+
+Add `hidden: true` to a tab to keep it out of the bar while keeping everything else it
+gives its pages: the tab's `id:` still names a left-nav menu, so `menu: <id>` pages get
+their sidebar and are reachable by URL — they just aren't advertised up top. This is the
+shape a Mintlify `hidden` tab has, and `vark convert` emits it for one. A dropdown can be
+hidden too (its children go with it).
+
+```yaml
+tabs:
+  - label: Docs
+    link: /
+    id: docs
+  - label: Legacy API          # reachable at /legacy/…, with its own sidebar, but not in the bar
+    link: /legacy/
+    id: legacy
+    hidden: true
+```
+
 ## Optional: a site with no tabs
 
 The horizontal tab bar is optional. **Omit `tabs:` entirely** and no bar renders at

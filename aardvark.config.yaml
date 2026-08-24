@@ -185,7 +185,8 @@ og:
 # and an `id`; the id names that tab's isolated left-nav menu. Pages join a menu
 # (and nest within it) via front matter — `menu: <tab-id>`, `parent: <id>`,
 # `weight:`, `heading: true` — so the sidebar is a property of the content, not
-# config. A tab with `items:` instead of a `link` becomes a dropdown.
+# config. A tab with `items:` instead of a `link` becomes a dropdown; `hidden: true`
+# keeps a tab's menu (and its pages' sidebar) but leaves it out of the bar.
 tabs:
   - label: Why Aardvark?
     icon: heart
