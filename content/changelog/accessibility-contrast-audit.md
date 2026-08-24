@@ -1,6 +1,7 @@
 ---
 title: Build-time accessibility contrast audit
-date: 2026-04-19
+date: 2026-06-02
+version: "0.1.0"
 taxonomy:
   - name: changes
     tags: [a11y, build]

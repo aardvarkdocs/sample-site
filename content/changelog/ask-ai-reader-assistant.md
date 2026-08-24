@@ -1,7 +1,7 @@
 ---
 title: Ask-AI reader assistant
-date: 2026-05-03
-version: "0.8.0"
+date: 2026-06-10
+version: "0.1.3"
 taxonomy:
   - name: changes
     tags: [ai, search]

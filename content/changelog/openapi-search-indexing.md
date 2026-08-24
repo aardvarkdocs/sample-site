@@ -1,7 +1,7 @@
 ---
 title: Index OpenAPI descriptions for search
-date: 2026-05-14
-version: "0.8.2"
+date: 2026-06-02
+version: "0.1.0"
 taxonomy:
   - name: changes
     tags: [search, openapi]

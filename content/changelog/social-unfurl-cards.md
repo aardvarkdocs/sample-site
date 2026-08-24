@@ -1,7 +1,7 @@
 ---
 title: Social unfurl cards (Open Graph)
-date: 2026-04-05
-version: "0.7.0"
+date: 2026-06-02
+version: "0.1.0"
 taxonomy:
   - name: changes
     tags: [seo]

@@ -12,8 +12,8 @@ works* with nothing to sign up for.
 
 Aardvark uses the audited `mantine-map` package as an internal implementation dependency;
 it does not expose a second community tag. {% raw %}`{% map %}`{% endraw %} is the only map
-authoring surface. The MapLibre browser runtime and stylesheet are bundled from the exact
-version installed in your project, and Aardvark publishes its content-hashed worker locally.
+authoring surface. **You install nothing for it** — Aardvark ships that runtime and stages it
+into your build cache — and Aardvark publishes its content-hashed worker locally.
 The executable map engine therefore loads from your own site rather than a JavaScript CDN.
 The selected remote style, tiles, glyphs, and sprites are provider data, not executable CDN
 runtime.
@@ -152,11 +152,21 @@ map:
 ```
 {% endraw %}
 
-`mantine-map` and MapLibre GL JS are exact dependencies in a scaffolded site's
-`package.json`: the former is the audited internal adapter, while the direct MapLibre pin
-keeps worker resolution on the same installed tree. During the islands build Aardvark
-bundles that runtime and CSS and emits a self-contained, content-hashed worker under
-`/_aardvark/maplibre/`. There is no runtime JavaScript or CSS CDN dependency to configure.
+`mantine-map` and MapLibre GL JS are shipped by Aardvark, not by your site. The first build
+that renders a map extracts them into `.aardvark-cache/` (nothing is downloaded, and the files
+are checked against digests recorded when they were vendored), then bundles that runtime and
+CSS and emits a self-contained, content-hashed worker under `/_aardvark/maplibre/`. There is
+nothing to install and no runtime JavaScript or CSS CDN dependency to configure.
+
+A project with its own installed `mantine-map` keeps using that copy — Aardvark stages nothing
+in that case, and the version resolved from your `node_modules` is the one that gets bundled.
+It is the installed tree that decides, not the manifest: a package listed but not installed is
+not a copy Aardvark can build against.
+
+That copy still has to be **exactly 0.4.0**, the version the map surface is built against. If
+yours is a different version the map is dropped with a warning, as it was before — Aardvark
+does not quietly substitute its own runtime for a dependency you installed deliberately. Remove
+your pin to hand the runtime back to Aardvark.
 
 **Content-Security-Policy:** allow the local worker with `worker-src 'self'`, and allow
 MapLibre's image forms with `img-src 'self' data: blob:`. The basemap style still names its

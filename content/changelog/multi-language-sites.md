@@ -1,7 +1,7 @@
 ---
 title: Multi-language sites
-date: 2026-03-21
-version: "0.6.0"
+date: 2026-06-02
+version: "0.1.0"
 taxonomy:
   - name: changes
     tags: [i18n, build]

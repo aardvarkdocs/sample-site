@@ -1,7 +1,7 @@
 ---
 title: Generate the CLI reference from `vark --help`
-date: 2026-05-28 16:30
-version: "0.9.0"
+date: 2026-06-02
+version: "0.1.0"
 taxonomy:
   - name: changes
     tags: [cli, docs]

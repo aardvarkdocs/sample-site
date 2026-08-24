@@ -1,7 +1,7 @@
 ---
 title: Interactive Mantine islands
-date: 2026-03-02
-version: "0.5.0"
+date: 2026-06-02
+version: "0.1.0"
 taxonomy:
   - name: changes
     tags: [components, performance]

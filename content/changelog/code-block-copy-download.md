@@ -1,6 +1,7 @@
 ---
 title: Standardized code-block Copy & Download buttons
-date: 2026-05-22
+date: 2026-06-02
+version: "0.1.0"
 taxonomy:
   - name: changes
     tags: [components, ui]
