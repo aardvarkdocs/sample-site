@@ -43,10 +43,17 @@ images show inline, and Markdown / SVG get a **Source ⟷ Preview** toggle — a
 copy / download and a link to the **source on GitHub**.
 
 Both forms fetch the same thing — **one archive download** of the repo — so the choice is
-about the *page*, not the network. With no `folder`, every file in the repo is embedded (up to
-`maxFiles`, default 300), which makes a very large repo a heavy page. Scope to a `folder`
-(below) to embed just that subtree: a lighter page, and the `maxFiles` cap applies to the
-subtree rather than the whole repo.
+about the *page*, not the network. With no `folder`, the whole repo is listed (up to
+`maxFiles`, default 300) and its files are embedded until the widget reaches its
+[page budget](#page-weight) — past that they stay in the tree, and in the ZIP, without their
+inline preview. Scope to a `folder` (below) to embed just that subtree: a lighter page — one that previews every
+file it *can* (a binary shows as a row without a preview; a file over the per-file cap stays in
+the Download ZIP only, and the build names it), as long as the subtree fits the budget — and the
+`maxFiles` cap applies to the subtree rather than the whole repo.
+
+The demo above browses this site's own repo — several hundred files — so it doubles as the
+budget's live example: everything is listed and downloadable, and the files past the budget
+say so instead of being previewed.
 
 ## Scope to a folder
 
@@ -61,8 +68,10 @@ Add a `folder` (a path within the repo) to show just that subtree:
 **Folder mode downloads the same archive.** A `folder=` browse fetches the repo's single zip
 archive and keeps only that subtree — the same one request the whole-repo form makes, to a host
 with no REST quota. **No `GITHUB_TOKEN` is needed** for either form, on CI or anywhere else.
-What `folder=` changes is the *page*: only that subtree's files are embedded, and the `maxFiles`
-cap applies to the subtree. The whole repo is still transferred to your build machine either
+What `folder=` changes is the *page*: only that subtree's files are embedded, the `maxFiles`
+cap applies to the subtree, and a subtree that fits the [page budget](#page-weight) previews
+every previewable file — nothing is skipped for page weight (the per-file cap and the binary
+rule still apply file by file). The whole repo is still transferred to your build machine either
 way, so a `folder=` on a very large repo is a lighter page but not a lighter download.
 
 ## GitLab repos
@@ -142,9 +151,78 @@ nuance. To lock the whole widget — previews, license, and ZIP — to one immut
 - **Markdown & SVG** — get a **Source ⟷ Preview** segmented control: Markdown toggles between
   its highlighted source and the rendered document; SVG toggles between its markup and the
   rendered image. (In a Markdown preview, relative image and link paths are rewritten so they
-  resolve — to your served copy when the image is in the folder, otherwise to GitHub.)
+  resolve — to your served copy when the image is in the folder, otherwise to GitHub.) The
+  toggle needs both halves, so a file whose source wasn't embedded — over the per-file cap, or
+  past the [page budget](#page-weight) — loses it: an SVG keeps its rendered image (served from
+  your site as a file) with a note in place of its markup, while a Markdown file shows the note
+  alone, since its rendered preview is part of what wasn't embedded.
 - **Other binaries & very large files** — not previewed inline; grab them from the
   **Download ZIP** button, which always contains the **complete repository** (see below).
+- **Files past the page budget** — listed with their size and source link, read from the ZIP or
+  the source link rather than inline; an SVG keeps its rendered image and loses only its markup
+  view. See [Page weight](#page-weight).
+
+## Page weight
+
+Every embedded preview — source, highlighting, rendered Markdown — is **baked into the page**,
+which is what makes browsing instant and offline-proof, and what makes a big repo an expensive
+page if nothing bounds it. (Images are the exception: they're served from your site as files
+beside the page, so they add nothing to its weight.) Two limits bound what is embedded.
+
+`maxFileBytes` (default 512 KiB) bounds **one file**: a text file bigger than that isn't
+embedded — or even listed: it stays in the Download ZIP, and the build names it — because
+inlining a 3 MB minified bundle helps nobody. (A displayable SVG is the exception — it's kept,
+image and source both, so its Source ⟷ Preview toggle keeps working.)
+
+`maxEmbedBytes` (default **2 MiB**) bounds **one widget's total** — the source, highlighting and
+rendered previews it puts in the page, counted as the page really carries them (encoding and
+escaping inflate ordinary source by about half again, and quote-heavy files by more, so this is
+the number your host measures rather than the size of the files on disk).
+
+Files are embedded in path order until one doesn't fit; **that file and every text preview after
+it** are listed rather than embedded — images aren't part of the budget (they're served from your
+site as files, so they cost the page a URL, not their bytes) and keep displaying on either side
+of the line. It's a prefix, not a best fit: a later small file isn't slotted into
+the gap a refused big one leaves, so what you get is predictable from the file list — these
+files, in path order, until the budget runs out — and the widget stops doing the work rather
+than rendering previews it would throw away. (Path order is the flat list's order; the tree
+groups folders first when displaying, so embedded and skipped files can interleave on screen.)
+
+A file past the budget keeps its row in the tree, its size, its **source link**, and its place in
+the **Download ZIP** — only the inline preview is dropped, and the widget says so rather than
+implying the file is missing or too large. (That's the difference from the per-file cap above,
+which keeps a too-large file out of the listing entirely.) An SVG keeps its rendered image (that's served from
+your site as a file, so it costs the page nothing to keep) and loses only its markup view.
+
+The build tells you when this happens, names the files, and gives you both ways out:
+
+{% raw %}
+```text
+Aardvark: {% gitfolder %} aardvarkdocs/sample-site not previewing 331 file(s) inline after
+the 2048 KiB per-widget page budget was reached (…) — they keep their tree row, size and
+source link, and stay in the Download ZIP; scope the widget with folder= to embed fewer
+files, or raise gitfolder.maxEmbedBytes to embed more
+```
+{% endraw %}
+
+Prefer `folder=` when you can: a scoped widget is a smaller page, and a subtree that fits the
+budget skips nothing for page weight (the per-file cap and the binary rule still apply file by
+file). Raise the budget when you genuinely want a whole large repo
+inline — and remember what it buys the reader, since some hosts refuse a single file over 25 MB.
+The budget counts page bytes, so it's directly comparable to that limit — but it bounds the
+widget's embedded *payload*, not the whole page: leave headroom for the rest of the page, for a
+second widget if one is there, and for the one file the widget shows first, which is also
+pre-rendered into the page as visible markup — in its highlighted or rendered form, so plan
+for a few multiples of `maxFileBytes` on top of the budget, not the raw cap itself.
+
+```yaml
+gitfolder:
+  maxEmbedBytes: 4194304   # 4 MiB of embedded source per widget (default 2 MiB)
+```
+
+Unlike the other limits, changing this one **never re-downloads anything**: every file is cached
+and zipped either way, so the budget is decided when the page is rendered. Raise it and the next
+build embeds more, with no fetch.
 
 ## Caching
 
@@ -204,6 +282,8 @@ every change:
   to work out which files the lower cap now hides — a cost a big folder keeps paying on every
   build until something re-fetches it.
 - **Lowering `maxFiles` alone never re-downloads.** It shows fewer of the files already cached.
+- **`maxEmbedBytes` never re-downloads, in either direction.** It decides how much of what is
+  already cached goes into the page — see [Page weight](#page-weight).
 
 A re-download on an unpinned `ref` brings today's contents. Pin a `ref=` if that matters, or
 delete the cache first so the refresh is one you chose.
@@ -256,6 +336,8 @@ build summary's warning total.
 
 - **Public repos only.** Private repos aren't supported (and would need credentials the build
   doesn't have).
+- **A page-weight budget applies per widget**, not per page: two widgets on one page may each
+  embed up to `maxEmbedBytes`. See [Page weight](#page-weight).
 - **The widget is wide.** It works at the default content width, but a file browser has more
   room to breathe on a `mode: wide` (or `mode: full`) page — set that in the page's
   front-matter.
