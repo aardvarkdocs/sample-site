@@ -13,7 +13,9 @@ works* with nothing to sign up for.
 Aardvark uses the audited `mantine-map` package as an internal implementation dependency;
 it does not expose a second community tag. {% raw %}`{% map %}`{% endraw %} is the only map
 authoring surface. **You install nothing for it** — Aardvark ships that runtime and stages it
-into your build cache — and Aardvark publishes its content-hashed worker locally.
+into your build cache — **except on the released 0.3.3**, which reads `mantine-map` from your
+own `node_modules`; the **On 0.3.3 you do install it** note further down covers the install — and
+Aardvark publishes its content-hashed worker locally.
 The executable map engine therefore loads from your own site rather than a JavaScript CDN.
 The selected remote style, tiles, glyphs, and sprites are provider data, not executable CDN
 runtime.
@@ -156,7 +158,16 @@ map:
 that renders a map extracts them into `.aardvark-cache/` (nothing is downloaded, and the files
 are checked against digests recorded when they were vendored), then bundles that runtime and
 CSS and emits a self-contained, content-hashed worker under `/_aardvark/maplibre/`. There is
-nothing to install and no runtime JavaScript or CSS CDN dependency to configure.
+nothing to install and no runtime JavaScript or CSS CDN dependency to configure — except on
+the released 0.3.3, which the next paragraph covers.
+
+**On 0.3.3 you do install it.** Shipping the runtime lands in the release after 0.3.3; 0.3.3
+itself bundles the copy in your own `node_modules`. A site scaffolded by 0.3.3 already lists
+`"mantine-map": "0.4.0"` in `package.json`, so its ordinary `npm install` covers it; a site
+upgrading from an earlier release adds that entry itself and then actually installs it — the
+same installed-tree rule as below, where a listed but uninstalled package does not count. Without that copy the build warns, drops
+the map and renders the location list below — and still exits 0, so a map can disappear from a
+published site unnoticed.
 
 A project with its own installed `mantine-map` keeps using that copy — Aardvark stages nothing
 in that case, and the version resolved from your `node_modules` is the one that gets bundled.

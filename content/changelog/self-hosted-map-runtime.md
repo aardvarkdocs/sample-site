@@ -16,14 +16,16 @@ runtime served from your own site and publishes the map worker as a same-origin 
 nothing executable in a map comes from a third party. A map keeps working when a CDN is
 blocked or slow, and it needs no CDN allowance in a Content-Security-Policy.
 
-In 0.3.3 this runtime came from your own `node_modules`, so a site upgrading from an earlier
-release had to add `mantine-map` to its `package.json` first — otherwise the build warned,
-dropped the interactive map, and fell back to the accessible list of locations the tag always
-renders for readers without JavaScript. **That is no longer necessary**: Aardvark ships the
-runtime and stages it into your build cache, so a map works with nothing installed. A project
-that has its own installed `mantine-map` keeps using that copy — which still has to be exactly
-0.4.0, or the map is dropped as before; Aardvark will not silently swap its runtime in for a
-dependency you installed on purpose.
+The runtime is read out of your own `node_modules`, so **a site upgrading from an earlier
+release has to install `mantine-map` 0.4.0** — add it to `package.json` *and* run your package
+manager, since it is the installed tree that decides and a listed-but-uninstalled package is not
+a copy Aardvark can build against. Until that copy is there, the build warns,
+drops the interactive map and falls back to the accessible list of locations the tag always
+renders for readers without JavaScript — the build still succeeds, which is what makes a
+vanished map easy to overlook. Pin the version exactly: a copy that is not 0.4.0 is dropped the
+same way, since that is the version the map surface is built against. Sites scaffolded by 0.3.3
+already carry the pin. On 0.3.3 the install is required; a later release ships the runtime inside
+Aardvark itself and drops the step.
 
 Three knobs are gone with the CDN they pointed at: `map.maplibreVersion`, `map.maplibreJs`
 and `map.maplibreCss` no longer do anything, and are ignored without a warning — delete
