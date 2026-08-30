@@ -29,10 +29,11 @@ Examples:
 
 ```bash
 vark new my-docs        # scaffold a new site in ./my-docs
-cd my-docs && npm install   # install the islands toolchain (needs Node)
-vark dev                # preview at http://localhost:8000, live-reload
+cd my-docs && vark dev  # preview at http://localhost:8000, live-reload
 vark build              # build the static site into ./build
 ```
+
+The islands toolchain (react, @mantine/*, esbuild) ships inside Aardvark: a project with no node_modules gets it staged automatically on the first build — no npm install, nothing downloaded (Node itself is the one prerequisite). npm runs only when your package.json needs packages Aardvark doesn't ship (opt out with AARDVARK_NO_AUTO_NPM); a node_modules you install yourself always wins.
 
 ## Commands
 
@@ -55,7 +56,7 @@ vark build              # build the static site into ./build
 
 Scaffold a new site in PATH.
 
-Creates PATH and fills it with starter content, a sample data file, the editable default theme under `themes/vark/`, an example snippet, and a `package.json` for the Mantine islands toolchain. Next: `cd` into PATH and run `vark dev` — when Node is available the first build sets up the islands toolchain with npm (or run `npm install` yourself up front); without Node it builds without the islands bundle.
+Creates PATH and fills it with starter content, a sample data file, the editable default theme under `themes/vark/`, an example snippet, and a `package.json` for the Mantine islands toolchain. Next: `cd` into PATH and run `vark dev` — the first build stages the islands toolchain shipped with Aardvark (no npm install, nothing downloaded; npm only runs for packages Aardvark doesn't ship, and a `node_modules` you install yourself always wins). Node is the one prerequisite; without it the site builds without the islands bundle.
 
 Examples:
 

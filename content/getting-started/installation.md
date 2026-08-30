@@ -13,11 +13,18 @@ weight: 11
 
 | Tool | Version | Why |
 | --- | --- | --- |
-| Node.js + npm | Node ≥ 20.19 | Bundles the Mantine/React islands at build time |
+| Node.js | Node ≥ 20.19 | Runs esbuild and the island prerenderer at build time |
 
-The `vark` binary is self-contained — it ships its own Python runtime, so there's
-nothing else to install. Node is only needed to build the islands JS. You can skip
-it with `vark build --no-bundle` (components then render as inert placeholders).
+The `vark` binary is self-contained — it ships its own Python runtime **and the
+islands JS toolchain** (React, Mantine, esbuild, and everything else its built-in
+components bundle with), so there's nothing else to install and nothing to
+download: a project with no `node_modules` of its own gets the shipped toolchain
+staged automatically on its first build. Node is the one prerequisite, used to run
+that toolchain. You can skip it with `vark build --no-bundle` (components then
+render as inert placeholders). npm is only involved if your `package.json` asks
+for packages or versions Aardvark doesn't ship — then the first build runs
+`npm ci`/`npm install` for you (opt out with `AARDVARK_NO_AUTO_NPM`), and a
+`node_modules` you install yourself always takes over from the shipped toolchain.
 
 ## Install with Homebrew (macOS)
 
@@ -66,9 +73,9 @@ curl -fsSL https://github.com/aardvarkdocs/homebrew-tap/releases/download/v<vers
 vark --version
 ```
 
-The prebuilt binary is **glibc-linked** (not musl/Alpine). Release tarballs target **glibc ≥
-2.39** (Ubuntu 24.04 class and newer distros). Node.js is only needed at *site*-build time for
-interactive islands.
+The prebuilt binary is **glibc-linked** (not musl/Alpine). Release tarballs are built against
+**glibc ≥ 2.28**, so they run on every current distro — RHEL 8+, Debian 10+, Ubuntu 20.04+,
+Fedora, Amazon Linux 2023. Node.js is only needed at *site*-build time for interactive islands.
 
 The binary bundles the default theme and the islands runtime, so it works out of
 the box. Node is still required on the build machine to bundle interactive

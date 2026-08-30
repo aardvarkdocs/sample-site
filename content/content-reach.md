@@ -187,7 +187,7 @@ headings — an install command, an auth step, a "Try it now" — wrap them in
 ````aardvark
 {% target id="install-cli" %}
 ```bash
-npm install -g aardvark
+brew install aardvarkdocs/tap/aardvark
 ```
 {% endTarget %}
 ````

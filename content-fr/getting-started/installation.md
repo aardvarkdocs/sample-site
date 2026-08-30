@@ -12,12 +12,19 @@ weight: 11
 
 | Outil | Version | Pourquoi |
 | --- | --- | --- |
-| Node.js + npm | Node ≥ 20.19 | Regroupe les îlots Mantine/React à la compilation |
+| Node.js | Node ≥ 20.19 | Exécute esbuild et le pré-rendu des îlots à la compilation |
 
-Le binaire `vark` est autonome — il embarque son propre runtime Python, il n'y a
-donc rien d'autre à installer. Node n'est nécessaire que pour compiler le JS des
-îlots. Vous pouvez vous en passer avec `vark build --no-bundle` (les composants
-s'affichent alors comme des espaces réservés inertes).
+Le binaire `vark` est autonome — il embarque son propre runtime Python **et la
+chaîne d'outils JS des îlots** (React, Mantine, esbuild et tout ce que ses
+composants intégrés regroupent), il n'y a donc rien d'autre à installer et rien à
+télécharger : un projet sans `node_modules` reçoit automatiquement la chaîne
+d'outils embarquée à sa première compilation. Node est le seul prérequis, utilisé
+pour l'exécuter. Vous pouvez vous en passer avec `vark build --no-bundle` (les
+composants s'affichent alors comme des espaces réservés inertes). npm n'intervient
+que si votre `package.json` demande des paquets ou des versions qu'Aardvark
+n'embarque pas — la première compilation lance alors `npm ci`/`npm install` pour
+vous (désactivable avec `AARDVARK_NO_AUTO_NPM`), et un `node_modules` que vous
+installez vous-même prend toujours le pas sur la chaîne embarquée.
 
 ## Installer avec Homebrew (macOS)
 

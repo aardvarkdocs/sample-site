@@ -71,14 +71,16 @@ Cette commande crée un projet avec une page de démarrage, un fichier de donné
 le thème par défaut modifiable, un exemple de composant et un `package.json` pour
 les îlots.
 
-### 2. Installer les dépendances des îlots
+### 2. Dépendances des îlots — incluses avec Aardvark
 
-```bash
-npm install
-```
-
-Cette commande installe React, Mantine et esbuild, qu'Aardvark utilise pour
-regrouper les composants que vous intégrez.
+Rien à installer et rien à télécharger : Aardvark embarque la chaîne d'outils des
+îlots — React, Mantine et esbuild, qu'il utilise pour regrouper les composants que
+vous intégrez — et votre premier `vark dev` ou `vark build` la met en place
+automatiquement dans le `.aardvark-cache/` du projet (Node.js est le seul
+prérequis). Ne lancez `npm install` vous-même que si vous ajoutez des paquets
+qu'Aardvark n'embarque pas — un `node_modules` à vous prend toujours le pas — et
+définissez `AARDVARK_NO_AUTO_NPM` si vous ne voulez jamais qu'Aardvark lance npm
+à votre place.
 
 ### 3. Développer avec le rechargement automatique
 

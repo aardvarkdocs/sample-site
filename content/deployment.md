@@ -149,8 +149,10 @@ The output lands in `dist/` by default; set `BUILD_OUT_DIR` to write it elsewher
 (For local iteration, `scripts/build-binary.sh` is a faster non-`--onefile`
 build that outputs a folder instead of a single file.)
 
-The binary bundles the default theme and the islands runtime, so it works with
-no Python environment. **Node remains a runtime prerequisite** on whatever
-machine runs `vark build`, because islands are bundled with esbuild at build
-time. Use `vark build --no-bundle` if you need to build without Node (components
-become inert placeholders).
+The binary bundles the default theme, the islands runtime, **and the islands JS
+toolchain itself** — a project with no `node_modules` builds its islands from the
+shipped toolchain, with no `npm install` and nothing downloaded. **Node remains a
+runtime prerequisite** on whatever machine runs `vark build`, because islands are
+bundled with esbuild and prerendered with Node at build time. Use
+`vark build --no-bundle` if you need to build without Node (components become
+inert placeholders).

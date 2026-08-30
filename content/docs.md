@@ -80,14 +80,15 @@ cd my-docs
 This creates a project with a starter page, a data file, the editable default
 theme, an example snippet, and a `package.json` for the islands.
 
-### 2. Install the islands dependencies
+### 2. Islands dependencies — included with Aardvark
 
-```bash
-npm install
-```
-
-This installs React, Mantine, and esbuild, which Aardvark uses to bundle the
-components you embed.
+There's nothing to install and nothing to download: Aardvark ships the islands
+toolchain — React, Mantine, and esbuild, which it uses to bundle the components
+you embed — and your first `vark dev` or `vark build` stages it into the
+project's `.aardvark-cache/` automatically (Node.js is the one prerequisite).
+Run `npm install` yourself only if you add packages Aardvark doesn't ship — a
+`node_modules` of your own always takes over — and set `AARDVARK_NO_AUTO_NPM`
+if you never want Aardvark running npm on your behalf.
 
 ### 3. Develop with live reload
 

@@ -46,10 +46,11 @@ ARG AARDVARK_KEY=""
 # node:22 supplies Node for the Mantine "islands" esbuild bundle; curl fetches the release
 # binary (resolving VARK_VERSION=latest to the newest tap release via the /releases/latest
 # redirect — the asset filename embeds the version, so a concrete number is needed for the URL).
-# Both this and the runtime base are Debian trixie: the published Linux binaries are built on
-# native Ubuntu 24.04 CI runners and link glibc >= 2.38, which Debian bookworm (glibc 2.36) is
-# too old to run — `vark --version` aborts with "GLIBC_2.38 not found". trixie ships glibc 2.41,
-# clearing that floor while keeping the builder and runtime on the same Debian for a stable ABI.
+# Both this and the runtime base are Debian trixie. The published Linux binaries are built in
+# manylinux_2_28 containers (scripts/build-linux.sh; see RELEASING.md "How they're built") and
+# link glibc >= 2.28, so any Debian 10+ clears the floor — trixie isn't a glibc necessity, it's
+# simply current Debian stable: the longest security-support runway, with builder and runtime
+# kept on the same release.
 FROM node:22-trixie-slim AS builder
 # A UTF-8 locale is required: `vark build` bundles the Mantine islands by capturing the Node/esbuild
 # subprocess output, and esbuild emits non-ASCII bytes. Under the default C/POSIX locale Python
@@ -102,8 +103,8 @@ RUN --mount=type=bind,target=/ctx,readonly \
 
 # ---- stage 2: serve ---------------------------------------------------------
 # The release binary is a self-contained Nuitka onefile (it bundles its own Python), so the
-# runtime needs only glibc -- debian:trixie-slim, the same Debian as the builder for a stable
-# ABI (trixie's glibc 2.41 satisfies the binary's >= 2.38 floor; see the builder note above).
+# runtime needs only glibc -- debian:trixie-slim, the same Debian as the builder (the binary's
+# glibc floor is >= 2.28, easily cleared; see the builder note above).
 # curl is the only added package, for the HEALTHCHECK (debian-slim ships neither curl nor a
 # usable Python on PATH; the onefile's interpreter is internal, not callable).
 FROM debian:trixie-slim AS runtime
