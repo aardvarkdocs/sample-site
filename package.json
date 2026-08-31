@@ -67,16 +67,16 @@
     "mantine-datatable": "9.3.1"
   },
   "devDependencies": {
-    "@shikijs/twoslash": "^1.24.0",
-    "esbuild": "0.28.1",
+    "@shikijs/twoslash": "^4.4.3",
+    "esbuild": "0.28.2",
     "linkedom": "^0.18.0",
-    "shiki": "^1.24.0",
-    "twoslash": "^0.2.12",
+    "shiki": "^4.4.3",
+    "twoslash": "^0.3.9",
     "typescript": "^5.7.0",
     "wrangler": "4.103.0"
   },
   "overrides": {
-    "esbuild": "0.28.1",
+    "esbuild": "0.28.2",
     "miniflare@4.20260617.1": {
       "sharp": "0.35.3"
     },

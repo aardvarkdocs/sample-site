@@ -12,9 +12,9 @@
  *
  * UPGRADE NOTE: two emitted class names couple to @shikijs/twoslash's output — re-check both when
  * bumping the shiki / @shikijs/twoslash dep:
- *   - `.twoslash-query-presisted` (used below at the :has() reserve and the query-popup rules)
- *     mirrors an intentional MISSPELLING ("presisted", not "persisted"); if upstream fixes the typo
- *     these rules silently stop matching (no error).
+ *   - `.twoslash-query-persisted` (used below at the :has() reserve and the query-popup rules) is
+ *     the v4 spelling. Keep the v1 typo (`presisted`) beside it because an existing project's own
+ *     node_modules wins over Aardvark's store and can still render the older markup.
  *   - `.twoslash-hover` backs keyboard access: twoslash_render.mjs stamps tabindex="0" on exactly
  *     `<span class="twoslash-hover"`, and the :focus-within rules below reveal the popup on focus.
  *     If a future Shiki emits an extra class on that span the tabindex no-ops and keyboard focus
@@ -82,6 +82,7 @@
  * :has() scopes the reserve to blocks that actually end with a query (a graceful no-op in the
  * rare browser without :has — the popup then overlaps, the upstream default). The reserve fits
  * a typical multi-line type popup; an unusually tall one may still extend past it. */
+.aardvark-content pre.twoslash:has(.twoslash-query-persisted),
 .aardvark-content pre.twoslash:has(.twoslash-query-presisted) {
   margin-bottom: 9em;
 }
@@ -136,6 +137,7 @@
   box-shadow: var(--twoslash-popup-shadow);
 }
 
+.twoslash .twoslash-query-persisted .twoslash-popup-container,
 .twoslash .twoslash-query-presisted .twoslash-popup-container {
   z-index: 9;
   transform: translateY(1.5em);
@@ -149,6 +151,7 @@
 .twoslash .twoslash-hover:focus-within .twoslash-popup-container,
 .twoslash .twoslash-error-hover:hover .twoslash-popup-container,
 .twoslash .twoslash-error-hover:focus-within .twoslash-popup-container,
+.twoslash .twoslash-query-persisted .twoslash-popup-container,
 .twoslash .twoslash-query-presisted .twoslash-popup-container,
 .twoslash .twoslash-query-line .twoslash-popup-container {
   opacity: 1;
