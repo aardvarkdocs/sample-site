@@ -614,31 +614,31 @@ ai:
   examples: false
   skills: false
   # Any OpenRouter model slug; overridable per run with `--model`. The "latest" router alias needs its
-  # LEADING TILDE (and YAML quotes — a bare leading ~ is null); or pin a version like anthropic/claude-sonnet-4.6.
+  # LEADING TILDE; quotes are optional for the full slug (only standalone `~` is YAML null). Or pin a
+  # version like anthropic/claude-sonnet-4.6.
   model: "~anthropic/claude-sonnet-latest"
   # The reader-facing "Ask AI" assistant. It streams answers from the metered Aardvark
   # cloud gateway (which holds the managed OpenRouter key) using a spend-capped AARDVARK_KEY
   # set as a *build* env var (e.g. in Cloudflare Pages build settings) — never in this file.
   assistant:
     enabled: true
-    # Sent to the gateway per request; any OpenRouter slug. Sonnet is a PAID model, so the public key now
-    # spends real money per question — keep the account funded and size the spend cap to the exposure you
-    # accept (the cap + origin lock are the controls; a :free model was the old cost-free pick).
-    # NOTE: the leading `~` is REQUIRED and the value MUST be quoted (a bare leading ~ is YAML null).
-    # OpenRouter lists the "latest" router alias as `~anthropic/claude-sonnet-latest` — the tilde is part
-    # of the id. Without it the gateway's fail-closed price lookup can't find the model and every request
-    # 503s `pricing_unavailable`. Prefer a fixed version? Use a concrete slug like `anthropic/claude-sonnet-4.6`
-    # (no tilde, no quotes needed) instead of auto-tracking the latest.
-    model: "~anthropic/claude-sonnet-latest"
-    # Sonnet supports OPTIONAL reasoning (Claude extended thinking). These two knobs steer it (both forwarded
-    # to OpenRouter; omit the whole block to let the model decide). When reasoning is on, the assistant
-    # streams it LIVE into the panel, so any think-time shows as progress. Reasoning tokens bill as output,
+    # Sent to the gateway per request; any OpenRouter slug. The current alias target is a PAID
+    # model, so the public key spends real money per question — keep the account funded and size
+    # the spend cap to the exposure you accept (the cap + origin lock are the controls; a :free
+    # model was the old cost-free pick).
+    # OpenRouter's floating Gemini Flash alias includes the leading `~`; quotes are optional for
+    # the full slug but kept here for clarity. The alias follows the latest Flash release automatically.
+    model: "~google/gemini-flash-latest"
+    # The current Gemini Flash target requires reasoning and supports low, medium, and high effort. These
+    # two knobs steer it (both forwarded to OpenRouter; omit the whole block to let the model decide). The
+    # assistant streams that reasoning LIVE into the panel, so any think-time shows as progress. Reasoning
+    # tokens bill as output,
     # so more effort = slower + a bit pricier. Note it reasons on EACH step of a multi-step navigation
     # (it can reason about which doc to read next), so a turn that reads several pages multiplies the
-    # reasoning cost — `low` keeps that modest; set `enabled: false` for the cheapest/fastest answers.
+    # reasoning cost — `low` keeps that modest and is the least reasoning-intensive supported effort.
     reasoning:
-      # Master switch. `false` turns reasoning OFF — the FASTEST setting (Sonnet answers directly, no
-      # pre-answer thinking phase). `true` reasons at `effort` below (a little slower; can help hard questions).
+      # This target cannot turn reasoning off; keep this true. Choose a model with optional reasoning
+      # if you need to remove the pre-answer thinking phase.
       enabled: true
       # Reasoning budget: low | medium | high. `low` keeps think-time short — a good default for a snappy
       # public assistant; raise it for harder questions (omit `effort` to use the model's default).
@@ -649,10 +649,10 @@ ai:
     # the leaner llms.txt index; if none fit, the model navigates from scratch.
     #
     # By DEFAULT this is derived from your `model`'s real context window — sized to inlineContextWindowFraction
-    # (default 0.6) of it (so a 200k-window model defaults to ~120k), leaving room for the conversation + the
-    # answer. The window is looked up at build time from OpenRouter (best-effort; falls back to a built-in
-    # table, then a 100k floor — a build with no network still works). Tune the fill level instead of pinning
-    # an absolute number:
+    # (default 0.6) of it, leaving room for the conversation + the answer. The window is looked
+    # up at build time from OpenRouter (best-effort; falls back to a built-in table, then a 100k
+    # floor — a build with no network still works). Tune the fill level instead of pinning an
+    # absolute number:
     # inlineContextWindowFraction: 0.6
     #
     # Or set an explicit absolute budget below to OVERRIDE the model-derived default verbatim (the fraction
@@ -672,7 +672,7 @@ ai:
     # Reader file attachments (images, PDFs, text/code). DEFAULT ON — readers can attach files to a
     # question via a paperclip, drag-and-drop, or paste. Images/PDFs cost far MORE tokens than text, so
     # this spends more; the caps below + the gateway spend cap bound it. Your `model` above must be a
-    # vision/file-capable model (e.g. a Claude/GPT vision model) or attachments error/are ignored. Set
+    # vision/file-capable model (e.g. a Gemini/Claude/GPT vision model) or attachments error/are ignored. Set
     # `attachments: false` to turn the picker off entirely. Object form tunes the caps (all optional):
     # attachments:
     #   enabled: true            # master switch (default true; `attachments: false` is the shorthand)
