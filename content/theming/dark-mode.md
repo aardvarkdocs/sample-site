@@ -33,31 +33,19 @@ CSS. If you do, target the attribute:
 :root[data-mantine-color-scheme="dark"] .my-thing { /* dark-only */ }
 ```
 
-One caveat when the dark rule changes a **background**: the default theme
-cross-fades page navigations with a view transition, and the browser draws the
-incoming page's first frame *before* `color-scheme.js` has set the attribute —
-so an attribute-keyed rule doesn't apply to that frame, and dark-mode readers
-see your light background flash for the length of the fade. Give such rules an
-OS-scheme fallback too. Because those bare dark rules keep matching after the
-attribute *is* set, add an explicit-light override alongside them, so a reader
-who chose light mode on a dark OS gets their choice back the moment the
-attribute lands (that reader's pre-attribute frame is never shown — the theme
-skips the cross-fade whenever the chosen scheme differs from the OS):
+The theme uses view transitions in two different places. Clicking the theme
+toggle cross-fades the scheme change in the current document. Page navigation
+cross-fades only when both the resolved page and the OS are light. Chromium can
+capture an incoming page before `color-scheme.js` sets the attribute; in a dark
+context that snapshot cannot contain every attribute-gated Mantine or project
+style, so `color-scheme.js` discards the page transition and swaps immediately.
+This prevents a partially light page from flashing before it settles dark.
 
-```css
-@media screen and (prefers-color-scheme: dark) {
-  .my-thing { /* dark, for the pre-attribute first frame */ }
-  :root[data-mantine-color-scheme="light"] .my-thing { /* light wins back */ }
-}
-```
-
-(Keep the `screen` type if your site builds the whole-site PDF — the PDF
-renderer applies bare feature queries but skips `screen` blocks, which keeps
-the PDF on the light palette. This is the pattern for **page-local CSS**; the
-theme's own chrome closes the same first-frame gap with different machinery —
-an attribute-less fallback block in `theme.scss` plus the view-transition
-skips in `color-scheme.js`. This site's homepage source is a worked example
-of the page-local pattern.)
+The theme also carries an OS-dark fallback for its own variables while the
+attribute is absent. That keeps an initial canvas sensible if JavaScript is
+unavailable, but project styles should still use the attribute as their source
+of truth; they do not need to duplicate dark declarations in a media query just
+to support the default page transition.
 
 ## Default
 

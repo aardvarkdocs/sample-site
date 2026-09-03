@@ -106,16 +106,19 @@
   // cross-fades the old page into a snapshot of the new one. Chromium captures that inbound snapshot
   // before this render-blocking script's data-mantine-color-scheme attribute is reflected, so the
   // snapshot is painted from CSS alone — the :root default plus the prefers-color-scheme block in
-  // theme.css — i.e. it follows the OS scheme, NOT the reader's stored choice. That mismatches, and
-  // visibly flashes, in exactly two situations, so skip the transition for them (the page then swaps
-  // like a reload, which never flashes):
+  // theme.css — i.e. it follows the OS scheme, NOT the reader's stored choice. The fallback covers
+  // the theme's own variables, but it cannot cover every attribute-gated dark rule in Mantine's
+  // generated CSS or in project CSS. In dark mode those rules therefore paint an incomplete/light
+  // inbound snapshot before the real attribute lands. Skip the transition when that can happen (the
+  // page then swaps like a reload, which never flashes):
   //   1. Same-URL re-navigation — clicking the tab/link for the page you're already on. The crossfade
   //      is pointless there (identical content) and is the most reproducible flash.
-  //   2. The reader has overridden their OS scheme (explicit light on a dark OS, or explicit dark on a
-  //      light OS): the OS-following inbound snapshot is the OPPOSITE of their choice, so ANY nav
-  //      flashes — including the reverse (light→dark) flash the theme.css prefers-color-scheme block
-  //      would otherwise introduce for an OS-dark reader who chose light.
-  // A reader whose scheme matches their OS keeps the crossfade on genuine page-to-page navigations.
+  //   2. The resolved page is dark: even on a dark OS, attribute-gated Mantine/project styles are
+  //      missing from the attribute-less inbound snapshot.
+  //   3. The reader chose light on a dark OS: the OS-following inbound snapshot is the opposite of
+  //      their choice. (Dark on a light OS is already covered by case 2.)
+  // Genuine page-to-page crossfades remain only when both the page and OS are light, where the
+  // attribute-less snapshot is complete.
   // Skip on BOTH ends — pageswap from the outgoing document, pagereveal from the incoming one (and a
   // render-blocking <head> script is the only place a pagereveal listener registers early enough).
   // The two sides source NavigationActivation differently ON PURPOSE: PageSwapEvent exposes
@@ -126,9 +129,9 @@
   }
   function skipFlashyTransition(vt, act) {
     if (!vt) return;
-    var schemeOverridesOS =
-      document.documentElement.getAttribute('data-mantine-color-scheme') !== (mql.matches ? 'dark' : 'light');
-    if (sameUrlNav(act) || schemeOverridesOS) vt.skipTransition();
+    var resolved = document.documentElement.getAttribute('data-mantine-color-scheme');
+    var schemeOverridesOS = resolved !== (mql.matches ? 'dark' : 'light');
+    if (sameUrlNav(act) || resolved === 'dark' || schemeOverridesOS) vt.skipTransition();
   }
   addEventListener('pageswap', function (e) { skipFlashyTransition(e.viewTransition, e.activation); });
   addEventListener('pagereveal', function (e) {

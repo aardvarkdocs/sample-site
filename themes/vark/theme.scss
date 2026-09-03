@@ -137,8 +137,7 @@ $brand: (primary: $primary-light, secondary: $secondary-light);
   @include emit-vars($semantic);
   @each $name, $val in $brand { --aardvark-palette-#{$name}: #{$val}; }
   /* Tell the browser which scheme the page is in, so the canvas / UA backdrop (and form
-     controls + scrollbars) match it. The dark counterpart — and the OS-default dark path that
-     keeps a cross-document @view-transition from flashing light — live in the dark blocks below. */
+     controls + scrollbars) match it. The explicit and OS-default dark paths live below. */
   color-scheme: light;
   /* Layout metrics (not colors). */
   --aardvark-sidebar-w: 260px;
@@ -166,17 +165,14 @@ $brand: (primary: $primary-light, secondary: $secondary-light);
 /* Dark scheme, applied two ways on purpose:
    (1) Explicit choice — color-scheme.js writes data-mantine-color-scheme="dark" (it resolves
        "auto" to the OS value), and Mantine islands restyle off the same attribute.
-   (2) OS-dark default for the attribute-less INBOUND snapshot of a cross-document @view-transition:
-       Chromium captures that snapshot before color-scheme.js's attribute is reflected (e.g. clicking
-       the tab you're already on), so without this an OS-dark reader sees the light default cross-fade
-       in — a flash that then snaps back to dark. The selector matches only when the attribute is
-       NEITHER "dark" NOR "light" (i.e. absent, as in the snapshot), so it stays mutually exclusive
-       with block (1): no double-emit of the dark vars onto an already-explicitly-dark :root, while
-       still covering any non-explicit value. CAUTION: it can't protect an explicit LIGHT choice in
-       the snapshot (the attribute isn't set yet) — on an OS-dark machine the snapshot resolves to
-       dark, so an OS-dark reader who chose light would get a reverse flash on a cross-page nav.
-       color-scheme.js closes that by skipping the transition when the reader's scheme differs from
-       their OS (see skipFlashyTransition there). */
+   (2) OS-dark default while the attribute is absent: this keeps the initial canvas and this theme's
+       own variables dark if the script is unavailable, and stabilizes the inbound snapshot Chromium
+       captures before color-scheme.js can discard an unsafe cross-document transition. The selector
+       matches only when the attribute is NEITHER "dark" NOR "light", so it stays mutually exclusive
+       with block (1) and never overrides an explicit light choice.
+   This fallback cannot reproduce every attribute-gated Mantine or project rule. color-scheme.js
+   therefore skips cross-document fades whenever either the resolved page or OS is dark; only a
+   light-on-light navigation displays the attribute-less snapshot. */
 :root[data-mantine-color-scheme="dark"] {
   @include emit-vars($dark);
   color-scheme: dark;
@@ -1963,9 +1959,11 @@ div.aardvark-api-prose table { display: block; width: fit-content; max-width: 10
    re-check on a Mantine major bump (as the prose-link / button rules note).
    ============================================================================ */
 
-/* Page-switch crossfade: same-origin navigations fade old -> new instead of a hard cut. This is
-   SITE-WIDE — every page of any site on the default theme, not scoped to the API reference
-   (intentional, part of the elevated-polish chrome). A site that doesn't want it opts out by
+/* Page-switch crossfade: safe same-origin light-on-light navigations fade old -> new instead of a
+   hard cut; color-scheme.js skips the transition whenever the resolved page or OS is dark because
+   the attribute-less inbound snapshot cannot carry every dark Mantine/project rule. This remains
+   SITE-WIDE for the safe case — every page of any site on the default theme, not scoped to the API
+   reference (intentional, part of the elevated-polish chrome). A site that doesn't want it opts out by
    redeclaring `@view-transition { navigation: none; }` in its own CSS (last declaration wins) —
    there's no element to hang an #id opt-out on, since this is a page-level at-rule. Cross-document
    view transitions (Chromium 126+); unsupported browsers just navigate as before. Honor

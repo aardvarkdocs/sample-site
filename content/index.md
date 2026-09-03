@@ -19,7 +19,7 @@ reportIssue: false
 <style>
 /* Literal colours only — CSS var()/color-mix break xhtml2pdf (the whole-site PDF), so do not convert this block to CSS variables.
    Scheme-dependent colours (anything that differs between light and dark) do NOT belong in these static rules —
-   they live in the wa_scheme table at the end of this block, which emits the light, dark, and snapshot-fallback rules. */
+   they live in the wa_scheme table at the end of this block, which emits the light, dark, and OS-fallback rules. */
 .wa *{box-sizing:border-box;}
 .wa-container{max-width:1100px;margin:0 auto;padding:0 32px;}
 /* text-decoration uses !important: these buttons are <a>s inside .aardvark-content, where the theme underlines prose links with a more specific selector. */
@@ -98,9 +98,10 @@ reportIssue: false
 # THE one source of truth for this page's scheme-dependent colours: (selector, light decls,
 # dark decls). The static rules above keep only scheme-INVARIANT declarations (colorless
 # `border:1px solid` shorthands included — the colour arrives from this table). Emitted four
-# ways: base light (also what the PDF renders), explicit dark, the OS-dark snapshot fallback,
-# and the explicit-light win-back — the why of that shape is documented on
-# /theming/dark-mode/. Homepage-specific constraints, all verified against the whole-site
+# ways: base light (also what the PDF renders), explicit dark, an attribute-less OS-dark
+# fallback, and the explicit-light win-back. The fallback keeps the homepage sensible if theme
+# JS is unavailable and stabilizes the snapshot before color-scheme.js discards unsafe dark
+# navigation transitions. Homepage-specific constraints, all verified against the whole-site
 # PDF's CSS engine (xhtml2pdf): literal colours only (var()/color-mix break it — same rule as
 # the block above); no attribute selector inside :not(...) (hard parse error); and the media
 # query must keep its `screen` type (xhtml2pdf applies bare feature queries as `all` but
