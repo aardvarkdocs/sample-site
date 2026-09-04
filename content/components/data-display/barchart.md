@@ -68,7 +68,7 @@ component('aardvark', 'barchart', h=260, dataKey='product', withLegend=True,
 
 ## CSS Selectors
 
-Target the rendered element through its island marker — `[data-aardvark-island="BarChart"]` (or the more specific `[data-aardvark-lib="charts"][data-aardvark-island="BarChart"]` when several libraries share the page) — or through the Mantine Styles API classes (`.mantine-BarChart-root` and its inner parts):
+{% include '/components/_partials/chart-css-selectors-note.md' %}
 
 {% raw %}
 ```css

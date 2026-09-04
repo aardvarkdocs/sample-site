@@ -43,7 +43,7 @@ source manifest so the monitor does not repeatedly propose them.
 Each tag below wraps one community extension. Follow a tag's page for the author credit, license,
 the npm package it bundles, and live examples.
 
-- [Clock](/components/community/clock/) — an analog or digital clock face.
+- [Clock](/components/community/clock/) — an analog clock face.
 - [LED](/components/community/led/) — a glowing status indicator light.
 - [Spinner](/components/community/spinner/) — extra loading-spinner styles beyond the core loader.
 - [Flip](/components/community/flip/) — a card that flips between a front and back face.

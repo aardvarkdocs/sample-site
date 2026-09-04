@@ -70,7 +70,7 @@ component('aardvark', 'areachart', h=260, dataKey='month', curveType='monotone',
 
 ## CSS Selectors
 
-Target the rendered element through its island marker — `[data-aardvark-island="AreaChart"]` (or the more specific `[data-aardvark-lib="charts"][data-aardvark-island="AreaChart"]` when several libraries share the page) — or through the Mantine Styles API classes (`.mantine-AreaChart-root` and its inner parts):
+{% include '/components/_partials/chart-css-selectors-note.md' %}
 
 {% raw %}
 ```css

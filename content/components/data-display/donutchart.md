@@ -67,7 +67,7 @@ component('aardvark', 'donutchart', size=180, thickness=28, withLabels=True, cha
 
 ## CSS Selectors
 
-Target the rendered element through its island marker — `[data-aardvark-island="DonutChart"]` (or the more specific `[data-aardvark-lib="charts"][data-aardvark-island="DonutChart"]` when several libraries share the page) — or through the Mantine Styles API classes (`.mantine-DonutChart-root` and its inner parts):
+{% include '/components/_partials/chart-css-selectors-note.md' %}
 
 {% raw %}
 ```css
