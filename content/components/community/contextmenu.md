@@ -161,19 +161,33 @@ Omit any attribute to take its default.
 | `items` | JSON array string | The menu entries. Each is an action object (`key`, `title`, plus optional `href`, `color`, and a Tabler `icon` name) or a divider object (`{"divider": true}`). |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered target element. See [Injecting Attributes](#injecting-attributes). |
 
+{% callout severity="info" title="Good to know" %}
+`items` must be valid JSON: unlike the data-driven tags that degrade to an empty widget, a
+parse error here **fails the build** with the offending value, and so does an `href` using an
+unsafe scheme. Keep the JSON's own strings in double quotes inside the single-quoted attribute.
+
+An action can only navigate — `href` is the one side effect a static page can take, so a menu
+of "actions" is really a menu of links. Entries without an `href` render and highlight but do
+nothing when picked.
+
+A right-click menu is a pointer-only affordance: it is unreachable by keyboard and on touch
+devices, so never make it the only route to something a reader needs.
+{% endCallout %}
+
 ## CSS Selector
 
-The right-click target carries the class `aardvark-contextmenu-target`; target it to restyle
-the surface authors see on the page:
+The target on the page and the floating menu are styled separately — the menu is portalled to
+the end of the document, so a rule nested under the target won't reach it:
 
-```css
-.aardvark-contextmenu-target {
-  background: var(--mantine-color-gray-0);
-}
-```
+| Selector | Targets |
+| --- | --- |
+| `.aardvark-contextmenu-target` | The right-click target box readers see on the page. |
+| `.aardvark-contextmenu-glyph` | The Tabler icon inside a menu item. |
+| `.mantine-contextmenu` | The floating menu itself. |
+| `.mantine-contextmenu-item-button` | One action row. |
+| `.mantine-contextmenu-divider` | A `{"divider": true}` rule between groups. |
 
-The floating menu itself is styled by the upstream `mantine-contextmenu` stylesheet, which
-the component pulls in automatically.
+The menu's stylesheet ships with `mantine-contextmenu` and loads with the page.
 
 ## Injecting Attributes
 

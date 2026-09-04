@@ -27,12 +27,17 @@ There is no `{% raw %}{% blocknote %}{% endraw %}` tag.
 
 ## License
 
-The verdict was confirmed against two independent sources on 2026-06-19:
+The verdict was last confirmed against two independent sources on 2026-08-24, for the version
+that would be bundled today, **0.54.0**:
 
 | Source | Finding |
 | --- | --- |
-| [`registry.npmjs.org/@blocknote/core`](https://registry.npmjs.org/@blocknote/core) | `"license": "MPL-2.0"` (and likewise for `@blocknote/mantine`, `@blocknote/react`) |
-| [`LICENSE.txt`](https://github.com/TypeCellOS/BlockNote/blob/main/LICENSE.txt) in the GitHub repo | *"Source code in this repository is covered by the Mozilla Public License Version 2.0 (MPL-2.0), except for the XL packages."* |
+| [`registry.npmjs.org/@blocknote/core`](https://registry.npmjs.org/@blocknote/core) | `"license": "MPL-2.0"` for every published version (and likewise for `@blocknote/mantine`, `@blocknote/react`) |
+| [`LICENSE.txt`](https://github.com/TypeCellOS/BlockNote/blob/v0.54.0/LICENSE.txt) at the v0.54.0 source tag | *"Source code in this repository is covered by the Mozilla Public License Version 2.0 (MPL-2.0), except for the XL packages."* |
+
+The **framework** gate, which is judged separately, passes: 0.54.0 declares peer ranges
+covering Mantine 9 and React 19, and neither it nor its BlockNote and Tiptap dependencies pull
+in a framework runtime of their own. The license is the only reason it isn't bundled.
 
 A few details that matter for the verdict:
 

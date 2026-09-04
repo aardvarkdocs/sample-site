@@ -39,19 +39,30 @@ corpus the MCP tools serve, and the `baseUrl` makes the advertised endpoint an a
 whether `/mcp` is actually served remains [`vark serve`](/self-hosting/)'s own `--mcp/--no-mcp`
 runtime decision.
 
+This is the card this site publishes:
+
 ```json
 {
-  "serverInfo": { "name": "Aardvark", "version": "0.1.8" },
+  "serverInfo": { "name": "Aardvark", "version": "0.4.1" },
   "protocolVersion": "2025-06-18",
   "endpoint": "https://aardvarkdocs.com/mcp",
   "transport": "streamable-http",
   "capabilities": { "tools": { "listChanged": false } },
-  "tools": [ … ]
+  "tools": [
+    { "name": "search_documentation", "description": "Full-text search across this documentation site." },
+    { "name": "fetch_document", "description": "Fetch the raw Markdown of one documentation page." },
+    { "name": "list_documentation", "description": "List every page on this site with its title, path, description, breadcrumb and headings." },
+    { "name": "get_full_corpus", "description": "Return the entire documentation site as one Markdown document." }
+  ]
 }
 ```
 
-The endpoint is `{baseUrl}/mcp`. Beyond `mcp: true` and `baseUrl`, no configuration is required —
-the card reflects the tools the MCP server actually serves.
+`serverInfo.name` is your `site.name` (falling back to `aardvark-docs`), and `serverInfo.version` is
+the Aardvark version that ran the build — `0.4.1` here — so it moves with every upgrade rather than
+being something you set. The endpoint is `{baseUrl}/mcp`. Beyond `mcp: true` and `baseUrl`, no
+configuration is required — the card reflects the tools the MCP server actually serves. A card you
+ship yourself at `static/.well-known/mcp/server-card.json` wins, and is published with or without
+the gate.
 
 ## OAuth / OIDC discovery
 
@@ -86,7 +97,30 @@ oauth:
 The build writes `/.well-known/oauth-authorization-server` (RFC 8414) and, when `oauth.oidc` is on
 (the default), `/.well-known/openid-configuration`. The discovery check accepts either, so a
 plain-OAuth site can set `oidc: false` to drop the OIDC copy. Both documents include an `agent_auth`
-block describing the agent registration / identity flow.
+block describing the agent registration / identity flow, plus
+`token_endpoint_auth_methods_supported` (`client_secret_basic`, `private_key_jwt`, `none`) and
+`code_challenge_methods_supported` (`S256`); the OIDC document adds `userinfo_endpoint`
+(`oauth.userinfoEndpoint`, example-derived when unset), `subject_types_supported: [public]` and
+`id_token_signing_alg_values_supported: [RS256]`.
+
+A few more keys are read when you set them: `revocationEndpoint` and `userinfoEndpoint` at the top
+level; `resource`, `authorizationServers` and `bearerMethodsSupported` for the Protected Resource
+document below; and `skill`, `identityEndpoint`, `claimEndpoint` and `eventsEndpoint` inside
+`agentAuth`.
+
+{% callout severity="info" title="Good to know" %}
+- **Registration and revocation are each one URL.** The top-level `registrationEndpoint`,
+  `agentAuth.registerUri` and `agentAuth.identityEndpoint` all resolve to a single shared value (the
+  first one set, in that order), and so do `revocationEndpoint` and `agentAuth.revocationUri`. Set
+  whichever you like — every field that names that endpoint stays consistent. A site that needs a
+  distinct Dynamic Client Registration endpoint and agent-identity endpoint should hand-author these
+  documents under `static/.well-known/` instead.
+- **`identityTypesSupported` accepts only `identity_assertion` and `anonymous`.** Any other value is
+  dropped with a build warning, so the block never advertises a method `auth.md` doesn't describe;
+  if nothing recognized remains, the default pair is advertised.
+- A list-valued key set to `[]` behaves like an unset key — the defaults are published, never an
+  empty list.
+{% endCallout %}
 
 ### The `agent_auth` block
 
@@ -134,9 +168,14 @@ resource and how to present a token:
   "resource": "https://aardvarkdocs.com",
   "authorization_servers": ["https://aardvarkdocs.com"],
   "scopes_supported": ["openid", "profile", "email", "offline_access"],
-  "bearer_methods_supported": ["header"]
+  "bearer_methods_supported": ["header"],
+  "resource_documentation": "https://aardvarkdocs.com/auth.md"
 }
 ```
+
+`resource` and `authorization_servers` default to `baseUrl` and the issuer (override them with
+`oauth.resource` / `oauth.authorizationServers`), and `resource_documentation` always points at the
+site's own `auth.md`.
 
 ### auth.md
 
@@ -162,11 +201,17 @@ dnsAid:
         path: /.well-known/agent.json
     - name: mcp
       target: aardvarkdocs.com
+      alpn: h2
+      port: 443
       params: { path: /mcp }
 ```
 
 `alpn` accepts either a single protocol (`alpn: h2`) or a list (`alpn: [h2, h3]`); a list is
-rendered as the comma-joined SVCB value `alpn="h2,h3"`.
+rendered as the comma-joined SVCB value `alpn="h2,h3"`. `type` picks the record type — `SVCB` (the
+default) or `HTTPS` — and `target` defaults to your `baseUrl` host, so both can be left out. `params`
+are rendered in the order you list them, after `alpn` and `port`, so the artifact is stable from
+build to build. With no `dnsAid.services` at all, the build emits three clearly-labelled example
+services — `a2a`, `mcp` and `index` — so the artifacts are never empty.
 
 Every build writes a copy-pasteable zone snippet at `/.well-known/dns-aid/records.zone` and a
 machine-readable mirror at `/.well-known/dns-aid/records.json`:

@@ -12,9 +12,10 @@ taxonomy:
 
 # What's the most I could be billed in a month?
 
-With **cap-and-hold**, the figure is your plan fee plus any fixed add-on-seat charges and
-any overflow already incurred this month. With **pay-as-you-go**, it also includes whatever
-remains under the overflow cap you set. Your dashboard shows this "max possible bill"
-figure directly.
+With **cap-and-hold** (or shutoff), the figure is your plan fee plus any fixed add-on-seat
+charges and any overflow already incurred this month. With **pay-as-you-go**, it also includes
+whatever remains under the overflow cap you set. Your dashboard shows this "max possible bill"
+figure directly. On an annual plan the fee part is the full annual price — the honest worst
+case for your renewal month, not a monthly average.
 (Usage-based build/compute, if you use it, draws your prepaid balance separately and isn't
-part of that number.)
+part of that number; a complimentary plan shows $0.)

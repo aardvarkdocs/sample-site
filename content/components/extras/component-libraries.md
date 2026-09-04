@@ -183,10 +183,23 @@ scope as `data.<file>`. Point a loop at one and the library becomes a UI generat
 {% raw %}
 ```yaml
 # data/products.yaml
+count: 3
 items:
-  - { name: Sticker Pack, price: 8,  icon: sticker-2, color: "#e8590c", blurb: "A dozen die-cut vinyl aardvarks." }
-  - { name: Enamel Mug,   price: 18, icon: mug,       color: "#1971c2", blurb: "12oz, dishwasher-safe." }
-  - { name: Zip Hoodie,   price: 55, icon: shirt,     color: "#7048e8", blurb: "Heavyweight fleece." }
+  - name: Sticker Pack
+    price: 8
+    blurb: A dozen die-cut vinyl aardvarks.
+    icon: sticker-2
+    color: "#e8590c"
+  - name: Enamel Mug
+    price: 18
+    blurb: 12oz, dishwasher-safe, with the aardvark crest.
+    icon: mug
+    color: "#1971c2"
+  - name: Zip Hoodie
+    price: 55
+    blurb: Heavyweight fleece, embroidered logo.
+    icon: shirt
+    color: "#7048e8"
 ```
 {% endraw %}
 
@@ -216,13 +229,13 @@ renders, live:
 
 <div style="margin: 1.5rem 0;">
 {%
-shop_cards = ''
+cards = ''
 for p in data.products.items:
     field = component('StripeProvider', publishableKey='pk_test_TYooMQauvdEDq54NiTphI7jx', deferred=False,
         children=component('stripe', 'CardElement'))
-    shop_cards += component('aardvark', 'card', variant='plain', icon=p.icon, iconColor=p.color,
+    cards += component('aardvark', 'card', variant='plain', icon=p.icon, iconColor=p.color,
         title=p.name, subtitle=p.blurb, badge='$' + str(p.price), cta='Buy now', children=field)
-page.print(component('aardvark', 'cardGrid', cols={'base': 1, 'sm': 2, 'lg': 3}, children=shop_cards))
+page.print(component('aardvark', 'cardGrid', cols={'base': 1, 'sm': 2, 'lg': 3}, children=cards))
 %}
 </div>
 
@@ -235,8 +248,9 @@ library: your content and your data drive a real, interactive UI.
 Each library entry accepts a few extras beyond `package` and `components`:
 
 - **`import`** — how the package exposes its components: `named` (the default — `import { X }`),
-  `default` (a single default export; name it with `defaultExport`), or `namespace`
-  (`import * as Lib`, which pulls the whole package in, so reach for it only when you must).
+  `default` (a single default export; name it with `defaultExport`, or with a one-entry
+  `components` list), or `namespace` (`import * as Lib`, which pulls the whole package in, so
+  reach for it only when you must).
 - **`css`** — a list of stylesheet imports the library needs (e.g. a design system's base CSS). They
   load with the rest of the island styles, on the client.
 - **`ssr: false`** — skip this library during the build-time prerender. Use it for a browser-only
@@ -245,9 +259,15 @@ Each library entry accepts a few extras beyond `package` and `components`:
 If a declared package isn't installed, the build prints a warning and that library's components
 render as a harmless comment rather than failing the whole build — run the matching `npm install`.
 
+Leaving `components` out is the other thing to know about: Aardvark then reads the package's own
+capitalized exports at build time, which needs `node` on your `PATH`. Without it — or if the
+package exports nothing that looks like a component — the build warns, says which of the two it
+was, and asks you to list the names explicitly; until you do, that library's tags render as
+comments as well.
+
 ## CSS Selectors
 
-A library component mounts inside an island wrapper that carries **both** the library key, in `data-aardvark-island`, so you can target one library's component without colliding with a same-named one elsewhere. The component itself renders its own markup (Stripe's Elements, for instance, mount a cross-origin iframe rather than Mantine-classed nodes).
+A library component mounts inside an island wrapper carrying the component name in `data-aardvark-island` **and** the library key in `data-aardvark-lib` — so you can target one library's component without catching a same-named one from somewhere else. The component itself renders its own markup (Stripe's Elements, for instance, mount a cross-origin iframe rather than Mantine-classed nodes).
 
 {% raw %}
 ```css

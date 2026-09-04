@@ -19,7 +19,9 @@ fingerprint, no visitor id, and nothing that survives closing a browser tab.
 
 > **Content Reach is available on the Business and Enterprise plans**, and needs the
 > [AI assistant](/ai-assistant/) configured (it shares that gateway key). It is **off by
-> default** even then — turn it on deliberately.
+> default** even then — turn it on deliberately. The plan is checked by the gateway, not the
+> build: on any other plan the first beacon is refused, the client stops for the rest of that
+> browser tab, and nothing on the page is affected.
 
 ## Turn it on
 
@@ -37,6 +39,14 @@ The full set of options:
 | `requireConsent` | `false` | Wait for an explicit consent signal before recording anything. See [Consent](#consent). |
 | `sampleRate` | `1.0` | Record this fraction of browser tabs (`0.0`–`1.0`). The draw happens once per tab, so a sampled reader's whole journey is kept together. |
 | `targetsOnly` | `false` | Track only the regions you [mark yourself](#mark-a-high-value-region), skipping the automatic heading sections. |
+
+An unknown key under `contentReach` warns at build time, and a `sampleRate` outside `0`–`1`
+(say `50`, meant as a percentage) warns and falls back to `1.0` rather than being clamped.
+
+Measurement happens inside the theme's `.aardvark-content` element (or `#aardvark-main` as a
+fallback). A fully custom theme that renders neither measures nothing — and says so with a
+console warning on every page, since an empty dashboard would otherwise look exactly like a page
+nobody visited.
 
 ## What gets measured
 
@@ -74,9 +84,10 @@ page's opening paragraphs aren't silently attributed to the first heading below 
 By default Content Reach measures **h2 and h3** anchors (the same band the table of
 contents uses). If you enable [`search.sections`](/search/#section-api-symbol-results) with a
 wider or narrower heading band, Reach uses that band too — so the heat strip denominator
-agrees with the anchors search indexes. Pages with more than 40 sections measure only the
-first 40 in document order (matching the per-beacon wire cap); the completion denominator
-is that measured set, so a reader who covers every tracked band can still reach 100%.
+agrees with the anchors search indexes. A page view carries at most **40 bands**: the intro
+plus the first 39 headings and targets in document order (40 targets under `targetsOnly`).
+Anything below that is unmeasured — no reach, no dwell, no actions — and is left out of the
+completion denominator, so a reader who covers every tracked band can still reach 100%.
 
 A section can be **reached with zero dwell**, and that isn't a bug — the two measures
 answer different questions. A long section can fill a reader's screen (so it is reached)
@@ -155,6 +166,11 @@ Readers with **Do Not Track** or **Save-Data** enabled send nothing at all.
 Data is deleted after **90 days** by default. Nothing derived outlives it — there are no
 long-lived summaries that keep a copy after the raw rows expire.
 
+Ingest is bounded per account: **5,000 page views in any rolling 24 hours** by default, each
+carrying its 40 bands at most. Past that, further page views are acknowledged but not stored, so
+a very busy site sees a plateau rather than an error. `sampleRate` is the lever for staying under
+it — a sampled fraction of tabs still gives the dashboard an unbiased picture.
+
 ### Consent
 
 Content Reach uses your site's **existing** consent signal; Aardvark ships no cookie
@@ -217,14 +233,16 @@ Full reference: [Target](/components/extras/target/).
 
 ## Reading the dashboard
 
-The **Content Reach** tab opens on the aggregate: page views, tab sessions, average
-visible time, and average sections reached, followed by a table of pages sorted by
-traffic with a reach-completion bar. Export it as CSV from the header.
+The **Content Reach** tab opens on the aggregate for a window you pick — the last 24 hours,
+7, 30, or 90 days: page views, tab sessions, average visible time, and average sections
+reached, followed by the five action totals and a table of the 50 busiest pages with a
+reach-completion bar. Export it as CSV from the header; when the window has more than 50
+pages with activity, the button and the filename both say the export is the top 50 shown.
 
 Click any page for its **section heat strip** — one band per section in document order,
-shaded by either reach or median dwell, with the action counts beside it. Every band
-prints its own number and carries a screen-reader label, so the strip reads correctly in
-greyscale and with assistive technology.
+shaded by either reach or median dwell (a toggle switches between them), with the action
+counts beside it. Every band prints its own number and carries a screen-reader label, so the
+strip reads correctly in greyscale and with assistive technology.
 
 If you rename or remove a heading, its recorded history stays for the rest of the
 retention window — those numbers really happened. The strip keeps showing them, but they

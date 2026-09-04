@@ -1,9 +1,8 @@
 ---
 title: "Video"
-description: "The built-in video tag — a Mantine-native video player with Picture-in-Picture,
-  a scrubbable timeline, captions, keyboard shortcuts, and fullscreen. A Community Component
-  wrapping @gfazioli/mantine-video, with a native <video> fallback for SSR / no-JS / screen
-  readers."
+description: "The built-in video tag — a video player with Picture-in-Picture, a scrubbable
+  timeline, captions, keyboard shortcuts, and fullscreen. A Community Component wrapping
+  @gfazioli/mantine-video."
 menu: components
 parent: community
 weight: 91
@@ -20,10 +19,9 @@ control. Point it at a file with `src`, set a `poster` thumbnail, and frame it w
 A **Community Component** — wraps [Video](https://gfazioli.github.io/mantine-video/) by
 **gfazioli**, **MIT** licensed, npm `@gfazioli/mantine-video`.
 
-The live player wires up browser-only media APIs (Picture-in-Picture, fullscreen,
-MediaSession), so under server-side rendering, with JavaScript off, or for a screen reader it
-degrades to a plain, fully-functional native `<video controls>` element using the same source
-and poster — nothing is lost.
+> **Good to know.** The player is built in the browser — the page ships an empty frame and the
+> player fills it on load — so a reader with JavaScript turned off sees nothing where the video
+> would be. When a clip has to reach every reader, link the file as well as embedding it.
 
 Use it as `{% raw %}{% video %}{% endraw %}` in Markdown, or call it from Python logic
 (loops, snippets) via `component('aardvark', 'video', …)`.
@@ -60,7 +58,8 @@ component('aardvark', 'video', src='/media/sample.mp4', poster='/landscape.jpg')
 ### Aspect ratio
 
 `aspectRatio` sizes the frame — pass a number such as `1.777` for 16:9 or `1.333` for 4:3.
-The fallback box keeps the same ratio so the layout never jumps when the live player loads.
+The frame holds that ratio from the moment it appears, so the surrounding text doesn't shift
+as the clip's own dimensions become known.
 
 {% video src='/media/sample.mp4' poster='/landscape.jpg' aspectRatio=1.777 %}
 
@@ -153,13 +152,13 @@ Omit any attribute to take its default. Bare flags (e.g. `asBackground`) become 
 | `src` | A video file URL (string) | The video source to play. |
 | `poster` | An image URL (string) | Thumbnail shown before playback. |
 | `aspectRatio` | A positive number (e.g. `1.777`) | Frame aspect ratio (width ÷ height). |
-| `variant` | `overlay` / `minimal` / `floating` / `bordered` | The player layout style. |
-| `radius` | A Mantine radius token or any CSS length | Corner rounding. |
+| `variant` | `overlay` (default) / `minimal` / `floating` / `bordered` | The player layout style. |
+| `radius` | A Mantine radius token or any CSS length (default `md`) | Corner rounding. |
 | `controls` | `true` / `false` (default `true`) | Show or hide the control bar. |
 | `shortcuts` | `true` / `false` (default `true`) | Enable keyboard controls (Space, arrows, M, F, P). |
-| `autoHideControls` | A number of milliseconds (e.g. `3000`; `0` disables) | Inactivity delay before the control bar fades during playback. |
-| `asBackground` | `true` / `false` (default `false`) | Render as a section-background video. |
-| `fallbackSrc` | A video file URL (string) | Played if the primary `src` fails. |
+| `autoHideControls` | A number of milliseconds (default `3000`; `0` disables) | Inactivity delay before the control bar fades during playback. |
+| `asBackground` | `true` / `false` (default `false`) | Render as a section background: the player fills its nearest positioned parent and crops to cover, and `controls`, `shortcuts` and `autoHideControls` switch off unless you set them yourself. Give that parent a size. |
+| `fallbackSrc` | A video file URL (string) | Loaded if `src` fails at runtime (404, decode error). Tried once per page load. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element (see below). |
 
 ## CSS Selector

@@ -56,7 +56,8 @@ for item in data["products"]["items"]:
 
 `print()` writes its argument **verbatim, with no trailing newline** — so a bare expression
 never injects stray whitespace. When you emit Markdown line by line (a table, a list), add
-the `\n` yourself, as above.
+the `\n` yourself, as above. An expression that evaluates to `None` renders nothing, so a
+block that just calls a function with no return value leaves no trace in the page.
 
 Everything in the page's template scope is available inside a block:
 
@@ -145,9 +146,26 @@ file**. For pages, on every build Aardvark:
 So your content tree is always reproducible from `generators/` plus its inputs (stale
 generated pages can't linger), and a re-run with unchanged inputs writes nothing — which is
 why `vark dev` can re-run generators on every rebuild without looping on its own output.
+Reconciliation only happens once **every** script has succeeded: a script that raises fails
+the build with a message naming the script, and `content/` is left exactly as it was.
 Files whose name starts with `_` (e.g. `_helpers.py`) are **not** run — they're importable
-helper modules your scripts can `import`. Skip generators for a build with
-`vark build --no-generators` (or `vark dev --no-generators`).
+helper modules your scripts can `import` (the `generators/` directory is put first on the
+import path for the run, so `import _helpers` always finds *your* helper, recompiled from
+source every build).
+
+Generators run by default in `vark build`, `vark dev`, and `vark link-check` — link-check
+included, so a generated page with a dead link is caught too. Each takes
+`--no-generators` to skip them and use whatever generated pages are already in `content/`:
+the offline dev loop when a generator's network call is slow, or a fully read-only
+link-check that writes nothing (handy in CI when the generated pages are committed).
+
+Two small things that bite once:
+
+- A generator runs as a script, so `__name__ == "__main__"` is true — a file that guards its
+  work behind that idiom still runs (rather than silently emitting nothing and having its
+  previous pages reconciled away).
+- Calling `sys.exit()` from a generator fails the build; a generation script has to run to
+  completion. Raise an exception (or just let one propagate) to signal a real failure.
 
 ### Writing pages
 
@@ -171,13 +189,15 @@ What's in scope:
 
 | Name | What it is |
 | --- | --- |
-| `generate(path, frontmatter, content)` | Write one `.md` page under `content/` — the one guarded writer. |
+| `generate(path, frontmatter, content)` | Write one `.md` page under `content/` — the guarded writer for pages; returns the file's absolute path. |
 | `data` | Your parsed `data/` files (the same object templates see). |
 | `site`, `config` | The site config and build config; `config.root` / `config.content_dir` give you project paths (e.g. for a cache dir). |
 
-`generate` is deliberately strict — it's the one supported, guarded way to write:
+`generate` is deliberately strict — it's the one supported, guarded way to write a page:
 
-- the `path` must be **relative** and end in **`.md`**; a path that escapes `content/` is rejected;
+- the `path` must be **relative** and end in **`.md`**; a path with a `..` segment, or one
+  that escapes `content/` (through a symlink, say), is rejected;
+- `frontmatter` must be a mapping (or omitted) and `content` a string;
 - it **won't overwrite a hand-authored page** — generators only create pages;
 - two scripts writing the **same path** in one build is an error, not a silent last-writer-wins.
 
@@ -240,8 +260,17 @@ The rules are few and strict:
   exactly what's served.
 - **`path` is a clean relative path** under the site root — an absolute path or one
   containing `..` is rejected. `emit("data/x.json", …)` is served at `/data/x.json`.
+- **The name has to be URL-safe as written.** A path containing a space, `%`, `?`, `#`,
+  `:`, a backslash, or a NUL byte is rejected, because the file wouldn't be reachable at the
+  URL `emit()` returns (`/data?v=1.csv` is the path `/data`; `%2f` decodes differently on
+  different hosts). Use `annual-report.pdf`, not `annual report.pdf`.
 - **It won't clobber anything else the build writes** — a page, a `static/` file, or a
-  built-in artifact (`sitemap.xml`, …). Emit to a path nothing else owns.
+  built-in artifact. Emit to a path nothing else owns, and never under a root Aardvark
+  reserves for its own output: `_aardvark/`, `.well-known/`, `_assistant/`, `sitemap.xml`,
+  `robots.txt`, `llms.txt`, `llms-full.txt`, `search-index.json` (and `.gz`),
+  `search-index-agent.json`, `metadata.json`, `page-cards.json`, `_headers`, `_redirects`,
+  `404.html`, `index.md`, `auth.md`, or the whole-site PDF's `<slug>.pdf` when `pdf` is on.
+  Two scripts emitting the same path is an error, like `generate()`.
 - **An emitted file is not a page.** It's never discovered, rendered, or listed in the nav,
   search, or sitemap — it's just a file at a URL. (Link to it with a normal `[download](…)`;
   link-check skips file links, so a `.csv`/`.json` href is never flagged.)
@@ -253,8 +282,10 @@ The rules are few and strict:
 The key difference from `generate()`: a generated **page** is *source* — it's written into
 `content/`, then discovered and rendered like hand-authored Markdown, and reconciled there
 (stale pages are deleted). An emitted **file** is *output* — it goes straight into the build
-directory. Because the whole output tree is rebuilt every build, there's no stale-file
-bookkeeping: a file you stop emitting simply stops appearing.
+directory, written at the very end of the build after every page and artifact, which is
+both why it can refuse to clobber one and why it's never fingerprinted or rewritten: the
+bytes are served exactly as emitted. Because the whole output tree is rebuilt every build,
+there's no stale-file bookkeeping: a file you stop emitting simply stops appearing.
 
 {% callout severity='info' title='No new formats to learn' %}
 This is why Aardvark doesn't need Hugo-style "output formats" or per-page alternate
@@ -269,7 +300,10 @@ This very site's **[AI model rates](/pricing/models/)** page is built by one gen
 [`generators/pricing.py`](https://github.com/aardvarkdocs/sample-site/blob/main/generators/pricing.py)
 calls **OpenRouter's API** at build time and writes `pricing/models.md` — a real-world generator that
 fetches live data (with a cached fallback under `config.root / ".aardvark-cache"`) rather than
-reading a local file.
+reading a local file. It never fails the build: a fetch that goes wrong falls back to the last
+cached snapshot and says so, and with no snapshot at all the page ships a "prices unavailable"
+notice instead of the table. The generated page is deliberately not committed — it's rebuilt on
+every build, so it lives in `.gitignore` like any other generated file.
 
 The result is an ordinary page: it appears in the nav, in search, in the sitemap, and is
 **link-checked** like everything else — a generated page with a dead link fails the build,

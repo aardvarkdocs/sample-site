@@ -18,6 +18,13 @@ plain field is. It ships instead as a **project snippet**
 tag automatically. It renders a placeholder during the build and hydrates into the interactive
 editor in the browser.
 
+Because it is a snippet rather than a shipped tag, it carries its own npm dependencies:
+`@mantine/tiptap`, `@tiptap/react`, `@tiptap/starter-kit`, and `@tiptap/pm` (Tiptap's ProseMirror
+peer), plus `@tiptap/extension-link` for the link control's peer requirement. They are already in
+this site's `package.json`; copy the snippet into another project and you install them there too.
+The toolbar is the snippet's own list of controls, so a new button — headings, alignment, code —
+is a line in that file.
+
 ## A live editor
 
 `content` seeds the initial document. Pass an HTML string; Tiptap parses it into the document

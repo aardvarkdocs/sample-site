@@ -194,14 +194,14 @@ Every attribute is optional; omit one to take its Mantine default. The body is i
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `data` | Comma-separated list, or `value::label` pairs (double colon) | The options. A bare item is both value and label; `value::label` carries a separate stored value. A single `:` is left intact (so URLs and times pass through). |
-| `dataJson` | JSON array string | A full options array — plain strings, `{value, label}` objects, `{group, items}` groups, and `{value, label, disabled}` flags. Wins over `data` when both are set. |
+| `dataJson` | JSON array string | A full options array — plain strings, `{value, label}` objects, `{group, items}` groups, and `{value, label, disabled}` flags. Wins over `data` when both are set. A value that is not valid JSON, or is JSON but not an array, warns at build time and leaves the field with no options. |
 | `label` | String | The field label. |
 | `placeholder` | String | Empty-state text inside the input. |
 | `description` | String | Helper text below the label. |
 | `error` | String | Validation message; also styles the field red. |
 | `defaultValue` | A value from `data` | The option selected on load. |
-| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Input size. |
-| `radius` | `xs`, `sm`, `md`, `lg`, `xl` | Corner radius. |
+| `size` | `xs`, `sm`, `md`, `lg`, `xl` (default `sm`) | Input size. |
+| `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | Corner radius. |
 | `variant` | `default`, `filled`, `unstyled` | Input style. |
 | `searchable` | `true`, `false` (default `false`) | Let the reader filter options by typing. |
 | `clearable` | `true`, `false` (default `false`) | Show an × to clear the selection. |
@@ -210,10 +210,11 @@ Every attribute is optional; omit one to take its Mantine default. The body is i
 | `withAsterisk` | `true`, `false` (default `false`) | Show the required asterisk on the label. |
 | `allowDeselect` | `true`, `false` (default `true`) | Click the selected option again to clear it. |
 | `withCheckIcon` | `true`, `false` (default `true`) | Show the check mark on the selected option. |
-| `checkIconPosition` | `left`, `right` | Which side the check mark sits on. |
+| `checkIconPosition` | `left` (default), `right` | Which side the check mark sits on. |
 | `withScrollArea` | `true`, `false` (default `true`) | Wrap a long dropdown in a scroll area. |
 | `nothingFoundMessage` | String | Text shown when a search matches nothing. |
 | `maxDropdownHeight` | Integer (px) | Cap the dropdown height. |
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="Select"]` — or through the Mantine Styles API classes (`.mantine-Select-root` and its inner parts):

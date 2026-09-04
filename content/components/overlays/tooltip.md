@@ -54,20 +54,20 @@ pointer. Each tooltip below is pinned open so you can see all three at once:
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% tooltip label='Above, with an arrow' position='top' withArrow=true %}Top + arrow{% endTooltip %}
-{% tooltip label='On the right' position='right' color='grape' withArrow=true %}Right + color{% endTooltip %}
-{% tooltip label='Below the target' position='bottom' color='red' %}Bottom{% endTooltip %}
+{% tooltip label='Above, with an arrow' position='top' withArrow=true opened=true %}Top + arrow{% endTooltip %} &nbsp;&nbsp;&nbsp;
+{% tooltip label='On the right' position='right' color='grape' withArrow=true opened=true %}Right + color{% endTooltip %} &nbsp;&nbsp;&nbsp;
+{% tooltip label='Below the target' position='bottom' color='red' opened=true %}Bottom{% endTooltip %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'tooltip', label='Above, with an arrow',
-          position='top', withArrow=True, children='Top + arrow')
+          position='top', withArrow=True, opened=True, children='Top + arrow')
 component('aardvark', 'tooltip', label='On the right',
-          position='right', color='grape', withArrow=True, children='Right + color')
+          position='right', color='grape', withArrow=True, opened=True, children='Right + color')
 component('aardvark', 'tooltip', label='Below the target',
-          position='bottom', color='red', children='Bottom')
+          position='bottom', color='red', opened=True, children='Bottom')
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -85,7 +85,7 @@ For longer labels, turn on `multiline` and give it a `width` to wrap at. `radius
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% tooltip label='A longer tooltip that wraps onto several lines instead of stretching off the edge of the screen.' multiline=true width=220 withArrow=true radius='md' %}Long label{% endTooltip %}
+{% tooltip label='A longer tooltip that wraps onto several lines instead of stretching off the edge of the screen.' multiline=true width=220 withArrow=true radius='md' opened=true %}Long label{% endTooltip %}
 ```
 {% endraw %}
 {% endAccordionSection %}
@@ -94,7 +94,7 @@ For longer labels, turn on `multiline` and give it a `width` to wrap at. `radius
 component('aardvark', 'tooltip',
           label='A longer tooltip that wraps onto several lines instead of '
                 'stretching off the edge of the screen.',
-          multiline=True, width=220, withArrow=True, radius='md',
+          multiline=True, width=220, withArrow=True, radius='md', opened=True,
           children='Long label')
 ```
 {% endAccordionSection %}
@@ -138,14 +138,14 @@ The target body can be any inline content — including another tag. Here a tool
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% tooltip label='Deployed 4 minutes ago' position='top' withArrow=true %}{% badge color='green' variant='light' %}Live{% endBadge %}{% endTooltip %}
+{% tooltip label='Deployed 4 minutes ago' position='top' withArrow=true opened=true %}{% badge color='green' variant='light' %}Live{% endBadge %}{% endTooltip %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'tooltip', label='Deployed 4 minutes ago',
-          position='top', withArrow=True,
+          position='top', withArrow=True, opened=True,
           children=component('aardvark', 'badge', color='green',
                              variant='light', children='Live'))
 ```
@@ -173,6 +173,10 @@ Python, `children`).
 | `transition` | `fade`, `pop`, `scale`, `skew-up`, … | Show/hide transition. |
 | `transitionDuration` | integer (milliseconds) | Transition length. |
 | `opened` | bare flag → `true` | Force the tooltip open — handy for documentation and screenshots. |
+
+The target is wrapped in a focusable inline `<span>`, so the tooltip opens on keyboard focus
+(Tab) as well as hover, and the target carries `aria-describedby` pointing at the label — so
+keyboard and screen-reader users get the same information a pointer user does.
 
 ## CSS Selectors
 

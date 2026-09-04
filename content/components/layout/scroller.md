@@ -6,7 +6,8 @@ description: "The built-in scroller tag — a low-level native-scroll container 
 # Scroller
 
 `scroller` is a **minimal, low-level scroll container** — a plain overflow box with the
-**browser's native scrollbars**, no styled overlay bars and no JavaScript. Give it a fixed
+**browser's native scrollbars** and no styled overlay bars. The scrolling itself is the browser's,
+so nothing has to run for it to work. Give it a fixed
 height with `h` (and/or width with `w`) and its content scrolls; `axis` chooses which way. It's
 built on [Box](/components/layout/box/) (it just adds an `overflow` style), so it inherits the same
 spacing, sizing, and color props. For nicer, styled, auto-hiding overlay scrollbars that look
@@ -41,7 +42,12 @@ appears and you can scroll.
 ```aardvark
 {% scroller h='140' p='sm' bg='var(--mantine-color-gray-light)' %}
 A native-scrolling region — the browser's own scrollbar, no styling applied.
-Add enough text and it scrolls vertically inside the fixed 140px height.
+
+This is deliberately plain: it's just a `Box` with `overflow-y: auto`. If you want a styled,
+auto-hiding scrollbar, switch to the `scrollarea` tag.
+
+Keep reading — there's more content here than fits in 140 pixels, so the native scrollbar
+appears and you can scroll.
 {% endScroller %}
 ```
 {% endraw %}
@@ -73,15 +79,17 @@ wrap. `axis='both'` enables scrolling on both axes.
 {% raw %}
 ```aardvark
 {% scroller axis='x' w='100%' p='sm' bg='var(--mantine-color-gray-light)' %}
-<div style="display:flex; gap:1rem; white-space:nowrap;"><span>one</span>…<span>ten</span></div>
+<div style="display:flex; gap:1.5rem; white-space:nowrap;"><span>one</span>…<span>twelve</span></div>
 {% endScroller %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-row = '<div style="display:flex; gap:1rem; white-space:nowrap;">' + \
-      ''.join(f'<span>{n}</span>' for n in ['one', 'two', 'three', 'four', 'five']) + \
+row = '<div style="display:flex; gap:1.5rem; white-space:nowrap;">' + \
+      ''.join(f'<span>{n}</span>' for n in
+              ['one', 'two', 'three', 'four', 'five', 'six',
+               'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve']) + \
       '</div>'
 component('aardvark', 'scroller', axis='x', w='100%', p='sm', children=row)
 ```
@@ -142,15 +150,33 @@ Omit any attribute to take its default.
 | `p` / `pt` / `pb` / `pl` / `pr` / `px` / `py` | A Mantine size token or CSS length | Padding (all / top / bottom / left / right / horizontal / vertical). |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element. |
 
+### Good to know
+
+- Sizes given as bare numbers are read as pixels (`h='140'` is 140px); anything carrying a unit or
+  a percentage (`20rem`, `100%`) is used as written. Without an `h` the box grows to its content
+  and never scrolls.
+- `axis` fixes the other direction rather than leaving it alone: `axis='y'` also sets
+  `overflow-x: hidden`, so a wide child is clipped instead of spilling. Use `axis='both'` when
+  content can overflow either way.
+- It has no scroll buttons and no drag-to-scroll. For a row a reader can page through with chevron
+  controls, use [Scroll Buttons](/components/layout/scrollbuttons/).
 
 ## CSS Selectors
 
-Each `scroller` carries `data-aardvark-island="Box"` on its wrapper; it renders a single element with no Mantine Styles API parts, so target the island wrapper.
+A `scroller` renders a single element with no Mantine Styles API parts of its own, and its island
+wrapper is the shared `data-aardvark-island="Box"` — the same attribute every
+[Box](/components/layout/box/) on the page carries, so that selector is not specific to scrollers.
+To style one, give it a hook of its own with `attr={…}` and select that.
 
 {% raw %}
 ```css
+/* Matches every box-based island on the page, scrollers included. */
 [data-aardvark-island="Box"] {
-  /* style every scroller on the page */
+}
+
+/* Set with attr={'data-scroll-panel': 'true'} on the tag — this one scroller. */
+[data-scroll-panel] {
+  border: 1px solid var(--mantine-color-default-border);
 }
 ```
 {% endraw %}

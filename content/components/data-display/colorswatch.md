@@ -1,13 +1,14 @@
 ---
 title: "ColorSwatch"
-description: "The built-in colorswatch tag — a square swatch that displays a single color. Usage, options, and live examples (size, radius, shadow, content)."
+description: "The built-in colorswatch tag — a swatch that displays a single color. Usage, options, and live examples (size, radius, shadow, content)."
 ---
 
 # ColorSwatch
 
-A square swatch that displays one color — handy in palettes, legends, and design docs. The
-`color` attribute takes any CSS color value: a hex, an `rgb()`/`rgba()`, or a named color. An
-optional block body renders **inside** the swatch.
+A swatch that displays one color — handy in palettes, legends, and design docs. The `color`
+attribute takes any CSS color value: a hex, an `rgb()`/`rgba()`, or a named color. Swatches are
+round out of the box; `radius` squares them off. An optional block body renders **inside** the
+swatch.
 
 Use it as `{% raw %}{% colorswatch %}{% endraw %}` in Markdown, or call it from Python logic
 (loops, snippets) via `component('aardvark', 'colorswatch', …)`.
@@ -47,8 +48,8 @@ component('aardvark', 'colorswatch', color='#fab005')
 
 ### Size, radius, and shadow
 
-`size` sets the width and height (any CSS value; numbers are rem). `radius` squares off the
-corners. `withShadow` is on by default — pass `withShadow=false` to drop the inner shadow.
+`size` sets the width and height (any CSS value). `radius` squares off the corners of the
+default disc. `withShadow` is on by default — pass `withShadow=false` to drop the inner shadow.
 
 {% colorswatch color='#7048e8' size='1rem' %} {% colorswatch color='#7048e8' size='2.5rem' %} {% colorswatch color='#7048e8' radius='sm' %} {% colorswatch color='#7048e8' withShadow=false %}
 
@@ -145,10 +146,17 @@ Omit any attribute to take its default.
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `color` | any CSS color value — `#fff`, `rgba(...)`, a named color (**required**) | The color the swatch displays. |
-| `size` | any CSS value (numbers are rem) | The swatch's width and height. |
-| `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | Corner rounding. |
+| `size` | any CSS value (default `28px`) | The swatch's width and height. |
+| `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | Corner rounding. A swatch is a full circle unless you set this. |
 | `withShadow` | bool flag (default `true`) | Inner box-shadow. Set `withShadow=false` to remove it. |
 | body | Markdown / components | Content rendered inside the swatch (e.g. a check icon). |
+
+> **Good to know.** A translucent `color` — `rgba(…)`, an `#RRGGBBAA` hex — is drawn over a
+> checkerboard so the transparency is visible rather than blending into the page, as the second
+> swatch above shows. The swatch is a plain block with no label of its own, so pair it with
+> text — or give it an `aria-label` through `attr={…}` — when the color itself carries the
+> meaning.
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="ColorSwatch"]` — or through the Mantine Styles API classes (`.mantine-ColorSwatch-root` and its inner parts):
@@ -162,6 +170,8 @@ Target the rendered element through its island marker — `[data-aardvark-island
 .mantine-ColorSwatch-root { }
 .mantine-ColorSwatch-colorOverlay { }
 .mantine-ColorSwatch-shadowOverlay { }
+.mantine-ColorSwatch-alphaOverlay { }    /* the checkerboard behind a translucent color */
+.mantine-ColorSwatch-childrenOverlay { } /* the block body, rendered inside the swatch */
 ```
 {% endraw %}
 

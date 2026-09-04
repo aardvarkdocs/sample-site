@@ -128,8 +128,8 @@ component('aardvark', 'text', size='sm', c='dimmed', children='Tests passing')
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `sections` | A JSON array of `{value, color}` objects | **Required.** One arc per object. Invalid JSON degrades to a build-time HTML comment. |
-| `size` | A number of px | Width and height of the ring. Defaults to Mantine's 120. |
-| `thickness` | A number of px | Arc thickness. Defaults to Mantine's ~12. |
+| `size` | A number of px | Width and height of the ring. Defaults to `120`. |
+| `thickness` | A number of px | Arc thickness. Defaults to `12`, and is clamped to at most a quarter of `size` — raise `size` alongside it for a chunkier ring. |
 | `roundCaps` | bool (default `false`) | Round the ends of each arc. |
 | `label` | Any string | Text shown in the center of the ring. |
 

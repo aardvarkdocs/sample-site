@@ -129,7 +129,7 @@ Omit any attribute to take its default. Bare flags (e.g. `withinPortal`) become 
 | `draggable` | `none`, `window`, `header`, `both` (default `both`) | Where the window can be grabbed to move. |
 | `resizable` | `none`, `vertical`, `horizontal`, `both` (default `both`) | Which directions the window can be resized. |
 | `color` | a Mantine color | Accent color for the chrome. |
-| `radius` | `xs`–`xl` or a number | Corner radius. |
+| `radius` | `xs`–`xl` or a number (default `lg`) | Corner radius. |
 | `shadow` | `xs`–`xl` (`md` default) | Drop shadow. |
 | `width` | integer px | Initial width (seeds the package's `defaultWidth`). |
 | `height` | integer px | Initial height (seeds the package's `defaultHeight`). |
@@ -150,18 +150,28 @@ The window renders inside an island wrapper you can target in custom CSS:
 }
 ```
 
-The package also exposes CSS variables on the window root — `--window-background`,
-`--window-radius`, and `--window-shadow` — which you can set through the `attr` style passthrough
-below.
+The window's own look rides three CSS variables — `--window-background`, `--window-radius`, and
+`--window-shadow`. It writes them onto the root element as it renders, so reach for the `color`,
+`radius` and `shadow` attributes first; a rule from your own stylesheet only wins over an
+inline value with `!important`:
+
+```css
+[data-testid='demo-window'] {
+  --window-background: var(--mantine-color-blue-light) !important;
+}
+```
+
+Give the instance that `data-*` hook with `attr={…}` (below).
 
 ## Injecting Attributes
 
-Pass `attr={…}` to forward raw HTML attributes (data attributes, ARIA, inline `style`) straight
-onto the rendered element — handy for hooks your own CSS or scripts key off, or for setting the
-package's CSS variables.
+Pass `attr={…}` to forward raw HTML attributes (data attributes, ARIA) straight onto the
+rendered element — handy for hooks your own CSS or scripts key off. Keep `class`, `className`
+and `style` out of it: React manages those on this element, so the runtime warns and your value
+can be overwritten. Reach for a `data-*` hook and a stylesheet rule instead.
 
-{% window title='Custom background' attr={'data-testid': 'demo-window', 'style': '--window-background: var(--mantine-color-blue-light)'} %}
-A window whose background is set through the CSS-variable passthrough.
+{% window title='Custom background' attr={'data-testid': 'demo-window', 'aria-label': 'Demo window'} %}
+A window carrying a data hook your stylesheet can target.
 {% endWindow %}
 
 <br>
@@ -170,8 +180,8 @@ A window whose background is set through the CSS-variable passthrough.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% window title='Custom background' attr={'data-testid': 'demo-window', 'style': '--window-background: var(--mantine-color-blue-light)'} %}
-A window whose background is set through the CSS-variable passthrough.
+{% window title='Custom background' attr={'data-testid': 'demo-window', 'aria-label': 'Demo window'} %}
+A window carrying a data hook your stylesheet can target.
 {% endWindow %}
 ```
 {% endraw %}
@@ -179,8 +189,8 @@ A window whose background is set through the CSS-variable passthrough.
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'window', title='Custom background',
-          attr={'data-testid': 'demo-window', 'style': '--window-background: var(--mantine-color-blue-light)'},
-          children='A window whose background is set through the CSS-variable passthrough.')
+          attr={'data-testid': 'demo-window', 'aria-label': 'Demo window'},
+          children='A window carrying a data hook your stylesheet can target.')
 ```
 {% endAccordionSection %}
 {% endAccordion %}

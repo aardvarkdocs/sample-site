@@ -33,8 +33,18 @@ It serves the build exactly as a CDN host would — honoring the `_headers` and
 types, the `.md`-as-`text/plain` rule, redirects, and the `ai-config.json` `no-store`
 rule all match. That's the point of serving from the same tool that built the site:
 there's no second web-server config to drift from what the build produced. It also serves
-the [Web Bot Auth](/web-bot-auth/) key directory at its extension-less well-known path —
-which a generic static resolver would mistake for an HTML page — when you've enabled it.
+the extension-less well-known documents — the [OAuth/OIDC discovery](/agent-discovery/) trio
+on every site, and the [Web Bot Auth](/web-bot-auth/) key directory when you've enabled it —
+which a generic static resolver would mistake for HTML pages.
+
+Other flags: `--host` (default `0.0.0.0`), `--workers N` (uvicorn worker processes, default 1),
+`--mcp-rate-limit N` (per-IP requests per minute on `/mcp`, default 60), `--trusted-proxy CIDR`
+(repeatable; see the hardening notes below) and `--root DIR` for a project directory other than
+the current one. A `GET /healthz` is the load-balancer / container health check: `200` while the
+built site is in place, `503` when it isn't (so a wiped or half-swapped `build/` takes the replica
+out of rotation). Its JSON body reports the Aardvark `version`, whether the site is `ready`, and —
+with MCP on — whether the corpus the MCP tools read was built (`mcp_corpus`), which is reported but
+deliberately never fails the check.
 
 The serve stack (uvicorn/starlette/MCP) ships with every Aardvark install — `pip install
 aardvark`, the standalone binary, and the Docker image below — so there's nothing extra to
@@ -106,10 +116,10 @@ that wraps your docs as four read-only tools:
 
 | Tool | What it returns |
 | --- | --- |
-| `search_documentation` | Ranked pages for a query (same scoring as the on-page search box) |
+| `search_documentation` | Ranked pages for a query (same scoring and query syntax as the on-page search box); `limit` defaults to 5, max 25 |
 | `fetch_document` | One page's raw Markdown |
 | `list_documentation` | The navigation index — every page's title, path, headings, glossary |
-| `get_full_corpus` | The whole site as one Markdown document (size-guarded) |
+| `get_full_corpus` | The whole site as one Markdown document (size-guarded: refused past `max_bytes`, default 1 MB) |
 
 These wrap the artifacts the build already emits (`search-index.json`, `metadata.json`,
 the per-page `.md` files, `llms-full.txt`). On a site with the on-page search box or the
@@ -179,9 +189,10 @@ mcp:
 ```
 
 Under a strict `script-src 'nonce-…'` CSP, the small inline config script — emitted **only** when you
-override a search default (`search.compress: false` or a custom `search.ranking`) — is blocked; the
-client then falls back to its built-in defaults (gzipped index, default ranking), so the tools still
-work but a custom ranking wouldn't reach them. A default-search site emits no inline script at all.
+override a search default (`search.compress: false`, a custom `search.ranking`, `search.synonyms`,
+or a `search.typoTolerance` override) — is blocked; the client then falls back to its built-in
+defaults (gzipped index, default ranking, no synonyms, typo tolerance on), so the tools still work
+but a custom ranking wouldn't reach them. A default-search site emits no inline script at all.
 Use `mcp.webmcp: false` to drop the browser client entirely.
 
 Raw event attributes passed through component `attr`, such as
@@ -197,12 +208,21 @@ Read these before exposing the server to the open internet.
 - **Set `--trusted-proxy` behind a CDN.** The per-IP rate limit on `/mcp` keys on the
   client IP. Behind a CDN the direct peer is the CDN, so pass its CIDR(s) with
   `--trusted-proxy` (repeatable) — then the limiter reads the real client from
-  `CF-Connecting-IP` / `X-Forwarded-For`. Without it, forwarded headers are ignored (they're
-  spoofable from an untrusted peer) and **every client shares one bucket**. `vark serve`
-  prints a warning when no trusted proxy is configured.
+  `CF-Connecting-IP` / `X-Forwarded-For`. By default only a loopback proxy is trusted:
+  forwarded headers from any other peer are ignored (they're spoofable) and **every client
+  shares one bucket**. `vark serve` prints a warning when no trusted proxy is configured;
+  `--trusted-proxy none` trusts nothing at all, not even loopback, and silences it.
 - **The in-process limiter is a backstop, not a DDoS shield.** It caps a single abusive
-  client and a runaway agent loop on one replica; it does not coordinate across replicas.
-  Real volumetric defense is the CDN in front.
+  client and a runaway agent loop on one replica (60 requests per minute per IP by default,
+  `--mcp-rate-limit`, and a 256 KiB cap on any `/mcp` request body); it does not coordinate
+  across replicas — or across `--workers`: each worker process keeps its own counters, so
+  with `--workers 4` the effective per-IP cap is four times the flag, and `vark serve` says
+  so at startup. Real volumetric defense is the CDN in front.
+- **Bind a public interface, or put a Host-checking proxy in front.** The MCP server is
+  tuned for a CDN-fronted host and does no DNS-rebinding protection of its own, so `vark
+  serve --host 127.0.0.1` (or any private address) on an internal network warns: a
+  malicious web page could rebind DNS to reach it. The default `0.0.0.0` bind behind a CDN
+  is the intended deployment.
 - **TLS is the CDN/LB's job.** `vark serve` speaks plain HTTP; terminate TLS at the edge.
 - **Private docs: gate the whole container.** `/mcp` is open by design — it only exposes
   the same `.md` and `metadata.json` files already fetchable from the static site, so

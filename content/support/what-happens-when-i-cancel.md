@@ -14,5 +14,8 @@ taxonomy:
 
 Your plan stays active until the end of the period you've already paid for, then the account
 returns to Free pay-as-you-go. You can **resume anytime before then** and nothing changes.
-Your prepaid balance is untouched. (An operator-provisioned Enterprise/comped plan ends
-immediately instead, with no scheduled end date.)
+Your prepaid balance is untouched. At the switch, any unspent included allowance ends, AI
+returns to the pay-as-you-go rate, and new invites are limited to Free's single seat — existing
+members keep their access. A hosted site keeps serving, but new deploys need a paid plan. (An
+operator-provisioned Enterprise/comped plan ends immediately instead, with no scheduled end
+date.)

@@ -22,10 +22,15 @@ literal separator inserted for you.
 | --- | --- |
 | `9` | A digit (`0`–`9`). |
 | `a` | A letter (`A`–`Z`, `a`–`z`). |
-| `A` | An uppercase letter (`A`–`Z`). |
+| `A` | An uppercase letter (`A`–`Z`) — lowercase is rejected, not converted. |
 | `*` | A letter or a digit. |
 | `#` | A digit or a sign (`0`–`9`, `+`, `-`). |
+| `?` | Not a slot: everything after it becomes optional, so a shorter entry still counts as complete. |
+| `\` | Escapes the next character so it is a literal — write `\9` to put a real `9` in the pattern. |
 | anything else | A literal separator, inserted automatically. |
+
+So `mask='99/99?/9999'` requires the day and month but lets the reader stop before the year,
+and `mask='\9 999'` is a literal `9`, a space, then three digits.
 
 ## Basic field
 
@@ -238,13 +243,23 @@ component('aardvark', 'card', title='Contact', children=name + phone)
 {% endAccordionSection %}
 {% endAccordion %}
 
+{% callout severity='info' title='What the reader types, and what the field is worth' %}
+A character that does not fit the slot it lands on is dropped rather than inserted, so typing
+letters into a `9` pattern simply does nothing — and an `A` slot ignores lowercase instead of
+upper-casing it. While the field has focus the slots still to be filled show as `_`; on blur
+those hints disappear, and a field the reader touched but left empty clears itself completely.
+The value the field carries — what a form submits, and what `this.value` returns in an
+`attr={'onchange': …}` handler — is the **masked** text with its separators, such as
+`(555) 010-0199`, not the bare digits.
+{% endCallout %}
+
 ## Attributes
 
 Omit any attribute to take its Mantine default.
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `mask` | string of tokens (`9`, `a`, `A`, `*`, `#`) plus literal separators | The entry pattern (see the tokens table above). |
+| `mask` | string of tokens (`9`, `a`, `A`, `*`, `#`, `?`, `\`) plus literal separators | The entry pattern (see the tokens table above). |
 | `label` | string | Field label above the input. |
 | `description` | string | Helper text below the label. |
 | `placeholder` | string | Placeholder shown when the field is empty. |

@@ -6,7 +6,7 @@ description: "The built-in changelog tag — a Mantine timeline of changes read 
 # Changelog
 
 A **built-in** tag that turns a YAML data file of changes into a Mantine
-[Timeline](/components/navigation/steps/) — newest first, each entry with a date, an optional release
+[Timeline](/components/data-display/timeline/) — newest first, each entry with a date, an optional release
 **version** badge, and a **Markdown** description of any length. A cloud of tag badges lets
 readers **filter** the timeline; in a wide layout the cloud sits in a sticky right-hand
 column, otherwise above the entries. Each changelog also publishes an **RSS feed** (linked
@@ -116,6 +116,15 @@ by its [taxonomy listing](/components/extras/taxonomy/).)
 The **RSS icon** above the timeline links to it, and the page advertises the feed in its
 `<head>` so feed readers discover it automatically. No configuration needed.
 
+{% callout title="Good to know" %}
+A **second** changelog on the same page gets `feed-2.xml`, a third `feed-3.xml`, and so on — the
+icon above each timeline links to its own feed. A changelog that renders **no** entries (a `tags=`
+filter that matches nothing) publishes no feed and takes no number.
+
+On a [password-protected page](/protected-pages/) no feed is written at all, and the RSS icon is
+suppressed with it — a public `feed.xml` would otherwise carry the very entry text the page gates.
+{% endCallout %}
+
 ## Options
 
 | Attribute | Effect |
@@ -127,6 +136,8 @@ The **RSS icon** above the timeline links to it, and the page advertises the fee
 | `toc=false` | Don't add the changes to the page's "On this page" list (added by default in a non-wide layout; wide layouts hide that list). |
 | `limitDays=90` | Show only changes from the last *N* days, counted from the build date. |
 | `limitEntries=20` | Show at most *N* entries (after the newest-first sort and any combining). |
+| `attr={…}` | Raw HTML attributes forwarded onto the rendered changelog root (see below). |
+| `filterLabel` / `clearLabel` / `emptyText` / `rssLabel` | Override the cloud heading, its **Clear** button, the no-matches message, and the RSS link's label. Each otherwise uses the page language's translation. |
 
 For the full **wide** layout — the timeline beside a sticky tag cloud — set a wide mode
 (`mode: wide` or `full`) and add `wide`, exactly as the [Changelog](/changelog/) tab does
@@ -140,15 +151,21 @@ with its taxonomy-driven equivalent:
 
 ## CSS Selectors
 
-The feed mounts inside an island wrapper carrying `data-aardvark-island="Changelog"` and renders its own class names — target the feed, each entry, its meta line, and a change row.
+The feed mounts inside an island wrapper carrying `data-aardvark-island="Changelog"`, and the
+widget's own root carries a `data-aardvark-changelog` attribute — target either, then the parts
+below.
 
 {% raw %}
 ```css
 [data-aardvark-island="Changelog"]  /* the island wrapper */
-.aardvark-changelog                 /* the whole widget */
-.aardvark-changelog-feed            /* the entry timeline */
+[data-aardvark-changelog]           /* the widget root inside it */
+.aardvark-changelog-timeline        /* the column holding the entries */
 .aardvark-changelog-item            /* a single dated entry */
-.aardvark-changelog-change          /* one change line */
+.aardvark-changelog-title           /* an entry's heading (its anchor) */
+.aardvark-changelog-meta            /* the date + version badge line */
+.aardvark-changelog-change          /* one change inside a combined day */
+.aardvark-changelog-cloud           /* the tag-filter cloud */
+.aardvark-changelog-feed            /* the RSS link above the timeline */
 ```
 {% endraw %}
 

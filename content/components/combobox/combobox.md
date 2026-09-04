@@ -130,8 +130,9 @@ placeholder. The body is ignored.
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `data` | Comma-separated list, or `value::label` pairs (double colon) | Options for the demo. A bare item is both value and label; `value::label` carries a separate stored value. A single `:` is left intact. |
-| `dataJson` | JSON array string | A full options array — plain strings or `{value, label}` objects. Wins over `data` when both are set. |
-| `placeholder` | String | The empty-state label on the trigger. |
+| `dataJson` | JSON array string | A full options array — plain strings or `{value, label}` objects. Wins over `data` when both are set. A value that is not valid JSON, or is JSON but not an array, warns at build time and leaves the demo with no options. |
+| `placeholder` | String | The empty-state label on the trigger. Defaults to `Pick a value`. |
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="Combobox"]`. The `Combobox` primitive is a context provider with no DOM root of its own, so style its trigger through the `Input` parts and its popup through the Combobox Styles API parts:
@@ -153,7 +154,7 @@ Target the rendered element through its island marker — `[data-aardvark-island
 
 ## Injecting Attributes
 
-`attr={…}` forwards raw HTML attributes — including event handlers — straight onto the rendered element, so you can wire DOM behavior the tag does not expose. The handler can be a full multi-line script, not just one expression — this one logs the value to the console and shows it in an alert:
+`attr={…}` forwards raw HTML attributes — including event handlers — onto the trigger, the button the reader clicks to open the dropdown. It lands there whether the tag stands on its own or sits nested inside another component. The handler can be a full multi-line script, not just one expression — this one logs the value to the console and shows it in an alert:
 
 {% combobox data='React, Vue, Svelte, Angular' placeholder='Pick a framework' attr={'onclick': '''
 const value = this.innerText;

@@ -42,17 +42,27 @@ present (a container image, or a CI job with a shallow/absent checkout), set the
 `AARDVARK_BUILD_SHA` environment variable to the commit being deployed so every
 build still gets a stable, unique token. Without it, Aardvark falls back to a
 content hash of your project sources — correct, but it rotates every asset URL
-whenever any source file changes.
+whenever any source file changes. `AARDVARK_BUILD_SHA` is the only variable read
+for this: your CI's own `GITHUB_SHA`/`CI_COMMIT_SHA` is ignored, so pass it through
+explicitly (`AARDVARK_BUILD_SHA=$GITHUB_SHA vark build`).
 
 ### Redirects
 
 Page `aliases:` and config `redirects:` (see [Generated files](/llms-and-sitemap/))
 make `vark build` write a `_redirects` file. **Cloudflare Pages, Netlify, and
 Vercel** read it and serve true `301`s; other hosts ignore it, but per-page aliases
-still work everywhere through their HTML stub pages. On Cloudflare/Netlify a static
-file takes precedence over a `_redirects` rule for the same path (Netlify can force
-it with a trailing `!`, Cloudflare can't), so an alias's stub wins there unless you
-disable stubs with `aliases: { htmlStubs: false }`.
+still work everywhere through their HTML stub pages.
+
+A per-page alias produces **both** — a stub file at the old path *and* a `_redirects`
+line for it — and on Cloudflare Pages and Netlify a real file wins over a redirect rule
+for the same path. So the stub is what readers get: a `<meta refresh>` hop carrying
+`rel=canonical` + `noindex`, rather than a true `301`. Two ways to change that:
+
+- `aliases: { force: true }` appends Netlify's trailing `!` to the alias lines, which
+  puts the `301` ahead of the file. **Cloudflare Pages ignores `!`**, so this is a
+  Netlify-only lever.
+- `aliases: { htmlStubs: false }` stops emitting stubs at all, leaving the `_redirects`
+  rule as the only thing at that path — the option to reach for on Cloudflare Pages.
 
 ## Publishing under a subpath
 
@@ -147,7 +157,9 @@ scripts/build-release.sh    # -> dist/vark (single file)
 The output lands in `dist/` by default; set `BUILD_OUT_DIR` to write it elsewhere.
 
 (For local iteration, `scripts/build-binary.sh` is a faster non-`--onefile`
-build that outputs a folder instead of a single file.)
+build that outputs a folder instead of a single file — the executable lands at
+`dist/aardvark.dist/vark-dev`, which sits beside the bundled `aardvark/` data
+directory — hence the distinct name.)
 
 The binary bundles the default theme, the islands runtime, **and the islands JS
 toolchain itself** — a project with no `node_modules` builds its islands from the

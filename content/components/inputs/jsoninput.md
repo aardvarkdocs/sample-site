@@ -47,7 +47,7 @@ component('aardvark', 'jsoninput', label='Config',
 
 `validationError` is the message shown when the content isn't valid JSON.
 
-{% jsoninput label='Payload' validationError='That is not valid JSON' formatOnBlur=true minRows=3 defaultValue='{ broken: }' %}
+{% jsoninput label='Payload' validationError='That is not valid JSON' formatOnBlur=true autosize=true minRows=3 defaultValue='{ broken: }' %}
 
 <br>
 
@@ -55,7 +55,7 @@ component('aardvark', 'jsoninput', label='Config',
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% jsoninput label='Payload' validationError='That is not valid JSON' formatOnBlur=true minRows=3 defaultValue='{ broken: }' %}
+{% jsoninput label='Payload' validationError='That is not valid JSON' formatOnBlur=true autosize=true minRows=3 defaultValue='{ broken: }' %}
 ```
 {% endraw %}
 {% endAccordionSection %}
@@ -63,15 +63,17 @@ component('aardvark', 'jsoninput', label='Config',
 ```python
 component('aardvark', 'jsoninput', label='Payload',
           validationError='That is not valid JSON', formatOnBlur=True,
-          minRows=3, defaultValue='{ broken: }')
+          autosize=True, minRows=3, defaultValue='{ broken: }')
 ```
 {% endAccordionSection %}
 {% endAccordion %}
 
 ## Autosize bounds
 
-`minRows` sets the floor and `maxRows` the cap when `autosize` grows the field with its
-content.
+`autosize` grows the field with its content; `minRows` is then the floor and `maxRows` the
+cap, after which the field scrolls instead of growing. Both are read only while `autosize`
+is on — on a fixed-height field they are ignored and the browser's default two-row textarea
+is what you get.
 
 {% jsoninput label='Metadata' autosize=true minRows=2 maxRows=10 placeholder='{ }' formatOnBlur=true %}
 
@@ -98,11 +100,11 @@ component('aardvark', 'jsoninput', label='Metadata', autosize=True,
 `required` and `withAsterisk` add the asterisk; `error` shows a wrapper-level validation
 message; `disabled` greys the control out.
 
-{% jsoninput label='Webhook body' required=true minRows=3 placeholder='{ }' %}
+{% jsoninput label='Webhook body' required=true autosize=true minRows=3 placeholder='{ }' %}
 
-{% jsoninput label='Rules' error='At least one rule is required' minRows=3 defaultValue='[]' %}
+{% jsoninput label='Rules' error='At least one rule is required' autosize=true minRows=3 defaultValue='[]' %}
 
-{% jsoninput label='Frozen config' disabled=true minRows=3 defaultValue='{ "env": "prod" }' %}
+{% jsoninput label='Frozen config' disabled=true autosize=true minRows=3 defaultValue='{ "env": "prod" }' %}
 
 <br>
 
@@ -110,24 +112,25 @@ message; `disabled` greys the control out.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% jsoninput label='Webhook body' required=true minRows=3 placeholder='{ }' %}
+{% jsoninput label='Webhook body' required=true autosize=true minRows=3 placeholder='{ }' %}
 
-{% jsoninput label='Rules' error='At least one rule is required' minRows=3 defaultValue='[]' %}
+{% jsoninput label='Rules' error='At least one rule is required' autosize=true minRows=3 defaultValue='[]' %}
 
-{% jsoninput label='Frozen config' disabled=true minRows=3 defaultValue='{ "env": "prod" }' %}
+{% jsoninput label='Frozen config' disabled=true autosize=true minRows=3 defaultValue='{ "env": "prod" }' %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'jsoninput', label='Webhook body', required=True,
-          minRows=3, placeholder='{ }')
+          autosize=True, minRows=3, placeholder='{ }')
 
 component('aardvark', 'jsoninput', label='Rules',
-          error='At least one rule is required', minRows=3, defaultValue='[]')
+          error='At least one rule is required', autosize=True, minRows=3,
+          defaultValue='[]')
 
 component('aardvark', 'jsoninput', label='Frozen config', disabled=True,
-          minRows=3, defaultValue='{ "env": "prod" }')
+          autosize=True, minRows=3, defaultValue='{ "env": "prod" }')
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -136,9 +139,9 @@ component('aardvark', 'jsoninput', label='Frozen config', disabled=True,
 
 `variant` is `default`, `filled`, or `unstyled`; `size` and `radius` take `xs`–`xl`.
 
-{% jsoninput label='Filled' variant='filled' minRows=3 placeholder='{ }' %}
+{% jsoninput label='Filled' variant='filled' autosize=true minRows=3 placeholder='{ }' %}
 
-{% jsoninput label='Large, round' size='lg' radius='lg' minRows=3 placeholder='{ }' %}
+{% jsoninput label='Large, round' size='lg' radius='lg' autosize=true minRows=3 placeholder='{ }' %}
 
 <br>
 
@@ -146,19 +149,19 @@ component('aardvark', 'jsoninput', label='Frozen config', disabled=True,
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% jsoninput label='Filled' variant='filled' minRows=3 placeholder='{ }' %}
+{% jsoninput label='Filled' variant='filled' autosize=true minRows=3 placeholder='{ }' %}
 
-{% jsoninput label='Large, round' size='lg' radius='lg' minRows=3 placeholder='{ }' %}
+{% jsoninput label='Large, round' size='lg' radius='lg' autosize=true minRows=3 placeholder='{ }' %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'jsoninput', label='Filled', variant='filled',
-          minRows=3, placeholder='{ }')
+          autosize=True, minRows=3, placeholder='{ }')
 
 component('aardvark', 'jsoninput', label='Large, round', size='lg',
-          radius='lg', minRows=3, placeholder='{ }')
+          radius='lg', autosize=True, minRows=3, placeholder='{ }')
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -200,6 +203,16 @@ component('aardvark', 'card', title='New integration',
 {% endAccordionSection %}
 {% endAccordion %}
 
+{% callout severity='info' title='How the JSON check behaves' %}
+Validity is judged when the field loses focus and cleared again the moment it regains focus,
+so the message appears once you click away rather than on every keystroke. **An empty field
+counts as valid** — the check only complains about content it cannot parse, so pair the field
+with `required` if a value is mandatory. If you leave `validationError` unset, invalid JSON
+still turns the field red but carries no message, so it is worth setting. `formatOnBlur`
+re-indents with two spaces, and only when the content parses and is not blank; broken JSON is
+left exactly as typed so nothing you wrote is lost.
+{% endCallout %}
+
 ## Attributes
 
 Omit any attribute to take its Mantine default.
@@ -214,8 +227,8 @@ Omit any attribute to take its Mantine default.
 | `formatOnBlur` | bool (`true` / `false`) | Pretty-print valid JSON when the field loses focus. |
 | `validationError` | string | Message shown when the content isn't valid JSON. |
 | `autosize` | bool (`true` / `false`) | Grow the field with its content. |
-| `minRows` | integer | Minimum number of visible rows (a floor when `autosize` is on). |
-| `maxRows` | integer | Maximum number of rows the field grows to (with `autosize`). |
+| `minRows` | integer | Shortest the field gets, in rows. Read only when `autosize` is on. |
+| `maxRows` | integer | Tallest the field grows to before it scrolls. Read only when `autosize` is on. |
 | `variant` | `default`, `filled`, `unstyled` | Visual style of the input. |
 | `size` | `xs`, `sm`, `md`, `lg`, `xl` | Control size. |
 | `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS length | Corner radius. |

@@ -15,9 +15,11 @@ Use it as `{% raw %}{% textarea %}{% endraw %}` in Markdown, or call it from Pyt
 
 ## Basic field
 
-A label, a placeholder, and a fixed starting height with `minRows`.
+A label, a placeholder, and a starting height of three rows. `minRows` and `maxRows` are sized
+by the autosize machinery, so they take effect only alongside `autosize` — without it the field
+keeps the browser's default height and both are ignored.
 
-{% textarea label='Bio' placeholder='Tell us about yourself' minRows=3 %}
+{% textarea label='Bio' placeholder='Tell us about yourself' autosize=true minRows=3 %}
 
 <br>
 
@@ -25,14 +27,14 @@ A label, a placeholder, and a fixed starting height with `minRows`.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% textarea label='Bio' placeholder='Tell us about yourself' minRows=3 %}
+{% textarea label='Bio' placeholder='Tell us about yourself' autosize=true minRows=3 %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'textarea', label='Bio',
-          placeholder='Tell us about yourself', minRows=3)
+          placeholder='Tell us about yourself', autosize=True, minRows=3)
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -40,7 +42,7 @@ component('aardvark', 'textarea', label='Bio',
 ## Autosize
 
 `autosize` grows the field with its content. Set a floor with `minRows` and a cap with
-`maxRows`.
+`maxRows` — both are read only when `autosize` is on.
 
 {% textarea label='Notes' autosize=true minRows=2 maxRows=6 placeholder='Grows as you type, up to 6 rows' %}
 
@@ -99,11 +101,11 @@ component('aardvark', 'textarea', label='Vertical only', resize='vertical',
 
 `required` and `withAsterisk` add the asterisk; `disabled` greys the control out.
 
-{% textarea label='Message' required=true placeholder='Required field' minRows=2 %}
+{% textarea label='Message' required=true placeholder='Required field' autosize=true minRows=2 %}
 
-{% textarea label='Imported note' withAsterisk=true defaultValue='From the legacy system' minRows=2 %}
+{% textarea label='Imported note' withAsterisk=true defaultValue='From the legacy system' autosize=true minRows=2 %}
 
-{% textarea label='Locked note' disabled=true defaultValue='Read-only' minRows=2 %}
+{% textarea label='Locked note' disabled=true defaultValue='Read-only' autosize=true minRows=2 %}
 
 <br>
 
@@ -111,24 +113,24 @@ component('aardvark', 'textarea', label='Vertical only', resize='vertical',
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% textarea label='Message' required=true placeholder='Required field' minRows=2 %}
+{% textarea label='Message' required=true placeholder='Required field' autosize=true minRows=2 %}
 
-{% textarea label='Imported note' withAsterisk=true defaultValue='From the legacy system' minRows=2 %}
+{% textarea label='Imported note' withAsterisk=true defaultValue='From the legacy system' autosize=true minRows=2 %}
 
-{% textarea label='Locked note' disabled=true defaultValue='Read-only' minRows=2 %}
+{% textarea label='Locked note' disabled=true defaultValue='Read-only' autosize=true minRows=2 %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'textarea', label='Message', required=True,
-          placeholder='Required field', minRows=2)
+          placeholder='Required field', autosize=True, minRows=2)
 
 component('aardvark', 'textarea', label='Imported note', withAsterisk=True,
-          defaultValue='From the legacy system', minRows=2)
+          defaultValue='From the legacy system', autosize=True, minRows=2)
 
 component('aardvark', 'textarea', label='Locked note', disabled=True,
-          defaultValue='Read-only', minRows=2)
+          defaultValue='Read-only', autosize=True, minRows=2)
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -137,7 +139,7 @@ component('aardvark', 'textarea', label='Locked note', disabled=True,
 
 `error` shows a validation message below the field and switches it to the error color.
 
-{% textarea label='Bio' error='Keep it under 280 characters' minRows=2 defaultValue='A very long bio that has gone over the limit…' %}
+{% textarea label='Bio' error='Keep it under 280 characters' autosize=true minRows=2 defaultValue='A very long bio that has gone over the limit…' %}
 
 <br>
 
@@ -145,14 +147,14 @@ component('aardvark', 'textarea', label='Locked note', disabled=True,
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% textarea label='Bio' error='Keep it under 280 characters' minRows=2 defaultValue='A very long bio that has gone over the limit…' %}
+{% textarea label='Bio' error='Keep it under 280 characters' autosize=true minRows=2 defaultValue='A very long bio that has gone over the limit…' %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'textarea', label='Bio',
-          error='Keep it under 280 characters', minRows=2,
+          error='Keep it under 280 characters', autosize=True, minRows=2,
           defaultValue='A very long bio that has gone over the limit…')
 ```
 {% endAccordionSection %}
@@ -162,9 +164,9 @@ component('aardvark', 'textarea', label='Bio',
 
 `variant` is `default`, `filled`, or `unstyled`; `size` and `radius` take `xs`–`xl`.
 
-{% textarea label='Filled' variant='filled' placeholder='filled variant' minRows=2 %}
+{% textarea label='Filled' variant='filled' placeholder='filled variant' autosize=true minRows=2 %}
 
-{% textarea label='Large, round' size='lg' radius='lg' placeholder='lg size, lg radius' minRows=2 %}
+{% textarea label='Large, round' size='lg' radius='lg' placeholder='lg size, lg radius' autosize=true minRows=2 %}
 
 <br>
 
@@ -172,19 +174,19 @@ component('aardvark', 'textarea', label='Bio',
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% textarea label='Filled' variant='filled' placeholder='filled variant' minRows=2 %}
+{% textarea label='Filled' variant='filled' placeholder='filled variant' autosize=true minRows=2 %}
 
-{% textarea label='Large, round' size='lg' radius='lg' placeholder='lg size, lg radius' minRows=2 %}
+{% textarea label='Large, round' size='lg' radius='lg' placeholder='lg size, lg radius' autosize=true minRows=2 %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'textarea', label='Filled', variant='filled',
-          placeholder='filled variant', minRows=2)
+          placeholder='filled variant', autosize=True, minRows=2)
 
 component('aardvark', 'textarea', label='Large, round', size='lg', radius='lg',
-          placeholder='lg size, lg radius', minRows=2)
+          placeholder='lg size, lg radius', autosize=True, minRows=2)
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -193,7 +195,7 @@ component('aardvark', 'textarea', label='Large, round', size='lg', radius='lg',
 
 `leftSection` and `rightSection` take text shown inside the field.
 
-{% textarea label='Comment' leftSection='✎' placeholder='Leave a comment' minRows=2 %}
+{% textarea label='Comment' leftSection='✎' placeholder='Leave a comment' autosize=true minRows=2 %}
 
 <br>
 
@@ -201,14 +203,14 @@ component('aardvark', 'textarea', label='Large, round', size='lg', radius='lg',
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% textarea label='Comment' leftSection='✎' placeholder='Leave a comment' minRows=2 %}
+{% textarea label='Comment' leftSection='✎' placeholder='Leave a comment' autosize=true minRows=2 %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'textarea', label='Comment', leftSection='✎',
-          placeholder='Leave a comment', minRows=2)
+          placeholder='Leave a comment', autosize=True, minRows=2)
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -266,12 +268,13 @@ Omit any attribute to take its Mantine default.
 | `required` | bool (`true` / `false`) | Mark the field required and add the asterisk. |
 | `withAsterisk` | bool (`true` / `false`) | Add the asterisk without the HTML `required` attribute. |
 | `disabled` | bool (`true` / `false`) | Render the field disabled. |
-| `autosize` | bool (`true` / `false`) | Grow the field with its content. |
-| `minRows` | integer | Minimum number of visible rows (a floor when `autosize` is on). |
-| `maxRows` | integer | Maximum number of rows the field grows to (with `autosize`). |
+| `autosize` | bool (`true` / `false`) | Grow the field with its content. Required for `minRows`/`maxRows` to have any effect. |
+| `minRows` | integer | Starting number of visible rows. **Only applies with `autosize`** — on its own it is ignored. |
+| `maxRows` | integer | Most rows the field grows to. **Only applies with `autosize`** — on its own it is ignored. |
 | `resize` | `none`, `both`, `horizontal`, `vertical` | Direction the user can resize the field. |
 | `leftSection` | string | Text shown inside the field, before the value. |
 | `rightSection` | string | Text shown inside the field, after the value. |
+| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) applied to the rendered `<textarea>`. |
 
 ## CSS Selectors
 
@@ -291,9 +294,11 @@ Target a `{% raw %}{% textarea %}{% endraw %}` from your own CSS with the island
 
 ## Injecting Attributes
 
-Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the rendered element. Here it is wired to `onchange`, so changing the field logs its new value to the console and alerts it:
+Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the
+rendered `<textarea>`, so `this` inside a handler is the field itself and `this.value` is what the reader
+typed. Here it is wired to `onchange`, which fires when the value changes and the field loses focus:
 
-{% textarea label='Bio' placeholder='Tell us about yourself' minRows=3 attr={'onchange': '''
+{% textarea label='Bio' placeholder='Tell us about yourself' autosize=true minRows=3 attr={'onchange': '''
 const value = this.value;
 console.log('attr demo value:', value);
 alert(value);
@@ -305,7 +310,7 @@ alert(value);
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% textarea label='Bio' placeholder='Tell us about yourself' minRows=3 attr={'onchange': '''
+{% textarea label='Bio' placeholder='Tell us about yourself' autosize=true minRows=3 attr={'onchange': '''
 const value = this.value;
 console.log('attr demo value:', value);
 alert(value);
@@ -315,7 +320,7 @@ alert(value);
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'textarea', label='Bio', placeholder='Tell us about yourself', minRows=3, attr={'onchange': '''
+component('aardvark', 'textarea', label='Bio', placeholder='Tell us about yourself', autosize=True, minRows=3, attr={'onchange': '''
 const value = this.value;
 console.log('attr demo value:', value);
 alert(value);

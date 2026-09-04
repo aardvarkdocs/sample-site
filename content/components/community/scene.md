@@ -29,14 +29,14 @@ a color blend behind your content.
 {% raw %}
 ```aardvark
 {% scene gradient gradientFrom='indigo' gradientTo='grape' %}
-### Layered over a gradient
+#### Layered over a gradient
 A soft color wash sits behind this text.
 {% endScene %}
 ```
 {% endraw %}
 
 {% scene gradient gradientFrom='indigo' gradientTo='grape' %}
-### Layered over a gradient
+#### Layered over a gradient
 A soft color wash sits behind this text.
 {% endScene %}
 
@@ -48,14 +48,14 @@ shortcut (`glowColor`, `dotColor`).
 {% raw %}
 ```aardvark
 {% scene glow glowColor='cyan' dotGrid dotColor='blue' %}
-### Glow + dots
+#### Glow + dots
 Two layers compose back-to-front behind the content.
 {% endScene %}
 ```
 {% endraw %}
 
 {% scene glow glowColor='cyan' dotGrid dotColor='blue' %}
-### Glow + dots
+#### Glow + dots
 Two layers compose back-to-front behind the content.
 {% endScene %}
 
@@ -66,14 +66,14 @@ Add `interactive` so the scene responds to the pointer, and `noise` for a subtle
 {% raw %}
 ```aardvark
 {% scene interactive glow glowColor='grape' noise %}
-### Move your mouse
+#### Move your mouse
 The glow follows the pointer; a noise layer adds grain.
 {% endScene %}
 ```
 {% endraw %}
 
 {% scene interactive glow glowColor='grape' noise %}
-### Move your mouse
+#### Move your mouse
 The glow follows the pointer; a noise layer adds grain.
 {% endScene %}
 
@@ -86,14 +86,14 @@ back-to-front.
 {% raw %}
 ```aardvark
 {% scene layersJson='[{"kind":"gradient","type":"radial","from":"teal","to":"blue"},{"kind":"glow","color":"teal"},{"kind":"noise"}]' %}
-### Composed from JSON
+#### Composed from JSON
 A radial gradient, a glow, and noise — fully specified.
 {% endScene %}
 ```
 {% endraw %}
 
 {% scene layersJson='[{"kind":"gradient","type":"radial","from":"teal","to":"blue"},{"kind":"glow","color":"teal"},{"kind":"noise"}]' %}
-### Composed from JSON
+#### Composed from JSON
 A radial gradient, a glow, and noise — fully specified.
 {% endScene %}
 
@@ -132,10 +132,10 @@ Omit any attribute to take its default. Bare flags (e.g. `gradient`, `glow`) bec
 | `noise` | `true` / `false` (default `false`) | Turn on a noise / grain layer. |
 | `layersJson` | a JSON array of `{kind, …}` descriptors | Full layer control; wins over the flags when set. |
 | `fullscreen` | `true` / `false` (default `false`) | Fix the scene to cover the whole viewport. |
-| `zIndex` | number | Stacking order of the scene. |
+| `zIndex` | number (default `0`) | Stacking order of the scene. |
 | `interactive` | `true` / `false` (default `false`) | Track the pointer (e.g. move the glow). |
-| `interactiveEasing` | number | Easing factor for the interactive tracking. |
-| `reducedMotion` | `auto` / `always` / `never` | Honor reduced-motion preferences. |
+| `interactiveEasing` | number (default `0.12`) | Easing factor for the interactive tracking. |
+| `reducedMotion` | `auto` (default) / `always` / `never` | Honor reduced-motion preferences. |
 | `lazy` | `true` / `false` (default `false`) | Defer mounting until the scene scrolls into view. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element. |
 
@@ -147,11 +147,15 @@ exposes Styles API class names you can target:
 ```css
 /* The scene container that holds the layers + your content */
 [data-aardvark-island='Scene'] .mantine-Scene-root { }
-/* The foreground content layer (your block body) */
-[data-aardvark-island='Scene'] .mantine-Scene-content { }
-/* Individual effect layers (gradient / glow / dot grid / noise) */
-[data-aardvark-island='Scene'] .mantine-Scene-layer { }
+/* One effect layer — each kind has its own class */
+[data-aardvark-island='Scene'] .mantine-Scene-gradient { }
+[data-aardvark-island='Scene'] .mantine-Scene-glow { }
+[data-aardvark-island='Scene'] .mantine-Scene-dotGrid { }
+[data-aardvark-island='Scene'] .mantine-Scene-noise { }
 ```
+
+The block body is placed inside the root next to those layers; it has no class of its own, so
+target your own content directly.
 
 ## Injecting Attributes
 

@@ -37,7 +37,7 @@ The two attributes go together. Supply only one and the build stops with advice:
 {% openapi %} got verb='get' but no endpoint. Rendering a single operation
 needs BOTH verb and endpoint, e.g.
 {% openapi 'openapi/petstore.json' verb='get' endpoint='/your/endpoint' %}.
-Omit both to render the whole spec.
+Omit both to render the whole spec. (in content/guides/pets.md)
 ```
 {% endraw %}
 
@@ -71,17 +71,23 @@ Because it's ordinary page content, the page chooses its own layout — give it
 page, with every operation wired into the left-hand nav. It renders this site's real
 Aardvark gateway API, so it doubles as a live reference and a demonstration.
 
-Operations are grouped in the nav by their first OpenAPI `tag`. The bucket heading
-is the tag's Redoc-style `x-displayName` when set (else the first line of its
-`description`, else the sentence-cased tag name) — so a tag like `pet` reads as
-**Pets!** rather than a bare lowercase `pet` when both fields are present.
+Operations are grouped in the nav by their first OpenAPI `tag`, in the order the
+spec's top-level `tags` list declares them — tags the list doesn't mention follow in
+first-seen order, and untagged operations land in a final **Other** group. The bucket
+heading is the tag's Redoc-style `x-displayName` when set, else the first non-blank
+line of that tag's `description`, else the tag name sentence-cased: the petstore spec
+used below sets no `x-displayName`, so its `pet` bucket reads **Everything about your
+Pets** rather than a bare lowercase `pet`. That heading appears once a reference has
+more than one group — a single-group spec needs no divider under the page's own title,
+which is why the single-operation slices on this page carry none. This site's
+[**Gateway API**](/api/) shows the grouped form.
 
 ## Responses
 
 Operations list their responses straight from the spec. Define a `responses`
 block and Aardvark renders one collapsible row per status code — success and errors
-alike — colour-coded by class (green `2xx`, orange `4xx`, red `5xx`). Every row
-documents:
+alike — colour-coded by class (green `2xx`, blue `3xx`, orange `4xx`, red `5xx`).
+Every row documents:
 
 - the response **description**,
 - any **headers** the response declares (name, type, description),
@@ -123,10 +129,13 @@ examples always use the code block.
 ## Authorization
 
 Declare a security scheme and Aardvark renders an **Authorization** box at the top
-of the reference. Readers paste their API key once; by default it's held in memory
-for that browser session only, with a **Save this key in my browser** checkbox to
-keep it (in `localStorage`) for next time. Either way it flows into both the request
-samples and the **Try it now** requests, placed however the scheme declares it.
+of the reference. Readers paste their API key once; by default it's held in memory and
+forgotten on reload, with a **Remember this key for this session** checkbox that keeps
+it in `sessionStorage` — so it survives a reload but is cleared when the tab closes,
+and it never reaches another tab, another site, or your build. (The saved slot is
+named after the spec's title and version, so two references on one page never read
+each other's key.) Either way the key flows into both the request samples and the
+**Try it now** requests, placed however the scheme declares it.
 
 Add the scheme under `components.securitySchemes` and apply it — site-wide with a
 top-level `security`, or per operation:
@@ -150,6 +159,12 @@ are all handled — though cookie keys appear only in the request samples, since
 in-browser Try it now can't set cookies. An operation opts out
 of auth with `security: []`; a spec that defines a single scheme but omits
 `security` still shows the box and applies that scheme.
+
+The box holds **one** key field, for the scheme each operation resolves to. Where a
+spec offers alternatives, a scheme the browser can actually send wins over a
+cookie one; where a single requirement combines two schemes (`security: [{apiKey: [],
+signature: []}]` — meaning *both* are needed), only the first is applied, so an
+operation like that needs its second credential added by hand.
 
 ## Request samples
 
@@ -336,12 +351,13 @@ write like any third-party content — see the sanitizing note under [Rich descr
 ### Live demonstration
 
 Every petstore reference on this page — the slices above and below — is overlaid by the real
-`openapi/petstore.overlay.yaml` sitting beside the spec, applied automatically. Four actions on
-the upstream Swagger Petstore spec (prose abridged here):
+`openapi/petstore.overlay.yaml` sitting beside the spec, applied automatically. Most of its
+actions add the response example bodies the upstream Swagger Petstore spec leaves out; here are
+the four whose effects you can see on this page, with their prose abridged:
 
 {% raw %}
 ```yaml
-# openapi/petstore.overlay.yaml — sits beside petstore.json, applied automatically
+# openapi/petstore.overlay.yaml (excerpt) — sits beside petstore.json, applied automatically
 overlay: 1.0.0
 info: { title: Petstore docs overlay, version: 1.0.0 }
 actions:
@@ -425,6 +441,20 @@ your key never leaves it.
 With [build-time AI](/ai-features/) enabled, Aardvark *augments* authored examples:
 when an operation's success response has no `example`, it generates a realistic
 one. Examples you write in the spec always win.
+
+## Good to know
+
+- **A description can't embed another reference.** An `{% raw %}{% openapi %}{% endraw %}` inside
+  a spec description stops the build: the description is already rendered as page content, so a
+  reference there would recurse into itself. Wrap it in a `raw` block to *show* the syntax.
+- **Nav anchors ignore a trailing slash.** `/pets` and `/pets/` resolve to the same operation
+  anchor. When two genuinely different paths would collapse onto one id, the build warns, names
+  both, and leaves the second out of the nav rather than shipping two links to the same place.
+- **Each spec is also published for agents.** Every spec a page embeds is written out under
+  `/_aardvark/openapi/` and listed in `/.well-known/api-catalog.json`, which the homepage
+  advertises in a `Link:` header — so an agent can enumerate your APIs and fetch the machine
+  spec. That published copy is the **file on disk**: overlays are a docs layer and are not
+  applied to it, so an agent reads the upstream document, not your overlaid prose.
 
 ## CSS Selectors
 

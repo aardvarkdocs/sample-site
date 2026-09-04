@@ -9,7 +9,14 @@ description: "The built-in collapse tag — a primitive that animates content op
 
 Use it as `{% raw %}{% collapse %}{% endraw %}` in Markdown, or call it from Python logic (loops, snippets) via `component('aardvark', 'collapse', …)`.
 
-> **The static-page caveat.** Collapse animates content *open and closed by height*, which is inherently **stateful** — the animation runs when the open state *changes*. To get real interactive open/close, drive `opened` from your own component (a [snippet](/authoring/components-and-snippets/) that toggles it from React state, often paired with a button). Mantine's prop is named `in`, a reserved word in the template language, so this tag exposes it as **`opened`**.
+> **The static-page caveat.** Collapse animates content *open and closed by height*, and that animation runs when the open state **changes**. On a static page `opened` is fixed when the page is built, so what you see is the end state, never the transition — the tag is the primitive underneath an interactive section, not a click-to-toggle widget. For a section a reader can actually open and close, use [Accordion](/components/data-display/accordion/).
+
+{% callout title="Good to know" severity="info" %}
+A closed Collapse is **hidden, not removed** — with `opened=false` the body still ships in the
+page's HTML, marked `aria-hidden` and `inert` so it's skipped by screen readers and keyboard
+focus. It's the right tool for collapsing something long, and the wrong one for withholding
+something: anything you put in it is readable in the page source.
+{% endCallout %}
 
 ## Demonstrations
 
@@ -134,7 +141,7 @@ Omit any attribute to take its default.
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `opened` | bare flag or `true` / `false` (default `true`) | Whether the content is shown. Maps to Mantine's `in`; `opened=false` collapses it. |
+| `opened` | bare flag or `true` / `false` (default `true`) | Whether the content is shown. `opened=false` renders it collapsed. |
 | `transitionDuration` | An integer (milliseconds) | Length of the open/close animation. |
 | `transitionTimingFunction` | A CSS easing (`ease-in-out`, `linear`, `cubic-bezier(…)`) | Easing for the height animation. |
 | `animateOpacity` | bare flag or `true` / `false` (default `true`) | Fade the content as it expands / collapses. |

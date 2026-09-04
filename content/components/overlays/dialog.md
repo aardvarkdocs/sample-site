@@ -164,7 +164,7 @@ component('aardvark', 'dialog', triggerLabel='Show notification', position='bott
 | --- | --- | --- |
 | `triggerLabel` | string, default `Open dialog` | Text on the opener button. |
 | `opened` | bool, default `false` | Start the dialog already open on load. Usually leave this off so it opens from the trigger button. |
-| `position` | `bottom-right` (default), `bottom-left`, `top-right`, `top-left`, or a single edge | Corner or edge to anchor to. |
+| `position` | `bottom-right` (default), `bottom-left`, `top-right`, `top-left`, or a single edge such as `top` | Corner or edge to anchor to, inset 20px from each edge you name. A single edge anchors to just that edge rather than being completed into a corner; a position naming no edge falls back to `bottom-right`. |
 | `size` | `xs`–`xl`, a number of px, or a percentage | Panel width. |
 | `radius` | `xs`–`xl` or a number | Corner radius. |
 | `withBorder` | bool, default `false` | Draw a border around the panel. |

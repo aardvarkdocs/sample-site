@@ -67,9 +67,12 @@ vark new my-docs
 cd my-docs
 ```
 
-Cette commande crée un projet avec une page de démarrage, un fichier de données,
-le thème par défaut modifiable, un exemple de composant et un `package.json` pour
-les îlots.
+Cette commande crée un projet avec deux pages de démarrage (`content/index.md` et
+`content/quickstart.md`), un fichier de données d'exemple (`data/products.yaml`),
+le thème par défaut modifiable dans `themes/vark/`, un exemple de composant
+(`snippets/Callout.jsx`), un `custom.css` à la racine, un `package.json` pour les
+îlots et un `.gitignore` qui exclut déjà `build/`, `node_modules/`,
+`.aardvark-cache/` et `.env`.
 
 ### 2. Dépendances des îlots — incluses avec Aardvark
 
@@ -93,11 +96,23 @@ dans votre navigateur, surveille vos fichiers sources et recharge le navigateur
 à chaque modification. Ajoutez `--no-open` si vous préférez ouvrir vous-même
 l'onglet.
 
+Dans un terminal, `vark dev` affiche un tableau de bord en direct sur l'écran
+alternatif : son journal disparaît quand vous quittez. Ajoutez `--log-file dev.log`
+pour en conserver une copie en texte brut, ou `--plain` pour une sortie classique
+ligne par ligne.
+
 ### 4. Compiler pour la production
 
 ```bash
 vark build      # génère le HTML statique dans ./build
 ```
+
+Un lien vers une page ou une image locale qui n'existe pas — dans n'importe quelle
+langue — fait échouer la compilation ; un lien vers une `#ancre` manquante sur une
+page qui existe ne produit qu'un avertissement (définissez
+`links: {strictAnchors: true}` dans `aardvark.config.yaml` pour échouer aussi dans
+ce cas). Un nom de composant inconnu ne fait jamais échouer la compilation : il est
+rendu sous forme de commentaire HTML et signalé par un avertissement.
 
 ### Créer votre première page
 

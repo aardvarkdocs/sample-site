@@ -8,7 +8,7 @@ description: "The built-in navlink tag — a navigation link with an icon, descr
 A **built-in** tag for a navigation link, built on Mantine's `NavLink`: a `label` with an
 optional `description`, a left/right **icon** (any
 [{% raw %}`{% icon %}`{% endraw %}](/components/data-display/icon/) spec), an `active`
-state, a `variant` and `color`, and one level of **nested** sub-links via `items`.
+state, a `variant` and `color`, and **nested** sub-links via `items`.
 
 Use it as {% raw %}`{% navlink %}`{% endraw %} in Markdown, or call it from Python logic (loops, snippets) via `component('aardvark', 'navlink', …)`.
 
@@ -103,8 +103,8 @@ component('aardvark', 'navlink', label='External docs', rightSection='external-l
 
 Pass nested sub-links as a JSON array in `items` — `children` is reserved for the block
 body, so the nested data rides its own param. Set `defaultOpened=true` to start the group
-expanded and `childrenOffset` to indent it. Nesting goes **one level** deep through the
-tag.
+expanded and `childrenOffset` to indent it. A nested entry takes the same keys as the tag
+itself, `items` included, so a sub-link can carry its own sub-links.
 
 {% navlink label='Settings' leftSection='settings' childrenOffset=20 defaultOpened=true items='[{"label":"Profile","href":"/profile/","leftSection":"user"},{"label":"Billing","href":"/billing/","leftSection":"credit-card"}]' %}
 
@@ -172,10 +172,6 @@ component('aardvark', 'stack', gap='xs', children=links)
 {% endAccordionSection %}
 {% endAccordion %}
 
-For deeper trees or fully custom link state, build a
-[snippet](/authoring/components-and-snippets/) that nests `component('NavLink', ...)`
-directly.
-
 ## Attributes
 
 Omit any attribute to take its default.
@@ -193,9 +189,9 @@ Omit any attribute to take its default.
 | `disabled` | `true` / `false` (default) | Dim and disable interaction. |
 | `noWrap` | `true` / `false` (default) | Keep the label on one line. |
 | `autoContrast` | `true` / `false` (default) | Auto-pick a readable label color against `color`. |
-| `items` | JSON array of nested-link objects (`{label, href, leftSection, …}`) | One level of nested sub-links. |
+| `items` | JSON array of nested-link objects (`{label, href, leftSection, …}`) | Nested sub-links. Each entry takes the same keys as the tag, so an entry with its own `items` nests another level. |
 | `childrenOffset` | An integer (pixels) | Indent of the nested group. |
-| `defaultOpened` | `true` / `false` (default) | Whether the nested group starts expanded. |
+| `defaultOpened` | `true` / `false` (default) | Whether the nested group starts expanded. Readers can still toggle it either way. |
 
 ## CSS Selectors
 

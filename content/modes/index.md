@@ -23,11 +23,15 @@ chrome, or an edge-to-edge canvas — set `mode` in its front matter.
 
 | `mode` | Left nav | Right TOC | Content width |
 | --- | :---: | :---: | --- |
-| _(unset)_ / `default` | ✓ | ✓ | standard reading column |
-| `wide` | ✓ | — | wider — good for big tables |
-| `full` | — | — | wider, centered |
-| `toc-only` | — | ✓ | wider — the hidden nav frees the room |
+| _(unset)_ / `default` | ✓ | ✓ | standard reading column (820px) |
+| `wide` | ✓ | — | wider (1100px) — good for big tables |
+| `full` | — | — | wider (1100px), centered |
+| `toc-only` | — | ✓ | wider (1100px) — the hidden nav frees the room |
 | `uncapped` | — | — | full-bleed: edge to edge, no width cap or padding |
+
+The widths are the default theme's `--aardvark-content-max` (820px) and
+`--aardvark-content-max-wide` (1100px), set at the top of `themes/vark/theme.scss` —
+change them there to retune every mode at once.
 
 It's a single front-matter line:
 
@@ -47,7 +51,14 @@ mode: wide
 
 ## Good to know
 
-- Unrecognized values fall back to the default layout — a typo never breaks a page.
-- Modes shape the **desktop** layout and compose with the responsive breakpoints:
-  below 1100px the TOC hides and below 760px the nav hides, in every mode.
+- Values are matched case-insensitively; an unrecognized value (and `default`) gives
+  the default layout — a typo never breaks a page.
+- `uncapped` also drops the breadcrumb / page-action bar above the content (a
+  full-bleed hero has nothing to sit under). The feedback widgets at the bottom of an
+  uncapped page keep the 1100px cap so they stay readable.
+- Modes shape the **desktop** layout and compose with the responsive breakpoints: at
+  1100px and below the TOC hides in every mode, and at 760px and below the left nav
+  becomes the hamburger drawer — on `full`, `toc-only`, and `uncapped` pages too, so
+  the menu (and the header actions that move into the drawer) stay reachable on a
+  phone.
 - The site header stays put in all modes, so there's always a way back.

@@ -9,9 +9,9 @@ A built-in tag that renders a nested file/folder explorer: collapsible folders w
 indentation guide lines and language-aware icons, full keyboard navigation, and
 per-row `defaultOpen`, `href`, `comment`, and `highlighted` options. Give a
 `{% raw %}{% file %}{% endraw %}` a body of source code and the file becomes
-clickable, opening that code centered in a modal as a standard fenced code block (so
-the site's syntax highlighting styles it). A file with an empty body is a plain,
-non-clickable leaf.
+clickable, opening that code centered in a modal as a standard fenced code block, with
+the same syntax highlighting and Copy / Download buttons as a code block in your prose.
+A file with an empty body is a plain, non-clickable leaf.
 
 Use it as `{% raw %}{% tree %}{% endraw %}` in Markdown, or call it from Python logic
 (loops, snippets) via `component('aardvark', 'tree', …)`. It is a compound block: the
@@ -25,10 +25,12 @@ Wrap the structure in `{% raw %}{% tree %} … {% endTree %}{% endraw %}`, nest
 `{% raw %}{% folder name="…" %} … {% endFolder %}{% endraw %}` and
 `{% raw %}{% file name="…" %} … {% endFile %}{% endraw %}` inside it, and put a file's
 source between its tags. Click a file with a body (**app.py**, **text.py**,
-**package.json**) to open its source in a modal with a copy button; **README.md** has
-no body, so it's a plain leaf. Folders collapse on click, and the whole tree is
-keyboard-navigable (focus it, then ↑ ↓ to move, → ← to expand/collapse, **Enter** to
-open a file).
+**package.json**) to open its source in a modal with Copy and Download buttons — the
+download is named after the file. **README.md** has no body, so it's a plain leaf.
+Folders collapse on click, and the whole tree is keyboard-navigable: focus it, then
+↑ ↓ to move, **Home** / **End** to jump to the first or last row, → ← to expand and
+collapse (→ on an open folder steps into it, ← on a file moves up to its folder), and
+**Enter** or **Space** to open a file or follow its link.
 
 **Preview**
 
@@ -282,7 +284,7 @@ from closing the block early.
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `name` | string (required) | File name; sets the icon and the code language. |
-| *(body)* | source code | Opens in a modal on click. An empty body is a plain leaf. |
+| *(body)* | source code | Opens in a modal on click, with Copy and Download buttons. An empty body is a plain leaf. |
 | `lang` | a highlight language (e.g. `bash`, `python`) | Override the language guessed from the extension. |
 | `href` | URL | Link a bodyless file (ignored when the file has a code body — that opens the modal). |
 | `comment` | string | Trailing muted-monospace note, auto-prefixed with `#`. |

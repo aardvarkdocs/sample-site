@@ -49,13 +49,13 @@ component(
 {% endAccordionSection %}
 {% endAccordion %}
 
-### A borderless window without a close button
+### A lighter, borderless window
 
-`shadow` and `radius` restyle the card; `withCloseButton=false` and
-`withBorder=false` strip the chrome for a lighter panel:
+`shadow` and `radius` restyle the card; `withBorder=false` drops the outline for a
+lighter panel:
 
-{% floatingwindow triggerLabel='Open note' title='Note' width=280 shadow='md' radius='lg' withCloseButton=false withBorder=false %}
-A lighter floating panel — no border, no close button.
+{% floatingwindow triggerLabel='Open note' title='Note' width=280 shadow='md' radius='lg' withBorder=false %}
+A lighter floating panel — no border, softer shadow.
 {% endFloatingwindow %}
 
 <br>
@@ -64,8 +64,8 @@ A lighter floating panel — no border, no close button.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% floatingwindow triggerLabel='Open note' title='Note' width=280 shadow='md' radius='lg' withCloseButton=false withBorder=false %}
-A lighter floating panel — no border, no close button.
+{% floatingwindow triggerLabel='Open note' title='Note' width=280 shadow='md' radius='lg' withBorder=false %}
+A lighter floating panel — no border, softer shadow.
 {% endFloatingwindow %}
 ```
 {% endraw %}
@@ -79,9 +79,8 @@ component(
     width=280,
     shadow='md',
     radius='lg',
-    withCloseButton=False,
     withBorder=False,
-    children='A lighter floating panel — no border, no close button.',
+    children='A lighter floating panel — no border, softer shadow.',
 )
 ```
 {% endAccordionSection %}
@@ -131,7 +130,7 @@ component('aardvark', 'floatingwindow', triggerLabel='Need help?', title='Need h
 | `width` | integer (px), default `320` | Window width. |
 | `shadow` | `xs`–`xl` (default `xl`) | Drop shadow. |
 | `radius` | `xs`–`xl` or a number (default `md`) | Corner radius. |
-| `withCloseButton` | bool, default `true` | Show the close button in the header. |
+| `withCloseButton` | bool, default `true` | Show the close button in the header. It's the window's only dismissal (there's no backdrop to click, and Escape doesn't close it), so if you turn it off the build re-enables it and warns. |
 | `withBorder` | bool, default `true` | Draw a border around the window. |
 
 ## CSS Selectors
@@ -154,7 +153,7 @@ Target the rendered element through its island marker, `[data-aardvark-island="F
 
 ## Injecting Attributes
 
-`attr={…}` forwards raw HTML attributes — including event handlers — straight onto the rendered element, so you can wire DOM behavior the tag does not expose. The handler can be a full multi-line script, not just one expression — this one logs the value to the console and shows it in an alert:
+`attr={…}` forwards raw HTML attributes — including event handlers — onto the rendered window. The window exists only while it is open, so the attributes are applied when you open it — open this one and click it to run the handler. The handler can be a full multi-line script, not just one expression — this one logs the value to the console and shows it in an alert:
 
 {% floatingwindow triggerLabel='Show tips' title='Tips' width=320 attr={'onclick': '''
 const value = this.innerText;

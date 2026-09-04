@@ -36,10 +36,10 @@ renders, live:
 ##### Heading level 5
 ###### Heading level 6
 
-Levels 1–4 get a stable `id`, a permalink that fades in when you hover, and an entry in the
-**On this page** table of contents; levels 5 and 6 render but stay out of the TOC. (Because the
-six lines above are real headings, you will see levels 1–4 appear in this page's TOC.) Pin a
-custom id by ending a heading line with `{#my-id}` — see
+Levels 1–4 get a stable `id` and a permalink that fades in when you hover; levels 2 and 3 also
+get an entry in the **On this page** table of contents, while 1, 4, 5 and 6 stay out of it.
+(Because the six lines above are real headings, you will see levels 2 and 3 appear in this
+page's TOC.) Pin a custom id by ending a heading line with `{#my-id}` — see
 [Templating & data](/authoring/templating/) for more.
 
 ## Paragraphs and line breaks
@@ -642,7 +642,7 @@ quote-don't-classify contract the [gitfolder](/components/extras/gitfolder#downl
 footer has, and at the same ref as the code above it. A repo with no license file simply gets no
 footer.
 
-{% callout title="Public repos only" severity="note" %}
+{% callout title="Public repos only" severity="info" %}
 `github=` reads **public** repos anonymously. It sends no credential, so it cannot read a private
 repo — and cannot be made to leak one either: an untrusted pull request adding a `github=` fence
 gets exactly what any anonymous visitor would get. The old `github.allowedOwners` key existed to

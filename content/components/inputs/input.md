@@ -1,6 +1,6 @@
 ---
 title: "Input"
-description: "The built-in input tag — the low-level, unstyled base input primitive every field is built on; just the styled control, no label or message wrapper."
+description: "The built-in input tag — the base input control every other field is built on: the styled box on its own, with no label, description, or error message wrapper."
 ---
 
 # Input
@@ -14,10 +14,12 @@ Use it as `{% raw %}{% input %}{% endraw %}` in Markdown, or call it from Python
 (loops, snippets) via `component('aardvark', 'input', …)`.
 
 {% callout severity='info' title='No wrapper — just the control' %}
-`Input` is the unstyled base. The label, description, and error *messages* you see on the
-other fields come from `Input.Wrapper`, which they compose on top of `Input`. So `input`
-here has no `label` or `description`, and its `error` is a **boolean** that adds error
-styling rather than a message string.
+`Input` is the bare control: it still carries the full field styling (border, background,
+focus ring), it just has no message furniture around it. The label, description, and error
+*messages* you see on the other fields come from `Input.Wrapper`, which they compose on top
+of `Input`. So `input` here has no `label` or `description`, and its `error` is a
+**boolean** that adds error styling rather than a message string. Use `variant='unstyled'`
+if you want the border and background gone as well.
 {% endCallout %}
 
 ## Basic control
@@ -190,6 +192,13 @@ component('aardvark', 'group', children=inner)
 ```
 {% endAccordionSection %}
 {% endAccordion %}
+
+{% callout severity='warning' title='Give a bare control an accessible name' %}
+Because `input` renders no `<label>`, assistive technology has nothing to announce it by
+apart from its placeholder. When the surrounding markup does not already name it, pass a
+name through the raw attribute channel — `attr={'aria-label': 'Search the docs'}` — or use
+[TextInput](/components/inputs/textinput/), which renders a real label tied to the control.
+{% endCallout %}
 
 ## Attributes
 

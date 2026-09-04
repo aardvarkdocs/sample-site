@@ -167,12 +167,13 @@ shell's content — typically a set of [Pills](/components/combobox/pill/).
 | `label` | String | The field label. |
 | `description` | String | Helper text below the label. |
 | `error` | String | Validation message; also styles the shell red. |
-| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Input size. |
+| `size` | `xs`, `sm`, `md`, `lg`, `xl` (default `sm`) | Input size. |
 | `radius` | `xs`, `sm`, `md`, `lg`, `xl` | Corner radius. |
 | `variant` | `default`, `filled`, `unstyled` | Input style. |
 | `disabled` | `true`, `false` (default `false`) | Render in a disabled state. |
 | `required` | `true`, `false` (default `false`) | Mark the field required. |
 | `withAsterisk` | `true`, `false` (default `false`) | Show the required asterisk on the label. |
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="PillsInput"]` — or through the Mantine Styles API classes (`.mantine-PillsInput-root` and its inner parts):
@@ -199,6 +200,9 @@ const value = this.innerText;
 console.log('attr demo value:', value);
 alert(value);
 '''} %}
+{% pill %}docs{% endPill %}
+{% pill %}markdown{% endPill %}
+{% endPillsinput %}
 
 <br>
 
@@ -211,6 +215,9 @@ const value = this.innerText;
 console.log('attr demo value:', value);
 alert(value);
 '''} %}
+{% pill %}docs{% endPill %}
+{% pill %}markdown{% endPill %}
+{% endPillsinput %}
 ```
 {% endraw %}
 {% endAccordionSection %}

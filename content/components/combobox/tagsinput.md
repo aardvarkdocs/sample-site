@@ -68,10 +68,14 @@ component('aardvark', 'tagsinput',
 
 ## Limiting and splitting
 
-`maxTags` caps the count; `splitChars` adds separators that commit a tag (the default is
-Enter only). Here a comma also commits, up to three tags:
+`maxTags` caps the count. A tag commits on Enter, and also on any character in
+`splitChars` — which Mantine already sets to a comma, so a comma commits a tag whether or
+not you pass anything. Setting `splitChars` *replaces* that default rather than adding to
+it. The value is itself a comma-separated list whose entries are stripped, so a comma and a
+space are the two characters you cannot list; below, a semicolon and a pipe commit instead,
+up to three tags:
 
-{% tagsinput label='Up to 3, comma also commits' maxTags=3 splitChars=',' %}
+{% tagsinput label='Up to 3; semicolon or pipe commits' maxTags=3 splitChars=';,|' %}
 
 <br>
 
@@ -79,15 +83,15 @@ Enter only). Here a comma also commits, up to three tags:
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% tagsinput label='Up to 3, comma also commits' maxTags=3 splitChars=',' %}
+{% tagsinput label='Up to 3; semicolon or pipe commits' maxTags=3 splitChars=';,|' %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'tagsinput',
-          label='Up to 3, comma also commits',
-          maxTags=3, splitChars=',')
+          label='Up to 3; semicolon or pipe commits',
+          maxTags=3, splitChars=';,|')
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -163,16 +167,16 @@ Every attribute is optional; omit one to take its Mantine default. The body is i
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `data` | Comma-separated list | Optional autocomplete suggestions — plain strings, since tags are free text. |
-| `dataJson` | JSON array string | A full suggestions array, including `{group, items}` groups. Wins over `data` when both are set. |
+| `dataJson` | JSON array string | A full suggestions array, including `{group, items}` groups. Wins over `data` when both are set. A value that is not valid JSON, or is JSON but not an array, warns at build time and leaves the field with no suggestions. |
 | `defaultValue` | Comma-separated list | The tags shown on load. |
-| `splitChars` | Comma-separated characters | Separators that commit a tag (in addition to Enter). For example `,` or `,\| ` for several. |
+| `splitChars` | Comma-separated characters | Characters that commit a tag, alongside Enter. Defaults to `,`, and any value you pass replaces that default. Entries are comma-separated and stripped, so a comma and a space cannot be listed — `;,\|` gives you `;` and `\|`. |
 | `maxTags` | Integer | Cap the number of tags. |
 | `label` | String | The field label. |
 | `placeholder` | String | Empty-state text inside the input. |
 | `description` | String | Helper text below the label. |
 | `error` | String | Validation message; also styles the field red. |
-| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Input size. |
-| `radius` | `xs`, `sm`, `md`, `lg`, `xl` | Corner radius. |
+| `size` | `xs`, `sm`, `md`, `lg`, `xl` (default `sm`) | Input size. |
+| `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | Corner radius. |
 | `variant` | `default`, `filled`, `unstyled` | Input style. |
 | `searchable` | `true`, `false` (default `false`) | Filter the suggestion list by typing. |
 | `clearable` | `true`, `false` (default `false`) | Show an × to clear all tags. |
@@ -182,6 +186,7 @@ Every attribute is optional; omit one to take its Mantine default. The body is i
 | `required` | `true`, `false` (default `false`) | Mark the field required. |
 | `withAsterisk` | `true`, `false` (default `false`) | Show the required asterisk on the label. |
 | `maxDropdownHeight` | Integer (px) | Cap the suggestion dropdown height. |
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="TagsInput"]` — or through the Mantine Styles API classes (`.mantine-TagsInput-root` and its inner parts):
@@ -201,7 +206,7 @@ Target the rendered element through its island marker — `[data-aardvark-island
 
 ## Injecting Attributes
 
-`attr={…}` forwards raw HTML attributes — including event handlers — straight onto the rendered element, so you can wire DOM behavior the tag does not expose. The handler can be a full multi-line script, not just one expression — here it is wired to `onchange` on the search box, so typing to filter logs the text you type to the console and alerts it — selecting items is React state and fires no DOM `change` event:
+`attr={…}` forwards raw HTML attributes — including event handlers — straight onto the rendered element, so you can wire DOM behavior the tag does not expose. The handler can be a full multi-line script, not just one expression — here it is wired to `onchange` on the text field. A DOM `change` fires when the field commits its text — on blur, not on each keystroke — so the alert appears once you click away, and adding or removing a tag never triggers it, since that is React state and fires no DOM `change`:
 
 {% tagsinput label='Tags' placeholder='Type and press Enter' defaultValue='docs, markdown' attr={'onchange': '''
 const value = this.value;

@@ -25,7 +25,9 @@ Wrap a region whose focusable elements should be trapped; the block body is that
 <div style="display:flex; gap:0.5rem; align-items:center; padding:0.75rem; border:1px solid var(--mantine-color-default-border); border-radius:var(--mantine-radius-sm);"><input placeholder="first" /><button>second</button><a href="#">third</a></div>
 {% endFocustrap %}
 
-Set `active=false` to keep the region rendered while the focus trap is disengaged.
+That example is written `active=false` so it stays inert while you read the page. Drop the
+attribute — `{% raw %}{% focustrap %}{% endraw %}` — and the trap engages as soon as the
+region mounts, which is what you want inside an overlay that only exists while it is open.
 
 <br>
 
@@ -40,12 +42,8 @@ Set `active=false` to keep the region rendered while the focus trap is disengage
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% focustrap %}
-<div style="display:flex; gap:0.5rem; align-items:center;">
-  <input placeholder="first" />
-  <button>second</button>
-  <a href="#">third</a>
-</div>
+{% focustrap active=false %}
+<div style="display:flex; gap:0.5rem; align-items:center; padding:0.75rem; border:1px solid var(--mantine-color-default-border); border-radius:var(--mantine-radius-sm);"><input placeholder="first" /><button>second</button><a href="#">third</a></div>
 {% endFocustrap %}
 ```
 {% endraw %}
@@ -53,44 +51,35 @@ Set `active=false` to keep the region rendered while the focus trap is disengage
 {% accordionSection title="Source: Python" %}
 ```python
 region = (
-    '<div style="display:flex; gap:0.5rem; align-items:center;">'
+    '<div style="display:flex; gap:0.5rem; align-items:center; '
+    'padding:0.75rem; border:1px solid var(--mantine-color-default-border); '
+    'border-radius:var(--mantine-radius-sm);">'
     '<input placeholder="first" />'
     '<button>second</button>'
     '<a href="#">third</a>'
     '</div>'
 )
-component('aardvark', 'focustrap', children=region)
+component('aardvark', 'focustrap', active=False, children=region)
 ```
 {% endAccordionSection %}
 {% endAccordion %}
 
-Use `active=false` to disable the trap without removing it. This is useful when a parent owns the open/closed state and only wants focus captured some of the time:
+{% callout severity='warning' title='The body must resolve to exactly one element' %}
+A trap attaches its focus handling to a **single** element, so wrap the region in one
+container: a lone `<div>`, a `paper`, a `card`. If the body renders two sibling elements —
+or only loose text — the trap silently passes the content through and keyboard focus is
+never captured. Nothing errors; <kbd>Tab</kbd> simply walks out of the region.
+{% endCallout %}
 
-<br>
-
-{% accordion %}
-{% accordionSection title="Source: Markdown" %}
-{% raw %}
-```aardvark
-{% focustrap active=false %}
-<div>
-  <input placeholder="first" />
-  <button>second</button>
-</div>
-{% endFocustrap %}
-```
-{% endraw %}
-{% endAccordionSection %}
-{% accordionSection title="Source: Python" %}
-```python
-component(
-    'aardvark', 'focustrap',
-    active=False,
-    children='<div><input placeholder="first" /><button>second</button></div>',
-)
-```
-{% endAccordionSection %}
-{% endAccordion %}
+{% callout severity='warning' title='An engaged trap takes focus immediately' %}
+When `active` is on, focus moves *into* the region the moment it mounts: the element marked
+`data-autofocus` if there is one, otherwise the first focusable element inside it. That is
+the right behavior for a dialog that just opened, and the wrong behavior for a region
+sitting in the middle of a page — a reader who has scrolled elsewhere gets yanked back and
+cannot <kbd>Tab</kbd> out. Keep page-level examples `active=false`, and engage the trap from
+the state that opens the overlay. If the region holds nothing focusable at all, the trap has
+nowhere to send focus and says so in the browser console.
+{% endCallout %}
 
 ## With other components
 

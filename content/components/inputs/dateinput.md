@@ -82,18 +82,25 @@ Omit any attribute to take its Mantine default.
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `defaultValue` | `YYYY-MM-DD` string | Initial value (a date string, never a `Date`). |
-| `valueFormat` | a dayjs format string (e.g. `MMM D, YYYY`) | How the value is displayed and parsed. |
+| `valueFormat` | a dayjs format string (e.g. `MMM D, YYYY`) | How the value is displayed and parsed. Defaults to `MMMM D, YYYY`. |
 | `label` | string | Field label above the input. |
 | `description` | string | Helper text below the label. |
 | `placeholder` | string | Placeholder shown when empty. |
 | `error` | string | Validation message; switches the field to the error color. |
-| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Control size. |
+| `size` | `xs`, `sm` (default), `md`, `lg`, `xl` | Control size. |
 | `radius` | `xs`–`xl` or a CSS length | Corner radius. |
 | `variant` | `default`, `filled`, `unstyled` | Input style. |
 | `required` | bool (`true` / `false`) | Mark required and add the asterisk. |
 | `withAsterisk` | bool (`true` / `false`) | Add the asterisk without the HTML `required`. |
 | `disabled` | bool (`true` / `false`) | Render the field disabled. |
 | `clearable` | bool (`true` / `false`) | Show an × to clear the value. |
+
+{% callout severity='info' title='Good to know' %}
+Free typing is parsed against `valueFormat`, so what a reader types has to match the format the
+field displays. Text it can't read as a date is discarded and the last valid value comes back as
+soon as the field loses focus — nothing is left half-entered. `clearable` also makes the calendar
+deselect: clicking the already-selected day empties the field instead of re-picking it.
+{% endCallout %}
 
 ## CSS Selectors
 
@@ -113,7 +120,7 @@ Target a `{% raw %}{% dateinput %}{% endraw %}` from your own CSS with the islan
 
 ## Injecting Attributes
 
-Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the rendered element. Here it is wired to `onchange`, so committing a typed value or picking a date logs the new value to the console and alerts it:
+Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the rendered element. Picking a day in the calendar fires `change` right away; a typed date fires it when the field loses focus, the way any text input does. Here it is wired to `onchange`, so either route logs the new value to the console and alerts it:
 
 {% dateinput label='Release date' defaultValue='2026-01-15' valueFormat='MMM D, YYYY' clearable=true attr={'onchange': '''
 const value = event.target.value;

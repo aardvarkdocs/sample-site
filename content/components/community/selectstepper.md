@@ -1,6 +1,7 @@
 ---
 title: "Select stepper"
 description: "The built-in selectstepper tag — an option-cycling stepper from the Mantine community. Prev/next arrows step through a list of choices. Pass data as JSON, set a label, orientation, looping, and live examples."
+menu: components
 parent: community
 weight: 20
 ---
@@ -94,17 +95,17 @@ Omit any attribute to take its default. Bare flags (e.g. `loop`) become `=True`.
 | `label` | String | Label text shown above the control. |
 | `description` | String | Helper text shown below the label. |
 | `orientation` | `horizontal` (default) / `vertical` | Direction of the prev/next arrows. |
-| `size` | `xs` / `sm` / `md` / `lg` / `xl` | Overall control size. |
-| `variant` | String | Visual style variant (passed through to the vendor component). |
+| `size` | `xs` / `sm` (default) / `md` / `lg` / `xl` | Control size — the arrow buttons and the text. |
+| `variant` | `default` / `filled` / `light` / `outline` / `subtle` / `transparent` / `white` / `gradient` | Visual style of the arrow controls. |
 | `loop` | `true` / `false` (default `false`) | Wrap around past the first/last option. |
-| `animate` | `true` / `false` (default `false`) | Animate transitions between options. |
+| `animate` | `true` (default) / `false` | Animate transitions between options; set `=false` for an instant swap. |
 | `disabled` | `true` / `false` (default `false`) | Disable the whole control. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element. |
 
 ## CSS Selector
 
 The component renders inside an island wrapper carrying
-`data-aardvark-island="SelectStepper"`, with the vendor's own class names on the control
+`data-aardvark-island="SelectStepper"`, with the package's own class names on the control
 inside. Target the wrapper to constrain or align it:
 
 ```css

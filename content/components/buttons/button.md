@@ -37,7 +37,9 @@ component('aardvark', 'button', text='Get started', url='#')
 ## Label
 
 Give the label inline with `text`, or as the block body (handy when the label wraps
-other markup). In Python, pass the body as `children`.
+other markup). In Python, pass the body as `children`. A `text` label is HTML-escaped, so
+any markup in it shows as literal characters; the block body is rendered content and keeps
+the markup it carries.
 
 {% button text='Inline label' %} {% button %}Block label{% endButton %}
 
@@ -92,7 +94,7 @@ component('aardvark', 'button', text='Plain button')
 When `url` is set, link-only attributes pass through: `target`, `rel`, `download`.
 Pair `target='_blank'` with `rel='noopener noreferrer'` for security.
 
-{% button text='Mantine docs' url='https://mantine.dev' target='_blank' rel='noopener noreferrer' %} {% button text='Download report' url='/report.pdf' download='report.pdf' variant='outline' %}
+{% button text='Mantine docs' url='https://mantine.dev' target='_blank' rel='noopener noreferrer' %} {% button text='Download photo' url='/landscape.jpg' download='landscape.jpg' variant='outline' %}
 
 <br>
 
@@ -101,7 +103,7 @@ Pair `target='_blank'` with `rel='noopener noreferrer'` for security.
 {% raw %}
 ```aardvark
 {% button text='Mantine docs' url='https://mantine.dev' target='_blank' rel='noopener noreferrer' %}
-{% button text='Download report' url='/report.pdf' download='report.pdf' variant='outline' %}
+{% button text='Download photo' url='/landscape.jpg' download='landscape.jpg' variant='outline' %}
 ```
 {% endraw %}
 {% endAccordionSection %}
@@ -109,8 +111,8 @@ Pair `target='_blank'` with `rel='noopener noreferrer'` for security.
 ```python
 component('aardvark', 'button', text='Mantine docs', url='https://mantine.dev',
           target='_blank', rel='noopener noreferrer')
-component('aardvark', 'button', text='Download report', url='/report.pdf',
-          download='report.pdf', variant='outline')
+component('aardvark', 'button', text='Download photo', url='/landscape.jpg',
+          download='landscape.jpg', variant='outline')
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -307,8 +309,9 @@ component('aardvark', 'button', text='Settings', leftSection='⚙', rightSection
 
 ## Form buttons
 
-Inside a `<form>`, `type='submit'` makes the button submit the form (the HTML
-default; `type='reset'` and `type='button'` are also accepted).
+Inside a `<form>`, `type='submit'` makes the button submit it. Set it explicitly: unlike a
+bare HTML `<button>`, this one renders as `type="button"` when you leave `type` unset, so a
+button that should submit never will until you say so. `type='reset'` is also accepted.
 
 {% button text='Submit' type='submit' %} {% button text='Reset' type='reset' variant='outline' %}
 

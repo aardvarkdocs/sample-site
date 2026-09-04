@@ -171,22 +171,23 @@ component('aardvark', 'card', title='Stack', subtitle='What this service is buil
 ## Progressive enhancement
 
 Measurement happens in the browser, so before JavaScript runs (and in the build-time prerender) every
-item shows with no counter — the collapse is pure progressive enhancement. The first item always
-stays visible even in a very narrow container.
+item shows with no counter — the collapse is pure progressive enhancement. In a container too narrow
+for even one label, every item folds into the counter.
 
 ## Attributes
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `items` | comma-separated string, or a JSON array of strings | The labels. A comma-separated string splits on commas; a JSON array (`'["a","b"]'`) keeps commas inside a label. |
+| `items` | comma-separated string, or a JSON array of strings | The labels. A comma-separated string splits on commas; a JSON array (`'["a","b"]'`) keeps commas inside a label. A value that parses as JSON but is not an array (a bare `42`) becomes one label. |
 | `variant` | `light` (default), `filled`, `outline`, `dot`, `transparent`, `white`, `default`, `gradient` | Badge variant. |
 | `color` | a Mantine color name or hex | Badge color. |
 | `size` | `xs`, `sm`, `md` (default), `lg`, `xl` | Badge size. |
 | `gap` | a Mantine size token (`xs`–`xl`) or a px value | Spacing between badges (default `xs`). |
 | `withTooltip` | bool (default `true`) | Show the hidden labels in a tooltip on the counter. Set `false` to disable. |
+
 ## CSS Selectors
 
-Target the rendered element through its island marker — `[data-aardvark-island="OverflowList"]` — or through the Mantine Styles API classes (`.mantine-OverflowList-root` and its inner parts):
+Target the rendered element through its island marker — `[data-aardvark-island="OverflowList"]` — or through the Mantine Styles API class on its root (`.mantine-OverflowList-root`). The labels themselves are badges, so `.mantine-Badge-root` reaches them:
 
 {% raw %}
 ```css
@@ -195,6 +196,9 @@ Target the rendered element through its island marker — `[data-aardvark-island
 
 /* Mantine Styles API class on the root element */
 .mantine-OverflowList-root { }
+
+/* Each label (and the "+N" counter) is a Badge */
+[data-aardvark-island="OverflowList"] .mantine-Badge-root { }
 ```
 {% endraw %}
 

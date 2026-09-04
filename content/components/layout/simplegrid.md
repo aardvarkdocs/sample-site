@@ -213,6 +213,18 @@ component('aardvark', 'simplegrid', cols=3, colsSm=1, spacing='md', children=(
 | `w`, `h` | Mantine size token or any CSS value | Width / height. |
 | `miw`, `mih`, `maw`, `mah` | any CSS value | Min/max width and min/max height. |
 
+`attr={...}` forwards raw HTML attributes onto the rendered element.
+
+### Good to know
+
+- Cells are the body's top-level blocks. Other tags are blocks in their own right and become one
+  cell each wherever you put them, but plain text is not: two lines of prose are a single paragraph
+  and land in the *same* cell, so leave a blank line between text cells.
+- The breakpoint props apply from that breakpoint **up**. Below the smallest one you set, the base
+  `cols` is what applies, so set `cols` alongside them — a grid given only `colsMd` collapses to
+  one column on a phone.
+- `verticalSpacing` follows `spacing` until you set it, so a single `spacing` keeps the gaps even
+  in both directions.
 
 ## CSS Selectors
 

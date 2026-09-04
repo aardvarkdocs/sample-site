@@ -5,9 +5,8 @@ description: "The built-in card tag — flashy content cards with icons, cover a
 
 # Card
 
-A **built-in** tag built from Mantine's `Card` (plus `Image`, `BackgroundImage`, `Badge`, and
-`ThemeIcon`) behind one tag pair. One card does pretty much anything a card can: a title and a
-**Markdown** body, an icon, a cover or full-bleed background image, badges, an accent color,
+A **built-in** tag for content cards. One card does pretty much anything a card can: a title and
+a **Markdown** body, an icon, a cover or full-bleed background image, badges, an accent color,
 gradient/glass/stat looks, and a whole-card outbound link. Wrap a set of them in
 `{% raw %}{% cardGrid %}{% endraw %}` for a responsive grid. Use it as
 `{% raw %}{% card %}{% endraw %}` in Markdown, or call it from Python logic (loops, snippets)
@@ -424,8 +423,15 @@ Set what you need, omit the rest.
 | `subtitle` | string | A dimmed line under the title (the label, for `stat` cards). |
 | (body) | Markdown | Content below the heading. Leave empty for a bare/stat card. |
 | `href` / `url` | URL | Make the **whole card** a link. External URLs open in a new tab with an icon, and hovering the card shows the destination domain as a tooltip. (`url` is used only when `href` is absent.) |
+| `target` / `rel` | string | Override the link's `target` / `rel`. An external card already gets `target="_blank"` and `rel="noopener noreferrer"`. |
+| `external` | bool flag | Treat the link as outbound even when it isn't an absolute URL (new tab + the external-link icon). |
 | `icon` | a [Tabler](https://tabler.io/icons) name (`rocket`, `brand-github`), a Font Awesome class (`fa-solid fa-rocket`), an emoji, an image URL, or inline `<svg>` | The icon chip. |
+| `iconColor` | any theme/CSS color | Icon color, when it should differ from `accent`. |
+| `iconVariant` | `transparent` (default), `filled`, `light`, `outline`, `white`, `default`, `gradient` | Look of the chip behind the icon. |
+| `iconStyle` | `outline` (default), `filled` | Which Tabler glyph style to draw. |
+| `watermark` | bool flag | Draw the icon once, oversized and translucent, behind the content as a design motif (the small chip is then dropped). Tabler icons only. |
 | `image` | image URL | Cover image (top) — or the full background when `variant="image"`. |
+| `imageHeight` | CSS size (default `160`) | Height of the cover image. |
 | `alt` | string | Alt text for the image (use `alt=""` for a decorative image). |
 | `variant` | `elevated` (default), `gradient`, `glass`, `image`, `stat`, `plain` | Card style. `plain` is a bare Mantine card — no shadow or hover lift. |
 | `badge` | string | One badge label (any text, including a comma). |
@@ -443,9 +449,19 @@ Set what you need, omit the rest.
 | `radius` | `xs`–`xl` or any CSS value | Corner rounding. |
 | `withBorder` | bool flag | Draw a border. |
 | `padding` | Mantine spacing token or CSS size | Inner padding. |
+| `minHeight` | CSS size | A floor on the card's height. `minHeight=0` cancels the 220px floor `variant="image"` sets for itself. |
 | `sheen` | bool flag (`sheen=false`) | Turn off the animated hover sheen on a link card. |
 | `id` | string | An HTML `id`. |
 | `onclick` | JS expression | A JS click handler (a raw HTML attribute). |
+
+> **Good to know.** The `gradient="from,to,deg"` shorthand splits on commas, so a functional
+> color cannot go in it — `gradient="rgb(112,72,232),cyan"` would be torn apart at those commas.
+> The build says so and ignores the shorthand; use `gradientFrom`/`gradientTo`/`gradientDeg` for
+> `rgb()` and `hsl()` colors. Any color that could break out of the CSS it lands in is dropped
+> with a warning rather than written into the page.
+>
+> `variant="image"` needs an `image` to lay its text over. Without one it warns and renders as an
+> ordinary card, so the light-on-photo text can never end up invisible on a white surface.
 
 ### `{% raw %}{% cardGrid %}{% endraw %}`
 
@@ -453,11 +469,12 @@ Set what you need, omit the rest.
 | --- | --- | --- |
 | `cols` | integer | Columns on desktop (collapses to 2 on tablet, 1 on mobile). Default `{base:1, sm:2, lg:3}`. |
 | `colsBase` `colsSm` `colsMd` `colsLg` `colsXl` | integer | Per-breakpoint column counts. On their own they define the grid outright (no step-down); alongside `cols` they override just those breakpoints and the rest of the step-down stays. |
-| `spacing` | Mantine spacing token or CSS size | Horizontal gap between cards. |
-| `verticalSpacing` | Mantine spacing token or CSS size | Vertical gap between cards. |
+| `spacing` | Mantine spacing token or CSS size (default `lg`) | Horizontal gap between cards. |
+| `verticalSpacing` | Mantine spacing token or CSS size | Vertical gap between cards. Matches `spacing` unless you set it. |
 
 This tag ships as a built-in; when you need something different, define your **own**
 [custom component](/authoring/custom-components/) and call it the same way.
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="Card"]` — or through the Mantine Styles API classes (`.mantine-Card-root` and its inner parts):

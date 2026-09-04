@@ -4,14 +4,19 @@ import { Button, Code, Group, Stack, Text, TextInput, Textarea } from '@mantine/
 
 // A live form built on the useForm hook. useForm owns the field values, the touched/dirty
 // status, and the validation results; each input is wired to it with getInputProps('name'),
-// which hands back the value, onChange, onBlur, error, and (in the default uncontrolled mode)
-// the key the hook uses to address the field. Submitting runs the validate rules first and only
-// calls the success handler when every field passes, so the result panel below shows the
-// collected values exactly when the form is valid.
+// which hands back the value, onChange, onBlur and error. useForm runs in its DEFAULT
+// CONTROLLED mode here, so getInputProps supplies `value`; form.key('name') is passed alongside
+// it purely as preparation for a later switch to mode: 'uncontrolled', which would then need no
+// per-field rewrite. It remounts nothing as written: in the pinned Mantine 9.3.2, use-form.mjs
+// bumps the form key only under `mode === "uncontrolled"` and never calls setFieldKeys, so
+// key(path) is a constant string for the life of a controlled form. Submitting
+// runs the validate rules first and only calls the success handler when every field passes, so
+// the result panel below shows the collected values exactly when the form is valid.
 //
 // Validation here is plain functions (one per field): they return a string to flag an error or
-// a falsy value to pass. Mantine 9 no longer ships zodResolver, so schema validation would mean
-// bringing your own resolver — plain rules keep this demo dependency-free.
+// a falsy value to pass. Mantine 9 replaced the per-library resolvers (zodResolver and friends)
+// with one schemaResolver over any Standard Schema library, so schema validation would mean
+// taking on that library as a dependency — plain rules keep this demo dependency-free.
 //
 // forwardRef so attr={...} from Markdown reaches the outer <form> DOM node (see DemoCard.jsx /
 // the Injecting Attributes doc section).

@@ -38,7 +38,8 @@ banner: "**Version 2.0** is out — see what changed below."
 ```
 {% endraw %}
 
-To **hide** the site-wide banner on a single page, set `banner: false`:
+To **hide** the site-wide banner on a single page, set `banner: false` (an empty value or
+`banner: null` suppresses it just the same):
 
 {% raw %}
 ```markdown
@@ -55,7 +56,8 @@ banner: false
 - **Markdown**, rendered inline — **bold**, *italics*, `code`, and links. (It's plain text, not a
   place for tags or other components.)
 - **Dismissible** — a × button closes it; it stays closed for that visitor until you change the
-  text. Editing the announcement brings it back for everyone.
+  text. Editing the announcement brings it back for everyone. Dismissal is remembered per
+  announcement, so closing a page's own banner never hides the site-wide one (or the reverse).
 - **Scrolls away** — the banner sits at the top and scrolls off as the reader moves down the page,
   while the header stays pinned.
 

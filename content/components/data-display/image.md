@@ -184,7 +184,7 @@ Omit any attribute to take its default.
 | `src` | image URL | The image (required). |
 | `alt` | string | Alternative text. Shows as a hover tooltip and names the lightbox dialog for screen readers. Use `alt=""` for a purely decorative image. |
 | `caption` | string | Visible figure caption shown below the image. Opt-in — omit it for no caption. |
-| `size` | percentage, e.g. `50%` | Scale the image to a percentage of the content width. Aspect ratio is preserved. Defaults to natural size, capped to the column. |
+| `size` | any CSS width, e.g. `50%` or `320px` | Sets the image width — a percentage scales it against the content column. Height follows, so the aspect ratio is preserved. Omit it for natural size, capped to the column. |
 | `align` | `left` (default), `center`, `right` | Positions a scaled image. |
 | `zoom` | bool flag (`true` default / `false`) | `true` opens a lightbox on click while the image is scaled down (an image at full size isn't clickable). `false` disables it entirely. |
 | `fit` | `cover` (default), `contain`, `fill`, `none`, `scale-down` | `object-fit` of the image. |
@@ -196,8 +196,15 @@ Omit any attribute to take its default.
 | `bd` | CSS border, e.g. `1px solid gray` | Border. |
 | `bg` | any CSS color | Background color (shows through a transparent image). |
 | `opacity` | number `0`–`1`, e.g. `0.8` | Image opacity. |
-| `m` `mt` `mb` `ml` `mr` `mx` `my` / `p` `pt` … `py` | Mantine spacing token or any CSS value | Margin / padding [spacing props](/components/layout/box/). |
+| `m` `mt` `mb` `ml` `mr` `mx` `my` / `p` `pt` `pb` `pl` `pr` `px` `py` | Mantine spacing token or any CSS value | Margin / padding [spacing props](/components/layout/box/). |
 | `w` `h` `miw` `mih` `maw` `mah` | Mantine size token or any CSS value | Width / height [sizing props](/components/layout/box/). |
+
+> **Good to know.** The lightbox opens only while the image is displayed **narrower than its
+> natural size**, measured in the browser after the image loads — a small image shown at full
+> size is never clickable, even with `zoom` left on. A `caption` identical to the `alt` empties
+> the image's own `alt`, so a screen reader announces the words once, from the visible caption,
+> rather than twice.
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="ZoomImage"]` — or through the Mantine Styles API classes (`.mantine-Image-root` and its inner parts):

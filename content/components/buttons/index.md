@@ -9,7 +9,7 @@ icon: click
 
 Aardvark's **built-in button tags** cover the whole family — buttons, icon buttons,
 copy and file pickers, and the unstyled primitive — each a single tag with no setup.
-For the underlying components and every prop they accept, see
+The full prop surface behind them is catalogued in
 [Mantine's button components](https://mantine.dev/core/button/).
 
 - [Button](/components/buttons/button/) — the standard styled button or link: variant, color, size, gradient, sections, link target/rel/download, spacing, `id`, `onclick`.

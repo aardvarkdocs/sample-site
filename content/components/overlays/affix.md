@@ -133,15 +133,17 @@ sits over your content — keep it small and out of the way of the main reading 
 
 ## CSS Selectors
 
-Target the rendered element through its island marker, `[data-aardvark-island="Affix"]`, or through the Mantine Styles API classes:
+The pinned content is rendered into a portal on `<body>` rather than where the tag sits, so it
+escapes any overflow or transform on the surrounding page. Target it by its own class — a
+selector that descends from the island marker will not reach it:
 
 {% raw %}
 ```css
-/* Every rendered Affix carries this island marker */
-[data-aardvark-island="Affix"] { }
-
-/* Mantine Styles API classes */
+/* The pinned element itself */
 .mantine-Affix-root { }
+
+/* The tag's mount point, which stays in the page flow */
+[data-aardvark-island="Affix"] { }
 ```
 {% endraw %}
 

@@ -186,6 +186,12 @@ style it from your theme CSS.
 .mantine-Timeline-itemBullet {
   /* the rail bullet */
 }
+
+[data-aardvark-update] {
+  /* --aardvark-update-gap sets the space below an entry AND the length of the line
+     segment that bridges it to the next one — retune the gap and the rail follows */
+  --aardvark-update-gap: 2rem;
+}
 ```
 {% endraw %}
 

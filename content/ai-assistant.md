@@ -37,6 +37,11 @@ them on.
 
 ![The built-in "Ask AI" reader panel answering a question with cited sources](/img/assistant/ai-assistant-panel.png)
 
+Readers reach it three ways: the **Ask AI** button in the site header, the question field pinned to
+the bottom of every page, and the **Cmd/Ctrl + I** keyboard shortcut. Answers stream in as they are
+written — including the model's thinking, when you run a reasoning model — and fenced code in a
+finished answer is syntax-highlighted in your own theme palette.
+
 ### Enable it
 
 ```yaml
@@ -44,11 +49,19 @@ ai:
   assistant:
     enabled: true
     model: "~anthropic/claude-sonnet-latest"   # any model the gateway proxies; "latest" alias needs the leading ~
+    escalationEmail: support@example.com       # optional: offer a human under a down-voted answer
 ```
 
 The site also needs your **public** gateway key baked in as the `AARDVARK_KEY` environment variable at
-build time (`aardvark_live_…`, never the secret key — it ships in the static site). Provisioning a key
-and funding the account live on the [cloud gateway](/ai-gateway/) page.
+build time. Provisioning a key and funding the account live on the [cloud gateway](/ai-gateway/) page.
+
+{% callout severity="warning" title="Public key only — a secret key stops the build" %}
+`AARDVARK_KEY` must be your **public** `aardvark_live_…` key: it is written verbatim into
+`/_aardvark/ai-config.json` and served to every reader. Setting a secret `aardvark_secret_…` key there
+**fails the build** rather than publishing it, because a secret key can manage the account and bypasses
+the gateway's reader guardrails. With no key at all, the panel renders a "not configured" notice
+instead of answering.
+{% endCallout %}
 
 ### Options
 
@@ -58,35 +71,76 @@ All optional except `enabled`:
 |-----|---------|--------------|
 | `enabled` | `false` | Master switch for the reader panel. |
 | `model` | `~anthropic/claude-sonnet-latest` | The model the assistant answers with (must be vision/file-capable if you keep attachments on). |
-| `gateway` | the managed gateway | Base URL of the gateway Worker (include the `/v1` suffix). Point it at your own gateway to self-host. |
-| `reasoning` | model default | Reasoning control for a reasoning-capable model (`enabled` / `effort`). |
-| `attachments` | on | Reader file uploads — see [Reader attachments](/ai-gateway/#reader-attachments) on the gateway page for the caps and cost notes. |
+| `gateway` | the managed gateway | Base URL of the gateway Worker; endpoint paths are appended to it, so keep the `/v1` suffix the shipped Worker routes on. Point it at your own gateway to self-host — a URL with no path at all warns, and so does a non-`https` one (the baked key would travel in cleartext) unless the host is `localhost`, `127.0.0.1` or `::1`. |
+| `reasoning` | model default | Reasoning control for a reasoning-capable model — `enabled` (bool) and `effort` (`low`/`medium`/`high`). |
+| `attachments` | on | Reader file uploads — 4 files of 10 MB each by default. See [Reader attachments](/ai-gateway/#reader-attachments) for the caps and cost notes. |
 | `store_history` | `true` | Posts each finished turn to the gateway so it appears in your dashboard **and feeds the analytics below**. |
 | `inlineContextMaxTokens` | model-derived | First-turn inline budget; `0` forces page-by-page navigation. |
-| `prompt` | server-side | The system prompt is **not** baked into the public site — set it as the key's `system_prompt` when you mint the key. |
+| `inlineContextWindowFraction` | `0.6` | How much of the model's real context window that derived budget may fill. |
+| `escalationEmail` | unset | Address behind the "Email us" offer shown under a down-voted answer — and the signal the deflection metric is measured from. |
+| `topAskButton` | `true` | The **Ask AI** button in the site header. |
+| `bottomTextField` | `true` | The question field pinned to the bottom of every page. |
+| `app` | on | The installable "{site} Assistant" app — see [Install it as an app](#install-it-as-an-app). |
+| `prompt` | server-side | The system prompt is **not** baked into the public site — set it as the key's `system_prompt` when you mint the key. Setting it here warns and is ignored. |
+
+`maxFiles` and `maxFileSizeMb` are the picker's own limits, enforced in the reader's browser. The
+gateway applies its own, separately: it refuses a turn carrying more than **20 attachment parts**, or
+more than **48 MiB** of encoded attachment payload in total. `maxFiles` is not clamped to that ceiling,
+so a site that sets it above 20 lets readers attach files the gateway then rejects at send time — keep
+it at 20 or below.
 
 {% callout severity="warning" title="store_history feeds the analytics" %}
 The entire analytics dashboard is built from **stored transcripts**. Leaving `store_history` on (the
 default) is what populates Insights, Conversations, Top Questions, and the rest. Set it to `false` and
-the assistant still works, but the dashboard has nothing to analyze.
+the assistant still works — questions still travel to the gateway to be answered — but no transcript is
+posted or stored, so the dashboard has nothing to analyze.
 {% endCallout %}
+
+### Install it as an app
+
+Turning the assistant on also publishes a reserved `/_assistant/` page — the assistant alone, permanently
+fullscreen, with no way to close it — plus a web manifest and app icons rasterized from your favicon, so
+readers can **install your assistant as a standalone app** on desktop and mobile. Launching the installed
+app opens straight into that fullscreen chat.
+
+Readers install it three ways: the browser's own install offer (which appears on any page of the site),
+an **Install app** button in the panel's empty state, and the **Install Assistant** entry in the page-actions
+menu. The installed app's scope is `/_assistant/` alone — it is the assistant, not a copy of your docs —
+and there is no service worker, so it never serves stale content. The page itself carries `noindex` and
+stays out of your nav, sitemap, search index and `llms.txt`.
+
+Name the app with `app.name` (default "{site name} Assistant") and `app.shortName`, set the icon backdrop
+with `app.iconBackground`, or drop the page, manifest, icons and install affordances entirely with
+`app.enabled: false`.
 
 ## The analytics dashboard
 
 Every stored conversation feeds an analytics suite on the **gateway dashboard** — open
-`gateway.aardvarkdocs.com/dashboard` (or your own gateway host) and sign in via the **magic link**
-emailed to the account owner. (The dashboard is email-login only; the `aardvark_secret_…` key is the
-API/CLI credential — it authenticates the [programmatic endpoints](#programmatic-export) below, not
-the dashboard UI.) Cron passes on the gateway classify each answer, cluster the corpus into themes,
-and surface where your docs fall short.
+`gateway.aardvarkdocs.com/dashboard` (or your own gateway host) and sign in with the **magic link**
+emailed to you, or through **single sign-on** where your account has it configured. (The dashboard is a
+browser session; the `aardvark_secret_…` key is the API/CLI credential, and it authenticates the
+[programmatic endpoints](#programmatic-export) below.) Cron passes on the gateway classify each answer,
+cluster the corpus into themes, and surface where your docs fall short.
+
+{% callout severity="warning" title="Grading reads the model's reasoning" %}
+The analysis pass classifies an answer from the model's own **chain-of-thought**, so it only grades turns
+whose reasoning trace was captured. Run the assistant on a model that emits reasoning (or leave
+`reasoning.enabled: true` on one that can) — otherwise conversations still appear in the dashboard, but
+answer quality, uncertainty and Coverage Gaps stay empty.
+{% endCallout %}
 
 ### Insights — the overview
 
-The **Insights** tab is a KPI overview over a 7 / 30 / 90-day window: total **conversations** and
-**answers**, the reader **satisfaction rate** (the 👍 share of votes), the **uncertainty rate**, an
-**answer-quality** distribution bar (every answer is graded `confident` / `unconfident` / `not_found`
-/ `doc_gap` from the model's own reasoning trace), a **conversation-volume** series, the **language**
-mix, and a **support-deflection** rate.
+The **Insights** tab is a KPI overview over a 7 / 30 / 90-day window (30 by default): total
+**conversations** and **answers**, the reader **satisfaction rate** (the 👍 share of votes), the
+**uncertainty rate** (the share of graded answers that were anything but confident), an
+**answer-quality** distribution bar (every graded answer is `confident` / `unconfident` / `not_found`
+/ `doc_gap`), a **conversation-volume** series, the **language** mix, and a **support-deflection**
+rate. Deflection is measured from the escalation offer, so it stays blank until you set
+`escalationEmail`.
+
+The window applies to those live metrics. Top Questions and Coverage Gaps below are **period snapshots**
+and don't move with it.
 
 ![The Insights tab: engagement KPIs, the answer-quality distribution, and the volume chart](/img/assistant/insights-overview.png)
 
@@ -102,53 +156,76 @@ readers actually come for, and export the list to CSV.
 
 The companion pass clusters the **uncertain** answers — the questions your docs handle poorly — into
 recurring topics. Each gap card carries a **Finding** (what's missing or confusing) and a concrete
-**Recommendation**. A **Copy for LLM** button drops the finding + recommendation onto your clipboard
-to paste into an LLM or issue, you can set a **triage status**, and you can **export the gap as a
-ready-to-paste GitHub / Linear / Jira issue** — the status is keyed to a stable label hash, so it
-survives the next re-cluster.
+**Recommendation**. A **Copy for LLM** button drops the finding + recommendation onto your clipboard,
+you can set a **triage status** (open / in progress / done / dismissed), and you can **copy the gap as a
+ready-to-paste issue** — GitHub and Linear in Markdown, Jira in wiki markup. The status is keyed to a
+stable label hash, so it survives the next re-cluster, and any teammate can triage (unlike tags and the
+digest, which are the owner's to set).
 
-![Coverage Gaps, each with a finding, a recommendation, and a triage status menu](/img/assistant/coverage-gaps.png)
+{% callout severity="info" title="Clustering needs a little traffic" %}
+Both clusters come from a periodic pass over one calendar period's conversations, capped at ten themes
+per kind. It needs a handful of recent questions before it will group anything (and a few flagged
+answers before a gap appears), and it re-clusters an account at most once every few hours — so a brand-new
+site sees "not enough conversations yet" for a while, and a fresh answer shows up in Conversations long
+before it moves a theme.
+{% endCallout %}
 
 ### Conversations
 
 The **Conversations** tab is the raw record: every conversation with its per-turn **verdict**, an
-**intent** auto-label, and any **custom tags** you've defined (up to 20 per account — you give a tag a
-name and a description, and the analysis pass applies it, backfilling existing conversations). A rich
-filter bar narrows by full-text **search**, verdict, vote, intent, tag, and date range, and a
-**needs-attention** view surfaces the answers worth reading. Open any conversation for the full
-transcript, and **export** the filtered set to CSV (formula-injection-guarded).
+**intent** auto-label (troubleshooting, product discovery, unsupported feature, competitor, off-topic),
+a sentiment reading, and any **custom tags** you've defined. A rich filter bar narrows by full-text
+**search**, verdict, vote, intent, tag, and date range, and a **needs-attention** view surfaces the
+flagged answers worth reading. Open any conversation for the full transcript, and **export** the
+filtered set to CSV (formula-injection-guarded, up to 5,000 turns per export).
+
+Custom tags are your own vocabulary: give a tag a name and a description of when it applies, and the
+analysis pass applies it. An account can hold **20 tags** (the account owner defines them), a tag name
+can't contain a semicolon — the CSV export joins a turn's tags with one — and each conversation carries
+at most eight. Tags apply to conversations the pass analyzes **after** you create them; existing
+conversations are not re-analyzed, so define a tag before the traffic you want it on.
 
 ![The Conversations tab with filters, intent labels, and custom tags](/img/assistant/conversations.png)
 
 ### Source Analytics
 
-Which of your pages are doing the work: **most-cited sources**, plus the citations that show up
-disproportionately alongside **down-voted** answers — a signal that a popular page may be misleading
-rather than helpful.
+Which of your pages are doing the work: the **most-cited sources** in the selected window (top 20),
+plus the citations that show up disproportionately alongside **down-voted** answers — a signal that a
+popular page may be misleading rather than helpful.
 
 ### Periods, trends & the email digest
 
-Snapshots are versioned by **period** — week, month, or quarter — so you can navigate back through
-history and every cluster shows a **trend** against the prior period. Opt in to a **weekly or monthly
-email digest** (from the dashboard) and the gateway emails the account owner a summary of the latest
-Top Questions, new Coverage Gaps, and headline metrics.
+Snapshots are versioned by **period** — the gateway clusters by week, month or quarter — so you can
+navigate back through history and every cluster shows a **trend** against the prior period. Opt in to a
+**weekly or monthly email digest** (from the dashboard; the account owner sets it) and the gateway emails
+the owner a summary of the latest Top Questions, new Coverage Gaps, and headline metrics. A period with
+nothing clustered is skipped rather than mailed empty.
 
 ### Ask your analytics
 
 A natural-language panel answers questions about your own Insights data — "what are readers most
 confused about this month?", "which pages get cited with thumbs-down?" — so you don't have to read
-every chart. Like the clustering passes it's metered to the account and rate-limited.
+every chart. It reads the last 30 days of aggregates and the latest clusters — never raw transcripts —
+takes a short question, and is rate-limited per account; like the clustering passes it's metered, and
+it says so plainly when the balance is out.
+
+That 30-day window is fixed. The **7d / 30d / 90d** selector at the top of the page re-scopes the KPI
+cards and charts, but the question you ask here is always answered from the last 30 days — so on the
+7d or 90d view the answer can quote different numbers than the cards right above it.
 
 ![The "Ask your analytics" natural-language panel](/img/assistant/analytics-assistant.png)
 
 ### Programmatic export
 
-For pulling analytics into your own pipelines, two dashboard-authed read APIs:
+For pulling analytics into your own pipelines, two read APIs that take either your dashboard session or
+your secret key:
 
 - **`GET /v1/activity`** — aggregate stats (conversations, answers, satisfaction, verdict
-  distribution, deflection, languages) over a `?days=` window.
-- **`GET /v1/threads`** — a keyset-paginated full-conversation export with `?since=` **incremental
-  sync**, so a follow-up pull returns only what's new.
+  distribution, deflection, languages) over a `?days=` window: 30 by default, up to a year.
+- **`GET /v1/threads`** — a keyset-paginated full-conversation export, oldest first, 200 turns per page
+  (up to 1,000). Pass `?since=` an epoch-ms timestamp for a fresh pull or the previous page's
+  `next_cursor` to continue — either way each turn is returned exactly once, so a follow-up sync
+  returns only what's new.
 
 ## How it's billed
 
@@ -157,16 +234,24 @@ passes deliberately default to a cheap, large-context model (`~google/gemini-fla
 classifying and clustering a corpus stays inexpensive; an operator can override each pass
 independently. Every call — reader chat and analytics alike — rides the gateway's managed upstream key
 and is **metered to your account** at the published rate. Spend can't run away: each pass is bounded
-per cron tick and per account, and an account with no balance is skipped until it's funded again. Full
-pricing, funding, and Stripe details are on the [cloud gateway](/ai-gateway/) page.
+per cron tick and per account, an answer the model can't classify is retried only a couple of times,
+and an account with no balance is skipped until it's funded again. Full pricing, funding, and Stripe
+details are on the [cloud gateway](/ai-gateway/) page.
 
 ## Privacy
 
 The analytics are deliberately **leaner on identity than third-party tools**: there is no durable
 per-visitor id, so the dashboard reports **active conversations**, never a "unique users" count.
-Stored transcripts keep the **question and answer text** (to analyze), not attachment bytes, and they
-age out on the gateway's retention schedule along with everything derived from them (verdicts, tags,
-cited-source events).
+Stored transcripts keep the **question, the answer, and the model's reasoning for that answer** — the
+reasoning is what the grading reads — plus the pages the answer cited. Attachment bytes are never
+stored. Transcripts age out on the gateway's retention schedule (90 days by default), and everything
+derived from them — verdicts, tags, cited-source events — is pruned with them.
+
+The panel shows readers no "this chat is stored" notice of its own, so if your policy requires
+disclosing that reader questions are retained, say so in your privacy policy or near the assistant —
+or turn `store_history` off, which stops transcripts being posted or stored. It does not stop questions
+reaching the gateway: they still travel there, with any attachments and the pages the assistant
+retrieved, to be answered at all. The 👍/👎 feedback and engagement beacons keep reaching it too.
 
 ## Related
 

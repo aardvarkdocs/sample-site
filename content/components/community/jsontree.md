@@ -10,9 +10,9 @@ weight: 70
 
 `jsontree` renders any JSON-serializable value — an object, array, or scalar — as an
 **interactive, collapsible tree** with syntax highlighting. Readers can expand and collapse
-nodes, copy individual values or the whole document, search keys and values, and read the full
-JSON path on hover. It hydrates into a fully interactive island in the browser, with no
-JavaScript to write.
+nodes; switch on the toggles below and they can also copy individual values or the whole
+document, filter keys and values, and read the full JSON path on hover. It becomes a fully
+interactive island in the browser, with no JavaScript to write.
 
 You pass the value to display as a JSON **string** through `data`; the tag parses it at build
 time and hands the parsed value to the viewer. Use it as `{% raw %}{% jsontree %}{% endraw %}`
@@ -26,7 +26,8 @@ A **Community Component** — wraps [JsonTree](https://gfazioli.github.io/mantin
 
 ### Basic tree
 
-Pass a JSON object string through `data`. By default the first couple of levels auto-expand:
+Pass a JSON object string through `data`. The tree starts collapsed at the root — click a
+node to open it:
 
 {% jsontree data='{"name":"Aardvark","version":"1.0","tags":["docs","static"],"meta":{"stars":42,"active":true}}' %}
 
@@ -69,19 +70,31 @@ node:
 ```
 {% endraw %}
 
-### Controlling expansion depth
+### Opening the tree on load
 
-`maxDepth` sets how many levels auto-expand: `0` collapses everything, a positive number
-expands that many levels, and `-1` expands the whole tree. `withExpandAll` adds an
-expand/collapse-all control:
+`defaultExpanded` opens the tree when the page loads, and `maxDepth` says how far: a positive
+number opens that many levels, `-1` opens the whole tree. `withExpandAll` adds an
+expand/collapse-all control readers can use afterwards:
 
-{% jsontree data='{"a":{"b":{"c":{"d":"deep"}}},"list":[1,2,3]}' maxDepth=1 withExpandAll=true %}
+{% jsontree data='{"a":{"b":{"c":{"d":"deep"}}},"list":[1,2,3]}' defaultExpanded=true maxDepth=1 withExpandAll=true %}
 
 <br>
 
 {% raw %}
 ```aardvark
-{% jsontree data='{"a":{"b":{"c":{"d":"deep"}}},"list":[1,2,3]}' maxDepth=1 withExpandAll=true %}
+{% jsontree data='{"a":{"b":{"c":{"d":"deep"}}},"list":[1,2,3]}' defaultExpanded=true maxDepth=1 withExpandAll=true %}
+```
+{% endraw %}
+
+Raising `maxDepth` opens more of it — here the whole document:
+
+{% jsontree data='{"a":{"b":{"c":{"d":"deep"}}},"list":[1,2,3]}' defaultExpanded=true maxDepth=-1 %}
+
+<br>
+
+{% raw %}
+```aardvark
+{% jsontree data='{"a":{"b":{"c":{"d":"deep"}}},"list":[1,2,3]}' defaultExpanded=true maxDepth=-1 %}
 ```
 {% endraw %}
 
@@ -118,13 +131,13 @@ Every attribute is optional; omit one to take its upstream default. The body is 
 | --- | --- | --- |
 | `data` | JSON string | The value to display — an object, array, or scalar. Parsed at build time; a malformed value warns and degrades to an empty object. |
 | `rootName` | String | Label for the root node (default `root`). |
-| `maxDepth` | Integer | Levels to auto-expand: `0` collapsed, `-1` expand all (default `2`). |
-| `size` | `xs`, `sm`, `md`, `lg`, `xl`, or a number | Font scale of the tree. |
+| `maxDepth` | Integer | How many levels `defaultExpanded` opens; `-1` opens the whole tree (default `2`). On its own it changes nothing — the tree starts collapsed unless `defaultExpanded` is on. |
+| `size` | `xs`, `sm`, `md`, `lg`, `xl`, or a number (default `xs`) | Font scale of the tree. |
 | `maxHeight` | CSS length (string) | Cap the height; the tree scrolls past it. |
 | `displayFunctions` | `as-string`, `hide`, `as-object` | How function values are rendered (default `as-string`). |
 | `borderRadius` | `xs`, `sm`, `md`, `lg`, `xl` | Paper radius when `withBorder` is on (default `sm`). |
-| `searchPlaceholder` | String | Placeholder for the search box when `withSearch` is on. |
-| `defaultExpanded` | `true` / `false` (default `false`) | Expand all nodes by default. |
+| `searchPlaceholder` | String | Placeholder for the search box when `withSearch` is on (default `Filter keys and values...`). |
+| `defaultExpanded` | `true` / `false` (default `false`) | Open the tree on load, down to `maxDepth` levels. |
 | `withBorder` | `true` / `false` (default `false`) | Wrap the tree in a bordered Paper. |
 | `showLineNumbers` | `true` / `false` (default `false`) | Show line numbers down the side. |
 | `showIndentGuides` | `true` / `false` (default `false`) | Show vertical indent guides. |
@@ -137,6 +150,17 @@ Every attribute is optional; omit one to take its upstream default. The body is 
 | `withKeyCountBadge` | `true` / `false` (default `false`) | Show a badge with the total key/item count. |
 | `stickyHeader` | `true` / `false` (default `false`) | Keep the toolbar header sticky while scrolling. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element. |
+
+{% callout severity="info" title="Good to know" %}
+`data` is parsed at build time. A value that isn't valid JSON raises a build warning and the
+viewer falls back to an empty object rather than failing the build — so an empty-looking tree
+usually means a quoting slip. The tag's value is single-quoted, so keep the JSON's own strings
+in double quotes; for anything longer than a line or two, build the string in a generator or a
+Python caller instead of hand-writing it in the page.
+
+Copy buttons use the browser clipboard API, so they only work in a secure context (HTTPS or
+`localhost`) and quietly do nothing elsewhere.
+{% endCallout %}
 
 ## CSS Selector
 
@@ -158,10 +182,12 @@ The upstream package also exposes a rich set of CSS variables (e.g.
 
 ## Injecting Attributes
 
-Pass `attr={…}` to forward raw HTML attributes (an `id`, `class`, `data-*`, ARIA attributes,
-inline event handlers) straight onto the rendered element — exactly like
+Pass `attr={…}` to forward raw HTML attributes (an `id`, `data-*`, ARIA attributes, inline
+event handlers) straight onto the rendered element — exactly like
 `component('aardvark', 'jsontree', attr={…})`. These ride the `data-aardvark-attr` channel,
-not React props, so they don't collide with the component's own props:
+not React props, so they don't collide with the component's own props. Leave `class`,
+`className` and `style` out of it: those are managed by the component, and the page logs a
+console warning if you send them.
 
 {% jsontree data='{"hello":"world"}' attr={'id': 'demo-tree', 'data-role': 'json-viewer'} %}
 

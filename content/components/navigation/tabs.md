@@ -258,21 +258,18 @@ component('aardvark', 'tabs', defaultValue='files', children=tabs)
 
 ## Attributes
 
-Attributes on `{% raw %}{% tabs %}{% endraw %}` pass straight through as Mantine
-`Tabs` props, so the full Tabs surface is available.
+Set these on the `{% raw %}{% tabs %}{% endraw %}` open tag; they configure the whole set.
 
 ### `{% raw %}{% tabs %}{% endraw %}`
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `defaultValue` | a tab's `value` | Which tab is open on load. Use this, not `value` — a bare `value` makes Mantine controlled, so the tabs won't switch on click. |
-| `variant` | `default`, `outline`, `pills` | `default` / `outline` keep the sliding underline; `pills` uses Mantine's filled pill (sliding bar off). |
+| `variant` | `default` (default), `outline`, `pills` | `default` / `outline` keep the sliding underline; `pills` uses Mantine's filled pill (sliding bar off). |
 | `orientation` | `horizontal` (default), `vertical` | Stack the tabs down the side when `vertical`. |
 | `color` | any Mantine color (e.g. `blue`, `grape`) | Accent color for the active tab. |
 | `radius` | `xs`–`xl` | Corner radius of the tab controls. |
-| `grow` | bool flag | Make the tabs share the full row width. |
-| `justify` | `left`, `center`, `right`, `apart`, … | Alignment of the tab list. |
-| `keepMounted` | bool flag | Keep inactive panels mounted in the DOM. |
+| `keepMounted` | bool flag | Keep inactive panels mounted in the DOM. Off by default, so only the active panel exists. |
 
 ### `{% raw %}{% tab %}{% endraw %}`
 
@@ -282,6 +279,14 @@ Attributes on `{% raw %}{% tabs %}{% endraw %}` pass straight through as Mantine
 | `value` | string | Stable id for the tab (defaults to a slug of the label). |
 | `color` | any Mantine color | Accent color for this individual tab. |
 | `disabled` | bool flag | Render the tab disabled (non-interactive). |
+
+{% callout title="Good to know" severity="info" %}
+A tab's `value` defaults to a slug of its label, and two labels in the same set that
+slugify alike are made unique with a numeric suffix — "Set up" and "Set Up" become
+`set-up` and `set-up-1`. If you point `defaultValue` at a label you have used twice, give
+those tabs explicit `value` attributes so the id you target is the one you mean. Separate
+tab sets on the same page never collide, so they may reuse labels freely.
+{% endCallout %}
 
 ## CSS Selectors
 

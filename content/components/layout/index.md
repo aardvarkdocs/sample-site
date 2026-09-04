@@ -25,9 +25,10 @@ center them, cap a content width, or build a responsive grid.
 | [AppShell](/components/layout/appshell/) | A page-level shell (header / navbar / aside / footer). |
 | [Splitter](/components/layout/splitter/) | Two panels side by side with a divider. |
 
-Each tag forwards the matching Mantine props, so anything you can do with the underlying
-component is reachable from the tag. For the full prop surface of any one, follow its link
-to the Mantine docs at the top of each page.
+Each page's **Attributes** table is the complete list of what that tag accepts — the layout
+options it adds, plus the shared spacing, sizing, and color props. The list is enforced: an
+attribute a tag doesn't declare fails the build rather than being quietly ignored, so a typo
+surfaces while you're writing instead of shipping as a style that never applied.
 
 ## Surfaces & utilities
 

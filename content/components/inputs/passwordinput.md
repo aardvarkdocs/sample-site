@@ -219,6 +219,7 @@ Omit any attribute to take its Mantine default.
 | `withAsterisk` | bool (`true` / `false`) | Add the asterisk without the HTML `required` attribute. |
 | `disabled` | bool (`true` / `false`) | Render the field disabled. |
 | `leftSection` | string | Text shown inside the field, before the value (the right side holds the visibility toggle). |
+| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) applied to the rendered `<input>`. |
 
 ## CSS Selectors
 
@@ -238,7 +239,10 @@ Target a `{% raw %}{% passwordinput %}{% endraw %}` from your own CSS with the i
 
 ## Injecting Attributes
 
-Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the rendered element. Here it is wired to `onchange`, so changing the field logs its new value to the console and alerts it. For a password field that's a demonstration only — never log or transmit a real password value in production:
+Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the
+rendered `<input>`, so `this` inside a handler is the field itself and `this.value` is what the reader
+typed. Here it is wired to `onchange`, which fires when the value changes and the field loses focus. For
+a password field this is a demonstration only — never log or transmit a real password value in production:
 
 {% passwordinput label='Password' placeholder='Your password' attr={'onchange': '''
 const value = this.value;

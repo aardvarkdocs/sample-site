@@ -166,15 +166,15 @@ Every attribute is optional; omit one to take its Mantine default. The body is i
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `data` | Comma-separated list | The suggestions. These are plain strings — the typed value is free text, so there is no separate value/label. |
-| `dataJson` | JSON array string | A full suggestions array, including `{group, items}` groups. Wins over `data` when both are set. |
+| `data` | Comma-separated list | The suggestions. These are plain strings — the typed value is free text, so there is no separate value/label, and a `::` inside an item stays part of the string rather than splitting it the way [Select](/components/combobox/select/) does. |
+| `dataJson` | JSON array string | A full suggestions array, including `{group, items}` groups. Wins over `data` when both are set. A value that is not valid JSON, or is JSON but not an array, warns at build time and leaves the field with no suggestions. |
 | `label` | String | The field label. |
 | `placeholder` | String | Empty-state text inside the input. |
 | `description` | String | Helper text below the label. |
 | `error` | String | Validation message; also styles the field red. |
 | `defaultValue` | String | The text shown on load. |
-| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Input size. |
-| `radius` | `xs`, `sm`, `md`, `lg`, `xl` | Corner radius. |
+| `size` | `xs`, `sm`, `md`, `lg`, `xl` (default `sm`) | Input size. |
+| `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | Corner radius. |
 | `variant` | `default`, `filled`, `unstyled` | Input style. |
 | `clearable` | `true`, `false` (default `false`) | Show an × to clear the value. |
 | `disabled` | `true`, `false` (default `false`) | Disable the input. |
@@ -182,6 +182,7 @@ Every attribute is optional; omit one to take its Mantine default. The body is i
 | `withAsterisk` | `true`, `false` (default `false`) | Show the required asterisk on the label. |
 | `withScrollArea` | `true`, `false` (default `true`) | Wrap a long suggestion list in a scroll area. |
 | `maxDropdownHeight` | Integer (px) | Cap the dropdown height. |
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="Autocomplete"]` — or through the Mantine Styles API classes (`.mantine-Autocomplete-root` and its inner parts):

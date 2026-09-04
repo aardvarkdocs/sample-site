@@ -1,5 +1,7 @@
 ---
-description: Every Aardvark command — new, build, dev, link-check, and ai-enrich — and the options each takes.
+description: Every vark command — new, build, deploy, dev, link-check, convert,
+  ai-enrich, author, serve, update, version, and web-bot-auth-keygen — and the options
+  each takes, generated from vark --help.
 aliases:
   - /old-cli/
 icon: fa-solid fa-terminal
@@ -19,7 +21,9 @@ Aardvark — a Mantine-powered static site generator.
 
 Author your content in Markdown and build it into a fast, fully static site: Mantine-powered interactive components, built-in client-side search, automatic Open Graph cards, and optional build-time AI enrichment. Scaffold a project with `vark new`, preview it live with `vark dev`, and produce the deployable site with `vark build`.
 
-On interactive terminals, vark quietly checks for newer releases in the background while real subcommands run, and prints an upgrade reminder only when an update is available. Run `vark update` any time for an explicit check.
+On interactive terminals, vark quietly checks for newer releases in the background while real subcommands run, and prints an upgrade reminder only when an update is available. Run `vark update` any time for an explicit check, or set `AARDVARK_NO_UPDATE_CHECK` to any non-empty value to turn the reminder off.
+
+Every command loads a `.env` before it runs, so a key like `AARDVARK_SECRET_KEY` can live there instead of your shell. With `--root DIR`, `DIR/.env` is read first; then the nearest `.env` found by searching the current directory and its parents. A variable already set in the environment always wins over both files.
 
 Run with no command to open the interactive TUI (agentic authoring + launchers).
 
@@ -72,6 +76,8 @@ Every build prints a per-phase timing summary — how many pages and components 
 
 A link to a missing page or a missing local image — in any language — always fails the build (the same check `vark link-check` runs without producing output). A link to a missing `#anchor` on a page that DOES exist is warn-only by default (it still lands on the right page); set `links: {strictAnchors: true}` in config to make those fail too. Unknown component references never fail the build: each renders as an HTML comment and is reported as a warning on stderr — usually a typo, a missing `npm install`, or a snippet you haven't created yet.
 
+Generation scripts run before page discovery, so `--no-generators` builds from whatever generated pages are already on disk instead of re-running them. A `protected:` directory whose password environment variable is unset or empty aborts the build before anything is written, so the previous output survives. When config turns the whole-site PDF on, it is the slowest phase of the build by a wide margin; `--no-pdf` skips it for one run.
+
 `--log-file PATH` also appends this build's summary, warnings, and any failure to a plain-text file — what `vark build > summary.txt` captures, plus the warnings and the error (`-v`'s per-phase streaming stays on stderr and is not written to the file). It exists mainly for symmetry with `vark dev --log-file`, where a pipe isn't an option because it turns the dashboard off. Runs are appended under a `=== vark build … started … ===` banner.
 
 | Option | Default | Effect |
@@ -100,7 +106,7 @@ vark build -v            # stream per-phase progress to stderr
 
 Build the site and publish it to Aardvark cloud managed hosting.
 
-Runs the same full production build as `vark build`, then uploads the output directory to your Aardvark cloud site and makes it live, printing the site's URL. Pass `--no-build` to upload an already-built output directory as-is (it errors if none exists).
+Runs the same full production build as `vark build`, then uploads the output directory to your Aardvark cloud site and makes it live, printing the site's URL once a custom domain is attached — a production site is served on its own domain, so until you attach one there is no URL to print. Pass `--no-build` to upload an already-built output directory as-is (it errors if none exists).
 
 This publishes only to a CLI-created site. A site connected to a GitHub repository keeps deploying from that repository, so `vark deploy` refuses it — before running the build, not after.
 
@@ -125,6 +131,8 @@ vark deploy --slug my-docs      # deploy to (or create) the site my-docs
 Serve the site locally and rebuild on change.
 
 Builds once, serves the result, watches your sources, and live-reloads the browser on every change. Your browser opens to the site automatically when the server starts (pass `--no-open` to skip that). The per-phase timing summary prints on the first build and on every rebuild, so you can see exactly what each change cost. Generation scripts run on every rebuild; pass `--no-generators` for a fully offline loop when a generator's network call is slow or its cache is cold.
+
+Dev builds skip the two heaviest phases — Open Graph cards and the whole-site PDF — so rebuilds stay fast. The pages still carry their `og:image` tags and the Download PDF menu link, but those files exist only after a real `vark build`, so social-preview unfurls and that download don't resolve against the dev server.
 
 When the site prerenders islands (`islands.ssr`), each page's baked markup is cached and reused until that page — or the islands toolchain — actually changes, so a rebuild only re-renders what you edited. Pass `--no-ssr` to skip the prerender altogether for the fastest loop, accepting that dev pages then mount client-side and no longer match what `vark build` publishes.
 
@@ -206,7 +214,7 @@ vark convert mkdocs ./src ./out --force -v        # overwrite a non-empty ./out
 
 Run opt-in build-time enrichment (frontmatter, examples, skills).
 
-Writes generated `description`/`keywords` back into your Markdown frontmatter and, when `ai.skills` is enabled, (re)generates a `SKILL.md` for each planned skill under `skills/` in your project root. This is the only command that touches skills — `vark build` leaves them alone. Runs through Aardvark's metered gateway: the only thing you need to set is your `AARDVARK_SECRET_KEY`.
+Fills in a missing `description` and `keywords` in each page's Markdown frontmatter — a value you wrote yourself is never overwritten, and a page that already has both is skipped — and, when `ai.skills` is enabled, (re)generates a `SKILL.md` for each planned skill under `skills/` in your project root. This is the only command that touches skills — `vark build` leaves them alone. Runs through Aardvark's metered gateway: the only thing you need to set is your `AARDVARK_SECRET_KEY` (without it the command prints a note and does nothing).
 
 | Option | Default | Effect |
 | --- | --- | --- |

@@ -8,12 +8,12 @@ description: "Built-in Combobox tags — Select, Autocomplete, MultiSelect, Tags
 
 # Combobox
 
-The **Combobox** family is Mantine's set of dropdown / select / autocomplete inputs.
-Aardvark wraps each one as a first-class `{% raw %}{% tag %}{% endraw %}` so you can drop
-a searchable select or a tags field into a page with no JavaScript. They hydrate into
-fully interactive islands in the browser.
+The **Combobox** family is the set of dropdown, select, and autocomplete inputs. Each is a
+single `{% raw %}{% tag %}{% endraw %}` you write in Markdown, so a searchable select or a
+tags field goes into a page with no JavaScript to write. They arrive as static markup and
+become fully interactive once the page loads.
 
-- [Select](/components/combobox/select/) — a searchable single-select dropdown.
+- [Select](/components/combobox/select/) — a single-select dropdown, searchable on request.
 - [Autocomplete](/components/combobox/autocomplete/) — a free-text input with a suggestion list.
 - [MultiSelect](/components/combobox/multiselect/) — pick several options, shown as removable pills.
 - [TagsInput](/components/combobox/tagsinput/) — type free-text tags, with optional suggestions.
@@ -24,9 +24,10 @@ fully interactive islands in the browser.
 
 ## Options data
 
-Every select-style tag takes its options through `data`. The simplest form is a
-comma-separated list of strings, and `value::label` pairs let a short stored value carry a
-friendly label:
+Every select-style tag takes its options through `data`, and the simplest form is a
+comma-separated list of strings. [Select](/components/combobox/select/) and
+[MultiSelect](/components/combobox/multiselect/) additionally read `value::label` pairs (a
+double colon), so a short stored value can carry a friendly label:
 
 {% raw %}
 ```aardvark
@@ -44,8 +45,12 @@ For grouped, disabled, or otherwise richer options, pass a full JSON array throu
 ```
 {% endraw %}
 
-`Select`, `Autocomplete`, `MultiSelect`, and `TagsInput` all share this convention;
-`TreeSelect` takes a nested JSON tree instead (see its page).
+[Autocomplete](/components/combobox/autocomplete/) and
+[TagsInput](/components/combobox/tagsinput/) share the comma-separated `data` and the
+`dataJson` escape hatch, but not the `value::label` form: their entries are free text, so
+each item is taken as a plain string and a `::` inside one stays part of the string.
+[TreeSelect](/components/combobox/treeselect/) takes a nested JSON tree instead (see its
+page).
 
 ## High-level vs. primitives
 

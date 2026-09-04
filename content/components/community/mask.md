@@ -34,7 +34,7 @@ revealed through it.
 ```aardvark
 {% mask variant='radial' maskRadius='200px' %}
 {% paper withBorder=true p='xl' radius='md' %}
-## Spotlight
+#### Spotlight
 This whole panel sits behind a soft radial mask — the center is sharp and the edges fade.
 {% endPaper %}
 {% endMask %}
@@ -43,7 +43,7 @@ This whole panel sits behind a soft radial mask — the center is sharp and the 
 
 {% mask variant='radial' maskRadius='200px' %}
 {% paper withBorder=true p='xl' radius='md' %}
-## Spotlight
+#### Spotlight
 This whole panel sits behind a soft radial mask — the center is sharp and the edges fade.
 {% endPaper %}
 {% endMask %}
@@ -143,16 +143,16 @@ Omit any attribute to take its default. Bare flags (e.g. `withCursorMask`) becom
 | `maskRadiusX` / `maskRadiusY` | number or CSS length | Override the radius per axis. |
 | `maskOpacity` | `0`–`1` (default `1`) | Opacity of the masked content. |
 | `maskFeather` | `0`–`100` | Edge softness: `0` = hard, `100` = full fade (overrides the stops below). |
-| `maskTransparencyStart` / `maskTransparencyEnd` | percentage | Gradient start / end stops. |
+| `maskTransparencyStart` / `maskTransparencyEnd` | percentage (defaults `0` / `100`) | Gradient start / end stops. |
 | `maskX` / `maskY` | percentage (default `50`) | Static spotlight center when not following the cursor. |
 | `maskAngle` | number or CSS angle (default `90`) | Gradient angle when `variant='linear'`. |
 | `easing` | `0`–`1` (default `0.12`) | Cursor-follow smoothing (lower = slower trail). |
 | `animation` | `lerp` / `none` (default `lerp`) | `lerp` eases toward the cursor; `none` snaps instantly. |
 | `invertMask` | `true` / `false` (default `false`) | Hide the center and show the surroundings. |
-| `cursorOffsetX` / `cursorOffsetY` | number (px) | Offset the spotlight from the cursor. |
+| `cursorOffsetX` / `cursorOffsetY` | number (px, default `0`) | Offset the spotlight from the cursor. |
 | `trackPointerOnDocument` | `true` / `false` (default `false`) | Track the pointer across the whole page. |
 | `clampToBounds` | `true` / `false` (default `false`) | Keep the spotlight inside the container. |
-| `clampPadding` | number (px) | Extra padding when `clampToBounds` is on. |
+| `clampPadding` | number (px, default `0`) | Extra padding when `clampToBounds` is on. |
 | `recenterOnResize` / `recenterOnChildrenChange` | `true` / `false` (default `false`) | Recenter the static mask on layout changes. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element. |
 

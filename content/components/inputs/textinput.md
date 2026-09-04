@@ -282,6 +282,7 @@ Omit any attribute to take its Mantine default.
 | `disabled` | bool (`true` / `false`) | Render the field disabled. |
 | `leftSection` | string | Text shown inside the field, before the value. |
 | `rightSection` | string | Text shown inside the field, after the value. |
+| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) applied to the rendered `<input>`. |
 
 ## CSS Selectors
 
@@ -302,7 +303,9 @@ Target a `{% raw %}{% textinput %}{% endraw %}` from your own CSS with the islan
 
 ## Injecting Attributes
 
-Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the rendered element. Here it is wired to `onchange`, so changing the field logs its new value to the console and alerts it:
+Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the
+rendered `<input>`, so `this` inside a handler is the field itself and `this.value` is what the reader
+typed. Here it is wired to `onchange`, which fires when the value changes and the field loses focus:
 
 {% textinput label='Email' placeholder='you@example.com' description='Work address' attr={'onchange': '''
 const value = this.value;

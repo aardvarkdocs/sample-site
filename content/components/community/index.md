@@ -49,7 +49,7 @@ the npm package it bundles, and live examples.
 - [Flip](/components/community/flip/) — a card that flips between a front and back face.
 - [Reflection](/components/community/reflection/) — a mirrored reflection beneath its content.
 - [Parallax](/components/community/parallax/) — content that shifts on scroll or pointer movement.
-- [Marquee](/components/community/communitymarquee/) — a continuously scrolling ticker row.
+- [Community Marquee](/components/community/communitymarquee/) — a continuously scrolling ticker row, with isometric and circle variants on top of the built-in [Marquee](/components/layout/marquee/).
 - [TextAnimate](/components/community/textanimate/) — animated text reveals and transitions.
 - [BorderAnimate](/components/community/borderanimate/) — an animated gradient border.
 - [Compare](/components/community/compare/) — a before/after image slider.
@@ -71,7 +71,7 @@ the npm package it bundles, and live examples.
 - [Video](/components/community/video/) — a styled video player.
 - [ContextMenu](/components/community/contextmenu/) — a right-click context menu.
 - [Lightbox](/components/community/lightbox/) — a full-screen image lightbox.
-- [DataTable](/components/community/datatable/) — a feature-rich sortable, paginated data table.
+- [DataTable](/components/community/datatable/) — a themed data grid rendered from JSON columns and records.
 
 ## Not bundled as Community Components
 

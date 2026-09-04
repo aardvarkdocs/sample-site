@@ -39,7 +39,9 @@ component('aardvark', 'slider', min=0, max=100, step=5, defaultValue=40)
 
 ### Marks
 
-Pass `marks` as a JSON array of `{value, label}` objects. Add `restrictToMarks` to snap the
+Pass `marks` as a JSON array of `{value, label}` objects — real JSON, with double quotes. A
+value that doesn't parse warns during the build and the slider renders without marks, so a typo
+surfaces in the build log instead of quietly losing the ticks. Add `restrictToMarks` to snap the
 thumb to those positions only.
 
 {% slider min=0 max=100 defaultValue=50 color='grape' marks='[{"value": 0, "label": "0%"}, {"value": 50, "label": "50%"}, {"value": 100, "label": "100%"}]' %}
@@ -55,7 +57,8 @@ thumb to those positions only.
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
-The `marks` array rides through as a native Python list of dicts:
+`marks` is the same JSON string from Python — a native Python list would arrive as its `repr`,
+which isn't JSON. Build it with `json.dumps` when the marks come from data:
 
 ```python
 component('aardvark', 'slider',
@@ -96,7 +99,8 @@ component('aardvark', 'slider', defaultValue=70, color='orange', radius='xl', in
 
 ### Disabled
 
-Add the bare `disabled` flag to make the slider read-only.
+Add the bare `disabled` flag to make the slider non-interactive — it greys out and the thumb
+can't be moved.
 
 {% slider defaultValue=60 disabled=true %}
 
@@ -171,18 +175,18 @@ Omit any attribute to take its default.
 | --- | --- | --- |
 | `min` | number | Lower bound of the range (default `0`). |
 | `max` | number | Upper bound of the range (default `100`). |
-| `step` | number | Increment per move. |
+| `step` | number | Increment per move (default `1`). |
 | `defaultValue` | number | Starting value — the reader can drag it. |
-| `marks` | JSON array string | Tick marks as `[{"value": n, "label": "…"}, …]`. |
+| `marks` | JSON array string | Tick marks as `[{"value": n, "label": "…"}, …]`. A value that isn't valid JSON warns and renders no marks. |
 | `color` | theme color | Fill color of the track (e.g. `blue`, `grape`, `teal`). |
-| `size` | `xs`–`xl` | Track thickness. |
-| `radius` | `xs`–`xl` | Corner rounding of the track. |
+| `size` | `xs`–`xl` | Track thickness (default `md`). |
+| `radius` | `xs`–`xl` or any CSS value | Corner rounding of the track (default `xl`). |
 | `label` | string | Static text for the thumb tip (a plain string sets a fixed label). |
 | `labelAlwaysOn` | boolean | Keep the value bubble visible, not only while dragging. |
 | `inverted` | boolean | Fill from the max side instead of the min. |
 | `restrictToMarks` | boolean | Snap the thumb to the `marks` positions only. |
 | `showLabelOnHover` | boolean | Show the label on hover (on by default; set `false` to suppress). |
-| `disabled` | boolean | Make the slider read-only. |
+| `disabled` | boolean | Render the slider non-interactive. |
 | `attr` | raw-HTML map | Extra HTML attributes, passed as `attr={…}`. |
 
 ## CSS Selectors

@@ -8,7 +8,7 @@ description: "The built-in breadcrumbs tag — a breadcrumb trail from a JSON or
 A **built-in** tag for a breadcrumb trail, built on Mantine's `Breadcrumbs`. Pass the
 crumbs in `items` — either a compact comma-separated list of `Label | /href` pairs or a
 JSON array of `{label, href}` objects — and set the `separator`. A crumb with no `href`
-(typically the last, current one) renders as plain "you are here" text.
+renders as plain text, and the last one is dimmed as the "you are here" marker.
 
 Use it as {% raw %}`{% breadcrumbs %}`{% endraw %} in Markdown, or call it from Python logic (loops, snippets) via `component('aardvark', 'breadcrumbs', …)`.
 
@@ -128,13 +128,16 @@ component('aardvark', 'breadcrumbs', items=items, separator='/')
 
 ## Attributes
 
-Omit any attribute to take its default.
+Omit any attribute to take its default. Every crumb `href` is checked at build time: a
+`javascript:`, `data:`, `vbscript:`, `file:` or `blob:` scheme, or a protocol-relative
+`//host` URL, fails the build rather than shipping a dead or dangerous link — use a
+relative path or an `http(s)://` URL.
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `items` | JSON array of `{label, href}`, **or** a comma-separated list of `Label \| /href` pairs (**required**) | The crumbs. A crumb with no `href` (or the last crumb) renders as plain, dimmed "you are here" text. |
+| `items` | JSON array of `{label, href}`, **or** a comma-separated list of `Label \| /href` pairs (**required**) | The crumbs. A crumb with no `href` renders as plain text; the last crumb is dimmed and marked `aria-current="page"`. Give the last crumb an `href` and it stays a link. |
 | `separator` | Any string (defaults to `/`) | The character drawn between crumbs. |
-| `separatorMargin` | A Mantine size (`xs`–`xl`) or any CSS value | The space around the separator. |
+| `separatorMargin` | A Mantine size (`xs`–`xl`, defaults to `xs`) or any CSS value | The space around the separator. |
 
 ## CSS Selectors
 

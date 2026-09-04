@@ -121,6 +121,8 @@ The `frontmatter:` block accepts the same front matter any content page uses: `t
 
 A few safety checks apply:
 
+- `enabled` must be literally `true`, and at least one term must be `public: true` — a file
+  with no public entries generates no page.
 - `url` must be a non-root path (not `/`) — the homepage can never be overwritten.
 - `url` must contain no `.` or `..` segments.
 - If a content page already occupies the URL, the generated page is skipped with a warning.
@@ -147,6 +149,10 @@ The prompt lines Aardvark generates depend on what each entry has:
 - Terms without translations but with a `definition`: the definition serves as a context note. The model can freely translate the term but understands what it means — useful for common domain vocabulary.
 - Product names, brand names, and trademarks: set `translate: false` (all languages) or `translations.<code>: false` (one language). The model keeps them verbatim.
 - Acronyms that expand differently in each language: use `translations.<code>.acronym`.
+
+A translatable entry with neither a `translations.<code>.term` nor a `definition` contributes no
+prompt line at all — give every term at least a `definition` so it still reaches the model as a
+context note. (`translate: false` entries always emit their verbatim-keep line, definition or not.)
 
 Non-public entries ground translation just as well as public ones. The `public` flag only controls the reader-facing hover card and glossary page — it has no effect on translation.
 

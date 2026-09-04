@@ -6,9 +6,9 @@ title: Built-in Components
 
 # Built-in Components
 
-Aardvark ships a built-in `{% raw %}{% tag %}{% endraw %}` for **every Mantine core
-component** — no setup, no JavaScript to write. They're grouped by category in the left nav,
-mirroring Mantine's own groupings, so you can browse by what a component _does_. On top of the
+Aardvark ships a built-in `{% raw %}{% tag %}{% endraw %}` for **the Mantine core components
+you place in a page** — no setup, no JavaScript to write. They're grouped by category in the left
+nav, mirroring Mantine's own groupings, so you can browse by what a component _does_. On top of the
 Mantine set, Aardvark adds a handful of **native** components built just for documentation sites,
 plus a growing **Community Components** catalog: eligible third-party Mantine extensions are
 wrapped as built-in tags, while notable policy exclusions are documented explicitly.

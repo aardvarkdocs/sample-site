@@ -163,10 +163,10 @@ page.print('\n'.join(css))
 <span class="wa-terminal__title">zsh — my-docs</span>
 </div>
 <pre><span class="c-dim">$</span> <span class="c-cmd">vark new my-docs</span>
-<span class="c-mut">  scaffolded project</span>
-<span class="c-dim">$</span> <span class="c-cmd">vark dev --port 8000</span>
-<span class="c-ok">  built 24 pages · serving http://127.0.0.1:8000</span>
-<span class="c-ok">  live-reload ready</span></pre>
+<span class="c-mut">  Created new site in my-docs</span>
+<span class="c-dim">$</span> <span class="c-cmd">cd my-docs &amp;&amp; vark dev</span>
+<span class="c-ok">  Built 2 page(s) (3 component(s)) in 391ms</span>
+<span class="c-ok">  serving build at http://127.0.0.1:8000 (watching for changes)</span></pre>
 </div>
 </div>
 </section>
@@ -182,7 +182,7 @@ page.print('\n'.join(css))
 </div>
 
 <div class="wa-stats">
-<div class="wa-stat"><span class="wa-stat__n">45+</span><span class="wa-stat__l">built-in components</span></div>
+<div class="wa-stat"><span class="wa-stat__n">160+</span><span class="wa-stat__l">built-in components</span></div>
 <div class="wa-stat"><span class="wa-stat__n">16</span><span class="wa-stat__l">analytics integrations</span></div>
 <div class="wa-stat"><span class="wa-stat__n">300+</span><span class="wa-stat__l">AI models, every major lab</span></div>
 <div class="wa-stat"><span class="wa-stat__n">1</span><span class="wa-stat__l">binary to deploy</span></div>

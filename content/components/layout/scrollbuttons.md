@@ -117,13 +117,25 @@ Omit any attribute to take its default.
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `scrollAmount` | An integer, pixels (default `200`) | How far each chevron click scrolls the row. |
-| `controlSize` | A number or CSS length (default `60px`) | Size of the chevron control buttons. |
+| `controlSize` | A number or CSS length (default `50px`) | Size of the chevron control buttons — it sets both their width and the width of the fade behind them. |
 | `edgeGradientColor` | Any CSS color (default the page background) | Color of the fade behind the controls. |
 | `draggable` | bare flag or `true` / `false` (default `true`) | Allow dragging the row with the pointer. Set `false` to disable. |
 | `showStartControl` | `true` / `false` (default `false`) | Keep the start (left) control visible even at that end. |
 | `showEndControl` | `true` / `false` (default `false`) | Keep the end (right) control visible even at that end. |
 
 `attr={...}` forwards raw HTML attributes onto the rendered element.
+
+### Good to know
+
+- The row's own scrollbar is hidden: the chevrons, dragging, and the wheel are the ways through it.
+  That is the point of the widget, but it means a reader gets no scrollbar to judge how much more
+  there is — keep the row short enough to page through, or make the extra content obvious.
+- The children are laid out as one non-wrapping row, so put them in a container that keeps them in
+  a line (the demos use `{% raw %}{% group wrap='nowrap' %}{% endraw %}`) and give them real widths.
+  Content that would wrap instead squeezes into the visible width and there is nothing to scroll.
+- The controls carry the accessible labels "Scroll left" and "Scroll right". A control with nothing
+  left to scroll toward fades out and leaves the tab order, unless `showStartControl` /
+  `showEndControl` pins it on — pinned controls stay visible and keyboard-reachable at both ends.
 
 ## CSS Selectors
 

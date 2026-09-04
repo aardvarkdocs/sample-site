@@ -25,7 +25,9 @@ header. Then:
 - after results appear, use the path filter to narrow the list to one or more
   sections of the site;
 - leave **Exact matches** off for small spelling slips, or turn it on
-  when you want only exact typed terms;
+  when you want only exact typed terms (the checkbox appears once you've typed a
+  term, and only on sites where [typo tolerance](#typo-tolerance) or
+  [synonyms](#synonyms) are on — with both off there is nothing to relax);
 - use <kbd>↑</kbd>/<kbd>↓</kbd> to move through results and <kbd>↵</kbd> to open
   the highlighted one;
 - press <kbd>Esc</kbd> to close.
@@ -87,6 +89,15 @@ Every build writes `search-index.json` to your site root — one record per page
 | `headings` | every `h1`–`h6` on the page |
 | `inboundLinks` | a `{text: count}` map of the link text other pages use to link here — deduped, with how many times each is used |
 | `text` | the full, user-visible body text (markup stripped) |
+| `boost`, `lang`, `version`, `sections` | only when relevant: a front-matter [`boost`](#per-page-control) other than `1`; the page's language on a multilingual or versioned site; the version id on a [versioned](/versioning/#seo-and-search) site; the heading and API-operation anchors when [`search.sections`](#section-api-symbol-results) is on |
+
+Pages that are `noindex`, password-protected, or marked `searchable: false` get no record, on
+every version. Older documentation versions are the one addition: their pages stay in the index
+so the box can search within the version you're reading, even though crawlers don't see them.
+
+Prose that only exists in island props — an OpenAPI reference's operation and parameter
+descriptions, a changelog's entries — is folded into `text` too, so it is searchable even
+though it never appears in the static HTML.
 
 The client scores matches by where they hit: a hit in the **title**, **URL**, or
 **breadcrumb** is worth 10; in the **headings**, **keywords**, or **description**, 5;
@@ -215,7 +226,9 @@ typo can't silently skew ranking. The tie-breaking order used when two pages sco
 
 Search forgives misspellings out of the box: a query term that matches nothing is compared
 against the words in your titles, headings, and keywords, and the closest ones (within one edit
-for short words, two for longer) are searched too — so `instalation` still finds *Installation*.
+for words of up to seven characters, two for longer ones, and never more than `maxDistance`)
+are searched too — so `instalation`
+still finds *Installation*.
 Corrected matches rank **below** exact ones, so a real match is never buried — and you control *how
 far* below with the `search.ranking.typo` factor (see [Tuning the ranking](#tuning-the-ranking)). It's
 **on by default**; tune or disable it under `search.typoTolerance`:
@@ -235,6 +248,8 @@ search:
 ```
 
 Short terms and API symbols are left alone (`minLength`) so they aren't fuzzed into unrelated words.
+`maxDistance` accepts `0`–`2` and `minLength` `1`–`64`; a value outside its range, a fraction, or
+an unknown key under `typoTolerance` warns at build time and keeps the default.
 
 ### Synonyms
 
@@ -258,6 +273,11 @@ factor — see [Tuning the ranking](#tuning-the-ranking)), and a `"quoted phrase
 expanded (those are explicit literal signals). Checking **Exact matches** also skips synonym expansion
 for that search. Malformed entries are dropped with a build warning.
 
+The map ships to the browser with every page, so it is bounded: at most 200 terms, each with
+at most 25 equivalents — extras are dropped with a build warning. Keys and values are lowercased
+and whitespace-collapsed before matching, and a term whose only equivalents are blank or itself is
+dropped (with a warning) rather than kept as a no-op.
+
 ### Section & API-symbol results
 
 Turn this on to let a result jump straight to the **heading** it matched, instead of the top of the
@@ -277,6 +297,10 @@ search:
     maxLevel: 4
 ```
 
+`minLevel` and `maxLevel` accept `1`–`4` (the default band is h2–h3). An out-of-range value,
+a `minLevel` above `maxLevel`, or an unknown key under `sections` warns at build time and falls
+back to the defaults; a `sections:` mapping counts as on unless it says `enabled: false`.
+
 With `search.sections` on:
 
 - a match in a section heading deep-links to that heading (`/guide/auth/#tokens`), with the heading
@@ -293,15 +317,20 @@ narrows by site area, while sections locate the spot within a page.
 ### Multilingual sites
 
 On a site with more than one language, each result is tagged with its page's language, and the search
-box gently **prefers results in the language you're currently reading** — a translated page ranks above
-its foreign-language twin, while an untranslated page stays findable. No configuration required.
-Matching is also accent-insensitive (see above), which helps across languages that share a script.
+box gently **prefers results in the language you're currently reading** — a page in another language
+keeps 90% of its score, so a translated page ranks above its foreign-language twin while an
+untranslated page stays findable. No configuration required. Matching is also accent-insensitive
+(see above), which helps across languages that share a script.
+
+On a [versioned](/versioning/#seo-and-search) site the scoping is firmer: the box only searches the
+version (and language) you're reading, with version-less pages always showing through.
 
 ### 404 suggestions
 
 When search is on, the generated **404 page** helps a lost reader recover: it reads the URL that
-missed, searches the index for the closest pages, and lists them as "were you looking for…" links
-(deep-linked to a heading when [sections](#section-api-symbol-results) are on). Because it reuses the
+missed, turns its last one or two path segments into a query, searches the index for the closest
+pages, and lists up to five as "were you looking for…" links (deep-linked to a heading when
+[sections](#section-api-symbol-results) are on). Because it reuses the
 search scorer, [typo tolerance](#typo-tolerance) quietly fixes a fat-fingered URL too — `/instalation/`
 suggests *Installation*. It's automatic; just write a helpful [`404.md`](/deployment/#custom-404-page), which stays the fallback
 when a visitor has JavaScript disabled. The header ⌘K search is available on the 404 page as well.
@@ -318,10 +347,15 @@ When the Google Analytics integration is configured (`integrations.analytics`),
 search activity is reported automatically — no extra setup:
 
 - a **`search`** event (with `search_term` and the number of `results`) each time a
-  query settles. This feeds GA4's built-in *Site search* report, and the
-  `results: 0` events show what people look for but don't find — your content gaps.
+  query settles — about 700 ms after typing stops, and once per term per open dialog, so
+  keystrokes don't spam the report (toggling **Exact matches** logs the term again, since it
+  can change the result count). This feeds GA4's built-in *Site search*
+  report, and the `results: 0` events show what people look for but don't find — your
+  content gaps.
 - a **`search_select`** event (`search_term`, `url`, `position`) when a result is
   opened, so you can see which queries lead where.
+- a **`search_ask_ai`** event (`search_term`) when a reader hands the query to the
+  [AI assistant](/ai-assistant/) from the search dialog's *Ask AI* row (AI-enabled sites only).
 
 With analytics off, nothing is sent.
 
@@ -440,12 +474,13 @@ hosts and CDNs do this by default) or `Cache-Control: no-cache` — so readers p
 fresh results right after a redeploy instead of a stale cached copy. It only needs
 attention if your host sets long, non-revalidating cache lifetimes on JSON.
 
-> **Serve from the domain root.** The search box fetches `/search-index.json` by an
+> **Sub-path deploys need `basePath`.** The search box fetches `/search-index.json` by an
 > absolute, root-relative path — as the theme does for all its generated assets (the
-> islands bundle, `theme-<sha>.css`, hover-card data, …). Deploying under a URL sub-path
-> (e.g. `https://example.com/docs/`) isn't supported: those assets would 404. Host
-> the site at the origin root (or a subdomain), which is the default for the
-> supported targets (Cloudflare, Netlify, GitHub Pages project sites via a subdomain).
+> islands bundle, `theme-<sha>.css`, hover-card data, …). At the origin root (or a
+> subdomain) nothing extra is needed. To publish under a URL prefix
+> (`https://example.com/docs/`), set [`basePath`](/deployment/#publishing-under-a-subpath) so
+> the index, the fetch, and every other asset are written for that prefix — dropping a
+> root-built site under a sub-path leaves those requests 404ing.
 
 ## Turning it off
 

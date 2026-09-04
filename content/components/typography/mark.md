@@ -96,7 +96,7 @@ component('aardvark', 'mark', color='yellow', text='A plain phrase')
 ## With other components
 
 Because Mark is inline, it nests cleanly inside other built-ins — here it tints a word inside
-a [List](/components/typography/list/) item and a [Blockquote](/components/typography/blockquote/).
+a [Blockquote](/components/typography/blockquote/).
 
 {% blockquote icon='highlight' %}
 The build is {% mark color='lime' %}green{% endMark %} when every link resolves.

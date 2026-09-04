@@ -149,14 +149,15 @@ component('aardvark', 'blockquote', icon='terminal-2', cite='— the release not
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `code` | Any string | The code text, used when there's no block body. Shown verbatim. |
+| `code` | Any string | The code text, shown verbatim. Set it and it is used instead of the block body. |
 | `block` | `true` / `false` (default `false`) | Render a standalone `<pre>`-style block instead of an inline `<code>` run. |
 | `color` | Any theme color (e.g. `green`, `red`) | Background tint. |
 
 The code is the block body or the `code` param; either way it's shown literally (no Markdown,
-no syntax highlighting). For highlighted, multi-line source, use a fenced ` ``` ` code block —
-it gets the site's full syntax highlighting, which `{% raw %}{% code %}{% endraw %}` (verbatim
-by design) does not.
+no syntax highlighting). Unlike the other typography tags, `code` takes precedence over the
+block body when both are given. For highlighted, multi-line source, use a fenced ` ``` ` code
+block — it gets the site's full syntax highlighting, which `{% raw %}{% code %}{% endraw %}`
+(verbatim by design) does not.
 
 ## CSS Selectors
 

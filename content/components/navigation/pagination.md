@@ -164,12 +164,12 @@ Omit any attribute to take its default.
 | --- | --- | --- |
 | `total` | A positive integer (**required**) | Number of pages. |
 | `defaultValue` | An integer (defaults to `1`) | The page shown on load. |
-| `siblings` | An integer | Page buttons on each side of the current page. |
-| `boundaries` | An integer | Page buttons pinned at the start and end. |
-| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Size of the buttons. |
+| `siblings` | An integer (defaults to `1`) | Page buttons on each side of the current page. |
+| `boundaries` | An integer (defaults to `1`) | Page buttons pinned at the start and end. |
+| `size` | `xs`, `sm`, `md` (default), `lg`, `xl` | Size of the buttons. |
 | `radius` | `xs`, `sm`, `md`, `lg`, `xl` | Corner radius of the buttons. |
 | `color` | Any theme color (`blue`, `grape`, …) | Active-page color. |
-| `gap` | A Mantine size or any CSS value | Space between buttons. |
+| `gap` | A Mantine size or any CSS value (defaults to `8`) | Space between buttons. |
 | `withEdges` | `true` / `false` (default) | Show first/last jump buttons. |
 | `withControls` | `true` (default) / `false` | Show the prev/next arrows. |
 | `disabled` | `true` / `false` (default) | Dim and disable the whole control. |

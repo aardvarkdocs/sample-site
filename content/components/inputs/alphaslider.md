@@ -8,7 +8,8 @@ description: "The built-in alphaslider tag — pick an alpha (opacity, 0–1) fo
 A **built-in** tag for an alpha slider — a thin track that fades a color from transparent to
 opaque, for picking an alpha (opacity) from 0 to 1. It's one of Mantine's color-picker
 building blocks. It ships with Aardvark, so it's a single tag with no setup. Set the base
-`color` so the track can show the fade, and `defaultValue` for the starting opacity.
+`color` so the track can show the fade, and `defaultValue` for the starting opacity (it
+starts fully opaque, `1`, when you leave it off).
 
 Use it as `{% raw %}{% alphaslider %}{% endraw %}` in Markdown, or call it from Python logic
 (loops, snippets) via `component('aardvark', 'alphaslider', …)`.
@@ -39,12 +40,13 @@ component('aardvark', 'alphaslider', color='#1c7ed6', defaultValue=0.6)
 {% endAccordionSection %}
 {% endAccordion %}
 
-### Colors, sizes, and radius
+### Colors and sizes
 
-Any base `color` paints the track's fade; `size` sets the track thickness (`xs`–`xl`) and
-`radius` rounds its ends (`xs`–`xl`).
+Any base `color` paints the track's fade; `size` sets the track thickness (`xs`, `sm`, `md`,
+`lg`, `xl`). The band comes with fully rounded ends and no attribute changes that shape —
+restyle `.mantine-AlphaSlider-sliderOverlay` (see the CSS selectors below) for a different one.
 
-{% alphaslider color='#fa5252' defaultValue=0.4 size='xl' radius='xl' %}
+{% alphaslider color='#fa5252' defaultValue=0.4 size='xl' %}
 
 {% alphaslider color='#40c057' defaultValue=0.8 size='sm' %}
 
@@ -54,14 +56,14 @@ Any base `color` paints the track's fade; `size` sets the track thickness (`xs`�
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% alphaslider color='#fa5252' defaultValue=0.4 size='xl' radius='xl' %}
+{% alphaslider color='#fa5252' defaultValue=0.4 size='xl' %}
 {% alphaslider color='#40c057' defaultValue=0.8 size='sm' %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'alphaslider', color='#fa5252', defaultValue=0.4, size='xl', radius='xl')
+component('aardvark', 'alphaslider', color='#fa5252', defaultValue=0.4, size='xl')
 component('aardvark', 'alphaslider', color='#40c057', defaultValue=0.8, size='sm')
 ```
 {% endAccordionSection %}
@@ -114,11 +116,10 @@ Omit any attribute to take its default.
 
 | Attribute | Values | Description |
 | --- | --- | --- |
-| `color` | color string | The base color the alpha applies to (e.g. `#1c7ed6`). Required for the fade track to render. |
-| `defaultValue` | number `0`–`1` | Starting alpha — the reader can drag it. `0` is transparent, `1` is opaque. |
-| `size` | `xs`–`xl` | Track thickness. |
-| `radius` | `xs`–`xl` | Corner rounding of the track ends. |
-| `attr` | raw-HTML map | Extra HTML attributes, passed as `attr={…}`. |
+| `color` | color string | The base color the alpha applies to (e.g. `#1c7ed6`). Without it the track has no fade to show. |
+| `defaultValue` | number `0`–`1` | Starting alpha — the reader can drag it. `0` is transparent, `1` is opaque (the default). |
+| `size` | `xs`, `sm`, `md` (default), `lg`, `xl` | Track thickness. |
+| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) applied to the slider's root element. |
 
 ## CSS Selectors
 
@@ -138,7 +139,7 @@ Target a `{% raw %}{% alphaslider %}{% endraw %}` from your own CSS with the isl
 
 ## Injecting Attributes
 
-Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the rendered element. Here it is wired to `onchange`, so dragging the alpha control reads the changed control value, logs it to the console, and alerts it:
+Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the rendered element. The `change` event fires once a drag ends, or each time an arrow key steps the value — not continuously while dragging — and carries the new alpha rounded to two decimals. Here it is wired to `onchange`, so releasing the thumb reads the new value, logs it to the console, and alerts it:
 
 {% alphaslider color='#1c7ed6' defaultValue=0.6 attr={'onchange': '''
 const control = event.target.closest('[role="slider"], input') || this.querySelector('[role="slider"], input');

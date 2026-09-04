@@ -178,7 +178,7 @@ component('aardvark', 'group', wrap='nowrap', children=(
 
 `grow` (a bare flag) makes each child share the row width equally. By default
 `preventGrowOverflow` is on, so each child reserves an equal slice and a wide child can't push
-the others around; set `preventGrowOverflow='false'` to let children size to their content.
+the others around; set `preventGrowOverflow=false` to let children size to their content.
 
 {% group grow %}
 {% button text='Left' %} {% button text='Middle' %} {% button text='Right' %}
@@ -262,8 +262,10 @@ component('aardvark', 'group', justify='space-between', align='center', children
 | `p`, `pt`, `pb`, `pl`, `pr`, `px`, `py` | Mantine size token or any CSS value | Padding (all sides / top / bottom / left / right / horizontal / vertical). |
 | `bg` | color name or CSS color | Background color. |
 | `c` | color name or CSS color | Text color. |
-| `w`, `h` | Mantine size token or any CSS value | Width / height. |
-| `miw`, `mih`, `maw`, `mah` | any CSS value | Min/max width and min/max height. |
+| `w`, `h` | any CSS length (`320px`, `60%`); a bare number is read as pixels | Width / height. |
+| `miw`, `mih`, `maw`, `mah` | any CSS length | Min/max width and min/max height. |
+
+{% include '/components/_partials/sizing-props-note.md' %}
 
 
 ## CSS Selectors

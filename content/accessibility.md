@@ -64,6 +64,7 @@ The chrome and the interactive components are fully keyboard-operable:
 | Sidebar navigation | <kbd>→</kbd> / <kbd>←</kbd> | Expand / collapse the focused section |
 | Sidebar section toggle | <kbd>Enter</kbd> / <kbd>Space</kbd> | Open or close the section |
 | Section tab menu (header) | <kbd>Esc</kbd> | Close the dropdown and return focus to its button |
+| Anywhere | <kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd> · <kbd>/</kbd> | Open the search dialog (<kbd>/</kbd> is ignored while you're typing in a field) |
 | Search dialog | type · <kbd>↑</kbd> / <kbd>↓</kbd> · <kbd>Enter</kbd> · <kbd>Esc</kbd> | Search the index, move through visible results, open the focused result, or close the dialog |
 | Search path filter | <kbd>Tab</kbd> · type · <kbd>Enter</kbd> / <kbd>Space</kbd> · <kbd>Backspace</kbd> · <kbd>Esc</kbd> | Reach the path filter, search path options, select or deselect paths, remove a selected path, or close the dropdown |
 | Search exact matches | <kbd>Tab</kbd> · <kbd>Space</kbd> | Toggle exact matching; focus the help icon to read what changes |
@@ -86,9 +87,11 @@ The chrome and the interactive components are fully keyboard-operable:
 | "Ask AI" answer feedback | <kbd>Enter</kbd> / <kbd>Space</kbd> | Rate an answer with the thumbs-up / thumbs-down buttons |
 | Language selector · theme toggle | the control's native keys | Switch language · light/dark |
 
-> **Search shortcuts:** the default theme doesn't add a global search hotkey. If you enable
-> [Algolia DocSearch](/search/), it brings its own — <kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd>
-> and <kbd>/</kbd> — to open search from anywhere.
+> **Search shortcuts:** the built-in [search](/search/) dialog opens from anywhere with
+> <kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd> or <kbd>/</kbd>. The
+> <kbd>Cmd</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd> binding fires even while focus is inside a text
+> field; the bare <kbd>/</kbd> deliberately does not, so it never steals a keystroke from
+> something you're typing.
 
 > **Ask AI assistant:** when the AI assistant is enabled, the chat panel is a *non-modal* dialog
 > (`role="dialog"`, `aria-modal="false"`, an accessible name) — it deliberately does **not** trap
@@ -119,13 +122,13 @@ light and dark:
 
 ```text
 Aardvark: warning — color contrast below WCAG AA:
-  light — links: #8a7fff on #ffffff = 3.41:1 (needs 4.5:1)
+  light — links: #8a7fff on #ffffff = 3.20:1 (needs 4.5:1)
   Adjust the colors in your theme's theme.scss so each pair meets the ratio
   (a darker/lighter shade per scheme), or set a11y.contrast: false to silence this.
 ```
 
-It checks body text, secondary text, links, the active navigation item, text on the
-code/table surface, and the table header. Because each scheme has its own background, pick a
+It checks ten pairs: body text, secondary text, links, the active navigation item, text on
+cards, on code blocks and on inline code, table body rows and row hover, and the table header. Because each scheme has its own background, pick a
 `$primary` (and the other variables) that reads well on **both** — that's why this site uses a
 lighter primary in dark mode than in light. Tune the check in `aardvark.config.yaml`:
 
@@ -144,7 +147,7 @@ gets a warning.
 
 The theme handles the chrome; a few habits keep your pages accessible too:
 
-- **Describe images** — always give Markdown images alt text: `![A labelled architecture diagram](/img.png)`. Use empty alt (`![]`) only for purely decorative images.
+- **Describe images** — always give Markdown images alt text: `![A still mountain lake at dusk](/landscape.jpg)`. Use empty alt (`![]`) only for purely decorative images.
 - **Keep headings in order** — one `#` per page, then `##`, then `###`; don't skip levels for size. The on-this-page list and screen-reader outline are built from them.
 - **Write meaningful link text** — "[read the deployment guide](/deployment/)", not "click here".
 - **Don't rely on color alone** — pair it with text or an icon when it carries meaning.

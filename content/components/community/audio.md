@@ -1,8 +1,7 @@
 ---
 title: "Audio"
 description: "The built-in audio tag — a Mantine-native audio player (play/pause, scrubbable
-  timeline, volume and speed). A Community Component wrapping @gfazioli/mantine-audio, with a
-  native <audio> fallback for SSR / no-JS / screen readers."
+  timeline, volume and speed). A Community Component wrapping @gfazioli/mantine-audio."
 menu: components
 parent: community
 weight: 90
@@ -17,9 +16,10 @@ Point it at a file with `src` and pick a `variant` and `size`.
 A **Community Component** — wraps [Audio](https://gfazioli.github.io/mantine-audio/) by
 **gfazioli**, **MIT** licensed, npm `@gfazioli/mantine-audio`.
 
-The live player needs the Web Audio API, which only exists in a browser, so under
-server-side rendering, with JavaScript off, or for a screen reader it degrades to a plain,
-fully-functional native `<audio controls>` element using the same source — nothing is lost.
+The live player needs the Web Audio API, which only exists in a browser, so the player is
+built in the browser: the page ships an empty mount point, the client's first paint is a
+plain, fully-functional native `<audio controls>` on the same source, and the full player
+replaces it on mount. A reader with JavaScript turned off sees nothing in its place.
 
 Use it as `{% raw %}{% audio %}{% endraw %}` in Markdown, or call it from Python logic
 (loops, snippets) via `component('aardvark', 'audio', …)`.
@@ -126,25 +126,44 @@ Omit any attribute to take its default. Bare flags (e.g. `asBackground`) become 
 | --- | --- | --- |
 | `src` | An audio file URL (string) | The audio source to play. |
 | `variant` | `overlay` / `minimal` / `floating` / `bordered` | The player layout style. |
-| `size` | `xs` / `sm` / `md` / `lg` / `xl` | Scales the whole player. |
-| `radius` | A Mantine radius token or any CSS length | Corner rounding. |
-| `asBackground` | `true` / `false` (default `false`) | Render as an ambient background track. |
-| `shortcuts` | `true` / `false` (default `true`) | Enable keyboard transport controls. |
-| `fallbackSrc` | An audio file URL (string) | Played if the primary `src` fails. |
+| `size` | `xs` / `sm` / `md` / `lg` / `xl` | Scales the player's controls. |
+| `radius` | A Mantine radius token, a number of px, or any CSS length | Corner rounding of the player container. |
+| `asBackground` | `true` / `false` (default `false`) | Turn the player into an ambient background track — see *Good to know*. |
+| `shortcuts` | `true` / `false` | Keyboard transport controls (Space/K play-pause, J/L and ←/→ seek, ↑/↓ volume, M mute, `<`/`>` speed) while the player has focus. On by default, off under `asBackground`. |
+| `fallbackSrc` | An audio file URL (string) | Played if the primary `src` fails to load at runtime. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element (see below). |
+
+{% callout severity="info" title="Good to know" %}
+`asBackground` is a preset, not just a style: it positions the player absolutely to fill its
+parent, drops the control bar and the keyboard shortcuts, and leaves a small floating mute
+toggle. Give the surrounding block a size and `position: relative`, and pass
+`shortcuts=true` if you want the keys back.
+
+Each player downloads its file **twice**: once for playback, and once in full to decode the
+Web Audio peaks. It also requests the audio element with `crossOrigin="anonymous"`. Keep that
+in mind for a long track, and note that a file served from another origin needs permissive
+CORS headers — without them playback still works, but the second fetch fails. Files under
+`static/` are same-origin and need nothing extra.
+{% endCallout %}
 
 ## CSS Selector
 
-The island wrapper carries a stable hook you can target from your own CSS:
+The wrapper carries a stable attribute hook, and every part of the player chrome carries a
+`mantine-Audio-*` class you can target from `custom.css`:
 
-```css
-[data-aardvark-audio] {
-  /* your overrides */
-}
-```
+| Selector | Targets |
+| --- | --- |
+| `[data-aardvark-audio]` | The wrapper around the player — the safest place to set width or margins. |
+| `[data-aardvark-audio] .aardvark-audio-fallback` | The plain native `<audio>` rendered for the first client paint, before the live player mounts. |
+| `.mantine-Audio-root` | The player container. |
+| `.mantine-Audio-controlBar` / `.mantine-Audio-controls` | The transport bar and the button group inside it. |
+| `.mantine-Audio-playButton` / `.mantine-Audio-muteButton` | The play/pause and mute buttons. |
+| `.mantine-Audio-timeline` / `.mantine-Audio-timeDisplay` | The scrubbable timeline and the elapsed/total readout. |
+| `.mantine-Audio-volumeSlider` / `.mantine-Audio-speedControl` | The volume slider and the playback-speed control. |
 
-The player's inner chrome is styled by the upstream `@gfazioli/mantine-audio` stylesheet
-(bundled automatically via a CSS `@import`), so its own Mantine-style class names apply too.
+The player's colors come from CSS variables on the root (`--audio-color`, `--audio-bg`,
+`--audio-text-color`, `--audio-timeline-color`, …), so a theme tweak is usually a variable
+override rather than a rule on the chrome itself.
 
 ## Injecting Attributes
 

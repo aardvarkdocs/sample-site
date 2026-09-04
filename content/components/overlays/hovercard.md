@@ -168,8 +168,8 @@ Python, `children`).
 | `arrowSize` | integer (pixels) | Arrow size. |
 | `offset` | integer (pixels) | Gap between the trigger and the card. |
 | `radius` | `xs`–`xl` or a number | Card corner radius. |
-| `openDelay` | integer (milliseconds) | Delay before opening on hover. |
-| `closeDelay` | integer (milliseconds) | Delay before closing after the pointer leaves. |
+| `openDelay` | integer (milliseconds), default `0` | Delay before opening on hover. |
+| `closeDelay` | integer (milliseconds), default `150` | Delay before closing after the pointer leaves. Raise it to make the card easier to move onto. |
 
 ## CSS Selectors
 
@@ -181,7 +181,6 @@ Target the rendered element through its island marker, `[data-aardvark-island="H
 [data-aardvark-island="HoverCard"] { }
 
 /* Mantine Styles API classes */
-.mantine-HoverCard-root { }
 .mantine-HoverCard-dropdown { }
 .mantine-HoverCard-arrow { }
 ```

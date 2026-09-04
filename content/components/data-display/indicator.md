@@ -174,13 +174,20 @@ Omit any attribute to take its default.
 | `size` | integer (pixels; `10` by default) | Dot diameter. |
 | `position` | `top-start`, `top-center`, `top-end` (default), `middle-start`, `middle-center`, `middle-end`, `bottom-start`, `bottom-center`, `bottom-end` | Where the indicator sits over the child. |
 | `offset` | integer (pixels) | Nudge inward — useful over a rounded target. |
-| `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | Corner rounding of a labelled badge. |
+| `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | Corner rounding of a labelled badge. Fully round by default, so a label reads as a pill until you set this. |
 | `withBorder` | bool flag (default `false`) | Draw a border around the indicator. |
 | `processing` | bool flag (default `false`) | A pulsing animation. |
 | `disabled` | bool flag (default `false`) | Render only the child (no indicator). |
 | `inline` | bool flag (default `false`) | Lay the container out as an inline element. |
 | `autoContrast` | bool flag (default `false`) | Auto-pick a readable label color for the background. |
 | body | Markdown / components | The element the indicator is positioned over. |
+
+> **Good to know.** `disabled` wins over everything else: the child renders on its own, so a
+> `label`, `processing` animation, or `color` set alongside it has no visible effect. The
+> indicator is positioned against the body as a whole, so give it a single element — an avatar,
+> an icon, a button — rather than a run of prose, or the corner it pins to is the corner of the
+> whole text block.
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="Indicator"]` — or through the Mantine Styles API classes (`.mantine-Indicator-root` and its inner parts):

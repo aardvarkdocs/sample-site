@@ -186,11 +186,19 @@ Omit any attribute to take its Mantine default.
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `legend` | string | The caption rendered in the border. |
+| `legend` | string | The caption rendered in the border. Plain text — Markdown in it is not rendered. |
 | `variant` | `default`, `filled`, `unstyled` | Visual style of the bordered group. |
 | `radius` | `xs`, `sm`, `md`, `lg`, `xl` (or any CSS value) | Border radius. |
 | `disabled` | `true` / `false` | Disable every control inside the group. Default `false`. |
+| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) applied to the `<fieldset>` element. |
 | *(body)* | Markdown / field tags | The grouped inputs. In Python, pass them as `children`. |
+
+{% callout severity='info' title='Good to know' %}
+The body is ordinary Markdown, so paragraphs, lists and links between the fields render the way
+they do anywhere else on the page — a Fieldset is a fine place for a sentence of guidance above a
+pair of inputs. `disabled` puts the HTML `disabled` attribute on the `<fieldset>` itself, and the
+browser cascades that to every control inside, so an individual field can't opt back in.
+{% endCallout %}
 
 ## CSS Selectors
 

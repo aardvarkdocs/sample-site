@@ -100,11 +100,11 @@ component(
 
 ## With other components
 
-Burger is presentational on its own. To wire a real click, forward an `onclick` through
-the island `attr={...}` channel; for true open/close state, drive it from a
-[snippet](/authoring/components-and-snippets/) where you own the React state and pass
-`opened`/`onClick` to `component('Burger', ...)`. Here it sits in a
-{% raw %}`{% group %}`{% endraw %} next to a label.
+Burger is presentational on its own: `opened` sets the shape it renders, and nothing
+flips it back. To wire a real click, forward an `onclick` through the `attr={...}` channel
+— see [Injecting Attributes](#injecting-attributes) at the end of this page. For true open/close state — a burger that tracks a menu you are also
+opening — render it from your own React code, where you can pass `opened` and `onClick`
+together. Here it sits in a {% raw %}`{% group %}`{% endraw %} next to a label.
 
 {% group %}
 {% burger label='Toggle navigation' %}
@@ -118,7 +118,7 @@ the island `attr={...}` channel; for true open/close state, drive it from a
 {% raw %}
 ```aardvark
 {% group %}
-{% burger label='Toggle navigation' attr={'onclick': 'document.body.classList.toggle(\'nav-open\')'} %}
+{% burger label='Toggle navigation' %}
 {% anchor url='/components/navigation/' c='dimmed' %}Navigation{% endAnchor %}
 {% endGroup %}
 ```
@@ -126,7 +126,7 @@ the island `attr={...}` channel; for true open/close state, drive it from a
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-burger = component('aardvark', 'burger', label='Toggle navigation', attr={'onclick': "document.body.classList.toggle('nav-open')"})
+burger = component('aardvark', 'burger', label='Toggle navigation')
 link = component('aardvark', 'anchor', url='/components/navigation/', c='dimmed', children='Navigation')
 component('aardvark', 'group', children=burger + link)
 ```
@@ -143,8 +143,8 @@ Omit any attribute to take its default. Burger renders a `<button>` and takes no
 | `size` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS size | Overall size of the control. |
 | `color` | Any theme color (`blue`, `grape`, …) | Color of the bars. |
 | `lineSize` | An integer (pixels) | Thickness of each bar. |
-| `transitionDuration` | An integer (milliseconds) | Duration of the burger↔cross morph. |
-| `transitionTimingFunction` | A CSS timing function (`ease`, `ease-in-out`, …) | Easing of the morph. |
+| `transitionDuration` | An integer (milliseconds, defaults to `300`) | Duration of the burger↔cross morph. |
+| `transitionTimingFunction` | A CSS timing function (defaults to `ease`) | Easing of the morph. |
 | `label` | Any string | Accessible name — rendered as `aria-label` (the button has no visible text). |
 
 ## CSS Selectors

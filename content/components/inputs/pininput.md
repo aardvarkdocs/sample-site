@@ -38,7 +38,7 @@ component('aardvark', 'pininput', length=4)
 
 ## Length and type
 
-`type` is `number` (default, digits only) or `alphanumeric` (letters and digits).
+`type` is `alphanumeric` (the default — letters and digits) or `number` (digits only).
 
 {% pininput length=6 type='number' %}
 
@@ -67,10 +67,13 @@ component('aardvark', 'pininput', length=5, type='alphanumeric')
 
 ## Mask and OTP autofill
 
-`mask` obscures entered characters like a password; `oneTimeCode` opts into the browser's
-one-time-code autofill so an SMS code can be filled automatically.
+`mask` obscures entered characters like a password. The browser's one-time-code autofill is **on by
+default** — every box carries `autocomplete="one-time-code"`, so a texted code can be filled in one
+tap. Pass `oneTimeCode=false` to turn that off for a PIN that isn't a one-time code.
 
-{% pininput length=4 mask=true oneTimeCode=true %}
+{% pininput length=4 mask=true %}
+
+{% pininput length=4 oneTimeCode=false %}
 
 <br>
 
@@ -78,23 +81,27 @@ one-time-code autofill so an SMS code can be filled automatically.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% pininput length=4 mask=true oneTimeCode=true %}
+{% pininput length=4 mask=true %}
+
+{% pininput length=4 oneTimeCode=false %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'pininput', length=4, mask=True, oneTimeCode=True)
+component('aardvark', 'pininput', length=4, mask=True)
+
+component('aardvark', 'pininput', length=4, oneTimeCode=False)
 ```
 {% endAccordionSection %}
 {% endAccordion %}
 
 ## Placeholder, size, radius, and gap
 
-`placeholder` sets the per-box placeholder character; `size` and `radius` style each box;
-`gap` is the space between boxes.
+`placeholder` sets the per-box placeholder character (`○` when you leave it off); `size` and
+`radius` style each box; `gap` is the space between boxes (`sm` by default).
 
-{% pininput length=4 placeholder='○' size='lg' radius='xl' gap='md' %}
+{% pininput length=4 placeholder='•' size='lg' radius='xl' gap='md' %}
 
 <br>
 
@@ -102,13 +109,13 @@ component('aardvark', 'pininput', length=4, mask=True, oneTimeCode=True)
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% pininput length=4 placeholder='○' size='lg' radius='xl' gap='md' %}
+{% pininput length=4 placeholder='•' size='lg' radius='xl' gap='md' %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'pininput', length=4, placeholder='○', size='lg', radius='xl', gap='md')
+component('aardvark', 'pininput', length=4, placeholder='•', size='lg', radius='xl', gap='md')
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -186,15 +193,16 @@ Omit any attribute to take its Mantine default.
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `length` | integer | Number of single-character boxes. Default `4`. |
-| `type` | `number`, `alphanumeric` | Accepted characters. `number` (default) is digits only; `alphanumeric` allows letters and digits. |
+| `type` | `alphanumeric` (default), `number` | Accepted characters. `alphanumeric` allows letters and digits; `number` is digits only. |
 | `mask` | `true` / `false` | Obscure entered characters like a password. Default `false`. |
-| `oneTimeCode` | `true` / `false` | Opt into the browser's one-time-code (OTP) autofill. Default `false`. |
-| `placeholder` | string | Per-box placeholder character. |
+| `oneTimeCode` | `true` / `false` | The browser's one-time-code (OTP) autofill. **On by default** — pass `false` to turn it off. |
+| `placeholder` | string | Per-box placeholder character. Default `○`. |
 | `size` | `xs`, `sm`, `md`, `lg`, `xl` | Box size. |
 | `radius` | `xs`, `sm`, `md`, `lg`, `xl` (or any CSS value) | Box corner radius. |
-| `gap` | `xs`, `sm`, `md`, `lg`, `xl` (or any CSS value) | Space between boxes. |
+| `gap` | `xs`, `sm`, `md`, `lg`, `xl` (or any CSS value) | Space between boxes. Default `sm`. |
 | `disabled` | `true` / `false` | Disable every box. Default `false`. |
 | `error` | `true` / `false` | Add error styling and `aria-invalid` to every box. Boolean — there is no wrapper for a message. Default `false`. |
+| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) applied to the first box — see below. |
 
 ## CSS Selectors
 
@@ -214,12 +222,19 @@ Target a `{% raw %}{% pininput %}{% endraw %}` from your own CSS with the island
 
 ## Injecting Attributes
 
-Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the rendered element. Here it is wired to `onchange`, so changing the field logs its new value to the console and alerts it. For a PIN field that's a demonstration only — never log or transmit a real PIN value in production:
+A PinInput is a row of separate `<input>` boxes, and `attr={…}` lands on the **first** one — so
+`this.value` inside a handler is that box's single character, not the whole code. To read the code,
+walk up to the row (Mantine gives it `role="group"`) and join every box, as below. Advancing from
+box to box does not commit that box, so the native `change` doesn't fire on every keystroke — it
+fires when focus leaves the component altogether, by which point the reader has normally filled
+the whole code. That is why the handler below can alert with the complete value. For a PIN field
+this is a demonstration only — never log or transmit a real PIN value in production:
 
 {% pininput length=4 attr={'onchange': '''
-const value = this.value;
+const boxes = Array.from(this.closest('[role="group"]')?.querySelectorAll('input') || []);
+const value = boxes.map((box) => box.value).join('');
 console.log('attr demo value:', value);
-alert(value);
+if (boxes.length && value.length === boxes.length) alert(value);
 '''} %}
 
 <br>
@@ -229,9 +244,10 @@ alert(value);
 {% raw %}
 ```aardvark
 {% pininput length=4 attr={'onchange': '''
-const value = this.value;
+const boxes = Array.from(this.closest('[role="group"]')?.querySelectorAll('input') || []);
+const value = boxes.map((box) => box.value).join('');
 console.log('attr demo value:', value);
-alert(value);
+if (boxes.length && value.length === boxes.length) alert(value);
 '''} %}
 ```
 {% endraw %}
@@ -239,9 +255,10 @@ alert(value);
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'pininput', length=4, attr={'onchange': '''
-const value = this.value;
+const boxes = Array.from(this.closest('[role="group"]')?.querySelectorAll('input') || []);
+const value = boxes.map((box) => box.value).join('');
 console.log('attr demo value:', value);
-alert(value);
+if (boxes.length && value.length === boxes.length) alert(value);
 '''})
 ```
 {% endAccordionSection %}

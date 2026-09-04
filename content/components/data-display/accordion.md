@@ -225,6 +225,7 @@ The look is fixed to Mantine's `contained` variant — there is no author-facing
 The body between `{% raw %}{% accordionSection %}{% endraw %}` and
 `{% raw %}{% endAccordionSection %}{% endraw %}` is the panel content (full Markdown). In the Python
 form it is the `children` argument.
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="Accordion"]` — or through the Mantine Styles API classes (`.mantine-Accordion-root` and its inner parts):
@@ -245,9 +246,13 @@ Target the rendered element through its island marker — `[data-aardvark-island
 ## Injecting Attributes
 
 `attr={…}` forwards raw HTML attributes — `id`, `data-*`, ARIA, analytics hooks — onto the
-rendered accordion root. (Scalar attributes beyond the ones it handles — like `multiple` to
-keep several panels open, or a `defaultValue` — pass straight through to the underlying Mantine
-`Accordion`; `attr={…}` is the channel for raw HTML attributes.)
+rendered accordion root.
+
+> **Good to know.** The accordion root element is created when the widget mounts, so its
+> `attr={…}` attributes are written on once that happens rather than being present in the
+> initial HTML. An accordion nested *inside another component* has no root of its own to
+> receive them: those attributes are dropped and a message is logged to the browser console.
+> Put them on a child there instead.
 
 {% accordion multiple defaultValue="overview" attr={'data-analytics': 'faq', 'aria-label': 'Frequently asked questions'} %}
 {% accordionSection title="Overview" %}

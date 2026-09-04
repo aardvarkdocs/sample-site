@@ -36,16 +36,18 @@ slide it out, and again to slide it back in.
 {% raw %}
 ```aardvark
 {% transition transition='slide-up' duration=300 mounted=true %}
-Starts shown; click the trigger button to slide it out of view and back in.
+{% paper withBorder=true p='md' radius='md' %}This block is wrapped in a Transition with the `slide-up` preset. Click the button above to slide it out of view and back in.{% endPaper %}
 {% endTransition %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
+panel = component('aardvark', 'paper', withBorder=True, p='md', radius='md',
+                  children='This block is wrapped in a Transition with the `slide-up` '
+                           'preset. Click the button above to slide it out of view and back in.')
 component('aardvark', 'transition',
-          transition='slide-up', duration=300, mounted=True,
-          children='Starts shown; click the trigger button to animate it.')
+          transition='slide-up', duration=300, mounted=True, children=panel)
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -68,17 +70,19 @@ longer `duration`, an explicit `timingFunction`, and a custom `triggerLabel` on 
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% transition transition='scale' duration=400 timingFunction='ease-in-out' %}
-…content…
+{% transition transition='scale' duration=400 timingFunction='ease-in-out' triggerLabel='Scale it' %}
+{% paper withBorder=true p='md' radius='md' %}The `scale` preset, played by the button above.{% endPaper %}
 {% endTransition %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
+panel = component('aardvark', 'paper', withBorder=True, p='md', radius='md',
+                  children='The `scale` preset, played by the button above.')
 component('aardvark', 'transition',
           transition='scale', duration=400, timingFunction='ease-in-out',
-          children='…content…')
+          triggerLabel='Scale it', children=panel)
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -101,17 +105,20 @@ present for SSR and crawlers.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% transition transition='fade' mounted=false keepMounted=true triggerLabel='Reveal' %}
-Hidden until you click the button; kept in the DOM for SSR and crawlers.
+{% transition transition='fade' duration=300 mounted=false keepMounted=true triggerLabel='Reveal' %}
+{% paper withBorder=true p='md' radius='md' %}Hidden until you click the button; kept in the DOM (so it's present for SSR and crawlers).{% endPaper %}
 {% endTransition %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
+panel = component('aardvark', 'paper', withBorder=True, p='md', radius='md',
+                  children='Hidden until you click the button; kept in the DOM '
+                           '(so it is present for SSR and crawlers).')
 component('aardvark', 'transition',
-          transition='fade', mounted=False, keepMounted=True, triggerLabel='Reveal',
-          children='Hidden until you click the button; kept in the DOM for SSR and crawlers.')
+          transition='fade', duration=300, mounted=False, keepMounted=True,
+          triggerLabel='Reveal', children=panel)
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -135,7 +142,7 @@ is with a `pop` preset.
 {% raw %}
 ```aardvark
 {% transition transition='pop' duration=350 %}
-{% paper withBorder=true p='md' radius='md' %}A Paper wrapped in a Transition.{% endPaper %}
+{% paper withBorder=true p='md' radius='md' bg='var(--mantine-color-gray-light)' %}A Paper wrapped in a Transition with the `pop` preset.{% endPaper %}
 {% endTransition %}
 ```
 {% endraw %}
@@ -143,7 +150,8 @@ is with a `pop` preset.
 {% accordionSection title="Source: Python" %}
 ```python
 panel = component('aardvark', 'paper', withBorder=True, p='md', radius='md',
-                  children='A Paper wrapped in a Transition.')
+                  bg='var(--mantine-color-gray-light)',
+                  children='A Paper wrapped in a Transition with the `pop` preset.')
 component('aardvark', 'transition', transition='pop', duration=350, children=panel)
 ```
 {% endAccordionSection %}

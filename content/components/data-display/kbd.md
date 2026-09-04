@@ -127,9 +127,16 @@ Omit any attribute to take its default.
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `text` | string | The key text, when not using the block body. |
+| `text` | string | The key text, when not using the block body. Escaped, so it always prints literally — `<b>` shows as `<b>`. |
 | `size` | `xs`, `sm` (default), `md`, `lg`, `xl` | Scales the key. |
 | body | text | The key text (the rich form; takes precedence over `text`). |
+
+> **Good to know.** A key renders inline, so a run of keys flows inside a sentence rather than
+> breaking it onto separate lines. Give each key its own tag rather than one tag holding
+> `Ctrl + C`: two keys read as two physical keys, which is what a reader is looking for. The
+> block body wins whenever both it and `text` are set, and a `text` value is escaped, so `<b>`
+> prints literally instead of turning bold.
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="Kbd"]` — or through the Mantine Styles API classes (`.mantine-Kbd-root` and its inner parts):

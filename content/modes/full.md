@@ -24,9 +24,9 @@ centers the content at a comfortable measure so the words carry the page.
 
 A persistent sidebar is great for browsing a doc set, but on a page someone has
 *arrived at* to read end-to-end, it's visual noise. Removing it — and the TOC —
-narrows the focus to one thing. The content still uses a capped width (wider than
-the default reading column, but not edge-to-edge), because long lines of prose
-are tiring to read.
+narrows the focus to one thing. The content still uses a capped width (1100px in the
+default theme — wider than the 820px reading column, but not edge-to-edge), because
+long lines of prose are tiring to read.
 
 ## When to reach for it
 

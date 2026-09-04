@@ -11,8 +11,11 @@ A command palette — the Cmd+K overlay you see in editors and dashboards. It is
 searchable list of actions that floats over the page; you type to filter, arrow
 through the matches, and press Enter to run one. It renders no visible chrome of its
 own and starts closed, so it never covers the page on load. You open it imperatively
-from JavaScript with `spotlight.open()` — wired here to a trigger button — or with its
-registered keyboard shortcut.
+from JavaScript with `spotlight.open()` — wired here to a trigger button — or with a
+keyboard shortcut, which it registers itself (`mod + K`, i.e. Cmd+K / Ctrl+K, unless you
+set your own with `shortcut`). This site already binds Cmd+K to its own search, so the demo
+below is driven by its button; give a palette its own `shortcut` when the page around it has
+already claimed one.
 
 Because the open call is imperative rather than a static prop, this page ships it as a
 small self-contained snippet, `{% raw %}{% SpotlightDemo %}{% endraw %}`, that renders
@@ -35,6 +38,56 @@ match, and press Enter (or click) to run it. Escape closes it.
 ```
 {% endraw %}
 {% endAccordionSection %}
+{% accordionSection title="Source: snippet" %}
+{% raw %}
+```jsx
+import { forwardRef } from 'react';
+import { Button } from '@mantine/core';
+import { Spotlight, spotlight } from '@mantine/spotlight';
+import './SpotlightDemo.css';
+
+const SpotlightDemo = forwardRef(function SpotlightDemo(props, ref) {
+  const actions = [
+    {
+      id: 'home',
+      label: 'Home',
+      description: 'Go to the home page',
+      onClick: () => console.log('Spotlight: Home'),
+    },
+    {
+      id: 'docs',
+      label: 'Documentation',
+      description: 'Open the documentation',
+      onClick: () => console.log('Spotlight: Documentation'),
+    },
+    {
+      id: 'search',
+      label: 'Search the site',
+      description: 'Full-text search across every page',
+      keywords: ['find', 'lookup'],
+      onClick: () => console.log('Spotlight: Search'),
+    },
+  ];
+
+  return (
+    <>
+      <Spotlight
+        actions={actions}
+        nothingFound="Nothing found…"
+        highlightQuery
+        searchProps={{ placeholder: 'Search actions…' }}
+      />
+      <Button {...props} ref={ref} onClick={spotlight.open}>
+        Open command palette
+      </Button>
+    </>
+  );
+});
+
+export default SpotlightDemo;
+```
+{% endraw %}
+{% endAccordionSection %}
 {% endAccordion %}
 
 ## The actions array and spotlight.open()
@@ -53,7 +106,9 @@ const actions = [
 ```
 
 The default filter matches the query against each action's `label`, `description`, and
-`keywords`. Triggering an action runs its `onClick` and closes the palette.
+`keywords`. Triggering an action runs its `onClick` and closes the palette. `nothingFound`
+supplies the empty state when nothing matches, `highlightQuery` marks the matched substring in
+each result, and `searchProps` reaches the search input (the demo sets its placeholder).
 
 Opening is imperative: any code can call `spotlight.open()` (and `spotlight.close()` /
 `spotlight.toggle()`). Here the trigger button does it on click:

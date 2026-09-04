@@ -176,11 +176,18 @@ component('aardvark', 'blockquote', color='teal', icon='code', cite='— the doc
 | `cite` | Any string | Attribution line shown below the quote. |
 | `color` | Any theme color (e.g. `blue`, `grape`, `teal`) | Tints the accent bar and the icon. |
 | `radius` | `xs` `sm` `md` `lg` `xl`, or any CSS length | Corner radius. |
-| `icon` | A [Tabler icon](https://tabler.io/icons) name (e.g. `quote`, `bulb`, `heart`) | Glyph for the corner badge; fetched lazily at view time. |
-| `iconSize` | Integer (pixels) | Size of the icon badge. |
+| `icon` | A lowercase [Tabler icon](https://tabler.io/icons) name (e.g. `quote`, `bulb`, `heart`) | Glyph for the corner badge; fetched lazily at view time. |
+| `iconSize` | Integer pixels, greater than 0 | Size of the icon badge. |
 
 The quote itself is the block body (rendered as Markdown — paragraphs, emphasis, links all
-work), or the `text` param for a plain one-liner.
+work), or the `text` param for a plain one-liner. When you give both, the body wins.
+
+{% callout severity="info" title="Good to know" %}
+`icon` takes a lowercase, hyphenated Tabler name — `quote`, `circle-check`, `terminal-2`.
+A name in any other shape (capitals, spaces, or a Font Awesome class) is ignored and the
+quote renders without a badge, so a missing icon usually means a misspelled name. `iconSize`
+is applied only when it is greater than 0; otherwise the badge keeps its normal size.
+{% endCallout %}
 
 ## CSS Selectors
 

@@ -2,7 +2,7 @@
 title: "Onboarding"
 description: "The built-in onboarding tag — a guided, step-by-step product tour that
   spotlights elements behind a dimming overlay. A Community Component wrapping
-  @gfazioli/mantine-onboarding-tour, with the body fully usable under SSR / no-JS."
+  @gfazioli/mantine-onboarding-tour."
 menu: components
 parent: community
 weight: 92
@@ -20,12 +20,16 @@ by **gfazioli**, **MIT** licensed, npm `@gfazioli/mantine-onboarding-tour`.
 
 A tour needs a "start" trigger and controlled state, which a static page can't wire up on its
 own, so the tag renders a **Start tour** button (relabel it with `triggerLabel`) that begins
-the tour and resets when it ends. The overlay, focus management, and element measurement are
-browser-only, so under server-side rendering or with JavaScript off the body content stays
-fully usable and the trigger is simply inert — nothing is hidden behind a tour that can't run.
+the tour and resets when it ends.
+
+> **Good to know.** The tour runs in the browser: the trigger button, the dimming overlay and
+> the spotlight are all created after the page loads, so a reader with JavaScript turned off
+> gets no trigger. What they do still get is the tag's body — it is ordinary page content and
+> is written into the HTML either way — so put the real UI in the body and treat the tour as
+> an enhancement on top of it.
 
 Use it as `{% raw %}{% onboarding %} … {% endOnboarding %}{% endraw %}` in Markdown, or — for
-a tour built from Python data — call `component('aardvark', 'onboarding', tour=[…], children=…)`.
+a tour built from Python data — call `component('Onboarding', tour=[…], children=…)`.
 
 ## Demonstrations
 
@@ -59,7 +63,7 @@ run it.
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'onboarding',
+component('Onboarding',
           tour=[
               {'id': 'save', 'title': 'Save your work',
                'content': 'This button saves the current document.'},
@@ -138,9 +142,14 @@ off with `=false` (e.g. `withStepper=false`).
 | `withStepper` | `true` / `false` (default `true`) | Show a step indicator in the popover. Set `=false` to hide it. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered wrapper (see below). |
 
-For tours built from data — or to pass the full upstream API (lifecycle callbacks, per-step
-`cutoutPadding` / `cutoutRadius`, …) — call `component('aardvark', 'onboarding', tour=[…], …)`
-from Python; every extra keyword is forwarded straight to the underlying component.
+As a tag attribute, `tour` is a **JSON string** — a Python list handed to the tag is not
+parsed and the tour comes up empty. For tours built from data, and to reach options this tag
+doesn't name (`cutoutPadding`, `cutoutRadius`, …), call
+`component('Onboarding', tour=[…], …)` instead: that form takes the steps as real data and
+forwards any extra serializable keyword straight through. Props reach the browser as JSON, so
+only data crosses — the upstream lifecycle callbacks take functions and are out of reach from
+either form. The `{% raw %}{% onboarding %}{% endraw %}` tag
+accepts only the attributes above — an unknown one stops the build.
 
 ## CSS Selector
 
@@ -183,8 +192,8 @@ on any element inside the body so a step's `id` can find it.
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'onboarding',
-          tour='[{"id": "cta", "title": "Get started", "content": "Click here to begin."}]',
+component('Onboarding',
+          tour=[{'id': 'cta', 'title': 'Get started', 'content': 'Click here to begin.'}],
           attr={'data-section': 'hero-tour'},
           children=component('aardvark', 'button', children='Get started',
                              attr={'data-onboarding-tour-id': 'cta'}))

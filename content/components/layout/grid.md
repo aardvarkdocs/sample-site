@@ -13,6 +13,12 @@ widths — a sidebar next to a wide main area, say. For an equal-width grid, rea
 Use it as `{% raw %}{% grid %}{% endraw %}` in Markdown, or call it from Python logic (loops,
 snippets) via `component('aardvark', 'grid', …)`.
 
+{% callout title="Good to know" severity="info" %}
+Cells written as `items` are plain text: Markdown in them isn't rendered, HTML shows as literal
+characters, and a `|` inside a cell starts the next one. When a cell needs a heading, a list, or
+another component, use the block body instead — each top-level block there becomes one cell.
+{% endCallout %}
+
 ## Cells with `items`
 
 The simplest way to lay out cells of different widths is the `items` param — a `|`-separated
@@ -161,7 +167,8 @@ component('aardvark', 'grid', span='6', gap='md',
 
 ## Attributes
 
-Omit any attribute to take its Mantine default (columns `12`, gap `md`, span `auto`).
+Omit any attribute to take its default (columns `12`, gap `md`, overflow `visible`). A cell with
+no span of its own sizes itself to the room that's left (`auto`).
 
 | Attribute | Values | Description |
 | --- | --- | --- |
@@ -173,7 +180,7 @@ Omit any attribute to take its Mantine default (columns `12`, gap `md`, span `au
 | `justify` | any CSS `justify-content` | Placement of the row of cells along the main axis. |
 | `align` | any CSS `align-items` | Placement of the cells along the cross axis. |
 | `grow` | `true`, `false` (default `false`) | Let the last row's cells grow to fill the remaining width. |
-| `overflow` | `hidden`, `visible` (`hidden` default) | `overflow` on the grid root. Set `visible` to let content spill. |
+| `overflow` | `visible` (default), `hidden`, `auto`, `scroll` | `overflow` on the grid root. Set `hidden` to clip a cell that spills. |
 
 
 ## CSS Selectors

@@ -144,7 +144,7 @@ component('aardvark', 'overlay', color='#000', backgroundOpacity=0.5, radius='md
 | `color` | any CSS color | Veil color. |
 | `backgroundOpacity` | float `0`–`1` | Veil opacity. |
 | `blur` | float (px) | Backdrop blur behind the veil. |
-| `radius` | `xs`–`xl` or a number | Corner radius of the box. |
+| `radius` | `xs`–`xl` or a number | Corner radius of the veil. |
 | `zIndex` | integer | Stacking order. |
 | `gradientFrom` | any CSS color | Start color of a linear-gradient veil (used in place of a flat `color`). |
 | `gradientTo` | any CSS color | End color of the gradient. |
@@ -199,11 +199,11 @@ alert(value);
 {% accordionSection title="Source: Python" %}
 ```python
 label = component('aardvark', 'text', c='white', fw='700', children='Spotlighted content')
-print(component('aardvark', 'overlay', color='#000', backgroundOpacity=0.6, children=label, attr={'onclick': '''
+component('aardvark', 'overlay', color='#000', backgroundOpacity=0.6, children=label, attr={'onclick': '''
 const value = this.innerText;
 console.log('attr demo value:', value);
 alert(value);
-'''}))
+'''})
 ```
 {% endAccordionSection %}
 {% endAccordion %}

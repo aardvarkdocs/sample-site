@@ -153,9 +153,22 @@ component(
 | --- | --- | --- |
 | `first` | text | First panel content. Omit it to use the block body as the first panel instead. |
 | `second` | text | Second panel content. |
-| `defaultSize` | percentage `0`–`100` (`50` default) | The first panel's initial width (`horizontal`) or height (`vertical`); drag the handle to change it. |
+| `defaultSize` | percentage `0`–`100` (`50` default) | The first panel's initial width (`horizontal`) or height (`vertical`); drag the handle to change it. Values outside the range are clamped, so the second panel is never given a negative share. |
 | `orientation` | `horizontal` (default), `vertical` | `horizontal` places panels side by side; `vertical` stacks them. |
 
+`attr={...}` forwards raw HTML attributes onto the rendered element.
+
+### Good to know
+
+- `first` and `second` are inserted as they are written: HTML in them renders, but Markdown does
+  not — `**bold**` stays literally `**bold**`. Only the block body goes through Markdown, so put
+  the panel that needs formatting, links, or other tags there and pass the plain one as `second`.
+- `first` and the block body are two ways to fill the *same* panel. Setting both is reported as a
+  build warning and the body is dropped — pick one.
+- The divider is operable from the keyboard: tab to it, then use the arrow keys along the split
+  axis — left/right when horizontal, up/down when stacked — to move it a percent at a time, or ten
+  percent with <kbd>Shift</kbd>. <kbd>Home</kbd> and <kbd>End</kbd> send it to either extreme, and
+  double-clicking it restores the `defaultSize` split.
 
 ## CSS Selectors
 
@@ -176,7 +189,11 @@ Each `splitter` carries `data-aardvark-island="Splitter"` on its wrapper, and Ma
 }
 
 .mantine-Splitter-handle {
-  /* the handle part */
+  /* the draggable divider between the panels */
+}
+
+.mantine-Splitter-thumb {
+  /* the grip mark drawn inside the handle */
 }
 ```
 {% endraw %}

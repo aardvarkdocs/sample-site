@@ -72,18 +72,26 @@ Omit any attribute to take its Mantine default.
 | --- | --- | --- |
 | `type` | `default` (single), `range`, `multiple` | What the calendar selects. |
 | `defaultValue` | `YYYY-MM-DD` string, or a JSON array of them for `range` / `multiple` | Initial value. |
-| `valueFormat` | a dayjs format string | How the value is displayed. |
+| `valueFormat` | a dayjs format string | How the value is displayed. Defaults to `MMMM D, YYYY`. |
 | `label` | string | Field label above the input. |
 | `description` | string | Helper text below the label. |
 | `placeholder` | string | Placeholder shown when empty. |
 | `error` | string | Validation message; switches the field to the error color. |
-| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Control size. |
+| `size` | `xs`, `sm` (default), `md`, `lg`, `xl` | Control size. |
 | `radius` | `xs`–`xl` or a CSS length | Corner radius. |
 | `variant` | `default`, `filled`, `unstyled` | Input style. |
 | `required` | bool (`true` / `false`) | Mark required and add the asterisk. |
 | `withAsterisk` | bool (`true` / `false`) | Add the asterisk without the HTML `required`. |
 | `disabled` | bool (`true` / `false`) | Render the field disabled. |
 | `clearable` | bool (`true` / `false`) | Show an × to clear the value. |
+
+{% callout severity='info' title='Good to know' %}
+For `range` and `multiple`, `defaultValue` has to be a JSON array of date strings — a bare
+`'2026-01-05'` is read as one date, which neither mode can show as a selection. A value that
+starts with `[` but isn't valid JSON doesn't fail the build; it's passed through as plain text
+and reported as a build warning, so a typo shows up in the build output rather than as an
+empty field.
+{% endCallout %}
 
 ## CSS Selectors
 

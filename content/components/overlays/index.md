@@ -8,11 +8,14 @@ description: "Built-in tags for layered UI — modals, drawers, dialogs and othe
 
 # Overlays
 
-UI that layers over the page. The **panels** — modal, drawer, dialog — ship with a built-in
-trigger button and open/close wiring, so they work on a static page out of the box (click the
-trigger, then close via the button, the overlay, or Escape). The **floating** overlays anchor a
-transient surface to a target using Mantine's floating engine (placement, arrows, offsets,
-flip-on-collision). Each is a single **built-in** tag that forwards the full Mantine prop surface.
+UI that layers over the page. The **panels** — modal, drawer, dialog — ship with a trigger
+button and the open/close state wired up, so they work on a static page out of the box: click
+the trigger to open, then dismiss a modal or drawer with its close button, the overlay, or
+Escape, and a dialog with its own close button. The **floating** overlays anchor a transient
+surface to a target, and place it, point an arrow at the target, and flip it away from a
+viewport edge for you. Most are a single tag you write in Markdown. A few — Spotlight and the
+modals manager, which you drive from JavaScript, and the FloatingIndicator positioning
+primitive — are shown instead as small self-contained demos.
 
 ## Panels
 

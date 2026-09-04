@@ -12,10 +12,8 @@ works* with nothing to sign up for.
 
 Aardvark uses the audited `mantine-map` package as an internal implementation dependency;
 it does not expose a second community tag. {% raw %}`{% map %}`{% endraw %} is the only map
-authoring surface. **You install nothing for it** — Aardvark ships that runtime and stages it
-into your build cache — **except on the released 0.3.3**, which reads `mantine-map` from your
-own `node_modules`; the **On 0.3.3 you do install it** note further down covers the install — and
-Aardvark publishes its content-hashed worker locally.
+authoring surface. **You install nothing for it**: Aardvark ships that runtime, stages it into
+your build cache, and publishes its content-hashed worker on your own site.
 The executable map engine therefore loads from your own site rather than a JavaScript CDN.
 The selected remote style, tiles, glyphs, and sprites are provider data, not executable CDN
 runtime.
@@ -70,7 +68,9 @@ renders, live:
 
 Click a marker for its popup. The map keeps **MapLibre | OpenFreeMap © OpenMapTiles | ©
 OpenStreetMap contributors** attribution in the corner — that crediting is required, so don't
-remove it.
+remove it. That corner credit accompanies the OpenFreeMap styles; point `style` at a full style
+URL of your own and it isn't rendered, because it would be crediting the wrong people — whatever
+your provider's terms require is then yours to put on the page.
 
 ## Pinning a location
 
@@ -104,10 +104,10 @@ Each `{% raw %}{% pin %}{% endraw %}` takes:
 | `{% raw %}{% pin %}{% endraw %}` attribute | Effect |
 | --- | --- |
 | `address="…"` | Street address, geocoded at build time. Use this **or** `lat`/`lng`. |
-| `lat=…` `lng=…` | Explicit coordinates (skips geocoding). `lon` is accepted as an alias for `lng`. |
-| `label="…"` | Bold heading in the marker's popup (and the location's name in the fallback list). |
+| `lat=…` `lng=…` | Explicit coordinates (skips geocoding). `lon` is accepted as an alias for `lng`. A pair outside Earth's bounds (latitude ±90, longitude ±180) warns and drops the pin rather than placing it at some wrapped spot. |
+| `label="…"` | Bold heading in the marker's popup (and the location's name in the fallback list). `title` is accepted as an alias. |
 | `description="…"` | A line of detail below the label in the popup. |
-| `color="#c2255c"` | Marker color (any CSS color). |
+| `color="#c2255c"` | Marker color — a plain CSS color: a hex value, a named color, or an `rgb()` / `hsl()` function. Anything else warns and the pin keeps the default color. |
 
 ## Geocoding, privacy & offline builds
 
@@ -121,8 +121,14 @@ later build.
 Each geocoded address is cached as one small JSON file under `.aardvark-cache/geo/`,
 named by a hash of the address (its contents are the resolved `lat` / `lng` and place
 name). The cache is purely derived and git-ignored, so clearing it is always safe — it
-just costs a fresh lookup on the next build. To drop **every** cached coordinate and
-re-resolve on the next build:
+just costs a fresh lookup on the next build.
+
+A confirmed **"no match"** is cached too: that's an answer, not a failure, so a spelling the
+geocoder doesn't recognize isn't re-asked on every build — clear its entry once you think the
+provider would answer differently. A lookup that fails because the *network* is down is never
+cached, so it simply retries on the next build.
+
+To drop **every** cached coordinate and re-resolve on the next build:
 
 ```sh
 rm -rf .aardvark-cache/geo
@@ -150,34 +156,32 @@ map:
   # googleApiKey: "…"          # required when geocoder: google
   # rateLimit: 1.0             # requests per second
   # timeout: 10                # seconds per geocoder request
+  # userAgent: "…"             # the identifying User-Agent Nominatim's policy asks for
   style: liberty               # default basemap
+  # height: 400                # default map height in pixels
 ```
 {% endraw %}
 
 `mantine-map` and MapLibre GL JS are shipped by Aardvark, not by your site. The first build
-that renders a map extracts them into `.aardvark-cache/` (nothing is downloaded, and the files
-are checked against digests recorded when they were vendored), then bundles that runtime and
-CSS and emits a self-contained, content-hashed worker under `/_aardvark/maplibre/`. There is
-nothing to install and no runtime JavaScript or CSS CDN dependency to configure — except on
-the released 0.3.3, which the next paragraph covers.
+that renders a map extracts them into `.aardvark-cache/` (nothing is downloaded, and every
+extracted file is checked against a digest recorded when it was vendored), then bundles that
+runtime and CSS and emits a self-contained, content-hashed worker under `/_aardvark/maplibre/`.
+There is nothing to install and no runtime JavaScript or CSS CDN dependency to configure.
 
-**On 0.3.3 you do install it.** Shipping the runtime lands in the release after 0.3.3; 0.3.3
-itself bundles the copy in your own `node_modules`. A site scaffolded by 0.3.3 already lists
-`"mantine-map": "0.4.0"` in `package.json`, so its ordinary `npm install` covers it; a site
-upgrading from an earlier release adds that entry itself and then actually installs it — the
-same installed-tree rule as below, where a listed but uninstalled package does not count. Without that copy the build warns, drops
-the map and renders the location list below — and still exits 0, so a map can disappear from a
-published site unnoticed.
+**A project with its own installed `mantine-map` keeps using that copy.** Aardvark stages
+nothing then — and removes anything it staged earlier, so its copy can never shadow yours — and
+the version resolved from your `node_modules` is the one that gets bundled. It is the installed
+tree that decides, not the manifest: a package your `package.json` lists but nobody installed
+isn't a copy Aardvark can build against.
 
-A project with its own installed `mantine-map` keeps using that copy — Aardvark stages nothing
-in that case, and the version resolved from your `node_modules` is the one that gets bundled.
-It is the installed tree that decides, not the manifest: a package listed but not installed is
-not a copy Aardvark can build against.
-
-That copy still has to be **exactly 0.4.0**, the version the map surface is built against. If
-yours is a different version the map is dropped with a warning, as it was before — Aardvark
-does not quietly substitute its own runtime for a dependency you installed deliberately. Remove
-your pin to hand the runtime back to Aardvark.
+Your copy has to be **exactly 0.4.0**, the version the map surface is built against. A different
+one is dropped with a warning rather than quietly swapped for Aardvark's — substituting a
+version for a dependency you installed deliberately isn't Aardvark's call. Remove the pin to
+hand the runtime back to Aardvark. **A dropped map still exits 0**: the build warns, renders the
+accessible location list in place of the map, and carries on — so a map that disappears this way
+is easy to miss in a build that otherwise passes. (Upgrading from 0.3.3, the one release that
+moved the runtime off the CDN but still read it from your own `node_modules`: the `mantine-map`
+and `maplibre-gl` pins it asked for can go, since Aardvark now supplies both.)
 
 **Content-Security-Policy:** allow the local worker with `worker-src 'self'`, and allow
 MapLibre's image forms with `img-src 'self' data: blob:`. The basemap style still names its
@@ -190,6 +194,11 @@ loses its basemap after deployment.)
 No JavaScript? A reader (or a search crawler) without the map still gets an accessible
 list of the pinned locations, each linking to its spot on OpenStreetMap — the same list
 screen readers use.
+
+**Turn maps off site-wide** with `map: false` in `aardvark.config.yaml`. Every
+{% raw %}`{% map %}`{% endraw %} then renders nothing at all — not even the location list — and
+the build does no geocoding, so a site that has switched maps off never reaches the network for
+an address.
 
 ## CSS Selectors
 

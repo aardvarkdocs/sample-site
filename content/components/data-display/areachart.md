@@ -7,10 +7,21 @@ description: "The built-in areachart tag — an area chart from JSON data and se
 
 An **area chart** — like a line chart with the region under each line filled, good for showing
 volume or stacked totals. Give it the rows in `data` and the areas in `series` (`{name, color}`),
-with `dataKey` for the x-axis. Renders in the browser and hydrates into an interactive island.
+with `dataKey` for the x-axis. Hovering a point opens a tooltip with that row's values.
 
 Use it as `{% raw %}{% areachart %}{% endraw %}` in Markdown, or call it from Python logic (loops,
 snippets) via `component('aardvark', 'areachart', …)`.
+
+> **The charts need the `charts` component library.** Chart tags resolve against
+> [`@mantine/charts`](https://mantine.dev/charts/getting-started/), which a site opts into: the
+> package has to be installed **and** a `charts:` entry has to be declared under
+> `componentLibraries:` in your theme's `theme.yaml`. Without it the chart renders nothing and
+> the build reports an unknown component library. A site scaffolded by `vark new` installs the
+> package but ships no `theme.yaml` — add one to turn the chart tags on. This site's copy, in
+> `themes/vark/theme.yaml`, is a working example.
+>
+> Charts are drawn **in the browser** (they measure their live container), so they are not part
+> of the pre-rendered HTML and do not appear with JavaScript turned off.
 
 ## A basic area chart
 
@@ -49,13 +60,14 @@ component('aardvark', 'areachart', h=260, dataKey='month', curveType='monotone',
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `data` | JSON array of row objects | The chart rows. |
-| `series` | JSON array of `{name, color}` | One area per entry. |
+| `data` | JSON array of row objects | The chart rows. Malformed JSON warns during the build and draws an empty chart. |
+| `series` | JSON array of `{name, color}` | One area per entry. `name` is the row field to plot; `color` is a theme color with a shade (`blue.6`) or any CSS color. |
 | `dataKey` | string | The row field used for the x-axis. |
 | `h` | integer (px, default `300`) | Chart height. |
-| `curveType` | `monotone`, `linear`, `natural`, `step`, … | Curve interpolation. |
-| `unit` | string | Unit appended to axis/tooltip values. |
-| `withLegend` | bool (`true` / `false`) | Show the legend. |
+| `curveType` | `bump`, `linear`, `natural`, `monotone`, `step`, `stepBefore`, `stepAfter` | Curve interpolation. |
+| `unit` | string | Unit appended to the value-axis ticks and the tooltip values. |
+| `withLegend` | bool (`true` / `false`, default `false`) | Show the legend. |
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="AreaChart"]` (or the more specific `[data-aardvark-lib="charts"][data-aardvark-island="AreaChart"]` when several libraries share the page) — or through the Mantine Styles API classes (`.mantine-AreaChart-root` and its inner parts):

@@ -122,9 +122,9 @@ Omit any attribute to take its default (a live local-time clock). Bare flags (e.
 | `value` | `"HH:MM"` / `"HH:MM:SS"` | A fixed time to display (use with `running=false`). |
 | `running` | `true` / `false` | Whether the clock ticks. Defaults to ticking; set `running=false` to freeze on `value`. |
 | `timezone` | An IANA timezone name (e.g. `Asia/Tokyo`) | Show the live time for another zone. Defaults to local. |
-| `size` | `xs`–`xl` or a number of px | Clock size. |
-| `shape` | `circle`, `rounded-rect` | Face shape. |
-| `secondHandBehavior` | `smooth`, `tick`, `tick-half` | How the second hand moves. |
+| `size` | `xs`–`xl`, a number of px, or a CSS length (default `400` px) | Clock size. |
+| `shape` | `circle` (default), `rounded-rect` | Face shape. |
+| `secondHandBehavior` | `smooth`, `tick`, `tick-half`, `tick-high-freq` | How the second hand moves. |
 | `withSecondsArc` | `true` / `false` (default `false`) | Draw the seconds progress arc. |
 | `withMinutesArc` | `true` / `false` (default `false`) | Draw the minutes progress arc. |
 | `withHoursArc` | `true` / `false` (default `false`) | Draw the hours progress arc. |
@@ -133,29 +133,41 @@ Omit any attribute to take its default (a live local-time clock). Bare flags (e.
 
 The clock takes no body.
 
+{% callout severity="info" title="Good to know" %}
+The clock is client-only, and it is left out of the build-time prerender — the page ships an
+empty placeholder and the whole face is drawn once the page's JavaScript runs. A reader with
+JavaScript turned off sees nothing there, so don't put the only copy of a time your page needs
+to convey inside one.
+
+`timezone` is passed to the clock verbatim, so any IANA zone name your reader's browser knows
+works — the named zones in the examples are just the common ones.
+{% endCallout %}
+
 ## CSS Selector
 
-The clock exposes Mantine Styles API selectors you can target with `classNames` in your own
-React, or style directly:
+Every part of the face carries a stable `mantine-Clock-*` class you can target from
+`custom.css` (the same names work as Styles API `classNames` keys in your own React):
 
-| Selector | Element |
+| Selector | Targets |
 | --- | --- |
-| `root` | The clock root. |
-| `clockFace` | The face background. |
-| `hourTick` / `minuteTick` | The hour and minute tick marks. |
-| `number` / `primaryNumber` / `secondaryNumber` | The numerals. |
-| `hourHand` / `minuteHand` / `secondHand` | The three hands. |
-| `centerDot` | The center hub. |
+| `.mantine-Clock-root` | The clock root. |
+| `.mantine-Clock-clockFace` | The face background. |
+| `.mantine-Clock-hourTick` / `.mantine-Clock-minuteTick` | The hour and minute tick marks. |
+| `.mantine-Clock-number` / `.mantine-Clock-primaryNumber` / `.mantine-Clock-secondaryNumber` | The numerals. |
+| `.mantine-Clock-hourHand` / `.mantine-Clock-minuteHand` / `.mantine-Clock-secondHand` | The three hands. |
+| `.mantine-Clock-centerDot` | The center hub. |
 
-Forward a class with `attr={…}` (see below) to scope a stylesheet rule to one instance.
+Those classes are shared by every clock on the page; give one instance an `id` or a `data-*`
+hook through `attr={…}` (see below) when a rule should apply to it alone.
 
 ## Injecting Attributes
 
 The `attr={…}` channel forwards raw HTML attributes straight onto the rendered clock root —
-use it for `id`, `class`, `data-*`, ARIA attributes, or anything else not exposed as a typed
-parameter.
+use it for `id`, `data-*`, ARIA attributes, or anything else not exposed as a typed
+parameter. Don't send `class`, `className`, or `style` through it: those are managed by the
+component, and the page logs a console warning if you try.
 
-{% clock timezone='UTC' attr={'class': 'office-clock', 'aria-label': 'UTC time'} %}
+{% clock timezone='UTC' attr={'id': 'office-clock', 'data-role': 'office-clock', 'aria-label': 'UTC time'} %}
 
 <br>
 
@@ -163,14 +175,15 @@ parameter.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% clock timezone='UTC' attr={'class': 'office-clock', 'aria-label': 'UTC time'} %}
+{% clock timezone='UTC' attr={'id': 'office-clock', 'data-role': 'office-clock', 'aria-label': 'UTC time'} %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'clock', timezone='UTC',
-          attr={'class': 'office-clock', 'aria-label': 'UTC time'})
+          attr={'id': 'office-clock', 'data-role': 'office-clock',
+                'aria-label': 'UTC time'})
 ```
 {% endAccordionSection %}
 {% endAccordion %}

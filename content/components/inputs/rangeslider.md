@@ -18,7 +18,8 @@ Use it as `{% raw %}{% rangeslider %}{% endraw %}` in Markdown, or call it from 
 ### Basic range
 
 Set `min`, `max`, and a `defaultValue` of **two numbers** — the starting low and high. Drag
-either thumb.
+either thumb. The pair is parsed at build time, so a value that isn't two numbers (`'20, abc'`)
+fails the build with a message naming it rather than rendering a broken control.
 
 {% rangeslider min=0 max=100 defaultValue='20, 80' %}
 
@@ -44,8 +45,11 @@ component('aardvark', 'rangeslider', min=0, max=100, defaultValue='20, 80')
 
 ### Marks and a minimum gap
 
-Pass `marks` as a JSON array of `{value, label}`, and `minRange` to fix the smallest gap the
-two thumbs may have. Add `restrictToMarks` to snap to the marks only.
+Pass `marks` as a JSON array of `{value, label}` — real JSON, with double quotes; a value that
+doesn't parse warns during the build and the slider renders without marks. `minRange` fixes the
+smallest gap the two thumbs may have, and it defaults to `10`, so a slider over a short span
+(`0`–`5`, say) needs its own smaller value or the thumbs have nowhere to go. Add `restrictToMarks`
+to snap to the marks only.
 
 {% rangeslider min=0 max=100 defaultValue='25, 75' minRange=10 color='teal' marks='[{"value": 0, "label": "0"}, {"value": 50, "label": "50"}, {"value": 100, "label": "100"}]' %}
 
@@ -99,7 +103,8 @@ component('aardvark', 'rangeslider', defaultValue='30, 70', color='orange', inve
 
 ### Disabled
 
-Add the bare `disabled` flag to make the range read-only.
+Add the bare `disabled` flag to make the range non-interactive — it greys out and neither thumb
+can be moved.
 
 {% rangeslider defaultValue='40, 60' disabled=true %}
 
@@ -123,20 +128,21 @@ component('aardvark', 'rangeslider', defaultValue='40, 60', disabled=True)
 ## With other components
 
 Generate one range slider per filter from data with a Python loop — the same
-`component('aardvark', 'rangeslider', …)` call, once per item, laid out in a card grid.
+`component('aardvark', 'rangeslider', …)` call, once per item, laid out in a card grid. Each filter
+carries its own `minRange`, since the default of `10` is wider than the whole `0`–`5` rating span.
 
 {%
 filters = [
-    {"name": "Price ($)", "min": 0, "max": 500, "default": "100, 350", "color": "blue"},
-    {"name": "Rating", "min": 0, "max": 5, "default": "3, 5", "color": "teal"},
-    {"name": "Weight (kg)", "min": 0, "max": 20, "default": "2, 8", "color": "grape"},
+    {"name": "Price ($)", "min": 0, "max": 500, "default": "100, 350", "gap": 25, "color": "blue"},
+    {"name": "Rating", "min": 0, "max": 5, "default": "3, 5", "gap": 1, "color": "teal"},
+    {"name": "Weight (kg)", "min": 0, "max": 20, "default": "2, 8", "gap": 2, "color": "grape"},
 ]
 controls = ''
 for f in filters:
     row = '**' + f["name"] + '**\n\n' + component(
         'aardvark', 'rangeslider',
         min=f["min"], max=f["max"], defaultValue=f["default"],
-        color=f["color"], labelAlwaysOn=True,
+        minRange=f["gap"], color=f["color"], labelAlwaysOn=True,
     )
     controls += component('aardvark', 'card', variant='plain', children=row)
 page.print(component('aardvark', 'cardGrid', cols={'base': 1, 'sm': 3}, children=controls))
@@ -148,16 +154,16 @@ page.print(component('aardvark', 'cardGrid', cols={'base': 1, 'sm': 3}, children
 {% accordionSection title="Source: Python" %}
 ```python
 filters = [
-    {"name": "Price ($)", "min": 0, "max": 500, "default": "100, 350", "color": "blue"},
-    {"name": "Rating", "min": 0, "max": 5, "default": "3, 5", "color": "teal"},
-    {"name": "Weight (kg)", "min": 0, "max": 20, "default": "2, 8", "color": "grape"},
+    {"name": "Price ($)", "min": 0, "max": 500, "default": "100, 350", "gap": 25, "color": "blue"},
+    {"name": "Rating", "min": 0, "max": 5, "default": "3, 5", "gap": 1, "color": "teal"},
+    {"name": "Weight (kg)", "min": 0, "max": 20, "default": "2, 8", "gap": 2, "color": "grape"},
 ]
 controls = ''
 for f in filters:
     row = '**' + f["name"] + '**\n\n' + component(
         'aardvark', 'rangeslider',
         min=f["min"], max=f["max"], defaultValue=f["default"],
-        color=f["color"], labelAlwaysOn=True,
+        minRange=f["gap"], color=f["color"], labelAlwaysOn=True,
     )
     controls += component('aardvark', 'card', variant='plain', children=row)
 page.print(component('aardvark', 'cardGrid', cols={'base': 1, 'sm': 3}, children=controls))
@@ -173,19 +179,19 @@ Omit any attribute to take its default.
 | --- | --- | --- |
 | `min` | number | Lower bound of the range (default `0`). |
 | `max` | number | Upper bound of the range (default `100`). |
-| `step` | number | Increment per move. |
+| `step` | number | Increment per move (default `1`). |
 | `defaultValue` | `'low, high'` string | Starting low and high pair (e.g. `'20, 80'`) — the reader can drag both. |
-| `minRange` | number | Smallest allowed gap between the two thumbs. |
-| `marks` | JSON array string | Tick marks as `[{"value": n, "label": "…"}, …]`. |
+| `minRange` | number | Smallest allowed gap between the two thumbs (default `10` — lower it for a short `min`–`max` span). |
+| `marks` | JSON array string | Tick marks as `[{"value": n, "label": "…"}, …]`. A value that isn't valid JSON warns and renders no marks. |
 | `color` | theme color | Fill color of the span between the thumbs. |
-| `size` | `xs`–`xl` | Track thickness. |
-| `radius` | `xs`–`xl` | Corner rounding of the track. |
+| `size` | `xs`–`xl` | Track thickness (default `md`). |
+| `radius` | `xs`–`xl` or any CSS value | Corner rounding of the track (default `xl`). |
 | `label` | string | Static text for the thumb tips. |
 | `labelAlwaysOn` | boolean | Keep the value bubbles visible, not only while dragging. |
 | `inverted` | boolean | Fill the outside instead of the inside. |
 | `restrictToMarks` | boolean | Snap the thumbs to the `marks` positions only. |
 | `showLabelOnHover` | boolean | Show the labels on hover (on by default; set `false` to suppress). |
-| `disabled` | boolean | Make the range read-only. |
+| `disabled` | boolean | Render the range non-interactive. |
 | `attr` | raw-HTML map | Extra HTML attributes, passed as `attr={…}`. |
 
 ## CSS Selectors

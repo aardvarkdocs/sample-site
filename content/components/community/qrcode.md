@@ -1,6 +1,7 @@
 ---
 title: "QR code"
 description: "The built-in qrcode tag — a customizable QR code from the Mantine community. Encode any value, set colors, dot and corner styles, a center logo, error correction, and live examples."
+menu: components
 parent: community
 weight: 30
 ---
@@ -89,14 +90,14 @@ Omit any attribute to take its default.
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `value` | **Required.** String | The data to encode (URL, text, …). |
-| `size` | `xs` / `sm` / `md` / `lg` / `xl` | Overall size of the code. |
-| `color` | A Mantine color name or CSS color | Color of the data dots. |
-| `background` | A Mantine color name or CSS color | Background color. |
-| `dotStyle` | `square` / `rounded` / `dots` | Shape of the data modules. |
-| `cornerStyle` | `square` / `rounded` / `dots` | Shape of the corner finder patterns. |
+| `size` | `xs`–`xl` (default `md`), a CSS length, or a number of px | Overall size of the code. |
+| `color` | A Mantine color name or CSS color (default `dark`) | Color of the data dots. |
+| `background` | A Mantine color name or CSS color, or `transparent` (default `white`) | Background color. |
+| `dotStyle` | `square` (default) / `rounded` / `dots` | Shape of the data modules. |
+| `cornerStyle` | `square` (default) / `rounded` / `dots` | Shape of the corner finder patterns. |
 | `image` | A URL or path | A logo/image overlaid at the center. |
 | `imageRadius` | A CSS length (e.g. `8px`) | Border radius of the overlay image. |
-| `errorCorrectionLevel` | `L` / `M` / `Q` / `H` | Error tolerance (7%–30%); higher survives more occlusion. |
+| `errorCorrectionLevel` | `L` / `M` (default) / `Q` / `H` | Error tolerance — 7%, 15%, 25%, 30% of the code can be obscured and still scan. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element. |
 
 ## CSS Selector

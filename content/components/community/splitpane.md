@@ -112,11 +112,11 @@ Omit any attribute to take its default.
 | `second` | text | Second pane content. |
 | `orientation` | `vertical` (default, side by side), `horizontal` (stacked) | How the two panes are laid out. |
 | `initialSize` | a width/height, e.g. `'30%'` or `'240px'` | The first pane's initial size. |
-| `variant` | `default`, `filled`, `outline`, `transparent`, `gradient`, `dotted`, `dashed` | The resizer handle style. |
+| `variant` | `default`, `filled`, `outline`, `transparent`, `gradient`, `dotted`, `dashed` | The resizer handle style. `dotted` and `dashed` also reveal the grab knob on hover. |
 | `color` | a Mantine color | The resizer color. |
-| `size` | `xs`–`xl` or a number | The resizer thickness. |
-| `radius` | `xs`–`xl` or a number | The resizer corner radius. |
-| `knobSize` | `xs`–`xl` or a number | The size of the resizer's grab knob. |
+| `size` | `xs`–`xl` (default `sm`) or a number | The resizer thickness. |
+| `radius` | `xs`–`xl` (default `xs`) or a number | The resizer corner radius. |
+| `knobSize` | `xs`–`xl` (default `sm`) or a number | Size of the resizer's grab knob. The knob appears on hover when `variant` is `dotted` or `dashed`; the other variants draw a plain bar. |
 | `attr={…}` | an object of HTML attributes | Forwards raw HTML attributes onto the rendered element. |
 
 ## CSS Selector
@@ -129,17 +129,26 @@ The split renders inside an island wrapper you can target in custom CSS:
 }
 ```
 
-The package also exposes CSS variables on the resizer — `--split-resizer-size`,
-`--split-resizer-color`, `--split-resizer-knob-size`, and more — which you can set through the
-`attr` style passthrough below.
+The handle's look rides CSS variables — `--split-resizer-size`, `--split-resizer-color`,
+`--split-resizer-knob-size`, and more — but the resizer writes them onto itself as it renders,
+so setting them on an ancestor has no effect. Use the `size`, `color`, `radius` and `knobSize`
+attributes above; to reach the handle from CSS, target it directly and override the inline
+value with `!important`:
+
+```css
+[data-testid='demo-split'] .mantine-SplitResizer-root {
+  --split-resizer-size: 8px !important;
+}
+```
 
 ## Injecting Attributes
 
-Pass `attr={…}` to forward raw HTML attributes (data attributes, ARIA, inline `style`) straight
-onto the rendered element — handy for hooks your own CSS or scripts key off, or for setting the
-package's CSS variables.
+Pass `attr={…}` to forward raw HTML attributes (data attributes, ARIA) straight onto the
+rendered element — handy for hooks your own CSS or scripts key off. Keep `class`, `className`
+and `style` out of it: React manages those on this element, so the runtime warns and your value
+can be overwritten. Reach for a `data-*` hook and a stylesheet rule instead.
 
-{% splitpane first='Left' second='Right' attr={'data-testid': 'demo-split', 'style': '--split-resizer-size: 8px'} %}
+{% splitpane first='Left' second='Right' attr={'data-testid': 'demo-split', 'aria-label': 'Demo split'} %}
 
 <br>
 
@@ -147,14 +156,14 @@ package's CSS variables.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% splitpane first='Left' second='Right' attr={'data-testid': 'demo-split', 'style': '--split-resizer-size: 8px'} %}
+{% splitpane first='Left' second='Right' attr={'data-testid': 'demo-split', 'aria-label': 'Demo split'} %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'splitpane', first='Left', second='Right',
-          attr={'data-testid': 'demo-split', 'style': '--split-resizer-size: 8px'})
+          attr={'data-testid': 'demo-split', 'aria-label': 'Demo split'})
 ```
 {% endAccordionSection %}
 {% endAccordion %}

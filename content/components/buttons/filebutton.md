@@ -9,7 +9,7 @@ description: "The built-in filebutton tag — a button that opens the native fil
 
 `{% raw %}{% filebutton %}{% endraw %}` is a **built-in** tag for a **file-picker button**.
 Clicking it opens the browser's native file dialog; the chosen file name appears beside the
-button.
+button. With `multiple`, every chosen name is listed there, comma-separated.
 
 Use it as `{% raw %}{% filebutton %}{% endraw %}` in Markdown, or call it from Python
 logic (loops, snippets) via `component('aardvark', 'filebutton', …)`.
@@ -156,7 +156,7 @@ Omit any attribute to take its default. The bare boolean flag `multiple` sets th
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `label` | string | Button text. |
+| `label` | string | Button text. Defaults to `Upload`. |
 | `accept` | HTML accept string (MIME types / extensions, comma-separated) | Limit the picker to certain file types. |
 | `multiple` | bool flag | Allow selecting several files. |
 | `variant` | `filled`, `light`, `outline`, `subtle`, `default`, `transparent`, `white` | Visual style. |

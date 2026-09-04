@@ -39,7 +39,9 @@ fragments under a `_partials/` directory and include them anywhere.
 The argument is a Python expression, so the path can be computed — a variable
 (`{% raw %}{% include page.partial %}{% endraw %}`) or a conditional
 (`{% raw %}{% include '/_partials/pro.md' if page.edition == 'pro' else '/_partials/free.md' %}{% endraw %}`).
-A missing file or an include cycle fails the build with a clear error.
+A missing file or an include cycle fails the build with a clear error, and so does a path that
+climbs out of the content root — `../` segments are resolved before the check, so an include can
+never reach a file outside your site.
 
 ## Example
 
@@ -80,6 +82,15 @@ partial emits the **Pro** line above. A page that set `edition: free` — or
 omitted it — would get the other line from the *same* partial, with no change to
 the partial itself. That's the point: one shared fragment, varied per page by
 the page's own data.
+
+{% callout title="Good to know" %}
+The partial shares the page's namespace rather than getting a scope of its own, which cuts both
+ways. It can read anything the page defined — that is what makes `page.*` branching work — but a
+variable the partial **sets** stays set for the rest of the page. The partial below assigns
+`edition`, `product`, `plan` and `note`; after the include, those names hold its values. Prefix
+a partial's working variables (`_edition`) when you don't want them visible afterwards, and don't
+count on a name surviving an include unchanged.
+{% endCallout %}
 
 ## CSS Selectors
 

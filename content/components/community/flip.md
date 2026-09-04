@@ -120,12 +120,12 @@ Omit any attribute to take its default. Bare flags (e.g. `swipeable`) become `=T
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `back` | Text | The back face content (plain text; HTML-escaped). |
-| `flipped` | `true` / `false` | Controlled flip state. |
+| `flipped` | `true` | Pin the card to the back face — see *Good to know* below. |
 | `defaultFlipped` | `true` / `false` (default `false`) | Show the back face first. |
 | `direction` | `horizontal` (default) / `vertical` | Axis the card rotates around. |
-| `easing` | `ease` / `ease-in` / `ease-out` / `ease-in-out` (default) / `linear` / `spring` | Animation easing. |
+| `easing` | Any CSS timing function (`ease-in-out` is the default; `linear`, `cubic-bezier(…)`, …) or `spring` | Animation easing. |
 | `duration` | A number (seconds, default `0.8`) | Flip animation duration. |
-| `perspective` | A number | 3D perspective depth. |
+| `perspective` | A CSS length, e.g. `1200px` (default `1000px`) | 3D perspective depth. It reaches CSS verbatim, so include the unit — a bare `1200` is not a length and the browser drops it. |
 | `disabled` | `true` / `false` (default `false`) | Freeze the flip. |
 | `lazyBack` | `true` / `false` (default `false`) | Render the back face only once it's first shown. |
 | `swipeable` | `true` / `false` (default `false`) | Flip on touch swipe. |
@@ -133,21 +133,38 @@ Omit any attribute to take its default. Bare flags (e.g. `swipeable`) become `=T
 | `w`, `h` | A number (px) or Mantine size token | Width / height of the flip box. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element. |
 
+{% callout severity="info" title="Good to know" %}
+`back` is **plain text**: the value is HTML-escaped, so markup and other tags written there
+show up literally. When the richer side needs components, make it the block body (the front
+face) and add `defaultFlipped=true` so it is the side readers see first.
+
+`flipped` is the *controlled* state. There is no attribute to change it afterwards, so
+`flipped=true` pins the card to its back face and clicking does nothing — use
+`defaultFlipped=true` for a card that starts flipped but still turns.
+
+Both faces are stacked on top of each other and sized to the card, so the card itself has no
+intrinsic height — always give it a `w` and an `h`, or it collapses to nothing.
+{% endCallout %}
+
 ## CSS Selector
 
-The package exposes these hooks you can target from your site CSS (e.g. a project stylesheet):
+The card and both faces carry stable `mantine-Flip-*` classes you can target from
+`custom.css`, and Aardvark's own wrapper attribute scopes a rule to flip cards only:
 
-| Selector | Element |
+| Selector | Targets |
 | --- | --- |
-| `.flip-container` | The container that holds both faces. |
-| `.flip-front-face` | The front face. |
-| `.flip-back-face` | The back face. |
-| `[data-aardvark-flip]` | The Aardvark island wrapper around the Flip root. |
+| `.mantine-Flip-root` | The card root (owns the `--flip-perspective` variable). |
+| `.mantine-Flip-flip-container` | The container that holds both faces. |
+| `.mantine-Flip-flip-front-face` | The front face. |
+| `.mantine-Flip-flip-back-face` | The back face. |
+| `[data-aardvark-flip]` | The Aardvark wrapper attribute on the Flip root. |
 
 ## Injecting Attributes
 
-Pass `attr={…}` to forward raw HTML attributes (id, class, data-*, ARIA, inline style) onto
-the rendered element — an escape hatch for anything not covered by a named attribute above.
+Pass `attr={…}` to forward raw HTML attributes (`id`, `data-*`, ARIA) onto the rendered
+element — an escape hatch for anything not covered by a named attribute above. Don't send
+`class`, `className`, or `style` through it: those are managed by the component, and the page
+logs a console warning if you try.
 
 {% flip w=320 h=160 back='Back face' attr={'id': 'hero-flip', 'data-analytics': 'flip'} %}
 Front face

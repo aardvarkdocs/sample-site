@@ -133,36 +133,48 @@ Omit any attribute to take its default. Bare flags (e.g. `pauseOnHover`) become 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `variant` | `beam` / `glow` / `pulse` (default `beam`) | The animation style. |
-| `beamMode` | `path` / `conic` (default `path`) | How the beam is rendered (beam variant). |
-| `size` | `xs`–`xl` | Beam / effect size. |
-| `duration` | Number (seconds) | Animation speed (lap time). |
-| `colorFrom` | A color (token or CSS color) | Start of the gradient. |
-| `colorTo` | A color (token or CSS color) | End of the gradient. |
-| `radius` | A Mantine radius token or CSS length | Border radius of the effect. |
-| `blur` | `xs`–`xl` | Softness of the glow (glow variant). |
-| `angle` | Integer (degrees) | A static rotation angle for the border. |
-| `borderWidth` | A CSS length (e.g. `2px`) | Thickness of the animated border. |
-| `borderOpacity` | Number `0`–`1` | Opacity of the effect. |
+| `beamMode` | `path` (default) / `conic` | How the beam travels (beam variant). `path` runs a dot along the border at constant speed; `conic` rotates a gradient wedge, which reads faster on the short edges of a rectangle. |
+| `size` | `xs`–`xl` or a number (default `sm`) | Beam size — the dot's diameter in `path` mode, the wedge's angular spread in `conic` mode. |
+| `duration` | Number (seconds, default `5`) | Animation speed (lap time). |
+| `colorFrom` | A color (token or CSS color, default `yellow.6`) | Start of the gradient. |
+| `colorTo` | A color (token or CSS color, default `violet.6`) | End of the gradient. |
+| `radius` | A Mantine radius token, a number of px, or a CSS length (default `md`) | Border radius of the effect. |
+| `blur` | `xs`–`xl`, a number, or a CSS length (default `xs`) | Softness of the glow (glow variant). |
+| `angle` | Integer `0`–`360` (degrees, default `0`) | Where the beam sits when `animate=false`. Ignored while the animation runs. |
+| `borderWidth` | `xs`–`xl`, a number of px, or a CSS length (default `xs`) | Thickness of the animated border. |
+| `borderOpacity` | Number `0`–`1` (default `1`) | Opacity of the effect. |
 | `withMask` | `true` / `false` (default `true`) | Clip the effect to the border (vs. fill behind the content). |
 | `pauseOnHover` | `true` / `false` (default `false`) | Pause the animation while the pointer is over the content. |
 | `animate` | `true` / `false` (default `true`) | Enable the animation (set `false` for a static border). |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element (see [Injecting Attributes](#injecting-attributes)). |
 
+{% callout severity="info" title="Good to know" %}
+The wrapper is an inline-block that hugs its content, and the border is drawn on its edge —
+so set the corner rounding on **both** sides: a `radius` here that matches the wrapped
+component's own radius, or the beam will trace a rectangle around a rounded card.
+
+`angle` only applies with `animate=false`. Reach for that pair when you want a static
+gradient border and no motion at all; readers with `prefers-reduced-motion` already get the
+static border automatically.
+{% endCallout %}
+
 ## CSS Selector
 
-The mounted island is wrapped in an element carrying `data-aardvark-island="BorderAnimate"`, so
-you can target it from your own CSS:
+Target the wrapper, the two Styles API parts, or one animation state:
 
-```css
-[data-aardvark-island='BorderAnimate'] {
-  display: inline-block;
-}
-```
+| Selector | Targets |
+| --- | --- |
+| `[data-aardvark-island='BorderAnimate']` | The Aardvark wrapper around the effect — the place to set layout and margins. |
+| `.mantine-BorderAnimate-root` | The element the content sits in. |
+| `.mantine-BorderAnimate-border` | The animated border layer itself. |
+| `[data-variant='glow']` / `[data-beam-mode='conic']` | One variant or beam mode. |
+| `[data-animate='false']` / `[data-with-mask='false']` | The static border, or the unmasked (filled) effect. |
 
-The package draws the border through its own data-attribute selectors (`[data-variant]`,
-`[data-beam-mode]`, `[data-animate]`, `[data-with-mask]`, …) and CSS variables
-(`--border-animate-angle`, `--border-animate-blur`, …); the stylesheet ships from
-`@gfazioli/mantine-border-animate/styles.css`, imported automatically by the island.
+The look is driven by CSS variables on those two parts — `--border-animate-radius` on the
+root, and `--border-animate-duration`, `--border-animate-width`, `--border-animate-color-from`
+/ `-color-to`, `--border-animate-blur`, `--border-animate-opacity` and
+`--border-animate-static-angle` on the border — so most tweaks are a variable override. The
+stylesheet ships from `@gfazioli/mantine-border-animate/styles.css` and loads with the page.
 
 ## Injecting Attributes
 

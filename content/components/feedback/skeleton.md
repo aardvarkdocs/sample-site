@@ -173,7 +173,7 @@ component('aardvark', 'skeleton', height='0.8rem', width='100')
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `height` | A number (px → rem) or any CSS value | Block height. |
+| `height` | A number (px → rem) or any CSS value | Block height. Defaults to `auto`, so a bare skeleton with no height and no body has nothing to show — set one, or wrap content. |
 | `width` | A number or CSS value | Block width. Defaults to `100%`; ignored when `circle` is set. |
 | `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | Corner rounding of a rectangular placeholder. |
 | `circle` | bool (default `false`) | Render a circle (width and radius track the height) — good for an avatar placeholder. |

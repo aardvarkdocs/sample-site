@@ -40,7 +40,7 @@ you can use strategically to control costs as you go.
 Bring your own hosting, pay only for the AI you use.
 
 - Self-host anywhere, full feature set
-- All components, themes, agent discovery
+- All components, themes, agent discovery, dashboard Insights
 - Metered AI at [published per-model prices](/pricing/models/)
 - Prepaid balance + auto top-up
 - 1 seat · community support
@@ -51,10 +51,10 @@ _$87.20/mo billed annually_
 
 We host and run your docs.
 
+- Everything in Free, plus:
 - **Managed hosting** — custom domain, SSL, previews
 - **$40/mo of AI included**, at a ≈7% member discount
 - 5 seats included, add more at $10/seat
-- Insights analytics
 - Community support
 {% endCard %}
 {% card title="Business" icon="building" accent="violet" href="https://gateway.aardvarkdocs.com/dashboard" cta="Subscribe" %}
@@ -66,17 +66,19 @@ Robust and self-serve — no sales call.
 - Everything in Pro, plus:
 - **$120/mo of AI included** — 3× Pro — at a ≈13% discount
 - 12 seats included, add more at $15/seat
-- SSO, RBAC, audit-log export
+- SSO (OpenID Connect) + SCIM provisioning, audit-log export
+- Content Reach analytics, reader authentication for private docs
 - **Priority email support**, next-business-day target
 {% endCard %}
 {% card title="Enterprise" icon="shield-lock" accent="indigo" href="https://gateway.aardvarkdocs.com/dashboard" cta="Subscribe" %}
 **$2,750** per month
+_$2,350/mo billed annually_
 
 Everything in Business, plus:
 
 - **$750/mo of AI included** — 18.75× Pro — at a 20% discount
 - **Unlimited customization requests** — our engineering team on call to build any feature you need
-- SSO + SCIM provisioning
+- Bring your own model-provider key (optional)
 - Unlimited seats
 - Shared Slack access for realtime support and requests, 7 days a week
 {% endCard %}
@@ -95,8 +97,10 @@ Every model's real cost per answer, on every plan: **[the pricing table](/pricin
 | **Included AI** every month (member discount) | — | $40 at ≈7% off | $120 at ≈13% off (3× Pro) | $750 at 20% off (18.75× Pro) |
 | **Seats** | 1 | 5 | 12 | Unlimited |
 | **Hosting** | Self-host only | Managed or self-hosted | Managed or self-hosted | Managed or self-hosted |
-| **Analytics** | Basic | Insights | Insights + export | Insights + export |
-| **SSO / RBAC / audit export** | — | — | Included | + SCIM |
+| **Analytics** | Insights | Insights | Insights + Content Reach | Insights + Content Reach |
+| **SSO** (OpenID Connect) **+ SCIM / audit-log export** | — | — | Included | Included |
+| **Reader authentication** (private docs) | — | — | Included | Included |
+| **Bring your own provider key** | — | — | — | Optional |
 | **Customization** | — | — | — | Unlimited requests |
 | **Support** | Community | Community | Priority email | Realtime shared Slack |
 | **Self-hosting, agent discovery, PDF, all components** | Included | Included | Included | Included |
@@ -104,6 +108,9 @@ Every model's real cost per answer, on every plan: **[the pricing table](/pricin
 Nothing core is paywalled: self-hosting, Markdown-for-Agents, `llms.txt`, the agent-skills
 index, whole-site PDF, and every component and theme ship on **Free**. Paid plans add
 hosting, seats, support, controls — and cheaper AI.
+
+Single sign-on is OpenID Connect, configured yourself on Business and Enterprise. SAML is
+enabled per deployment rather than self-serve — [talk to us](/support/) if you need it.
 
 ## The honest AI meter
 
@@ -126,11 +133,11 @@ Your included allowance is denominated in those same billed dollars:
 ## When the included AI runs out
 
 **Cap-and-hold is the default.** Paid AI pauses at your cap and you're notified, so it
-cannot add further overflow charges. Your "max possible bill" is the subscription price
-plus any fixed add-on-seat charges and any overflow already incurred this month.
-(Usage-based GitHub Automations compute, if you use it, draws your prepaid balance
-separately and isn't included in that figure.) Prefer to stay unstuck? Two self-serve
-options, both under your control:
+cannot add further overflow charges — readers keep getting free-model answers meanwhile.
+Your "max possible bill" is the subscription price plus any fixed add-on-seat charges and
+any overflow already incurred this month. (Usage-based GitHub Automations compute, if you
+use it, draws your prepaid balance separately and isn't included in that figure.) Prefer to
+stay unstuck? Two self-serve options, both under your control:
 
 1. **Fall back to your balance** — flip overflow to draw from your prepaid balance at your
    plan's discounted member pricing, with a cap you set (raising it past 2× your allowance
@@ -142,18 +149,20 @@ options, both under your control:
 
 Annual plans take **20% off the platform fee** — the included-AI allowance is funded
 monthly at full value either way (it's real usage, not a discountable line item), so the
-effective saving is about 12–13% off the yearly total — ~12% on Pro, ~13% on Business
-(the bigger a plan's fee is relative to its bundled allowance, the more of the bill the
-discount reaches). Pro: $1,046.40/yr (vs. $1,188 at par, ~12% off). Business: $3,638.40/yr
-(vs. $4,188, ~13% off). The allowance still resets every month on annual plans.
+effective saving is about 12–15% off the yearly total — ~12% on Pro, ~13% on Business,
+~15% on Enterprise (the bigger a plan's fee is relative to its bundled allowance, the more
+of the bill the discount reaches). Pro: $1,046.40/yr (vs. $1,188 at par, ~12% off).
+Business: $3,638.40/yr (vs. $4,188, ~13% off). Enterprise: $28,200/yr (vs. $33,000, ~15%
+off). Add-on seats on an annual plan bill yearly at 12× the monthly seat rate, with no
+discount. The allowance still resets every month on annual plans.
 
 ## FAQ
 
 Billing is designed to be predictable and never to surprise you. Here's exactly what happens
 in the situations people ask about most.
 
-Every question — and its exact answer — now lives in the searchable support
-knowledge base, organized by category with the most-asked questions up top.
+Every question — and its exact answer — lives in the searchable support knowledge base,
+organized by category with the most-asked questions up top.
 
 {% card title="Browse the support knowledge base" icon="lifebuoy" href="/support/" cta="Visit support" %}
 Included AI, overflow, plan changes, payments and safety limits, seats and hosting —

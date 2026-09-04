@@ -157,15 +157,17 @@ spacing/sizing system. Omit any attribute to take its Mantine default (size `md`
 
 | Attribute | Values | Description |
 | --- | --- | --- |
-| `size` | `xs`–`xl` or any CSS value (`md` default) | Max content width. Smaller tokens = narrower column. |
+| `size` | `xs` (540px), `sm` (720px), `md` (960px, the default), `lg` (1140px), `xl` (1320px), or any CSS width | Max content width. Smaller tokens = narrower column. |
 | `fluid` | `true`, `false` (default `false`) | Take the full width (ignoring `size`), keeping the gutter. |
-| `w` / `h` | `xs`–`xl` or any CSS size | Width / height of the container. |
-| `miw` / `mih` | any CSS size | Minimum width / height. |
-| `maw` / `mah` | any CSS size | Maximum width / height. |
+| `w` / `h` | any CSS length (`320px`, `60%`); a bare number is read as pixels | Width / height of the container. |
+| `miw` / `mih` | any CSS length | Minimum width / height. |
+| `maw` / `mah` | any CSS length | Maximum width / height. |
 | `m`, `mt`, `mb`, `ml`, `mr`, `mx`, `my` | `xs`–`xl` or any CSS size | Margin — all sides, or a single side / axis. |
 | `p`, `pt`, `pb`, `pl`, `pr`, `px`, `py` | `xs`–`xl` or any CSS size | Padding — all sides, or a single side / axis. |
 | `bg` | a theme color or any CSS color | Background color. |
 | `c` | a theme color or any CSS color | Text (content) color. |
+
+{% include '/components/_partials/sizing-props-note.md' %}
 
 
 ## CSS Selectors

@@ -176,25 +176,34 @@ component('aardvark', 'fieldset', legend='Preferences', children=inner)
 {% endAccordionSection %}
 {% endAccordion %}
 
+{% callout severity='info' title='A native select is never empty' %}
+There is no blank state: the browser selects the first option the moment the page loads, so a
+reader who never touches the field still submits that value. Put the neutral choice first
+(`data='Choose a plan|Free|Pro'`) when you need "nothing picked" to be visible. An option's
+value **is** its label — the delimited string sets both — so `defaultValue` has to match one
+of the option texts exactly, and that same text is what a submit or an
+`attr={'onchange': …}` handler reads back.
+{% endCallout %}
+
 ## Attributes
 
 Omit any attribute to take its Mantine default.
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `data` | string | Options as a `\|`- or comma-delimited string. Use `\|` when an option label contains a comma. |
-| `defaultValue` | string | The option pre-selected on load. |
+| `data` | string | Options as a `\|`- or comma-delimited string. Use `\|` when an option label contains a comma. Each option's value is its label. |
+| `defaultValue` | string | The option pre-selected on load; must match one of the option labels exactly. |
 | `label` | string | Label shown above the field. |
 | `description` | string | Help text shown under the label. |
 | `error` | string | Validation message shown below the field; switches it to the error color. |
 | `variant` | `default`, `filled`, `unstyled` | Visual style. |
-| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Field size. |
+| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Field size. Defaults to `sm`. |
 | `radius` | `xs`, `sm`, `md`, `lg`, `xl` (or any CSS value) | Corner radius. |
 | `required` | `true` / `false` | Mark the field required and add the asterisk. Default `false`. |
 | `withAsterisk` | `true` / `false` | Add the asterisk without the `required` semantics. Default `false`. |
 | `disabled` | `true` / `false` | Render the field disabled. Default `false`. |
 | `leftSection` | string | Text shown inside the field on the left. |
-| `rightSection` | string | Text shown inside the field on the right. |
+| `rightSection` | string | Text shown inside the field on the right. **Takes the place of the dropdown chevron**, which lives in that slot — set it only when you mean to replace that cue. |
 
 ## CSS Selectors
 

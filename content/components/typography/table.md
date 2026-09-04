@@ -152,7 +152,8 @@ component('aardvark', 'table',
 ### Sticky header
 
 `stickyHeader` pins the header while the body scrolls; `maxHeight` caps the scroll window
-(px, default 320) and `stickyHeaderOffset` pushes the pinned header down past a fixed navbar:
+in pixels (320 when you pin the header without setting it) and `stickyHeaderOffset` pushes
+the pinned header down past a fixed navbar:
 
 {% table stickyHeader=true maxHeight=140 striped=true head='Build | Result' rows='1.0.0 | pass ; 1.0.1 | pass ; 1.0.2 | fail ; 1.0.3 | pass ; 1.0.4 | pass ; 1.0.5 | pass' %}
 
@@ -225,11 +226,27 @@ Omit any attribute to take its Mantine default.
 | `withColumnBorders` | `true`, `false` | Vertical dividers between columns. Default `false`. |
 | `withRowBorders` | `true`, `false` | Horizontal dividers between rows. Default `true`; set `false` to remove them. |
 | `stickyHeader` | `true`, `false` | Pin the header while the table body scrolls. Default `false`. |
-| `stickyHeaderOffset` | Integer (px) | Offset for the sticky header, e.g. to clear a fixed navbar. |
-| `maxHeight` | Integer (px) | Cap the sticky-header scroll window height. Default 320. |
+| `stickyHeaderOffset` | Integer (px) | Offset for the pinned header, e.g. to clear a fixed navbar. Applied only when `stickyHeader` is set. |
+| `maxHeight` | Integer (px) | Cap the table's height and scroll the body past it. Works on its own; with `stickyHeader` and no `maxHeight`, the cap is 320. |
 | `horizontalSpacing` | Mantine size token (`xs`–`xl`) or CSS value | Horizontal cell padding. |
 | `verticalSpacing` | Mantine size token (`xs`–`xl`) or CSS value | Vertical cell padding. |
 | `minWidth` | CSS width (`30rem`, `600px`) | Minimum width before the table scrolls horizontally. |
+
+{% callout severity="info" title="Good to know" %}
+- **This tag trades sorting and filtering for the styling options.** The click-to-sort
+  headers and filter box that a plain Markdown table gets are applied only to Markdown
+  tables, so a table written with this tag does not have them. If your readers need to sort
+  or filter the data, write it as a Markdown table.
+- **Cells are split before they are read as Markdown.** A literal `|` ends a cell and a
+  literal `;` ends a row, so a cell that needs either character has to come from the JSON
+  form — `rows='[["timeout", "30 ; per call"], …]'`.
+- **`rows` is treated as JSON only when it starts with `[` and parses.** A malformed array
+  is not an error: it falls back to the `;`/`|` split, which usually yields one long row.
+- **`striped` is the one option that is not a true/false flag.** A bare `striped` and
+  `striped=true` both stripe the odd rows, `odd` / `even` pick a set, and any other value —
+  `false` included — simply leaves striping off. The remaining toggles are real flags, so
+  `withRowBorders=false` does turn the row dividers off.
+{% endCallout %}
 
 ## CSS Selectors
 
@@ -242,6 +259,7 @@ Target the rendered element through its island marker, `[data-aardvark-island="T
 
 /* Mantine Styles API classes */
 .mantine-Table-table { }
+.mantine-Table-caption { }
 .mantine-Table-thead { }
 .mantine-Table-tbody { }
 .mantine-Table-tr { }

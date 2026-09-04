@@ -355,7 +355,7 @@ redirects:
   - { from: /components/changelog/, to: /components/extras/changelog/ }
   - { from: /components/component-libraries/, to: /components/extras/component-libraries/ }
   # 2026-07: CodeGroup and Panel moved out of the Mantine-repackage buckets (typography / layout)
-  # into Aardvark Extras — they are aardvark-native tags with no direct Mantine equivalent.
+  # into Aardvark Extras — they are Aardvark-native tags with no direct Mantine equivalent.
   - { from: /components/typography/codegroup/, to: /components/extras/codegroup/ }
   - { from: /components/layout/panel/, to: /components/extras/panel/ }
   - { from: /components/carousel/, to: /components/ }

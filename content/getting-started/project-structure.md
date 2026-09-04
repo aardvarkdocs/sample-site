@@ -9,21 +9,38 @@ weight: 13
 
 # Project structure
 
-A scaffolded Aardvark project looks like this:
+`vark new my-docs` creates this:
 
 ```bash
 my-docs/
-  aardvark.config.yaml      # site metadata, tabs, integrations, AI flags
-  content/             # *.md pages  ->  pretty URLs
-  data/                # *.json *.yaml *.csv  ->  data.<file>.<prop>
-  themes/vark/         # the docs theme (full, editable HTML source you own)
-  templates/           # optional: override a single theme file (else omit)
-  snippets/            # your custom *.jsx / *.tsx React components
-  openapi/             # OpenAPI specs (optional)
-  *.css *.js           # project-root assets -> copied, fingerprinted, linked
-  static/  public/     # public assets -> copied and fingerprinted (optional)
-  package.json         # islands deps (react, @mantine/*, esbuild)
-  build/               # generated output
+  aardvark.config.yaml   # site metadata, tabs, theme, integrations, AI flags
+  content/               # *.md pages  ->  pretty URLs
+  data/                  # *.json *.yaml *.csv  ->  data.<file>.<prop>
+  themes/vark/           # the docs theme (full, editable HTML + SCSS source you own)
+  snippets/              # your custom *.jsx / *.tsx React components
+  custom.css             # any project-root *.css / *.js -> copied, fingerprinted, linked
+  package.json           # islands deps (react, @mantine/*, esbuild)
+  .gitignore             # build/, node_modules/, .aardvark-cache/, .env
+```
+
+Add these as you need them — none is required:
+
+```bash
+  templates/             # override a single file of the active theme
+  generators/            # build-time Python that emits pages and downloadable files
+  static/  public/       # public assets -> copied and fingerprinted
+  openapi/               # OpenAPI specs (any path works; this is the convention)
+  versions/              # frozen doc snapshots cut by `vark version cut`
+  .env                   # secrets such as AARDVARK_SECRET_KEY, auto-loaded by build/dev
+```
+
+And these are produced by builds — keep them out of version control (the
+scaffolded `.gitignore` already does):
+
+```bash
+  build/                 # the generated site
+  .aardvark-cache/       # the staged islands toolchain plus build caches
+  node_modules/          # only if you run npm install yourself
 ```
 
 ## What each directory does
@@ -38,6 +55,12 @@ my-docs/
   select them per page with `pagetype:`. See [Theme & customization](/theming/).
 - **`templates/`** — Optional. Drop one file here to override just that file of the
   active theme (a lightweight alternative to forking the whole `themes/vark/`).
+- **`generators/`** — Optional. Python scripts that run at the start of every build
+  and write pages or any other file (CSV, JSON, binaries) into the site. See
+  [Build-time Python](/generators/).
+- **`versions/`** — Optional. Frozen snapshots of your versioned subtrees, created
+  by `vark version cut`; the latest docs stay in `content/`. See
+  [Versioning](/versioning/).
 - **`snippets/`** — Your own React components, usable from Markdown by filename.
   See [Components & snippets](/authoring/components-and-snippets/).
 - **`openapi/`** — OpenAPI specs you render inline with the
@@ -50,6 +73,8 @@ my-docs/
 ## Output
 
 `vark build` writes everything to `build/`: one HTML file per page (as
-`<url>/index.html`), the bundled islands JS/CSS under `_aardvark/`, your
-fingerprinted static assets, plus [generated files](/llms-and-sitemap/)
-(`sitemap.xml`, `llms.txt`, `llms-full.txt`).
+`<url>/index.html`) with a Markdown twin beside it, the bundled islands JS/CSS
+under `_aardvark/`, your fingerprinted static assets, plus [generated files](/llms-and-sitemap/)
+(`sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt`, the search index, and
+`_headers` / `_redirects` for hosts that read them). Every build replaces the
+directory wholesale, so never keep anything of your own in it.

@@ -1,8 +1,6 @@
 ---
 title: "Target"
 description: "The built-in target tag — name a region of a page so Content Reach reports on it as its own section, alongside the sections your headings already create."
-product: "Aardvark Cloud"
-edition: business
 ---
 
 # Target
@@ -22,8 +20,8 @@ section, which covers your prose. `{% raw %}{% target %}{% endraw %}` covers the
 that matter most but aren't headings — the install command, the API auth step, the
 "Try it now", the sign-up call to action.
 
-The tag renders nothing of its own: no box, no spacing, no styling. The region looks
-exactly as it did before you wrapped it.
+The tag adds no box, no spacing, and no styling — it wraps the region in a plain, unstyled
+`<div class="aardvark-target">` carrying the id. The region looks exactly as it did before.
 
 ## The id
 
@@ -36,6 +34,12 @@ lose the measurement for that region until the id is fixed; you never lose the c
 
 Ids should be stable. Renaming one starts a new section in the dashboard rather than
 continuing the old one's history, the same way renaming a heading does.
+
+They must also be **unique on the page**. The id *is* the identity the dashboard groups by, so
+reusing one is a build warning: only the last region with that id is measured, and clicks in the
+earlier one are credited to whichever section encloses them — a wrong number rather than a missing
+one. The `attr=` form below claims from the same set of ids, so the two ways of marking a region
+can collide with each other too.
 
 ## A worked example
 
@@ -81,7 +85,8 @@ channel every built-in accepts carries the same marker:
 {% endraw %}
 
 Reach for `{% raw %}{% target %}{% endraw %}` when you want a region; reach for `attr=`
-when you want one element.
+when you want one element. Both draw from the same page-wide set of section ids, so give each
+its own.
 
 ## What it does not do
 

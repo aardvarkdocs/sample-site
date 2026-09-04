@@ -77,8 +77,11 @@ vark new my-docs
 cd my-docs
 ```
 
-This creates a project with a starter page, a data file, the editable default
-theme, an example snippet, and a `package.json` for the islands.
+This creates a project with two starter pages (`content/index.md` and
+`content/quickstart.md`), a sample data file (`data/products.yaml`), the editable
+default theme in `themes/vark/`, an example snippet (`snippets/Callout.jsx`), a
+root `custom.css`, a `package.json` for the islands, and a `.gitignore` that
+already excludes `build/`, `node_modules/`, `.aardvark-cache/`, and `.env`.
 
 ### 2. Islands dependencies — included with Aardvark
 
@@ -100,11 +103,21 @@ vark dev --port 8000
 in your browser, watches your source files, and reloads the browser on every
 change. Pass `--no-open` if you'd rather open the tab yourself.
 
+In a terminal, `vark dev` runs a live dashboard on the alternate screen, so its
+log disappears when you quit — pass `--log-file dev.log` to keep a plain-text
+copy, or `--plain` for ordinary line-by-line output.
+
 ### 4. Build for production
 
 ```bash
 vark build      # outputs static HTML to ./build
 ```
+
+A link to a page or local image that doesn't exist — in any language — fails the
+build; a link to a missing `#anchor` on a page that does exist only warns (set
+`links: {strictAnchors: true}` in `aardvark.config.yaml` to fail on those too).
+An unknown component name never fails the build: it renders as an HTML comment
+and is reported as a warning.
 
 ### Create your first page
 

@@ -11,4 +11,6 @@ taxonomy:
 
 # Can I still self-host on Pro or Business?
 
-Yes. Managed hosting is included, never required.
+Yes. Managed hosting is included, never required. Building and serving your site yourself —
+`vark build`, `vark serve`, or any static host — never checks your plan; only deploying to
+Aardvark cloud hosting needs Pro or higher.

@@ -94,7 +94,7 @@ A common pattern is a standalone [Title](/components/typography/title/) above a
 What's new in this build:
 
 1. Faster incremental rebuilds.
-2. A new `{% raw %}{% table %}{% endraw %}` tag.
+2. A new `table` tag.
 
 See the [changelog](https://mantine.dev) for the full list.
 {% endTypography %}
@@ -110,7 +110,7 @@ See the [changelog](https://mantine.dev) for the full list.
 What's new in this build:
 
 1. Faster incremental rebuilds.
-2. A new {% table %} tag.
+2. A new `table` tag.
 
 See the [changelog](https://mantine.dev) for the full list.
 {% endTypography %}
@@ -124,7 +124,7 @@ component('aardvark', 'typography', children='''
 What's new in this build:
 
 1. Faster incremental rebuilds.
-2. A new table tag.
+2. A new `table` tag.
 
 See the [changelog](https://mantine.dev) for the full list.
 ''')

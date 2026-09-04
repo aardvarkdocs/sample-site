@@ -22,6 +22,14 @@ frame** — each live example below sits in its own box and never escapes it. Si
 `height` (pixels, default 380).
 {% endCallout %}
 
+{% callout severity='info' title='Region text is HTML, not Markdown' %}
+The `header`, `navbar`, `aside`, and `footer` params are written into their regions as raw HTML,
+so `<b>Live</b>` comes out bold while `**Live**` shows its asterisks. Only the block body — the
+main content area — is Markdown. The regions are also responsive the way an app's chrome is: the
+navbar takes the full frame width on viewports narrower than `48em`, and the aside on viewports
+narrower than `62em`.
+{% endCallout %}
+
 ## Header and navbar
 
 Set the `header` / `navbar` text params to add those regions; the block body is the main
@@ -202,7 +210,7 @@ anything else to take its Mantine default.
 | `footerHeight` | a number, px (`60` default) | Height of the footer region. |
 | `navbarWidth` | a number, px (`250` default) | Width of the navbar column. |
 | `asideWidth` | a number, px (`250` default) | Width of the aside column. |
-| `padding` | `xs`–`xl` or any CSS value | Padding around the main content area. |
+| `padding` | `xs`–`xl` or any CSS value (`0` default) | Padding around the main content area. |
 | `layout` | `default`, `alt` | `default` offsets Main inside the regions; `alt` makes header/footer span full width. |
 | `withBorder` | `true`, `false` (default `true`) | Draw a border on each region. Set `false` to remove. |
 | `height` | integer (pixels, default `380`) | Height of the self-contained frame the shell renders inside, so it stays a bounded preview instead of taking over the page. |
@@ -232,6 +240,10 @@ Each `appshell` carries `data-aardvark-island="AppShell"` on its wrapper, and Ma
 
 .mantine-AppShell-main {
   /* the main part */
+}
+
+.aardvark-appshell-demo {
+  /* the bounded frame the shell renders inside */
 }
 ```
 {% endraw %}

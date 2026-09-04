@@ -14,3 +14,6 @@ taxonomy:
 It's a guardrail against a surprise bill. Setting a cap far above your included allowance is a
 deliberate choice, so we ask you to acknowledge it once rather than let a large overage happen
 silently.
+
+It only ever applies to pay-as-you-go overflow — the default cap-and-hold pauses instead of
+spending, so it never asks. Caps top out at $100,000 a month either way.

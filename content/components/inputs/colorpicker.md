@@ -165,13 +165,20 @@ Omit any attribute to take its default.
 | Attribute | Values | Description |
 | --- | --- | --- |
 | `defaultValue` | string | Starting color (matching the `format`). |
-| `format` | `hex`, `hexa`, `rgb`, `rgba`, `hsl`, `hsla` | Color format; the `*a` formats add the alpha (opacity) slider. |
+| `format` | `hex` (default), `hexa`, `rgb`, `rgba`, `hsl`, `hsla` | Color format; the `*a` formats add the alpha (opacity) slider. |
 | `swatches` | comma-separated colors | Preset swatches below the picker (e.g. `'#fa5252, #228be6'`). |
-| `swatchesPerRow` | integer | How many swatches per row. |
-| `size` | `xs`–`xl` | Size of the control. |
+| `swatchesPerRow` | integer | How many swatches per row. Defaults to `7`. |
+| `size` | `xs`, `sm`, `md` (default), `lg`, `xl` | Size of the control. |
 | `fullWidth` | boolean | Stretch the control to the container's width. |
 | `withPicker` | boolean | Show the saturation field and sliders (on by default; set `false` to show only swatches). |
-| `attr` | raw-HTML map | Extra HTML attributes, passed as `attr={…}`. |
+| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) applied to the picker's root element. |
+
+{% callout severity='info' title='Good to know' %}
+The picker holds its own value — `defaultValue` seeds it and the reader takes it from there;
+nothing is submitted with a form. Read what they chose with an `onchange` handler via
+`attr={…}` (below). Switching `format` changes how that value reads back, not the color itself:
+a `hex` picker reports `#1c7ed6` where an `rgba` one reports `rgba(28, 126, 214, 1)`.
+{% endCallout %}
 
 ## CSS Selectors
 
@@ -192,7 +199,7 @@ Target a `{% raw %}{% colorpicker %}{% endraw %}` from your own CSS with the isl
 
 ## Injecting Attributes
 
-Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the rendered element. Here it is wired to `onchange`, so changing the picker reads the changed control value, logs it to the console, and alerts it:
+Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the rendered element. The `change` event fires when a drag on the saturation field or a slider finishes, and when a swatch is clicked — not on every pixel of movement. Here it is wired to `onchange`, so settling on a color reads the new value, logs it to the console, and alerts it:
 
 {% colorpicker format='hex' defaultValue='#1c7ed6' attr={'onchange': '''
 const control = event.target.closest('[role="slider"], input') || this.querySelector('[role="slider"], input');

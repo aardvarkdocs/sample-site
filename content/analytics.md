@@ -58,6 +58,18 @@ Each platform is a block under `integrations:`. Set the **required** field(s) an
 | Hightouch | `hightouch` | `writeKey` | Optional `apiHost` (default `us-east-1.hightouch-events.com`) |
 | Adobe Analytics | `adobe` | `launchUrl` | The full Adobe Launch / AEP Tags embed URL |
 
+For drop-in configs, a few alternative field names are accepted alongside the required ones
+above: `gtm.containerId`/`id`, `fathom.site`, `clarity.id`, `posthog.key` and `host`,
+`mixpanel.token`, `amplitude.key`, `heap.envId`/`id`, `hotjar.id` and `sv`,
+`logrocket.appID`/`id`, `pirsch.code`, `segment.writeKey`, `clearbit.apiKey`/`key`,
+`hightouch.apiKey`/`key` and `host`, `adobe.scriptUrl`/`url`. Two things to know:
+
+- Setting **both** `ga4` and the legacy `analytics` block warns at build time and uses `ga4`
+  (the tag is injected once, never twice).
+- An `http://` loader URL — `plausible.src` / `scriptSrc` or `adobe.launchUrl` — warns: browsers
+  block it as mixed content on an `https://` site, so the tracker would silently never load. Use
+  `https://` or a protocol-relative `//…` URL.
+
 A fuller example mixing several:
 
 ```yaml
@@ -105,14 +117,6 @@ integrations:
 > Mintlify's `cookies` and `telemetry` entries aren't analytics platforms — `telemetry` is
 > Mintlify-internal, and for a cookie-consent banner use a [custom snippet](#anything-else-inject-any-snippet).
 
-## Which parts of a page readers reach
-
-The events above tell you a page was opened and how it was rated. To see *which sections*
-of it readers actually got to — and which install commands were copied, which CTAs were
-clicked — turn on [Content Reach](/content-reach/) (Business and Enterprise). It records
-section visibility using your page's own heading anchors, with no cookies, no
-coordinates, and no visitor identity.
-
 ## Anything else? Inject any snippet
 
 For a tracker not in the table above — or any other third-party tag — paste its snippet into
@@ -131,7 +135,9 @@ integrations:
 
 This content is injected **raw** (it isn't escaped — that's the point), so treat it like the
 theme template: only put trusted markup there. It's injected **after** the built-in integrations
-(the analytics platforms above), so a `custom` snippet can reference them.
+(the analytics platforms above), so a `custom` snippet can reference them. Each value must be a
+string — use a YAML block scalar (`head: |`) as above; a mapping or list under `head`/`body` is
+dropped with a build warning rather than injected as its Python representation.
 
 ## Google Analytics
 
@@ -146,7 +152,9 @@ integrations:
 ```
 
 Aardvark injects the standard `gtag.js` snippet. An empty id disables it; this sample site sets
-a real id, so GA is active here.
+a real id, so GA is active here. The built-in search box reports through the same `gtag` too —
+`search`, `search_select` and `search_ask_ai` events, described under
+[Search → Analytics](/search/#analytics).
 
 ## Page ratings
 
@@ -184,7 +192,8 @@ stars lock so the visible rating always matches what was sent.
 To customize the wiring — send the events elsewhere (your own endpoint, PostHog, …),
 change the copy, or restyle the box — drop a `snippets/PageFeedback.jsx` into your
 project; a project snippet of that name overrides the built-in island. To drop the
-widget entirely, set `pageFeedback: false` in `aardvark.config.yaml`. (The standalone
+widget entirely, set `pageFeedback: false` in `aardvark.config.yaml`; to hide it on one
+page, set `pageFeedback: false` in that page's front matter. (The standalone
 [`{% raw %}{% rating %}{% endraw %}`](/components/inputs/rating/) component is still available for star ratings
 anywhere in your content.)
 
@@ -212,3 +221,26 @@ anywhere in your content.)
 > `{ event_label: <path>, value: 1–5 }`. Update any GA dashboards, custom dimensions,
 > or alerts that filtered on `rating`, `value == 1`, or `page_path`. The
 > `page_rating_comment` event is new.
+
+### Ratings in the Aardvark cloud dashboard
+
+When the [AI assistant](/ai-assistant/) is enabled (`ai.assistant`), the widget **also** sends
+each rating to your Aardvark cloud gateway — riding the same baked public key and origin
+allowlist as the assistant's chat, best-effort and never blocking the reader — so ratings show up
+even on sites with no Google Analytics at all. The rating is written once, the instant it is
+recorded; a comment submitted afterwards is stored separately as a page comment (its first 100
+characters, the box's cap), never as a second rating. The GA events fire exactly as above either
+way.
+
+Open the dashboard's **Reader Feedback** tab → **Page ratings**: the overall average and total,
+then the top pages by rating count, each with its average, its 1–5 star distribution, and its
+five most recent comments. The gateway keeps at most 5,000 ratings per account in any rolling
+24 hours; past that, further ratings are acknowledged but not stored.
+
+## Which parts of a page readers reach
+
+The events above tell you a page was opened and how it was rated. To see *which sections*
+of it readers actually got to — and which install commands were copied, which CTAs were
+clicked — turn on [Content Reach](/content-reach/) (Business and Enterprise). It records
+section visibility using your page's own heading anchors, with no cookies, no
+coordinates, and no visitor identity.

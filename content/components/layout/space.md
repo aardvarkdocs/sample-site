@@ -147,6 +147,15 @@ cases without a separate spacer.
 | `h` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | Vertical space (height of the spacer). |
 | `w` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | Horizontal space (width of the spacer). |
 
+`attr={...}` forwards raw HTML attributes onto the rendered element.
+
+### Good to know
+
+- The size you give is a floor as well as a size: `h` also sets a minimum height and `w` a minimum
+  width, so a flex or grid parent cannot squeeze the spacer away.
+- Set the axis you actually want. A spacer with only `h` has no width of its own, so it adds
+  nothing between two items sitting side by side — use `w` there, as the horizontal example above
+  does.
 
 ## CSS Selectors
 

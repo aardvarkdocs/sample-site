@@ -17,7 +17,9 @@ Use it as `{% raw %}{% menu %}{% endraw %}` in Markdown, or call it from Python 
 Each entry in `items` is a small JSON object:
 
 - **An item** — a `label`, plus optional `href` (renders the item as a link), `color`
-  (e.g. `red` for a destructive action), and `disabled`.
+  (e.g. `red` for a destructive action), and `disabled`. A `javascript:`, `data:` or
+  other unsafe link scheme fails the build, so a bad link is reported instead of
+  silently dropped.
 - **A section heading** — `{"section": "…"}`, a non-clickable group label.
 - **A divider** — `{"divider": true}`, a horizontal rule.
 
@@ -233,7 +235,7 @@ Omit any attribute to take its Mantine default.
 | `position` | `bottom-start`, `bottom`, `top`, `right-start`, … (plus `-start` / `-end` variants) | Edge the dropdown anchors to. |
 | `width` | integer (pixels) | Dropdown width. |
 | `shadow` | `xs`–`xl` | Drop shadow on the dropdown. |
-| `trigger` | `click` (default) / `hover` | How the menu opens. |
+| `trigger` | `click` (default), `hover`, `click-hover` | How the menu opens. Plain `hover` cannot be opened from the keyboard — prefer `click-hover` when you want the hover convenience without losing keyboard access. |
 | `withArrow` | bare flag → `true` | Draw a pointer at the anchored edge. |
 | `offset` | integer (pixels) | Gap between the trigger and the dropdown. |
 | `radius` | `xs`–`xl` or a number | Dropdown corner radius. |

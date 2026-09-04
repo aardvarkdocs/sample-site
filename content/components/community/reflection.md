@@ -126,15 +126,15 @@ Omit any attribute to take its default. Bare flags (e.g. `ripple`) become `=True
 | `rippleSpeed` | A number (default `3`) | Ripple animation speed. |
 | `rippleOctaves` | A number (default `1`) | Layers of ripple noise. |
 | `rippleSeed` | A number (default `1`) | Ripple random seed. |
-| `reflectionOpacity` | A number `0`–`1` | Opacity of the mirrored copy. |
-| `reflectionDistance` | A number | Gap between the content and its reflection. |
-| `reflectionBlur` | A number | Blur applied to the reflection. |
-| `reflectionStretch` | A number | Vertical stretch of the reflection. |
-| `shadowSize` | A number | Size of the contact shadow. |
-| `shadowOffset` | A number | Shadow vertical offset. |
-| `shadowOpacity` | A number `0`–`1` | Shadow opacity. |
-| `shadowBlur` | A number | Shadow blur. |
-| `shadowColor` | A CSS color | Shadow color. |
+| `reflectionOpacity` | A number `0`–`1` (default `0.3`) | Opacity of the mirrored copy. |
+| `reflectionDistance` | A number (default `0`) | Gap between the content and its reflection. |
+| `reflectionBlur` | A number (default `0`) | Blur applied to the reflection. |
+| `reflectionStretch` | A number (default `1`) | Vertical stretch of the reflection. |
+| `shadowSize` | A number (default `10`) | Size of the contact shadow. |
+| `shadowOffset` | A number (default `-4`) | Shadow vertical offset. |
+| `shadowOpacity` | A number `0`–`1` (default `0.5`) | Shadow opacity. |
+| `shadowBlur` | A number (default `0`) | Shadow blur. |
+| `shadowColor` | A CSS color (default `black`) | Shadow color. |
 | `disableChildren` | `true` / `false` (default `false`) | Render only the reflection, not the source content. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element. |
 

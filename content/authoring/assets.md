@@ -21,7 +21,9 @@ my-docs/
   analytics.js   ->  /analytics-<sha>.js, loaded on every page
 ```
 
-No configuration needed. The scaffold includes a `custom.css` you can edit.
+No configuration needed. The scaffold includes a `custom.css` you can edit. Only
+files sitting directly in the project root count — a `.css` or `.js` in a subfolder is
+not picked up (put it under `static/` and link it yourself).
 
 ## Static files
 
@@ -50,8 +52,9 @@ such as `/img/logo-<sha>.png`, preserving any query string or fragment.
 The token is one value shared across the whole build — the current short git
 `HEAD` SHA. When the build can't read git (for example a container build without
 the `.git` directory), Aardvark uses the commit SHA from the `AARDVARK_BUILD_SHA`
-environment variable if you set it, otherwise a single content hash of your
-project sources. Because every asset in a build shares one token, a reference and
+environment variable if you set it (8–40 hex characters; the first eight are used),
+otherwise a single content hash of your project sources (build output, `node_modules`
+and caches excluded). Because every asset in a build shares one token, a reference and
 the file it points at always rotate together, so an aggressively cached
 stylesheet can never end up pointing at an image URL a later build renamed away.
 Fingerprinted files are emitted only at their fingerprinted paths — there is no
@@ -67,13 +70,24 @@ itself needs to stay permanent.
 Route and discovery files stay stable instead of fingerprinted: page HTML,
 `_headers`, `_redirects`, `robots.txt`, `sitemap.xml`, `.well-known/**`,
 `auth.md`, `llms*.txt`, `metadata.json`, `search-index.json` (and `.gz`),
-page `.md` siblings, encrypted `.enc` payloads, and internal config documents.
-Serve those with normal revalidation so readers and agents see fresh metadata
-after a deploy.
+page `.md` siblings, encrypted `.enc` payloads, the OpenAPI specs republished under
+`/_aardvark/openapi/`, and the build's own config documents (`/_aardvark/ai-config.json`,
+`/_aardvark/pdf-reuse.json`). Serve those with normal revalidation so readers and
+agents see fresh metadata after a deploy.
+
+Whether a file is fingerprinted is decided by its extension. Images, fonts, media,
+stylesheets, scripts, `.json`, `.csv`, `.txt`, `.xml`, `.pdf`, `.zip`, `.wasm`,
+`.webmanifest`, `.map` and their compressed `.gz`/`.br`/`.zst` forms all are — so a data
+file you drop in `static/` is fingerprinted too, even though the copy under `data/` that
+[templating](/authoring/templating/#data-files) reads is a build input and never published.
+An `.html` or `.md` file placed in `static/` keeps its authored path.
 
 ## Theme assets
 
 The theme's own CSS/JS live in `themes/vark/` and are emitted under
-`/_aardvark/` with the same fingerprinting (for example,
-`/_aardvark/theme-<sha>.css`). See [Theme & customization](/theming/) to change
-them.
+`/_aardvark/` with the same fingerprinting (for example, `themes/vark/theme.scss` is
+compiled to `/_aardvark/theme-<sha>.css`, and `nav.js` becomes
+`/_aardvark/nav-<sha>.js`). Only files at the top level of the theme folder (or of a
+`templates/` override) are emitted there — nested theme assets aren't, so keep images,
+icon sets and extra fonts in `static/` instead. See
+[Theme & customization](/theming/) to change them.

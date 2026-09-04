@@ -182,7 +182,7 @@ Omit any attribute to take its Mantine default.
 | `description` | string | Helper text shown below the label. |
 | `error` | string | Error text shown below the label (also marks the option invalid). |
 | `autoContrast` | bare flag (`true`) | Auto-pick a readable dot color against `color`. |
-| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) applied to the rendered root. |
+| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) set on the radio's `<input>` itself. |
 
 ## CSS Selectors
 
@@ -202,14 +202,18 @@ Target a `{% raw %}{% radio %}{% endraw %}` from your own CSS with the island da
 
 ## Injecting Attributes
 
-Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the rendered element. Here it is wired to `onchange`, so selecting an option logs its value to the console and alerts it:
+Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the
+rendered element. Here it is wired to `onchange`, so selecting an option logs its value to the console
+and alerts it. The pair carries its own `name` — a radio group is keyed by name across the whole
+document, so reusing a name from another example would make these two options fight it for one
+selection:
 
-{% radio label='Email' name='contact' value='email' attr={'onchange': '''
+{% radio label='Email' name='attr-demo' value='email' attr={'onchange': '''
 const value = this.value;
 console.log('attr demo value:', value);
 alert(value);
 '''} %}
-{% radio label='SMS' name='contact' value='sms' attr={'onchange': '''
+{% radio label='SMS' name='attr-demo' value='sms' attr={'onchange': '''
 const value = this.value;
 console.log('attr demo value:', value);
 alert(value);
@@ -221,12 +225,12 @@ alert(value);
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% radio label='Email' name='contact' value='email' attr={'onchange': '''
+{% radio label='Email' name='attr-demo' value='email' attr={'onchange': '''
 const value = this.value;
 console.log('attr demo value:', value);
 alert(value);
 '''} %}
-{% radio label='SMS' name='contact' value='sms' attr={'onchange': '''
+{% radio label='SMS' name='attr-demo' value='sms' attr={'onchange': '''
 const value = this.value;
 console.log('attr demo value:', value);
 alert(value);
@@ -236,12 +240,12 @@ alert(value);
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-print(component('aardvark', 'radio', label='Email', name='contact', value='email', attr={'onchange': '''
+print(component('aardvark', 'radio', label='Email', name='attr-demo', value='email', attr={'onchange': '''
 const value = this.value;
 console.log('attr demo value:', value);
 alert(value);
 '''}))
-print(component('aardvark', 'radio', label='SMS', name='contact', value='sms', attr={'onchange': '''
+print(component('aardvark', 'radio', label='SMS', name='attr-demo', value='sms', attr={'onchange': '''
 const value = this.value;
 console.log('attr demo value:', value);
 alert(value);

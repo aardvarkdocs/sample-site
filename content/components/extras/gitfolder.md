@@ -72,7 +72,8 @@ What `folder=` changes is the *page*: only that subtree's files are embedded, th
 cap applies to the subtree, and a subtree that fits the [page budget](#page-weight) previews
 every previewable file — nothing is skipped for page weight (the per-file cap and the binary
 rule still apply file by file). The whole repo is still transferred to your build machine either
-way, so a `folder=` on a very large repo is a lighter page but not a lighter download.
+way, so a `folder=` on a very large repo is a lighter page but not a lighter download — that
+transfer is itself bounded by `gitfolder.maxArchiveBytes`, 2 GiB by default.
 
 ## GitLab repos
 
@@ -108,7 +109,7 @@ API, so nothing to authenticate and nothing to be rate-limited. It never decides
 are under, so it can never name the wrong one and there is no list of known licenses to fall
 off: a brand-new SPDX id or your own bespoke terms appear exactly as your file words them.
 
-The footer has three things it can say:
+Three things the footer can say — and one case where there is no footer at all:
 
 - **the title, linked** — `MIT License`, `GNU AFFERO GENERAL PUBLIC LICENSE`, `The Acme Public
   License v3`, whatever your first line says (Markdown heading marks and underlines come off;
@@ -172,7 +173,10 @@ beside the page, so they add nothing to its weight.) Two limits bound what is em
 `maxFileBytes` (default 512 KiB) bounds **one file**: a text file bigger than that isn't
 embedded — or even listed: it stays in the Download ZIP, and the build names it — because
 inlining a 3 MB minified bundle helps nobody. (A displayable SVG is the exception — it's kept,
-image and source both, so its Source ⟷ Preview toggle keeps working.)
+image and source both, so its Source ⟷ Preview toggle keeps working.) Raising it helps up to a
+**hard 10 MiB per-file ceiling** that isn't configurable: past that a file stays in the Download
+ZIP however high you set `maxFileBytes`, and the build names the limit it actually hit rather
+than sending you to raise a knob that can't reach it.
 
 `maxEmbedBytes` (default **2 MiB**) bounds **one widget's total** — the source, highlighting and
 rendered previews it puts in the page, counted as the page really carries them (encoding and

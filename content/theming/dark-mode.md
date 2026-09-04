@@ -14,7 +14,7 @@ header). Try it — this page updates instantly.
 
 ## How it works
 
-Mantine v7 styling is **attribute-driven**: components read their colors from
+Mantine's styling is **attribute-driven**: components read their colors from
 CSS variables keyed on `data-mantine-color-scheme` on `<html>`. So switching
 themes is just flipping that attribute — no React re-render needed.
 

@@ -9,6 +9,11 @@ description: "The built-in marquee tag — a continuously scrolling ticker for l
 
 Use it as `{% raw %}{% marquee %}{% endraw %}` in Markdown, or call it from Python logic (loops, snippets) via `component('aardvark', 'marquee', …)`.
 
+For a ticker with isometric, circle, and 3D-tilt variants on top of this behavior, see the separate
+[Community Marquee](/components/community/communitymarquee/) tag — it is a different tag
+(`{% raw %}{% communityMarquee %}{% endraw %}`) with its own options, and its `duration` is measured
+in seconds rather than milliseconds.
+
 ## Demonstrations
 
 The block body is the scrolling content; `duration` sets how long one loop takes in milliseconds (lower is faster):
@@ -24,7 +29,7 @@ Ship docs faster &nbsp;•&nbsp; Markdown in, static site out &nbsp;•&nbsp; no
 {% raw %}
 ```aardvark
 {% marquee duration=15000 %}
-Ship docs faster — Markdown in, static site out — no build step to babysit — &nbsp;
+Ship docs faster &nbsp;•&nbsp; Markdown in, static site out &nbsp;•&nbsp; no build step to babysit &nbsp;•&nbsp;
 {% endMarquee %}
 ```
 {% endraw %}
@@ -34,7 +39,7 @@ Ship docs faster — Markdown in, static site out — no build step to babysit �
 component(
     'aardvark', 'marquee',
     duration=15000,
-    children='Ship docs faster — Markdown in, static site out — no build step to babysit — &nbsp;',
+    children='Ship docs faster &nbsp;•&nbsp; Markdown in, static site out &nbsp;•&nbsp; no build step to babysit &nbsp;•&nbsp;',
 )
 ```
 {% endAccordionSection %}
@@ -84,7 +89,7 @@ Never stops &nbsp;•&nbsp; wider gap between repeats &nbsp;•&nbsp;
 {% raw %}
 ```aardvark
 {% marquee gap='4rem' pauseOnHover=false %}
-Never stops — wider gap between repeats — &nbsp;
+Never stops &nbsp;•&nbsp; wider gap between repeats &nbsp;•&nbsp;
 {% endMarquee %}
 ```
 {% endraw %}
@@ -94,7 +99,7 @@ Never stops — wider gap between repeats — &nbsp;
 component(
     'aardvark', 'marquee',
     gap='4rem', pauseOnHover=False,
-    children='Never stops — wider gap between repeats — &nbsp;',
+    children='Never stops &nbsp;•&nbsp; wider gap between repeats &nbsp;•&nbsp;',
 )
 ```
 {% endAccordionSection %}
@@ -148,12 +153,25 @@ Omit any attribute to take its default.
 | --- | --- | --- |
 | `direction` | `left` (default) / `right` / `up` / `down` | Scroll direction (`up`/`down` scroll vertically). |
 | `duration` | An integer, milliseconds for one loop (default `40000`) | Loop length — lower is faster. |
-| `gap` | Any CSS length (default `2rem`) | Space between the looping copies. |
+| `gap` | Any CSS length (default `2rem`) | Space between the items in the row, and between the repeated copies. |
 | `pauseOnHover` | bare flag or `true` / `false` (default `true`) | Pause the scroll while the pointer is over it. Set `false` to keep scrolling. |
 | `fadeEdges` | `true` / `false` (default `false`) | Fade the content to transparent at the start/end edges. |
 
 `attr={...}` forwards raw HTML attributes onto the rendered element.
 
+### Good to know
+
+- The body is one **inline** row: inline Markdown (`**bold**`, `` `code` ``, links) and raw HTML
+  pass through, but block-level Markdown — paragraphs, lists, headings — does not become block
+  markup. Keep each item inline so `gap` spaces them all evenly; a block body would space only the
+  repeated copies and leave a visible seam once per loop.
+- The content is repeated four times and each loop travels exactly one copy, so the row reads as
+  continuous only when those four copies together are wider than the row. Give a short body enough
+  items (or a bigger `gap`) to fill it, or empty stretches scroll past between copies.
+- `direction='up'` and `direction='down'` scroll vertically, but the tag has no height option of
+  its own — a vertical marquee is as tall as its own content, so it drifts upward trailing a blank
+  gap and snaps back each loop instead of reading as a continuous column. Put it inside a
+  [Box](/components/layout/box/) with a fixed `h` to give it a window to scroll through.
 
 ## CSS Selectors
 

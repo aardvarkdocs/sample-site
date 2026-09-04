@@ -45,19 +45,34 @@ logic — ever leaves the binary. The gateway schedules the runs, opens the PRs,
    repositories** to grant it — pick only the repos you want automated.
 3. Back in the dashboard, each connected repo appears with the capabilities you can enable.
 
-> You stay in control of access on GitHub: the app sees only the repositories you select, and you
-> can change or revoke that at any time from your GitHub settings.
+> You stay in control of access on GitHub: the app sees only the repositories you select, and you can
+> change or revoke that at any time from your GitHub settings. On those repositories it asks for
+> **Contents** and **Pull requests** (read & write) — what it needs to push a branch and open a pull
+> request — plus the read-only **Metadata** permission every app gets. It needs no access to your
+> repository's secrets or workflows, because nothing is ever written into either.
 
 ## Choose checks and a schedule
 
 For each repo, turn on the checks you want and pick when each one runs:
 
-- **Run on every commit** — the check runs on each push to the branch.
-- **On a schedule** — enter a 5-field cron expression (e.g. `0 9 * * 1` for Mondays at 09:00 UTC).
+- **Run on every commit** — the check runs on each push to the branch it watches: the **base branch**
+  you set for it, or the repository's default branch when you leave that blank. (Pushes that Aardvark
+  itself makes to its `aardvark/…` branches never trigger a run.)
+- **On a schedule** — enter a 5-field cron expression, evaluated in **UTC** (e.g. `0 9 * * 1` for
+  Mondays at 09:00 UTC). A schedule fires **at most once an hour**: the minute field must be a single
+  number, so `30 */2 * * *` saves fine while `*/30 * * * *` or `0,30 9 * * *` is refused. That floor is
+  a spend guard — an AI pass over a whole site, dozens of times a day, would drain a balance before
+  anyone noticed a misconfiguration.
 - **Run now** — trigger a one-off run any time from the dashboard.
 
 A check can use either trigger, both, or neither (manual-only). Click **Save** — this only updates
 your automation config in the gateway; nothing is committed to your repo.
+
+> **One run at a time per check.** While a check's run is queued or in progress, another trigger for
+> the same check on the same repo is skipped as *already running*. A scheduled fire simply waits for
+> the next one, and a push that lands mid-run isn't lost: the run in flight works from your branch's
+> current tip, so the pages that push changed are covered by it. You can cancel an in-flight run from
+> the check's **History**.
 
 ## Scope a run
 
@@ -69,9 +84,12 @@ By default a check runs over **every page**. The three page-rewriting checks —
   It applies to **pushes only**: a **scheduled** run has no diff to work from, so it always covers every
   page. One more case is skipped by design: the **first push that creates a branch** has no "before"
   commit to diff against, so a diff-only automation doesn't run on it (rather than silently restyling
-  everything) — the next ordinary push to that branch is scoped normally.
+  everything) — the next ordinary push to that branch is scoped normally. And if that "before" commit
+  no longer exists when the run starts — you force-pushed over it — the run **fails visibly** instead of
+  quietly widening to the whole site.
 - **Run now → path** — the **Run now** control has an optional **path** field. Fill in a file or a
-  directory to scope that one run to it; leave it blank to run over everything.
+  directory to scope that one run to it; leave it blank to run over everything. In a monorepo, give
+  the path relative to your docs project (or to `content/`), not to the repository root.
 
 Scoped runs **build on the open PR** rather than replacing it. Aardvark opens one pull request per check (on
 an `aardvark/<check>` branch); when a later scoped run touches only a few pages, it **keeps** the styling the
@@ -94,7 +112,8 @@ vark author --action keywords --yes --diff main
 dashboard's *Diff only* toggle uses on a push. `--page` is the **single-page** selector — note it differs
 from `--path` on a trailing slash: `--page guide/` selects the `guide.md` page, whereas `--path guide/`
 selects the whole `guide/` subtree (and `--path` is repeatable). Don't combine `--path`/`--page` with
-`--diff` or `--all`; with none of them, the check runs on every page.
+`--diff` or `--all`; with none of them, the check runs on every page. A `--path` that matches no page is
+treated as a typo and exits non-zero; a `--diff` that matches nothing is a clean no-op.
 
 `--diff` selects pages by their **own** source changing — including a changed reusable partial (styleguide
 only). It doesn't follow includes: a change confined to a data file (or, for keywords/descriptions, a
@@ -113,9 +132,7 @@ The CLI checks need your gateway **secret key** (the same account that powers th
 export AARDVARK_SECRET_KEY=aardvark_secret_...
 ```
 
-The `vark author` checks **preview a diff by default** — add `--yes` to write the changes. They run on
-**every page** unless you [scope the run](#scope-a-run) with `--path <file-or-dir>` or `--diff <ref>`
-(or `--page <path>` for one), and `--model <slug>` overrides the configured model. The summary table:
+Three of the five checks are `vark author` actions run headless; the other two are commands of their own:
 
 | Check | Dashboard label | CLI |
 | --- | --- | --- |
@@ -124,6 +141,18 @@ The `vark author` checks **preview a diff by default** — add `--yes` to write 
 | [Regenerate keywords](#regenerate-keywords) | *Regenerate keywords* | `vark author --action keywords --yes` |
 | [Refresh descriptions](#refresh-descriptions) | *Refresh descriptions* | `vark author --action description --yes` |
 | [Translate documentation](#translate-documentation) | *Translate documentation* | `vark build --translate` |
+
+The `vark author` checks **preview a diff by default** — add `--yes` to write the changes. They run on
+**every page** unless you [scope the run](#scope-a-run) with `--path <file-or-dir>` or `--diff <ref>`
+(or `--page <path>` for one), and `--model <slug>` overrides the configured model. `vark ai-enrich` and
+`vark build --translate` take no page scope: each works from the whole site and skips what it has
+already done.
+
+> `vark author --list-actions` prints exactly the actions that can run headless — the three above. The
+> `vark author` menu has two more, **Check outbound links** and **Writing agent (chat)**, that are
+> interactive only: they ask you questions as they go, so they never run unattended and aren't dashboard
+> checks. All five checks are the same capabilities documented under [Build-time AI](/ai-features/) —
+> the dashboard just runs them unattended in CI.
 
 ### Apply style guide
 
@@ -145,8 +174,9 @@ Aardvark ships six rulesets, condensed from each guide's own source of truth:
 
 **Precedence matters.** The order is meaningful: a ruleset **higher in the list wins** when two give
 conflicting guidance; otherwise every selected ruleset applies with equal force. You must pick **at
-least one** — there is no implicit default, so an unconfigured style-guide check never runs (it would
-otherwise silently restyle against a guide you never chose).
+least one** — there is no implicit default. A style-guide check with no rulesets selected never runs:
+its scheduled and push runs are skipped as *no rulesets selected* and **Run now** refuses it, until you
+pick at least one and save (it would otherwise silently restyle against a guide you never chose).
 
 **In the dashboard:** enable *Apply style guide*, then use the **ruleset multi-select** to add rulesets
 and the **↑ / ↓ arrows** to order them by precedence (slot 1, the violet badge, wins conflicts). Save
@@ -221,14 +251,13 @@ Translates pages that are new or changed since the last run into each configured
 vark build --translate
 ```
 
-> `vark author --list-actions` prints the checks runnable headless. These are the same capabilities
-> documented under [Build-time AI](/ai-features/) — the dashboard just runs them unattended in CI.
-
 ## Review the results
 
-Every run opens a pull request on an `aardvark/<capability>` branch (re-runs update the same PR), so
-**nothing lands on your default branch without your review**. Merge it if the changes look good, or
-close it. The dashboard's **run history** links straight to each run and its PR.
+Every run opens a pull request titled **Aardvark: `<check>`** on an `aardvark/<check>` branch, so
+**nothing lands on your default branch without your review**. Re-runs update that PR while it's open.
+Merge it if the changes look good, or close it — a closed PR's edits stay closed: the next run starts
+over from your branch rather than reviving what you declined. The dashboard's **run history** links
+straight to each run and its PR.
 
 ## Cost
 
@@ -241,13 +270,15 @@ Each run **spends from your gateway balance** on two things, both shown per run 
 
 Schedule the heavier capabilities (translation, or a style-guide pass over a large site) accordingly,
 and keep an eye on your balance from the [cloud gateway](/ai-gateway/) dashboard. A run is skipped
-(and shown as such) if your balance can't cover it — top up to resume.
+(and shown as such) if your balance can't cover it — top up to resume. The gateway can also cap how
+many runs an account has in flight at once; a run refused by that cap shows as skipped and fires again
+on its next schedule.
 
 ## For operators
 
 Docs Quality Checks are part of the cloud gateway. Offering them to your customers means installing
 a GitHub App with the right permissions and webhook and setting a few Worker secrets; the full setup —
-permissions, subscribed events, and the recommended OAuth identity check — is in
+permissions, subscribed events, and the required OAuth identity check — is in
 `gateway/GITHUB_INTEGRATION.md` in the gateway source. With the app unconfigured, the dashboard
 simply shows that Docs Quality Checks aren't available, and the gateway runs exactly as before.
 

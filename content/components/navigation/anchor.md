@@ -156,17 +156,19 @@ component('aardvark', 'callout', severity='info', title='Next steps', children=f
 
 ## Attributes
 
-Omit any attribute to take its default. An `url` using a `javascript:`, `data:`,
-`vbscript:`, `file:`, or `blob:` scheme is rejected at build time — use a relative
-path or an `http(s)://` link.
+Omit any attribute to take its default. A `url` using a `javascript:`, `data:`,
+`vbscript:`, `file:`, or `blob:` scheme — or a protocol-relative `//host` URL, which
+would resolve against whatever scheme the page was served over — is rejected at build
+time; use a relative path or an `http(s)://` link. The check also percent-decodes the
+value first, so an encoded scheme such as `%6aavascript:` is caught too.
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `url` | A relative path or `http(s)://` URL (**required**) | The link destination (the `href`). Unsafe schemes are build-rejected. |
+| `url` | A relative path or `http(s)://` URL (**required**) | The link destination (the `href`). Unsafe schemes and protocol-relative URLs are build-rejected. |
 | `text` | Any string | The label, when not using the block body. |
 | `target` | e.g. `_blank`, `_self` | Standard link `target` attribute. |
 | `rel` | e.g. `noopener`, `nofollow` | Standard link `rel` attribute. |
-| `download` | Filename, or a bare flag | Standard link `download` attribute. |
+| `download` | A filename | Standard link `download` attribute — its value is the suggested filename. Give it a name rather than writing a bare `download` flag, which would set the filename to the literal `True`. |
 | `underline` | `always`, `hover` (default), `never`, `not-hover` | When the underline appears. |
 | `c` | Any theme color (`blue`, `grape`, …) or `dimmed` | Text color. |
 | `size` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS size | Font size. |

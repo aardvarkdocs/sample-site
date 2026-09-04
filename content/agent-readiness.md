@@ -26,7 +26,7 @@ rung is *Agent-Native*). Four categories count toward your level:
 | **Discoverability** | Can an agent find your content and interfaces? (`robots.txt`, `sitemap.xml`, `Link` headers, DNS-AID) |
 | **Content accessibility** | Can it read your pages as clean text? (Markdown negotiation) |
 | **Bot access control** | Have you stated the rules for bots/AI? (`robots.txt` AI rules, Content Signals, Web Bot Auth) |
-| **Discovery** | Can it find your APIs, auth, MCP server, skills? (API catalog, OAuth/OIDC, `auth.md`, MCP card, A2A card, agent skills, WebMCP) |
+| **Protocol Discovery** | Can it find your APIs, auth, MCP server, skills? (API catalog, OAuth/OIDC, `auth.md`, MCP card, A2A card, agent skills, WebMCP) |
 
 A fifth category, **Commerce** (x402, MPP, UCP, ACP, AP2), is reported but **does not count toward
 your score** — it only applies to shopping/checkout sites, so a docs or marketing site can ignore it.
@@ -45,7 +45,7 @@ index lists whatever `skills/` you ship.
 | Content Signals | `/robots.txt` (`Content-Signal:`) | Declares search / ai-input / ai-train usage; tune under `robots.contentSignals` |
 | Sitemap | `/sitemap.xml` | Every page, with `lastmod` |
 | Link headers | `Link: …; rel="service-desc" / "describedby" / "api-catalog"` | Added by `vark serve` and the generated `_headers` |
-| Markdown negotiation | `/<page>.md` + "View as Markdown" | Agents fetch the clean Markdown of any page |
+| Markdown negotiation | `/<page>.md` + "View in Markdown" | Agents fetch the clean Markdown of any page; `vark serve` also answers `Accept: text/markdown` at the page's own URL |
 | MCP Server Card | `/.well-known/mcp/server-card.json` | Advertises the MCP server `vark serve --mcp` hosts — **opt-in**, requires `mcp: true` + a `baseUrl` |
 | WebMCP | `/_aardvark/webmcp-<sha>.js` | In-page tools agents can call — **opt-in**, requires `mcp: true`; generated pages are rewritten to the fingerprinted file |
 | OAuth / OIDC discovery | `/.well-known/oauth-authorization-server`, `/.well-known/openid-configuration` | See "Point OAuth at your IdP" below |
@@ -67,10 +67,10 @@ agent at it, the "View in Markdown" menu at the top of every page also offers on
 
 | Menu item | What it does | Works in |
 | --- | --- | --- |
-| **Copy MCP Server** | Copies this site's MCP endpoint URL | Claude Code (`claude mcp add --transport http`), Claude Desktop / claude.ai (Customize → Connectors → *Add custom connector*) — shown only when `mcp: true` |
-| **Install Skill** | Downloads an [Agent Skill](/ai-features/) (`SKILL.md`) that teaches an agent how to search this site | Claude Code (drop in `~/.claude/skills/`), Claude apps (Customize → Skills → *Upload a skill*) |
+| **Copy MCP Server** | Copies this site's MCP endpoint URL (`{baseUrl}/mcp`, or the site-relative `/mcp` when no `baseUrl` is set) | Claude Code (`claude mcp add --transport http`), Claude Desktop / claude.ai (Customize → Connectors → *Add custom connector*) — shown only when `mcp: true` |
+| **Install Skill** | Downloads an [Agent Skill](/llms-and-sitemap/) (`SKILL.md`) that teaches an agent how to search this site | Claude Code (drop in `~/.claude/skills/`), Claude apps (Customize → Skills → *Upload a skill*) |
 | **Install Plugin** | Opens a setup page for installing the site's plugin — it bundles the skill (and, when configured, the MCP server) | Claude Desktop / claude.ai / Cowork (Customize → Plugins → upload a custom plugin file) and Claude Code (terminal) — see below |
-| **Install Assistant** | Installs the site's [assistant app](/ai-features/) (PWA) so readers can launch the AI assistant from their home screen or desktop | Chromium browsers (others fall back to the standalone assistant page) — shown only when the assistant app is built |
+| **Install Assistant** | Installs the site's [assistant](/ai-assistant/) app (PWA) so readers can launch the AI assistant from their home screen or desktop | Chromium browsers (others fall back to the standalone assistant page) — shown only when the assistant app is built |
 
 The generated artifacts (built once per `vark build`, no config beyond `markdownMenu`):
 
@@ -86,6 +86,11 @@ The generated artifacts (built once per `vark build`, no config beyond `markdown
   `baseUrl`).
 - `/_aardvark/agent-setup.html` — the "Install Plugin" link target: a benefit-led page that walks a
   reader through installing the plugin in the **Claude apps** AND the **Claude Code** terminal.
+
+The three `.zip` names above are the logical ones: like the site's other build assets, each is
+published with a build fingerprint in the filename (`aardvark-docs-skill-5cbefdf5.zip`), and the
+menu links to that exact file. Link to them from the menu rather than hardcoding a path, which
+changes every build.
 
 To turn an item off, set it under `markdownMenu` (e.g. `markdownMenu: {copyMcp: false}`); every item
 defaults on. Copy MCP additionally requires `mcp: true`, and Install Assistant requires the assistant
@@ -169,12 +174,15 @@ oauth:
   jwksUri: https://your-idp.example.com/.well-known/jwks.json
   agentAuth:
     registerUri: https://your-idp.example.com/oauth/register
-    identityTypesSupported: [service_account, delegated_user]
-    credentialTypesSupported: [client_secret, private_key_jwt]
+    claimUri: https://your-idp.example.com/oauth/claim
+    revocationUri: https://your-idp.example.com/oauth/revoke
+    identityTypesSupported: [identity_assertion, anonymous]
+    credentialTypesSupported: [access_token]
 ```
 
-Aardvark is **not** an OAuth server — these documents only point agents at where to authenticate. See
-[Agent discovery](/agent-discovery/) for every field.
+Aardvark is **not** an OAuth server — these documents only point agents at where to authenticate.
+`identityTypesSupported` accepts `identity_assertion` and `anonymous` only; any other value is dropped
+with a build warning. See [Agent discovery](/agent-discovery/) for every field.
 
 ## Full checklist
 
@@ -190,14 +198,14 @@ Every scanner check, who handles it, and where to configure it:
 | robots.txt AI rules | Bot access control | Aardvark | Nothing |
 | Content Signals | Bot access control | Aardvark | Tune `robots.contentSignals` |
 | Web Bot Auth | Bot access control | **You** | Add a public key (step 1) |
-| API catalog | Discovery | Aardvark | Embed `{% raw %}{% openapi %}{% endraw %}` specs |
-| OAuth/OIDC discovery | Discovery | Aardvark | Point at your IdP (step 3) |
-| OAuth Protected Resource | Discovery | Aardvark | Nothing |
-| auth.md | Discovery | Aardvark | Fill `oauth.agentAuth` for full credit |
-| MCP Server Card | Discovery | Aardvark | Enable `mcp: true` + set `baseUrl` (opt-in) |
-| Agent Skills | Discovery | Aardvark | Add `skills/<name>/SKILL.md` (see [Build-time AI](/ai-features/)) |
-| WebMCP | Discovery | Aardvark | Enable `mcp: true` (opt-in) |
-| A2A Agent Card | Discovery | *Not yet* | Aardvark does not emit an A2A agent card today |
+| API catalog | Protocol Discovery | Aardvark | Embed `{% raw %}{% openapi %}{% endraw %}` specs |
+| OAuth/OIDC discovery | Protocol Discovery | Aardvark | Point at your IdP (step 3) |
+| OAuth Protected Resource | Protocol Discovery | Aardvark | Nothing |
+| auth.md | Protocol Discovery | Aardvark | Fill `oauth.agentAuth` for full credit |
+| MCP Server Card | Protocol Discovery | Aardvark | Enable `mcp: true` + set `baseUrl` (opt-in) |
+| Agent Skills | Protocol Discovery | Aardvark | Add `skills/<name>/SKILL.md` (see [Build-time AI](/ai-features/)) |
+| WebMCP | Protocol Discovery | Aardvark | Enable `mcp: true` (opt-in) |
+| A2A Agent Card | Protocol Discovery | *Not yet* | Aardvark does not emit an A2A agent card today |
 | Commerce (x402, MPP, UCP, ACP, AP2) | Commerce | n/a | Not scored; only for commerce sites |
 
 ## Verify your score

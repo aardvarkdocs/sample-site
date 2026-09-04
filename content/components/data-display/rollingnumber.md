@@ -1,6 +1,6 @@
 ---
 title: "RollingNumber"
-description: "The built-in rollingnumber tag — an animated counter that rolls up to its value the first time it scrolls into view. Usage, options, and live examples."
+description: "The built-in rollingnumber tag — an animated counter whose digits roll to its value, re-animating each time the value changes. Usage, options, and live examples."
 ---
 
 # RollingNumber
@@ -175,7 +175,7 @@ component('aardvark', 'card', title='Active installs', subtitle='And climbing.',
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `value` | string or number | The number to show. Rides as a string and is parsed (`"1234"` and `"12.5"` both work). The roll animates whenever this value changes. |
+| `value` | number (`1234`, `12.5`; a quoted numeric string is accepted) | The number to show. It is checked while the site builds, so a non-numeric value fails the build instead of quietly rolling to zero. The roll animates whenever this value changes; omit it and the counter shows `0`. |
 | `animationDuration` | int (milliseconds) | Roll length (default `600`). A deliberate `0` jumps straight to the value. |
 | `timingFunction` | `linear`, `ease` (default), `ease-in`, `ease-out`, `ease-in-out`, or any CSS timing function | The roll's easing curve. |
 | `decimalScale` | int | Fixed number of decimal places (defaults to the value's own). |
@@ -186,6 +186,14 @@ component('aardvark', 'card', title='Active installs', subtitle='And climbing.',
 | `size` | a Mantine size token (`xs`–`xl`) or a CSS size (e.g. `2.5rem`) | Font size. |
 | `color` | a Mantine color name or hex | Text color. |
 | `fw` | a CSS font-weight (e.g. `700`) | Font weight. |
+
+> **Good to know.** The digits roll in the browser, but the finished number is baked into the
+> page, so a reader with JavaScript off still sees the correct value — just without the roll.
+> The figure rides as island data rather than as text, though, so the page's Markdown twin and
+> the whole-site PDF leave it out entirely; put the number in the surrounding sentence too when
+> those copies have to carry it. The counter renders as a single labelled image, so assistive
+> tech announces the formatted value (`$1,299`) instead of spelling out each digit column.
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="RollingNumber"]` — or through the Mantine Styles API classes (`.mantine-RollingNumber-root` and its inner parts):
@@ -198,6 +206,7 @@ Target the rendered element through its island marker — `[data-aardvark-island
 /* Mantine Styles API class on the root element */
 .mantine-RollingNumber-root { }
 .mantine-RollingNumber-digit { }
+.mantine-RollingNumber-digitColumn { }
 .mantine-RollingNumber-char { }
 ```
 {% endraw %}

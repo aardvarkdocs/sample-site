@@ -21,7 +21,7 @@ Three ways to fill an avatar: a real image (`src` + `alt`), auto-generated initi
 `name`, or an explicit body. With `color='initials'`, the color is derived deterministically
 from the `name`.
 
-{% avatar name='Ada Lovelace' %} {% avatar name='Grace Hopper' color='initials' %} {% avatar %}AL{% endAvatar %}
+{% avatar src='/img/sample-square.svg' alt='Sample profile picture' %} {% avatar name='Ada Lovelace' %} {% avatar name='Grace Hopper' color='initials' %} {% avatar %}AL{% endAvatar %}
 
 <br>
 
@@ -29,7 +29,7 @@ from the `name`.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% avatar src='/avatar.png' alt='Ada Lovelace' %}
+{% avatar src='/img/sample-square.svg' alt='Sample profile picture' %}
 {% avatar name='Ada Lovelace' %}
 {% avatar name='Grace Hopper' color='initials' %}
 {% avatar %}AL{% endAvatar %}
@@ -38,7 +38,7 @@ from the `name`.
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'avatar', src='/avatar.png', alt='Ada Lovelace')
+component('aardvark', 'avatar', src='/img/sample-square.svg', alt='Sample profile picture')
 component('aardvark', 'avatar', name='Ada Lovelace')
 component('aardvark', 'avatar', name='Grace Hopper', color='initials')
 component('aardvark', 'avatar', children='AL')
@@ -48,8 +48,8 @@ component('aardvark', 'avatar', children='AL')
 
 ### Sizes and radius
 
-`size` takes `xs`–`xl` or any CSS value; `radius` takes `xs`–`xl`, or `'100%'` (the default)
-for a circle. A smaller `radius` squares off the corners.
+`size` takes `xs`–`xl` or any CSS value; `radius` takes `xs`–`xl` or any CSS value. An avatar
+is a full circle unless you say otherwise — a smaller `radius` squares off the corners.
 
 {% avatar name='XS' size='xs' %} {% avatar name='MD' size='md' %} {% avatar name='XL' size='xl' %} {% avatar name='SQ' radius='sm' %}
 
@@ -182,15 +182,21 @@ Omit any attribute to take its default.
 | `src` | Image URL | The avatar image. When missing or broken, the fallback (body or initials) shows. |
 | `name` | string | The user's name — used for initials and, with `color='initials'`, a deterministic color. |
 | `alt` | string | Image `alt` text (and the placeholder's title). Always set this for accessibility. |
-| `size` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | The avatar's width and height. |
-| `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value (`'100%'` is the default circle) | Corner rounding. |
-| `color` | any theme color, or `initials` | Background/text color. `initials` derives a stable color from `name`. |
+| `size` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value (default `md`, 38px) | The avatar's width and height. The five tokens are 16, 26, 38, 56, and 84px. |
+| `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | Corner rounding. Defaults to a full circle; use a token or a small CSS value to square it off. |
+| `color` | any theme color, or `initials` | Background/text color. `initials` derives a stable color from `name` (and does nothing without one). |
 | `variant` | `filled`, `light`, `outline`, `transparent`, `white`, `default`, `gradient` | Visual style. |
 | `autoContrast` | bool flag (default `false`) | Auto-pick a readable text color for the background. |
 | `gradientFrom` | any theme color | Gradient start color (with `variant='gradient'`). |
 | `gradientTo` | any theme color | Gradient end color (with `variant='gradient'`). |
 | `gradientDeg` | integer | Gradient angle in degrees (with `variant='gradient'`). |
 | body | text | Explicit fallback shown when there is no `src` (or it fails to load). |
+
+> **Good to know.** The fallback has an order: an explicit body wins, then initials from `name`,
+> then a generic person glyph — so an avatar with both a body and a `name` shows the body. `alt`
+> is the image's alt text and also becomes the fallback's `title`, so it is worth setting either
+> way. A broken `src` falls back on its own at view time, without a build warning.
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="Avatar"]` — or through the Mantine Styles API classes (`.mantine-Avatar-root` and its inner parts):

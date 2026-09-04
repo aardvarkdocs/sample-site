@@ -101,11 +101,13 @@ component(
 
 By default the contents tracks every `h1`–`h{depth}` inside the page's content
 (`.aardvark-content`), so site chrome (nav and footer) is never picked up. Pass an
-explicit `selector` to track a different heading set — say only the `h2`s:
+explicit `selector` to track a different heading set — say only the `h2`s. A `selector`
+replaces that default outright, so `depth` no longer has anything to cap: set one or the
+other, not both.
 
 **Preview**
 
-{% tableofcontents depth=4 variant='filled' color='blue' selector='.aardvark-content h2' %}
+{% tableofcontents variant='filled' color='blue' selector='.aardvark-content h2' %}
 
 <br>
 
@@ -113,7 +115,7 @@ explicit `selector` to track a different heading set — say only the `h2`s:
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% tableofcontents depth=4 variant='filled' color='blue' selector='.aardvark-content h2' %}
+{% tableofcontents variant='filled' color='blue' selector='.aardvark-content h2' %}
 ```
 {% endraw %}
 {% endAccordionSection %}
@@ -121,7 +123,7 @@ explicit `selector` to track a different heading set — say only the `h2`s:
 ```python
 component(
     'aardvark', 'tableofcontents',
-    depth=4, variant='filled', color='blue', selector='.aardvark-content h2',
+    variant='filled', color='blue', selector='.aardvark-content h2',
 )
 ```
 {% endAccordionSection %}
@@ -173,14 +175,14 @@ Omit any attribute to take its default.
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `depth` | `1`–`6` (int; default `3`) | Highest heading level to include — `3` tracks `h1`–`h3`. Also shapes the default selector. |
-| `depthOffset` | int (pixels) | Indent added per heading level. Omitted → Mantine's default. |
+| `depth` | `1`–`6` (int; default `3`) | Deepest heading level to include — `3` tracks `h1`–`h3`. It works by shaping the default selector, so it has no effect once you pass `selector`. |
+| `depthOffset` | int (pixels) | Indent added per heading level. Omit it and the indent falls back to an em-based step that scales with `size`. |
 | `variant` | `light` (default), `filled`, `none` | Treatment of the active entry. |
 | `color` | any Mantine color (e.g. `blue`, `grape`, `#7048e8`) | Accent color for the active entry. |
 | `size` | `xs`, `sm`, `md`, `lg`, `xl` | Label size. |
 | `radius` | `xs`, `sm`, `md`, `lg`, `xl` | Corner radius of the active highlight. |
 | `autoContrast` | bool (default `false`) | Auto-pick a readable label color against `color`. |
-| `selector` | a CSS selector | Headings to track. Overrides the default (`h1`–`h{depth}` inside `.aardvark-content`). |
+| `selector` | a CSS selector | Headings to track. Replaces the default (`h1`–`h{depth}` inside `.aardvark-content`) entirely, `depth` included. |
 
 ## CSS Selectors
 

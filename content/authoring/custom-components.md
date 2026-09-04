@@ -36,7 +36,10 @@ params:
 ```
 
 The declared params (`gap`) and the special `children` slot are available as
-variables in the body.
+variables in the body. Every `*.md` under `components/` is scanned, subfolders
+included, so you can group definitions however you like. The `name:` must be a bare
+identifier (letters, digits, underscores; not starting with a digit), and two files in
+`components/` can't declare the same `name` — that fails the build.
 
 ## Use it — inline or block
 
@@ -81,21 +84,38 @@ params:
   size: int               # shorthand: a bare type = optional, no default
 ```
 
-- **Types**: `string`, `int`, `float`, `bool`, `list`. Values from the call site
-  are coerced to the declared type (so `count="3"` becomes the integer `3`, and a
-  `list` accepts a comma-separated string). A value that can't be coerced is a
-  build error.
+- **Types**: `string`, `int`, `float`, `bool`, `list` — nothing else (no dict/object;
+  pass structured data as a `list` or a JSON string). Values from the call site
+  are coerced to the declared type: `count="3"` becomes the integer `3`, a `list`
+  accepts a comma-separated string (`tags="a, b"` → `['a', 'b']`), and a `bool`
+  accepts a bare flag (`{% raw %}{% Tag compact %}{% endraw %}`) or `"true"` /
+  `"false"`. A value that can't be coerced — `count="lots"`, `size=true` for an
+  `int`, `"yes"` for a `bool` — is a build error.
 - **`required: true`** with no value supplied is a build error; **`default`** fills
   in when the param is omitted. Declaring both is rejected (a default already makes
-  it optional).
+  it optional). A param with neither, left unsupplied, is `None` in the body.
 - Passing a param the component didn't declare is a build error — every mistake is
-  caught at build time, naming the component, the param, and the file.
+  caught at build time, naming the component, the param, the page it was used on, and
+  the defining file.
+- **Reserved names.** `children` and `attr` are the body slot and the forwarded
+  attribute dict, and `component`, `inline_component` and `snippet` are the render helpers
+  the body calls — none can be a param name. Neither can a name starting with
+  `__aardvark_`.
+- **Reserved tags.** A component can't be named `raw`, `include`, `openapi`, `icon` or
+  `taxonomy`, nor after a [block component](/authoring/block-components/) open or close
+  tag (`accordion`, `endAccordion`, `card`, `tabs`, …) — those are handled by the template
+  engine first, so the definition would never be reached. Discovery rejects the name
+  with a clear error.
 
 The calling page is **not** visible inside the body — a component is a pure
 function of its declared inputs. Pass page data explicitly, e.g.
 `{% raw %}{% Hero title=page.title %}{% endraw %}`. For the same reason, emit from
 a body with `print(...)` or `{% raw %}{% value %}{% endraw %}` — `page.print()`
-isn't available here, since there's no `page` in scope.
+isn't available here, since there's no `page` in scope. `data`, `site` and `config`
+*are* shared into the body, so a definition can read your `data/` files directly.
+
+A component that expands itself — directly or through another component — is a
+build error (`Circular custom component: A -> B -> A`), not an infinite loop.
 
 ## A definition body can blend anything
 
@@ -117,21 +137,44 @@ renders a working copy button — click it:
 
 Two things worth knowing about injected JavaScript:
 
-- A **`<script>` at the body's top level** runs on page load. A `<script>` placed
-  *inside* a `component(...)` call becomes a React child and is rendered inert
-  (browsers don't execute scripts inserted that way) — keep runnable scripts at the
-  top level.
+- A **`<script>` at the body's top level** runs on page load. A `<script>` passed as a
+  component's `children` is treated as inert markup by the island runtime — it isn't
+  guaranteed to run — so keep runnable scripts at the top level.
 - Use **`attr`** for per-component handlers/data (`onclick`, `data-*`, `id`); use the
   `className`/`style` **props** for styling (React owns those). A site can restrict
   `attr` with `attrPolicy` in `aardvark.config.yaml`.
 
+### Forwarding `attr` from a tag
+
+`attr={...}` on a custom-component tag is evaluated as Python and handed to the body as
+the variable `attr` (`None` when the caller passed none) — it's never applied automatically.
+Forward it to the island you want it to land on, and your tag supports
+`{% raw %}{% MyCard attr={'data-track': 'hero'} %}{% endraw %}` exactly like a direct
+`component(..., attr=...)` call:
+
+{% raw %}
+```aardvark
+{% component('Card', children=children, attr=attr) %}
+```
+{% endraw %}
+
+{% callout title="One block, one Python program" severity="info" %}
+A `{% raw %}{% %}{% endraw %}` block ends at the **first** `%}` — even one inside a
+Python string or a `#` comment. Writing a tag such as `{% raw %}{% button %}{% endraw %}`
+inside a Python block therefore ends the block early and the rest of it is dropped,
+silently. Mention template syntax in a comment as plain prose ("the button tag") instead.
+This applies to every page, but it bites most often in definitions, whose bodies are
+usually one long Python block.
+{% endCallout %}
+
 ## Built-in components
 
-Aardvark ships a few **built-in components** so you don't have to define them.
-**`{% raw %}{% button %}{% endraw %}`** renders a button or link, exposing the full
-Mantine Button surface — `variant`, `color`, `size`, gradient, sections, link target,
-spacing, `id`, and more. See its page, [Button](/components/buttons/button/), for the full
-list with live examples. The label is the block body or a `text` param.
+Aardvark ships well over a hundred **built-in components** defined exactly this way, so
+you don't have to. **`{% raw %}{% button %}{% endraw %}`** renders a button or link,
+exposing the full Mantine Button surface — `variant`, `color`, `size`, gradient,
+sections, link target, spacing, `id`, an `onclick` handler, and more. See its page,
+[Button](/components/buttons/button/), for the full list with live examples. The label
+is the block body or a `text` param.
 
 {% raw %}
 ```aardvark
@@ -143,22 +186,14 @@ renders, live:
 
 {% button text='Get started' url='/start/' color='grape' %} {% button url='/docs/' variant='outline' %}Read the docs{% endButton %}
 
-The header's top-bar buttons (`topButtons` in `aardvark.config.yaml`) use this same
-component.
+The header's top-bar buttons (`topButtons` in `aardvark.config.yaml`) accept the same
+fields.
 
-Another built-in is **`{% raw %}{% callout %}{% endraw %}`** — an admonition: set `title`
-for an optional bold heading and `severity` (`success` / `info` / `caution` / `warning`) to
-color the box and pick its icon. See its page, [Callout](/components/feedback/callout/), for
-parameters and examples.
-
-To customize a built-in, define your own `components/<name>.md` with the same
-`name:` — your version wins.
-
-Aardvark also ships **`{% raw %}{% callout %}{% endraw %}`** — a titled, colored
-admonition box. Set `severity` to one
-of `success` (green), `info` (primary), `caution` (yellow), or `warning` (red);
-`title` is optional; the block body is the message. Close it with
-`{% raw %}{% endCallout %}{% endraw %}`.
+Another built-in is **`{% raw %}{% callout %}{% endraw %}`** — a titled, colored
+admonition box. Set `severity` to one of `success` (green), `info` (primary), `caution`
+(yellow), or `warning` (red); `title` is optional; the block body is the message. Close it
+with `{% raw %}{% endCallout %}{% endraw %}`. See its page,
+[Callout](/components/feedback/callout/), for parameters and examples.
 
 {% raw %}
 ```aardvark
@@ -177,6 +212,10 @@ Be careful when proceeding here.
 `callout` pairs its `.md` definition with a built-in React snippet (`Callout.jsx`)
 that maps each severity to its color and icon — a small example of a built-in component
 composing a snippet.
+
+To customize a built-in, define your own `components/<name>.md` with the same
+`name:` — your version wins, everywhere the tag is used (including
+`component('aardvark', '<name>', …)` calls).
 
 ## Custom components vs snippets
 

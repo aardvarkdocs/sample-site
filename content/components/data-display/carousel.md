@@ -7,12 +7,22 @@ description: "The built-in carousel and slide tags — a swipeable strip of slid
 
 A **slides carousel**: a strip of slides the reader swipes, drags, or steps through with the
 prev/next controls and indicator dots. Put one `{% raw %}{% slide %}{% endraw %}` block per
-slide inside a `{% raw %}{% carousel %}{% endraw %}`. It's embla-backed and measures the live
-container on mount, so it renders in the browser and hydrates into an interactive island.
+slide inside a `{% raw %}{% carousel %}{% endraw %}`.
 
 Use it as `{% raw %}{% carousel %}…{% endCarousel %}{% endraw %}` in Markdown (with nested
 `{% raw %}{% slide %}{% endraw %}` blocks), or call it from Python logic (loops, snippets) via
 `component('aardvark', 'carousel', …)` and `component('aardvark', 'slide', …)`.
+
+> **The carousel needs the `carousel` component library.** These tags resolve against
+> [`@mantine/carousel`](https://mantine.dev/x/carousel/), which a site opts into: the package has
+> to be installed **and** a `carousel:` entry has to be declared under `componentLibraries:` in
+> your theme's `theme.yaml`. Without it the carousel renders nothing and the build reports an
+> unknown component library. A site scaffolded by `vark new` installs the package but ships no
+> `theme.yaml` — add one to turn these tags on. This site's copy, in `themes/vark/theme.yaml`,
+> is a working example.
+>
+> The carousel measures its live container to size the slides, so it is built **in the browser**
+> rather than pre-rendered into the page HTML: it does not appear with JavaScript turned off.
 
 ## A basic carousel
 
@@ -104,24 +114,29 @@ swipe-only carousel.
 
 ## Attributes
 
-Set these on `{% raw %}{% carousel %}{% endraw %}`; omit any to take its Mantine default.
-`{% raw %}{% slide %}{% endraw %}` takes no attributes of its own — its body is the slide
-content.
+Set these on `{% raw %}{% carousel %}{% endraw %}`; omit any to take its default.
+`{% raw %}{% slide %}{% endraw %}` has no options of its own — its body is the slide content —
+though it does accept `attr={…}` for raw HTML attributes on that one slide.
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `slideSize` | percentage (`70%`) or a number | Slide width relative to the viewport. |
-| `slideGap` | `xs`–`xl` or a CSS length | Gap between slides. |
-| `height` | a CSS height | Slides container height; required for `vertical`. |
-| `h` | `xs`–`xl` or a CSS length | Mantine height shorthand on the root box. |
-| `orientation` | `horizontal`, `vertical` | Scroll direction. |
-| `controlSize` | a CSS width (e.g. `26`) | Size of the prev/next controls. |
-| `controlsOffset` | `xs`–`xl` or a CSS value | Distance of the controls from the edges. |
-| `initialSlide` | integer | Index of the slide shown first. |
-| `loop` | bool (`true` / `false`) | Wrap from the last slide back to the first. |
-| `withControls` | bool (`true` / `false`) | Show the prev/next arrows (default `true`). |
-| `withIndicators` | bool (`true` / `false`) | Show the indicator dots (default `false`). |
-| `withKeyboardEvents` | bool (`true` / `false`) | Arrow keys switch slides (default `true`). |
+| `slideSize` | percentage (`70%`) or a CSS width (default `100%`, one slide in view) | Slide width, as a share of the carousel's own width. |
+| `slideGap` | `xs`–`xl` or a CSS length (default `0`) | Gap between slides. |
+| `height` | a CSS height | Slides container height; **required** for `vertical`. |
+| `h` | `xs`–`xl` or a CSS length | Height of the root box (the Mantine sizing shorthand). |
+| `orientation` | `horizontal` (default), `vertical` | Scroll direction. |
+| `controlSize` | a CSS width (default `26`) | Size of the prev/next controls. |
+| `controlsOffset` | `xs`–`xl` or a CSS value (default `sm`) | Distance of the controls from the edges. |
+| `initialSlide` | integer (default `0`) | Zero-based index of the slide shown first. |
+| `loop` | bool (`true` / `false`, default `false`) | Wrap from the last slide back to the first. |
+| `withControls` | bool (`true` / `false`, default `true`) | Show the prev/next arrows. |
+| `withIndicators` | bool (`true` / `false`, default `false`) | Show the indicator dots. |
+| `withKeyboardEvents` | bool (`true` / `false`, default `true`) | Arrow keys switch slides. |
+
+> **Good to know.** `slideSize` is measured against the **carousel**, not the browser window, so
+> `slideSize='70%'` shows one full slide and a peek of the next whatever the screen size. A
+> vertical carousel with no `height` has nothing to scroll and collapses — that is the one
+> attribute it cannot do without.
 
 ## CSS Selectors
 

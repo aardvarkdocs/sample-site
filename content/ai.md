@@ -25,7 +25,7 @@ A built-in "Ask AI" chat panel for your readers — plus a full analytics dashbo
 The managed metering proxy behind the built-in assistant — a prepaid balance with Stripe card-on-file and auto-top-up.
 {% endCard %}
 {% card title="Build-time AI" icon="sparkles" accent="grape" href="/ai-features/" cta="Enrich the build" %}
-Opt-in, cached OpenRouter features — generate frontmatter, example API responses, and Claude Code skills from your docs.
+Opt-in, cached features that run through the cloud gateway — generate frontmatter, example API responses, and Claude Code skills from your docs.
 {% endCard %}
 {% endCardGrid %}
 
@@ -47,5 +47,5 @@ Publish a key directory so your site can identify itself when an agent sends sig
 {% endCardGrid %}
 
 {% callout severity="info" title="More agent-facing output lives under Deploy" %}
-The files agents read most — `llms.txt`, `llms-full.txt`, and the Agent Skills index — are written by every build; see [Generated files](/llms-and-sitemap/). The `vark ai-enrich` and `vark web-bot-auth-keygen` commands are in the [CLI reference](/cli/).
+The files agents read most — `llms.txt`, `llms-full.txt`, and the Agent Skills index — are written by every build; see [Generated files](/llms-and-sitemap/). The `vark ai-enrich`, `vark serve`, and `vark web-bot-auth-keygen` commands are in the [CLI reference](/cli/), and the gateway's own HTTP surface is the [Aardvark Gateway API](/api/) reference.
 {% endCallout %}

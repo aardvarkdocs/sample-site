@@ -121,13 +121,14 @@ Add a page to a tab's left nav with front-matter keys:
 | --- | --- |
 | `menu` | The tab `id` this page joins (top-level placement). |
 | `nav` | `nav: false` keeps the page **in** its menu (so its tab stays lit when you visit it) but **out** of the sidebar list — for pages readers reach through a listing rather than the nav, like this site's knowledge-base articles and changelog entries. (Whether to hide a taxonomy's members is per-site taste: our blog keeps its posts in the sidebar as an archive.) |
-| `parent` | The `id` of the parent entry (nests this page under it). |
-| `id` | This entry's id, for children to reference. Defaults to the page's path. |
+| `parent` | The `id` of the parent entry (nests this page under it). A page with a `parent` inherits the parent's menu, so it needs no `menu:` of its own. |
+| `id` | This entry's id, for children to reference. Defaults to the page's path (`identifier` is accepted as an alias). |
 | `navtitle` | A shorter label for the sidebar and breadcrumbs when the page `title` is too long for the narrow nav. The `<title>` tag and on-page H1 keep the full `title`. |
 | `weight` | Optional ordering override. Siblings list **alphabetically by label** by default; give a page a `weight` to pull it ahead (lowest first). |
 | `heading` | A label string rendered above this entry as a section divider; the page itself stays a normal, clickable entry. |
 | `icon` | An icon shown to the **left** of this entry's label (see [Icons](#icons)). |
-| `heading-icon` | An icon for the `heading` section label above this entry. |
+| `heading-icon` | An icon for the `heading` section label above this entry (`heading_icon` works too). |
+| `breadcrumb` | `breadcrumb: false` hides the breadcrumb trail on this one page (see [Breadcrumbs](#breadcrumbs)). |
 
 Pages can also carry `taxonomy:` front matter — tag-based membership that drives
 changelog / knowledge-base / blog listings and can add a per-page tag nav to the sidebar;
@@ -174,6 +175,38 @@ A `heading:` string adds a **non-clickable section label** above an entry — th
 item carries a `heading`, with the rest of the group as plain siblings beneath it.
 The current page's ancestor branches render expanded, so the nav is correct even
 before JavaScript loads.
+
+## Breadcrumbs
+
+The breadcrumb trail above a page's title is derived from the same tree, so there is
+nothing to author: it leads with the page's owning tab (*Docs*), then the `heading:` divider
+that groups the page, then each ancestor down to the page itself — labelled by `navtitle`
+when set and `title` otherwise. A page that belongs to no tab menu gets a linked *Home* crumb
+in that leading position instead. It's on by default; `breadcrumbs: false` in
+`aardvark.config.yaml` turns it off site-wide (the mapping form tunes the leading crumb, its
+*Home* label and the separator), and `breadcrumb: false` in a page's front matter hides it on
+just that page.
+Both switches and the layout variable that places the trail are on the
+[Theming](/theming/#breadcrumbs) page.
+
+## Good to know
+
+- **Ids must be unique across the whole site**, not just within one tab. Ids are collected
+  before menus are resolved, so two pages in *different* tabs that resolve to the same id —
+  usually an explicit `id:` colliding with another page's path — still clash: the first
+  wins, the second is dropped from the nav, and `vark build` warns naming both files. (A
+  translated or versioned copy of a page is a separate tree and never collides with its
+  original.)
+- **Auto-joining only applies to pages with neither `menu` nor `parent`.** Set either
+  and the page is placed exactly where you said; a `parent` that names no existing page
+  warns and the page lands at the top level of its menu.
+- **A `menu:` value must be a tab `id`** whenever the site declares tabs; anything else
+  warns (the page still gets its sidebar, but no tab lights up). With no `tabs:` at all,
+  any name works.
+- **`nav: false` promotes children.** Hide a section's `index.md` from the sidebar and its
+  child pages move up to the top level of the menu, without a warning.
+- **Weights are numbers.** Weighted siblings come first in ascending order, then the
+  unweighted ones alphabetically; an unparseable weight counts as unweighted.
 
 ## Icons
 

@@ -170,15 +170,15 @@ Every attribute is optional; omit one to take its Mantine default. The body is i
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `data` | Comma-separated list, or `value::label` pairs (double colon) | The options. A bare item is both value and label; `value::label` carries a separate stored value. A single `:` is left intact. |
-| `dataJson` | JSON array string | A full options array — plain strings, `{value, label}` objects, `{group, items}` groups, and disabled flags. Wins over `data` when both are set. |
+| `dataJson` | JSON array string | A full options array — plain strings, `{value, label}` objects, `{group, items}` groups, and disabled flags. Wins over `data` when both are set. A value that is not valid JSON, or is JSON but not an array, warns at build time and leaves the field with no options. |
 | `defaultValue` | Comma-separated list of values from `data` | The options selected on load. |
 | `maxValues` | Integer | Cap the number of selections; further options are disabled once full. |
 | `label` | String | The field label. |
 | `placeholder` | String | Empty-state text inside the input. |
 | `description` | String | Helper text below the label. |
 | `error` | String | Validation message; also styles the field red. |
-| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Input size. |
-| `radius` | `xs`, `sm`, `md`, `lg`, `xl` | Corner radius. |
+| `size` | `xs`, `sm`, `md`, `lg`, `xl` (default `sm`) | Input size. |
+| `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | Corner radius. |
 | `variant` | `default`, `filled`, `unstyled` | Input style. |
 | `searchable` | `true`, `false` (default `false`) | Let the reader filter options by typing. |
 | `clearable` | `true`, `false` (default `false`) | Show an × to clear all selections. |
@@ -187,10 +187,11 @@ Every attribute is optional; omit one to take its Mantine default. The body is i
 | `required` | `true`, `false` (default `false`) | Mark the field required. |
 | `withAsterisk` | `true`, `false` (default `false`) | Show the required asterisk on the label. |
 | `withCheckIcon` | `true`, `false` (default `true`) | Show the check mark on a selected option. |
-| `checkIconPosition` | `left`, `right` | Which side the check mark sits on. |
+| `checkIconPosition` | `left` (default), `right` | Which side the check mark sits on. |
 | `withScrollArea` | `true`, `false` (default `true`) | Wrap a long dropdown in a scroll area. |
 | `nothingFoundMessage` | String | Text shown when a search matches nothing. |
 | `maxDropdownHeight` | Integer (px) | Cap the dropdown height. |
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="MultiSelect"]` — or through the Mantine Styles API classes (`.mantine-MultiSelect-root` and its inner parts):
@@ -210,7 +211,7 @@ Target the rendered element through its island marker — `[data-aardvark-island
 
 ## Injecting Attributes
 
-`attr={…}` forwards raw HTML attributes — including event handlers — straight onto the rendered element, so you can wire DOM behavior the tag does not expose. The handler can be a full multi-line script, not just one expression — here it is wired to `onchange` on the search box, so typing to filter logs the text you type to the console and alerts it — selecting items is React state and fires no DOM `change` event:
+`attr={…}` forwards raw HTML attributes — including event handlers — straight onto the rendered element, so you can wire DOM behavior the tag does not expose. The handler can be a full multi-line script, not just one expression — here it is wired to `onchange` on the search box. A DOM `change` fires when the field commits its text — on blur, not on each keystroke — so the alert appears once you click away, and picking an option never triggers it, since selection is React state and fires no DOM `change`:
 
 {% multiselect label='Stack' placeholder='Pick a few' data='React, Vue, Svelte, Angular, Solid' searchable=true clearable=true attr={'onchange': '''
 const value = this.value;

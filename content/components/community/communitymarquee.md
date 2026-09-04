@@ -97,7 +97,7 @@ vertically.
 {% raw %}
 ```aardvark
 {% communityMarquee direction='right' duration=20 %}
-← scrolling the other way · keep it moving ·
+← scrolling the other way · keep it moving · ← scrolling the other way ·
 {% endCommunityMarquee %}
 ```
 {% endraw %}
@@ -120,7 +120,7 @@ Isometric · 3D ticker · Tilt and perspective · Isometric · 3D ticker ·
 {% raw %}
 ```aardvark
 {% communityMarquee variant='isometric' duration=22 tilt=45 %}
-Isometric · 3D ticker · Tilt and perspective ·
+Isometric · 3D ticker · Tilt and perspective · Isometric · 3D ticker ·
 {% endCommunityMarquee %}
 ```
 {% endraw %}
@@ -143,7 +143,7 @@ The scrolling content can be any Aardvark tags, already rendered — here a row 
 {% raw %}
 ```aardvark
 {% communityMarquee duration=18 gap='1.5rem' %}
-{% badge variant='light' color='grape' %}Fast{% endBadge %} {% badge variant='light' color='indigo' %}Themeable{% endBadge %} {% badge variant='light' color='teal' %}Accessible{% endBadge %}
+{% badge variant='light' color='grape' %}Fast{% endBadge %} {% badge variant='light' color='indigo' %}Themeable{% endBadge %} {% badge variant='light' color='teal' %}Accessible{% endBadge %} {% badge variant='light' color='orange' %}Open{% endBadge %}
 {% endCommunityMarquee %}
 ```
 {% endraw %}
@@ -159,33 +159,44 @@ Omit any attribute to take its default. Bare flags (e.g. `pauseOnHover`, `fadeEd
 | --- | --- | --- |
 | `direction` | `left` / `right` / `up` / `down` (default `left`) | Scroll axis and direction. Maps to the package's `vertical` (up/down) + `reverse` (right/down). |
 | `variant` | `default` / `isometric` / `circle` | Layout variant. `isometric` and `circle` add a 3D / ring presentation. |
-| `duration` | Integer (seconds) | Seconds for one full loop. |
-| `gap` | A CSS length (e.g. `2rem`) | Space between the looping copies of the content. |
-| `repeat` | Integer | How many times the content is cloned to fill the row. |
+| `duration` | Integer **seconds** | Time for one full loop. |
+| `gap` | `xs`–`xl` or a CSS length (e.g. `2rem`) | Space between the items and between the looping copies. |
+| `repeat` | Integer (minimum `2`) | How many times the content is cloned to fill the row. |
 | `pauseOnHover` | `true` / `false` (default `false`) | Pause scrolling while the pointer is over the marquee. |
-| `fadeEdges` | bare flag / `linear` / `ellipse` / `rect` | Fade the leading/trailing edges. A bare flag uses the default fade; a named value picks the mask shape. |
-| `fadeEdgesSize` | `xs`–`xl` or a percentage | Size of the edge fade. |
-| `tilt` | Integer (degrees) | 3D tilt angle (isometric variant). |
-| `perspective` | Integer (px) | Depth of the 3D scene (3D variants). |
-| `rotate` | Integer (degrees) | In-plane rotation (isometric variant). |
-| `skew` | Integer (degrees) | Horizontal skew (isometric variant). |
+| `fadeEdges` | bare flag / `linear` / `ellipse` / `rect` | Fade the edges with a mask. A bare flag (or `linear`) fades the leading and trailing edges; `ellipse` fades all round; `rect` fades all four edges independently. |
+| `fadeEdgesSize` | `xs`–`xl` or a CSS length | Size of the edge fade. |
+| `tilt` | Integer (degrees, default `45`) | Plane inclination — how far the scroll plane tips back (`isometric`), or the viewing angle of the ring (`circle`). Ignored by the default variant. |
+| `perspective` | Integer px (default `800`) | Depth of the 3D scene; smaller values exaggerate it. Isometric and circle variants only. |
+| `rotate` | Integer (degrees, default `0`) | In-plane rotation applied after `tilt` (isometric variant). |
+| `skew` | Integer (degrees, default `0`) | Horizontal shear of the plane (isometric variant). |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element (see [Injecting Attributes](#injecting-attributes)). |
+
+{% callout severity="info" title="Good to know" %}
+`duration` here is in **seconds**, while the built-in
+[`{% raw %}{% marquee %}{% endraw %}`](/components/layout/marquee/) counts it in
+milliseconds — so a value copied between the two tags is off by a factor of a thousand.
+
+The body is rendered as a single inline row: inline Markdown and raw HTML pass through, but
+block-level Markdown (paragraphs, lists, headings) does not, and blank lines are collapsed.
+Keep each item on the same line, or wrap it in a tag that renders inline.
+{% endCallout %}
 
 ## CSS Selector
 
-The mounted island is wrapped in an element carrying `data-aardvark-island="CommunityMarquee"`,
-so you can target the whole ticker from your own CSS:
+| Selector | Targets |
+| --- | --- |
+| `[data-aardvark-island='CommunityMarquee']` | The wrapper around one ticker — the safest hook, and the only one that means *this* tag. |
+| `.mantine-Marquee-root` | The ticker root, which carries `[data-variant]`, `[data-vertical]` and `[data-fade-edges]`. |
+| `.mantine-Marquee-stage` / `.mantine-Marquee-plane` | The 3D stage and the tilted plane used by the `isometric` and `circle` variants. |
 
-```css
-[data-aardvark-island='CommunityMarquee'] {
-  margin-block: 2rem;
-}
-```
+This ticker and the built-in [`{% raw %}{% marquee %}{% endraw %}`](/components/layout/marquee/)
+both style themselves with `mantine-Marquee-*` classes, so a rule written against those names
+hits **both** tags. Scope it under the island attribute above when you mean only this one.
 
-The package itself styles the track and fade with its own data-attribute selectors
-(`[data-variant]`, `[data-vertical]`, `[data-fade-edges]`) and CSS variables
-(`--marquee-gap`, `--marquee-fade-edge-size`, …); the stylesheet ships from
-`@gfazioli/mantine-marquee/styles.css`, imported automatically by the island.
+The look is driven by CSS variables on the root — `--marquee-duration`, `--marquee-gap`,
+`--marquee-fade-edge-size`, `--marquee-tilt`, `--marquee-perspective`, `--marquee-rotate`,
+`--marquee-skew` — so most tweaks are a variable override. The stylesheet ships from
+`@gfazioli/mantine-marquee/styles.css` and loads with the page.
 
 ## Injecting Attributes
 
@@ -203,7 +214,7 @@ Tagged for analytics · Accessible label · Tagged for analytics ·
 {% raw %}
 ```aardvark
 {% communityMarquee duration=20 attr={'data-analytics': 'home-ticker', 'aria-label': 'Feature ticker'} %}
-Tagged for analytics · Accessible label ·
+Tagged for analytics · Accessible label · Tagged for analytics ·
 {% endCommunityMarquee %}
 ```
 {% endraw %}

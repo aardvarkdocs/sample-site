@@ -3,16 +3,18 @@ menu: components
 title: Inputs
 icon: forms
 weight: 20
-description: "Built-in input tags — text / number / password / file fields and their wrappers, plus the controls (checkboxes, switches, sliders, radios, ratings, color pickers) — each a single Markdown tag with the full Mantine config surface."
+description: "Built-in input tags — text / number / password / file / date fields and their wrappers, plus the controls (checkboxes, switches, sliders, radios, ratings, color pickers) — each a single Markdown tag, with the supported options listed on its own page."
 ---
 
 # Inputs
 
-Everything for collecting input, each a single **built-in** tag — no setup, no JavaScript to
-write. The text-entry **fields** wrap the matching Mantine inputs and expose their full surface
-(label, description, error, size, radius, variant, required, disabled, plus each field's own
-props); the **controls** mount as interactive islands you can toggle, drag, and pick right on
-the page.
+Everything for collecting input, nearly all of it a single **built-in** tag — no setup, no
+JavaScript to write. (Two entries are project snippets this site ships rather than built-in tags:
+the rich-text editor and the form example. Their pages say what to copy.) The text-entry **fields** carry the options you reach for on a form — label, description,
+error, size, radius, variant, required, disabled, plus each field's own — and the **controls**
+mount as interactive islands you can toggle, drag, and pick right on the page. Each tag accepts
+the attributes its own page lists and nothing else; an unrecognised one stops the build rather
+than being ignored, so that table is the list to work from.
 
 ## Fields
 
@@ -27,8 +29,15 @@ the page.
 - [PinInput](/components/inputs/pininput/) — a row of single-character boxes for codes / PINs.
 - [NativeSelect](/components/inputs/nativeselect/) — a native `<select>` from a delimited option list.
 - [Fieldset](/components/inputs/fieldset/) — a bordered group of fields with a legend.
-- [Input](/components/inputs/input/) — the unstyled base input primitive every field is built on.
+- [Input](/components/inputs/input/) — the bare input control, with no label or message wrapper.
 - [Form](/components/inputs/form/) — the `useForm` hook tying fields together: validation, submit, and collected values.
+
+## Dates and times
+
+- [DateInput](/components/inputs/dateinput/) — a free-typing date field parsed against a display format.
+- [DatePickerInput](/components/inputs/datepickerinput/) — a date field that opens a calendar to pick a day, a range, or several days.
+- [DateTimePicker](/components/inputs/datetimepicker/) — a combined date-and-time field with a calendar plus a time picker.
+- [TimeInput](/components/inputs/timeinput/) — a time field built on the browser's native time control.
 
 ## Toggles and choices
 

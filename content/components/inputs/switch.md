@@ -73,8 +73,8 @@ component('aardvark', 'switch', label='large', size='lg', defaultChecked=True)
 
 ## Radius, thumb indicator, label position, and disabled
 
-`radius` rounds the track; `withThumbIndicator` shows the inner thumb dot;
-`labelPosition='left'` puts the label first; `disabled` makes it non-interactive.
+`radius` rounds the track; `withThumbIndicator` shows the inner thumb dot (off unless you set
+it); `labelPosition='left'` puts the label first; `disabled` makes it non-interactive.
 
 {% switch label='Square track' radius='xs' defaultChecked=true %}
 {% switch label='Thumb indicator' withThumbIndicator=true defaultChecked=true %}
@@ -168,9 +168,10 @@ component('aardvark', 'button', children='Save')
 
 ## Attributes
 
-Omit any attribute to take its Mantine default. For a React icon on the thumb
-(`thumbIcon`), call `{% raw %}{% component('Switch', …) %}{% endraw %}` directly — a
-build-time tag can only pass the on/off labels as text.
+Omit any attribute to take its Mantine default — with one exception, `withThumbIndicator`,
+noted in its row. For an icon on the thumb (Mantine's `thumbIcon`), call
+`{% raw %}{% component('Switch', thumbIcon='★') %}{% endraw %}`: attributes travel as data, so a
+character or emoji arrives fine, while a React icon element needs a `.jsx` component of your own.
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
@@ -183,10 +184,10 @@ build-time tag can only pass the on/off labels as text.
 | `size` | `xs`, `sm`, `md`, `lg`, `xl` | Overall size. |
 | `radius` | `xs`, `sm`, `md`, `lg`, `xl` | Corner rounding of the track. |
 | `labelPosition` | `right` (default), `left` | Which side of the switch the label sits on. |
-| `withThumbIndicator` | bare flag (`true`) | Show the inner thumb indicator dot. |
+| `withThumbIndicator` | `true` / `false` | Show the dot inside the thumb. Off unless you ask for it — this is the one attribute the tag pins rather than leaving to Mantine, whose own default is on. |
 | `description` | string | Helper text shown below the label. |
 | `error` | string | Error text shown below the label (also marks the switch invalid). |
-| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) applied to the rendered root. |
+| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) set on the switch's `<input>` itself. |
 
 ## CSS Selectors
 

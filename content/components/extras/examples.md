@@ -62,7 +62,8 @@ The response twin is identical, with a **Response** heading and a distinct accen
 
 Put **several fenced blocks** in one `{% raw %}{% requestExample %}{% endraw %}` and the panel adds
 a **tab strip** — one tab per block. The tab label is the block's `title=` if it has one, otherwise
-its language. Perfect for showing the same call in curl, Python, and JavaScript:
+its language — and, for a fence with neither, `Example 1`, `Example 2`, … so every tab stays
+clickable. Perfect for showing the same call in curl, Python, and JavaScript:
 
 {% raw %}
 ````aardvark
@@ -177,7 +178,17 @@ component('aardvark', 'requestExample', title='Create a pet',
 | `title="…"` | a fence | A per-block heading; also the tab label when there are several blocks. |
 | *(fence language)* | a fence | Drives syntax highlighting and the download file extension (`json`, `bash`, `python`, …). |
 | `attr` | the tag | Raw HTML attributes (`{…}`) forwarded onto the rendered panel root element (see above). |
+| *(any other)* | the tag | Passes straight through to the rendered panel as a prop. |
 
-Syntax highlighting is baked in at **build time** (the same Pygments pass that colors every code
-fence on the site), so the reader's browser loads no highlighter for these panels; when a fence has
-no language — or site syntax highlighting is off — the block still renders as plain, copyable text.
+Syntax highlighting is baked in at **build time** — the same pass that colors every code fence on
+the site — so a panel arrives already colored. When the build didn't color a block (site syntax
+highlighting is off, or no lexer matched the language), the panel highlights it in the browser
+instead, so a block is never left flat just because the build skipped it. A fence with **no**
+language renders as plain, copyable text either way.
+
+{% callout title="Good to know" %}
+The body is taken **verbatim**, so the tags only ever see fenced code — a `{% raw %}{% … %}{% endraw %}`
+inside a block is displayed, never executed. A tag containing **no** fenced block emits a build
+warning and renders an empty panel reading "No example provided", rather than a bare titled box:
+if a panel looks empty, check that each example is wrapped in a fence.
+{% endCallout %}

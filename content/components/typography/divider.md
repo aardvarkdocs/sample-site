@@ -205,6 +205,10 @@ Omit any attribute to take its default. Spacing and sizing values take a Mantine
 | `w` / `h` | Any CSS length | Sizing — give a **vertical** rule its `h`. |
 | `miw` / `mih` / `maw` / `mah` | Any CSS length | Min/max width and min/max height. |
 
+The caption is the block body or the `label` param; when you give both, the body wins. Either
+way it is plain text — Markdown written in a divider label is shown as the characters you
+typed, so keep captions to a few words and put formatted text in the surrounding page.
+
 `attr={...}` forwards raw HTML attributes (e.g. an `id` for a deep link) onto the rendered rule.
 
 ## CSS Selectors

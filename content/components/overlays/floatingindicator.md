@@ -8,10 +8,10 @@ description: "The built-in floatingindicator tag — a demo of Mantine's low-lev
 `FloatingIndicator` is a **low-level positioning primitive**: it animates a single
 highlight box from one target element to another, given a root ref and a target ref. It
 has no behavior of its own — it is the engine Mantine uses inside **SegmentedControl**,
-**Tabs**, and **Stepper** to slide their active highlight. Because the primitive needs
-live element refs (which a build-time tag can't supply), this tag renders a small
-self-contained **demo**: a row of buttons whose active highlight slides on click, set by
-`labels` (a comma-separated list).
+**Tabs**, and **Stepper** to slide their active highlight. Because it positions itself from
+live references to the elements it moves between, this tag renders a small self-contained
+**demo**: a row of buttons whose active highlight slides on click, set by `labels` (a
+comma-separated list).
 
 Use it as `{% raw %}{% floatingindicator %}{% endraw %}` in Markdown, or call it from
 Python logic (loops, snippets) via `component('aardvark', 'floatingindicator', …)`.
@@ -115,8 +115,12 @@ Target the rendered element through its island marker, `[data-aardvark-island="F
 /* Every rendered FloatingIndicator carries this island marker */
 [data-aardvark-island="FloatingIndicator"] { }
 
-/* Mantine Styles API classes */
+/* Mantine Styles API classes — the root IS the sliding highlight box */
 .mantine-FloatingIndicator-root { }
+
+/* The demo's row and its buttons */
+.aardvark-floating-indicator-track { }
+.aardvark-floating-indicator-control { }
 ```
 {% endraw %}
 

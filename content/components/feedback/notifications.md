@@ -40,9 +40,15 @@ import { Notifications, notifications } from '@mantine/notifications';
 notifications.show({ title: 'Saved', message: 'Your changes were saved', color: 'teal' });
 ```
 
-`notifications.show` takes a `title`, a `message`, a `color`, and more (an
-`autoClose` timeout, an `icon`, a `loading` state, a `position`); the matching
-`notifications.hide`, `.update`, and `.clean` manage toasts after they're shown.
+`notifications.show` takes a `message` — the one required field — plus a `title`, a
+`color`, and more (an `autoClose` timeout, an `icon`, a `loading` state, a `position`).
+It returns the toast's id, which `notifications.hide(id)` and `notifications.update(...)`
+take to dismiss or rewrite that one toast; `notifications.clean()` clears them all, and
+`notifications.cleanQueue()` drops the ones still waiting behind the display limit.
+
+The portal is browser-only, so the build bakes just the button and the toast machinery
+starts up once the page is live — the demo needs JavaScript, and nothing appears in the
+corner until then.
 
 ## CSS Selectors
 

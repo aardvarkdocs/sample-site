@@ -7,7 +7,7 @@ weight: 1
 ---
 
 The reference below is the **real, user-facing API of the [Aardvark cloud
-gateway](/ai/)** — the metered OpenRouter proxy and dashboard backend behind the
+gateway](/ai-gateway/)** — the metered OpenRouter proxy and dashboard backend behind the
 reader assistant. Chat, reader telemetry, dashboard analytics, account and API-key
 management, team, billing, and magic-link auth are all here, rendered inline by the
 `{% raw %}{% openapi %}{% endraw %}` directive on an ordinary Markdown page set to

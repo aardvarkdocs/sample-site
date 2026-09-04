@@ -152,7 +152,7 @@ component('aardvark', 'blockquote', icon='search', color='cyan', children=inner)
 | `text` | Any string | The text to search, used when there's no block body. |
 | `highlight` | One phrase, or several comma-separated (tag); a string or list of strings (Python) | The substring(s) to highlight — every match is wrapped in a `<mark>`. |
 | `color` | Any theme color (e.g. `lime`, `grape`, `cyan`) | Highlight tint. |
-| `size` | `xs` `sm` `md` `lg` `xl` | Text size of the whole run. |
+| `size` | `xs` `sm` `md` `lg` `xl`, or any CSS size | Text size of the whole run. |
 | `fw` | Font-weight value (e.g. `600`) | Font weight of the run. |
 | `c` | Any theme color | Text color of the run. |
 | `ta` | `left` `center` `right` `justify` | Text align. |
@@ -161,9 +161,20 @@ component('aardvark', 'blockquote', icon='search', color='cyan', children=inner)
 | `fs` | `italic` `normal` | Font style. |
 | `id` | Any string | HTML `id` on the rendered element, for CSS / JS selectors. |
 
-The text to search is the block body or the `text` param. It's plain text — Mantine searches
-it character by character — so Markdown inside it is **not** formatted. For a single fixed
-phrase you wrap by hand, [Mark](/components/typography/mark/) is simpler.
+The text to search is the block body or the `text` param; when you give both, the body wins.
+It's plain text — the match runs over the characters you typed — so Markdown inside it is
+**not** formatted. For a single fixed phrase you wrap by hand,
+[Mark](/components/typography/mark/) is simpler.
+
+{% callout severity="info" title="Good to know" %}
+- **Matching ignores case and accents.** `highlight='markdown'` marks *Markdown*, and
+  `highlight='cafe'` marks *café*. Matches are found inside longer words too, so a short
+  term like `id` also lights up the `id` in *identifier*.
+- **Terms are separated by commas**, which means a search phrase cannot itself contain a
+  comma. Blank entries are dropped, and with no usable terms the text renders unmarked.
+- **Punctuation is matched literally.** A term such as `1.0` matches only `1.0`, never
+  `100` — the terms are never treated as patterns.
+{% endCallout %}
 
 ## CSS Selectors
 

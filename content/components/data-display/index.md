@@ -3,7 +3,7 @@ menu: components
 title: Data Display
 icon: table
 weight: 100
-description: "Built-in tags for showing content and structure — avatars, badges, images, icons, cards, plus accordions, timelines, formatted/animated numbers, and overflow-collapsing lists."
+description: "Built-in tags for showing content and structure — avatars, badges, images, icons, cards, carousels, plus accordions, timelines, charts, formatted/animated numbers, and overflow-collapsing lists."
 ---
 
 # Data Display
@@ -17,7 +17,8 @@ component and every prop it accepts, follow the per-tag page.
 - [Badge](/components/data-display/badge/) — labels, statuses, versions, and counts.
 - [BackgroundImage](/components/data-display/backgroundimage/) — a box with an image background and content overlaid on top.
 - [Card](/components/data-display/card/) — flashy content cards with icons, images, variants, links, and a responsive grid.
-- [ColorSwatch](/components/data-display/colorswatch/) — a square swatch that displays a single color.
+- [Carousel](/components/data-display/carousel/) — a swipeable strip of slides with prev/next controls and indicator dots.
+- [ColorSwatch](/components/data-display/colorswatch/) — a round swatch that displays a single color.
 - [Icon](/components/data-display/icon/) — a Tabler, Font Awesome, image, or emoji glyph inline in text or a heading.
 - [Image](/components/data-display/image/) — Mantine images with no-upscale sizing and a click-to-zoom lightbox.
 - [Indicator](/components/data-display/indicator/) — a dot or count badge positioned over the corner of another element.
@@ -31,3 +32,13 @@ component and every prop it accepts, follow the per-tag page.
 - [NumberFormatter](/components/data-display/numberformatter/) — format a number with thousands separators, fixed decimals, and a prefix/suffix.
 - [RollingNumber](/components/data-display/rollingnumber/) — an animated counter that rolls to its value, re-animating each time the value changes.
 - [OverflowList](/components/data-display/overflowlist/) — a single-line row of labels that collapses overflow into a "+N" counter, re-fitting on resize.
+
+## Charts
+
+Each chart takes its rows as a JSON array in `data`. They render in the browser, so they
+appear once the page's JavaScript has run.
+
+- [AreaChart](/components/data-display/areachart/) — a line chart with the region under each line filled, for volume or stacked totals.
+- [BarChart](/components/data-display/barchart/) — bars comparing values across categories.
+- [DonutChart](/components/data-display/donutchart/) — a part-to-whole breakdown with an optional center label.
+- [LineChart](/components/data-display/linechart/) — trends over time or any other ordered axis.

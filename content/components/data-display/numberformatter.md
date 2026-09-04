@@ -145,10 +145,18 @@ component('aardvark', 'card', title='Total revenue', subtitle='Up and to the rig
 | `value` | string or number | The number to format. Rides as a string and is parsed (`"1234.5"` works). |
 | `prefix` | string | Text shown before the number, e.g. `$`. |
 | `suffix` | string | Text shown after the number, e.g. ` USD` or `%`. |
-| `thousandSeparator` | bare flag, or a separator string | A bare flag groups with commas; pass a string (e.g. `' '` or `'.'`) for a custom separator. |
+| `thousandSeparator` | bare flag, `false`, or a separator string | A bare flag groups with commas; pass a string (e.g. `' '` or `'.'`) for a custom separator. Omit it, or set `false`, for no grouping. |
 | `decimalScale` | int | Maximum number of decimal places. A deliberate `0` means no decimals. |
 | `decimalSeparator` | string | The character used for the decimal point. |
 | `fixedDecimalScale` | bool (default `false`) | Pad to `decimalScale` with trailing zeros. |
+
+> **Good to know.** The number is formatted while the site builds and baked into the page, so
+> it reads correctly with no JavaScript. It rides as island data rather than as text, though, so
+> the page's Markdown twin and the whole-site PDF leave the figure out — put the number in the
+> surrounding sentence too when those copies have to carry it. `decimalScale` rounds for display
+> only; pair it with `fixedDecimalScale` when a column of figures should keep the same number of
+> decimal places.
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="NumberFormatter"]` — it renders a plain `<span>` carrying the formatted value:

@@ -54,9 +54,18 @@ vark version cut v1 --label "1.x"
 ```
 
 This copies each `paths` subtree — across **every language** — into
-`versions/v1/<lang>/…` and adds the `released:` entry above. Because Aardvark builds
-each page's sidebar from its front matter, the snapshot's front matter *is* its frozen
-navigation. To see what's configured or to remove a version:
+`versions/v1/<lang>/…` and adds the `released:` entry above, newest first. The **whole**
+subtree is copied, not just the `.md` files, so partials and files referenced from fences
+freeze with it and a snapshot renders exactly as it did. Because Aardvark builds each page's
+sidebar from its front matter, the snapshot's front matter *is* its frozen navigation.
+
+A few things `cut` refuses, so a snapshot never ends up ignored: declare `versions.paths`
+first (with none, there's nothing to freeze), pick an id other than the current version's,
+and pass `--force` to replace a `versions/<id>/` snapshot that already exists. Aardvark edits
+the `released:` list in place, preserving your comments; if it can't do that safely it prints
+the exact entry to paste rather than risk rewriting your config.
+
+To see what's configured or to remove a version:
 
 ```bash
 vark version list

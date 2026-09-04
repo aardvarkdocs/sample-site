@@ -134,6 +134,10 @@ Box has no styling of its own — omit any attribute to leave that property unse
 | `w` / `h` | Any CSS length | Width / height. |
 | `miw` / `mih` / `maw` / `mah` | Any CSS length | Min/max width and min/max height. |
 
+A bare number in a spacing or sizing prop is read as pixels — `p=8` is the same as `p='8px'`. A
+spacing token works on `w`/`h`/`miw`/`mih`/`maw`/`mah` too, but it resolves on the *spacing* scale
+(`md` is `1rem`), which is rarely the width you meant.
+
 `attr={...}` forwards raw HTML attributes (e.g. a `data-*` hook) onto the rendered element.
 
 

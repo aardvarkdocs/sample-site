@@ -28,8 +28,10 @@ weight: 34
 
 This page sets `mode: uncapped`. Like [`full`](/modes/full/) it hides both the nav
 and the TOC — but it goes further: it also removes the content's max-width **and**
-the page's padding. That's why the hero and the colored band above run corner to
-corner, with no gutter on either side.
+the page's padding, and drops the breadcrumb / page-action bar that would otherwise
+sit above the hero. That's why the hero and the colored band above run corner to
+corner, with no gutter on either side. The page-feedback widgets at the bottom are
+the one exception: they keep the 1100px cap so they stay readable.
 
 Because there's no padding, **you** own the spacing inside an uncapped page. The
 bands above set their own `padding`; this explanatory section is wrapped in a

@@ -44,7 +44,8 @@ Key ID (JWK thumbprint): <KEY_ID>
 ```
 
 Store the **private** key as a secret for your agent — Aardvark never persists it, so save it
-now. Add the **public** key to your config.
+now. Add the **public** key to your config. For scripting, `vark web-bot-auth-keygen --json`
+prints the same three values as `{"privateKey", "x", "kid"}`.
 
 ## Configure
 
@@ -74,6 +75,17 @@ Listing `keys` turns the feature on. `webBotAuth: true` publishes an empty direc
 the build warns until you add a key); `webBotAuth: { enabled: false }` turns it off even with keys
 present.
 
+{% callout severity="info" title="Good to know" %}
+- **Only Ed25519 keys are accepted.** Every key is checked at build time: a string that isn't a
+  valid base64url 32-byte Ed25519 public key fails the build, and so does a JWK whose `kty`, `crv`,
+  `alg` or `use` disagrees with `OKP` / `Ed25519` / `EdDSA` / `sig` — a key of another type pasted
+  in with a matching `x` would otherwise publish a directory no verifier accepts.
+- **A private JWK is never published, but it does get noticed.** If a pasted JWK carries private
+  members (`d` and friends), the build warns so you can move that key out of
+  `aardvark.config.yaml` and into a secret; only the public members reach the directory.
+- A JWK with an empty `kid` gets the computed thumbprint instead.
+{% endCallout %}
+
 ## What gets published
 
 `vark build` writes the directory as a JWKS to
@@ -93,8 +105,10 @@ present.
 }
 ```
 
-It is served with `Content-Type: application/http-message-signatures-directory+json` and a
-one-day cache. The directory holds **public** key material only, so it is a plain static file:
+It is served with `Content-Type: application/http-message-signatures-directory+json`, a
+one-day cache, open CORS (`Access-Control-Allow-Origin: *`, so a browser-based verifier can fetch it
+cross-origin) and `X-Content-Type-Options: nosniff`. The directory holds **public** key material
+only, so it is a plain static file:
 [`vark serve`](/self-hosting/) serves it directly, and on Cloudflare Pages / Netlify the
 generated [`_headers`](/llms-and-sitemap/) rule sets its media type. If you ship your own
 `static/.well-known/http-message-signatures-directory`, Aardvark leaves it untouched.

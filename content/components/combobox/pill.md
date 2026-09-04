@@ -40,8 +40,10 @@ component('aardvark', 'pill', text='v1.0')
 
 ## Variant, remove button, disabled
 
-`variant` is `default` or `contrast`. `withRemoveButton` shows an × (visual only here — the
-real remove behavior lives inside MultiSelect and TagsInput). `disabled` dims the pill:
+`variant` is `default` or `contrast`. `withRemoveButton` shows an × that Mantine renders as
+decoration — `tabindex="-1"` and `aria-hidden="true"`, so it is never tab-reachable and never
+announced — because the real remove behavior lives inside MultiSelect and TagsInput. `disabled`
+dims the pill:
 
 {% pill variant='contrast' %}contrast{% endPill %} {% pill withRemoveButton=true %}removable{% endPill %} {% pill disabled=true %}disabled{% endPill %}
 
@@ -131,11 +133,12 @@ block body, or from `text` when self-closing.
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `text` | String | The label, when not using the block body. HTML-escaped. |
-| `variant` | `default`, `contrast` | Pill style. |
+| `variant` | `default` (default), `contrast` | Pill style. |
 | `size` | `xs`, `sm`, `md`, `lg`, `xl` | Pill size. |
-| `radius` | `xs`, `sm`, `md`, `lg`, `xl` | Corner radius. |
-| `withRemoveButton` | `true`, `false` (default `false`) | Show an × remove button (visual only; no handler is wired in this standalone tag). |
+| `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | Corner radius. |
+| `withRemoveButton` | `true`, `false` (default `false`) | Show an × remove button. Mantine renders it decoratively — `tabindex="-1"`, `aria-hidden="true"` — so it is neither tab-reachable nor announced to a screen reader; the working control lives inside MultiSelect and TagsInput. |
 | `disabled` | `true`, `false` (default `false`) | Render in a disabled state. |
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="Pill"]` — or through the Mantine Styles API classes (`.mantine-Pill-root` and its inner parts):

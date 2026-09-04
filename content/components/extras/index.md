@@ -7,10 +7,11 @@ weight: 5
 
 # Aardvark Extras
 
-Most built-in tags wrap a Mantine component one-to-one. The tags on this page are
-different: they are **aardvark-native** components with no direct Mantine
-equivalent — purpose-built widgets for documentation sites, each a single tag you
-drop straight into Markdown.
+Most built-in tags place a single Mantine component. The ones on this page are
+different: they are **Aardvark-native** components with no direct Mantine
+equivalent — purpose-built for documentation sites, and nearly all of them a single
+tag you drop straight into Markdown. (The banner is the exception: you switch it on
+from configuration rather than writing it in the page.)
 
 - [API Fields](/components/extras/api-fields/) — hand-authored API parameter and response-field rows (`{% raw %}{% field %}{% endraw %}`) for references not driven by an OpenAPI spec.
 - [Banner](/components/extras/banner/) — a full-width announcement row across the top of the page, in your site's primary color.

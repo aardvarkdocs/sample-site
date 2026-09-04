@@ -196,16 +196,23 @@ page.print(component('aardvark', 'card', title='Releases', children=body))
 | (body) / `text` | string | The label. Use the block body, or the `text` param when not using a body. |
 | `variant` | `filled` (default), `light`, `outline`, `dot`, `transparent`, `white`, `default`, `gradient` | Visual style. |
 | `color` | any theme color (`blue`, `green`, `grape`, …) or any CSS color | Badge color. |
-| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Badge size. |
-| `radius` | `xs`, `sm`, `md`, `lg`, `xl` | Corner rounding. |
+| `size` | `xs`, `sm`, `md`, `lg`, `xl` (default `md`) | Badge size — sets the height, font size, and horizontal padding together. |
+| `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | Corner rounding. Left unset it takes Mantine's own default — a fully rounded `1000px` pill, which is *rounder* than `xl` (32px), so passing `xl` squares a badge off slightly rather than matching the default. |
 | `fullWidth` | bool flag (`true`/`false`) | Stretch to the container's width. Defaults to `false`. |
 | `circle` | bool flag (`true`/`false`) | Render as a circle — good for a single character or count. Defaults to `false`. |
 | `autoContrast` | bool flag (`true`/`false`) | Auto-pick a readable label color for the background. Defaults to `false`. |
 | `leftSection` | string | Text shown before the label. |
 | `rightSection` | string | Text shown after the label. |
+| `attr={…}` | mapping | Forward raw HTML attributes — `id`, `data-*`, ARIA, analytics hooks, event handlers — onto the rendered badge. See [Injecting Attributes](#injecting-attributes) below. |
 | `gradientFrom` | any theme/CSS color | Gradient start color, used with `variant='gradient'`. |
 | `gradientTo` | any theme/CSS color | Gradient end color, used with `variant='gradient'`. |
 | `gradientDeg` | integer (degrees) | Gradient angle, used with `variant='gradient'`. |
+
+> **Good to know.** `leftSection` and `rightSection` take **text**, not components — an
+> `{% raw %}{% icon %}{% endraw %}` written there is not rendered as a glyph. `circle` sizes the
+> badge to a disc and **ignores `radius`**, so setting both is the same as setting `circle`
+> alone. And with both a body and a `text` param, the body wins.
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="Badge"]` — or through the Mantine Styles API classes (`.mantine-Badge-root` and its inner parts):

@@ -41,6 +41,12 @@ matched on whole path segments, so `internal` protects `internal/` but not `inte
 If you nest entries (`internal` and `internal/secret`), pages use the **most specific**
 match's password.
 
+The key is `protected:`, and Aardvark refuses to build if it finds a `protect:` key instead —
+rather than ignore the misspelled block and publish those pages in the clear. A malformed entry
+(no `passwordEnv`, a blank path, or one with a `..` segment) fails the build the same way. A
+leading slash is fine — `/internal` and `internal` mean the same directory. If a `path` matches no
+pages at all, the build warns so a renamed directory doesn't quietly go unprotected.
+
 ## Building
 
 Set the password in the environment (a local, git‑ignored `.env` works — `vark build` and
@@ -121,6 +127,12 @@ Two things are *not* encrypted, so don't rely on them being secret:
   offline on fast hardware, so a short or dictionary password can be cracked. Use a long,
   random passphrase, and treat this as protection for low‑to‑moderate‑sensitivity content —
   not a substitute for server‑side authentication on truly sensitive data.
+- **Each blob is bound to its own URL.** A page's `.enc` address is authenticated as part of
+  the ciphertext, so a blob can't be swapped in at a different path — every page in a directory
+  shares one key, and without that binding one page's payload would decrypt at another's URL.
+  It also means a blob and its loader page must be deployed together — see
+  [publishing under a subpath](/deployment/#publishing-under-a-subpath) for the case where the
+  bound URL itself changes.
 - **The unlock is cached in the browser for the tab session.** After a successful unlock the
   *derived key* — not your password — is stored in `sessionStorage` (and cleared when the tab
   closes), so other protected pages in the same area open instantly without re‑prompting. Like

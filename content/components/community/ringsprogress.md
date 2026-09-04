@@ -1,6 +1,7 @@
 ---
 title: "Rings progress"
 description: "The built-in ringsprogress tag — a multi-ring (concentric) progress indicator from the Mantine community. Pass rings as JSON, set size, gap, glow, animation, a center label, and live examples."
+menu: components
 parent: community
 weight: 10
 ---
@@ -95,18 +96,21 @@ Omit any attribute to take its default. Bare flags (e.g. `glow`) become `=True`.
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `rings` | **Required.** A JSON array of `{value, color}` objects | One ring per object; `value` is 0–100, `color` a Mantine color name or CSS color. |
-| `size` | Integer (px) | Overall diameter of the outermost ring. |
-| `thickness` | Integer (px) | Stroke width of each ring (overridable per-ring in the JSON). |
-| `gap` | Integer (px) | Space between adjacent rings. |
+| `rings` | **Required.** A JSON array of `{value, color}` objects | One ring per object; `value` is 0–100, `color` a Mantine color name or CSS color. A ring may also carry `thickness`, `roundCaps`, `showValue`, `glowIntensity`, `glowColor`, `rootColor`, `tooltip`, `ariaLabel`, or a `{from, to, deg}` `gradient` to override the whole-widget setting. |
+| `size` | Integer (px, default `120`) | Overall diameter of the outermost ring. |
+| `thickness` | Integer (px, default `12`) | Stroke width of each ring (overridable per-ring in the JSON). |
+| `gap` | Integer (px, default `8`) | Space between adjacent rings. |
 | `roundCaps` | `true` / `false` (default `true`) | Round the ends of each arc; set `roundCaps=false` for square ends. |
 | `animate` | `true` / `false` (default `false`) | Play an entrance animation as the rings fill. |
 | `glow` | `true` / `false` (default `false`) | Add a neon glow effect. |
 | `showValues` | `true` / `false` (default `false`) | Print each ring's value at the end of its arc. |
-| `startAngle` | Integer (degrees) | Starting position of the arcs. |
+| `startAngle` | Integer (degrees, default `0`) | Starting position of the arcs. |
 | `direction` | `clockwise` (default) / `counterclockwise` | Fill direction. |
 | `label` | String | Text shown in the center. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element. |
+
+A ring's callback keys (`onClick`, `onHover`, `formatValue`) are React functions, so they can't
+ride this JSON channel — the rings drawn here are display-only.
 
 ## CSS Selector
 

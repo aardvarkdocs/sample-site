@@ -24,8 +24,8 @@ keeps the styled bar visible.
 {% scrollarea h='160' type='always' %}
 A tall block of content that overflows the 160px-tall area and scrolls.
 
-Mantine's ScrollArea draws its own overlay scrollbar instead of the browser's, so it looks the
-same on macOS, Windows, and Linux.
+The bar on the right is drawn by the tag rather than by the browser, so it looks the same on
+macOS, Windows, and Linux.
 
 Keep scrolling — there's more here than fits in 160 pixels of height, which is the whole point
 of constraining the area and letting the body overflow.
@@ -41,7 +41,14 @@ The bar tracks your position and (with `type='hover'`) fades out when you're not
 ```aardvark
 {% scrollarea h='160' type='always' %}
 A tall block of content that overflows the 160px-tall area and scrolls.
-Add enough paragraphs here and the styled scrollbar appears on the right.
+
+The bar on the right is drawn by the tag rather than by the browser, so it looks the same on
+macOS, Windows, and Linux.
+
+Keep scrolling — there's more here than fits in 160 pixels of height, which is the whole point
+of constraining the area and letting the body overflow.
+
+The bar tracks your position and (with `type='hover'`) fades out when you're not interacting.
 {% endScrollarea %}
 ```
 {% endraw %}
@@ -139,8 +146,8 @@ Omit any attribute to take its default. Bare flags (e.g. `offsetScrollbars`) bec
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `type` | `hover` (default) / `scroll` / `always` / `auto` / `never` | When the scrollbars are shown. |
-| `scrollbarSize` | An integer (px) | Scrollbar thickness. |
-| `scrollHideDelay` | An integer (ms) | Delay before the bars hide (with `type='hover'` / `scroll`). |
+| `scrollbarSize` | An integer (px, default `12`) | Scrollbar thickness. |
+| `scrollHideDelay` | An integer (ms, default `1000`) | Delay before the bars hide (with `type='hover'` / `scroll`). |
 | `offsetScrollbars` | `true` / `false` (default `false`) | Inset the content so the bars don't overlap it. |
 | `h` / `w` | A size token or CSS length | Height / width of the viewport — give it an `h` so the content can overflow. |
 | `miw` / `mih` / `maw` / `mah` | A size token or CSS length | Min/max width and height. |
@@ -149,6 +156,14 @@ Omit any attribute to take its default. Bare flags (e.g. `offsetScrollbars`) bec
 | `bg` | A theme color or CSS color | Background color. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element. |
 
+### Good to know
+
+- Nothing scrolls without a bound on the area: with no `h` (or `mah`) the region simply grows to
+  fit its content and no scrollbar ever appears. A bare number like `h='160'` is read as pixels.
+- `type='never'` hides the scrollbars but keeps the region scrollable by wheel, touch, and
+  keyboard — use it when you want the scrolling without the furniture, not to prevent scrolling.
+- `offsetScrollbars` reserves room for the bars, so the content shifts slightly when you turn it
+  on. It is worth it where the bar would otherwise sit over text you need to read.
 
 ## CSS Selectors
 

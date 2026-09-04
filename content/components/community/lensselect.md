@@ -139,7 +139,7 @@ Omit any attribute to take its default. Bare flags (e.g. `expandOnHover`) become
 | `itemSize` | string px (default `24`) | Base size of each item. |
 | `gap` | string px (default `10`) | Gap between items. |
 | `selectionMode` | `click` (default) / `hover` | How an item is selected. |
-| `easing` | `linear` / `ease-out` / `ease-in-out` / `spring` / `cubic-bezier(…)` | Transition easing. |
+| `easing` | `linear` / `ease-out` (default) / `ease-in-out` / `spring` / `cubic-bezier(…)` | Transition easing. |
 | `transitionDuration` | int ms (default `200`) | Transition duration. |
 | `pillColor` / `hoverColor` / `activeColor` | Mantine color | Default-pill colors for the inactive / hovered / active states. |
 | `pillRadius` | Mantine radius (default `xl`) | Default-pill corner radius. |
@@ -152,6 +152,17 @@ Omit any attribute to take its default. Bare flags (e.g. `expandOnHover`) become
 | `loop` | `true` / `false` (default `false`) | Wrap-around navigation. |
 | `withIndicator` | `true` / `false` (default `false`) | Show a marker beside the active item. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element. |
+
+{% callout severity="info" title="Good to know" %}
+`data` is parsed as JSON at build time. A value that isn't a valid JSON array raises a build
+warning and is ignored — which falls back to the generated numeric range, so a typo can quietly
+turn a labelled dock into a row of numbered pills. Because the tag's value is single-quoted,
+keep the JSON's own strings in double quotes.
+
+The magnification follows the pointer, so on a touch screen there is no lens — items still
+select on tap. Set `selectionMode='hover'` only where a pointer is certain, and give the
+control an `ariaLabel` so its purpose is clear without the visual effect.
+{% endCallout %}
 
 ## CSS Selector
 

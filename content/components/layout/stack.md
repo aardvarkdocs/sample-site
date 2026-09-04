@@ -211,6 +211,18 @@ component('aardvark', 'stack', gap='sm', children=(
 | `w`, `h` | Mantine size token or any CSS value | Width / height. |
 | `miw`, `mih`, `maw`, `mah` | any CSS value | Min/max width and min/max height. |
 
+`attr={...}` forwards raw HTML attributes onto the rendered element.
+
+### Good to know
+
+- `justify` needs somewhere to distribute: a stack is exactly as tall as its children unless you
+  give it an `h` (or `mih`), so `center`, `flex-end`, and `space-between` look identical to the
+  default until you do — the example above sets `h=160` for that reason.
+- Because `align` defaults to `stretch`, children fill the column's width — buttons and papers come
+  out full-width. Set `align='center'` (or `flex-start`) to let them size to their own content.
+- Each tag in the body becomes its own child, one line after another — but consecutive lines of
+  plain text are a single paragraph and stack as one child. Separate text items with a blank line
+  if each should be spaced by `gap`.
 
 ## CSS Selectors
 

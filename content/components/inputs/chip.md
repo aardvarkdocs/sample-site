@@ -111,7 +111,7 @@ component('aardvark', 'chip', radius='sm', defaultChecked=True, children='less r
 
 ## Type and disabled
 
-`type='radio'` gives the chip a round selection marker (use it for one-of-many sets);
+`type='radio'` renders the chip's hidden control as a radio rather than a checkbox;
 `disabled` makes it non-interactive.
 
 {% chip type='radio' defaultChecked=true %}radio chip{% endChip %} {% chip disabled=true %}disabled{% endChip %} {% chip disabled=true defaultChecked=true %}disabled, selected{% endChip %}
@@ -181,16 +181,24 @@ Omit any attribute to take its Mantine default.
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `text` | string | The label, when not using the block body. |
+| `text` | string | The label, when not using the block body. Plain text — Markdown is not rendered, and HTML in it is escaped. |
 | `variant` | `filled` (default), `light`, `outline` | Visual style of the pill. |
 | `color` | theme color name (`blue`, `green`, …) | Fill / accent color when selected. |
 | `size` | `xs`, `sm`, `md`, `lg`, `xl` | Overall size. |
-| `radius` | `xs`, `sm`, `md`, `lg`, `xl` | Corner rounding of the pill. |
-| `type` | `checkbox` (default), `radio` | Selection marker shape and grouping semantics. |
+| `radius` | `xs`, `sm`, `md`, `lg`, `xl` (or any CSS value) | Corner rounding of the pill. |
+| `type` | `checkbox` (default), `radio` | Whether the chip's hidden control is a checkbox or a radio. |
 | `defaultChecked` | bare flag (`true`) | Start the chip selected. It stays interactive — the reader can toggle it. |
 | `disabled` | bare flag (`true`) | Render non-interactive. |
 | `autoContrast` | bare flag (`true`) | Auto-pick a readable label color against `color`. |
-| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) applied to the rendered root. |
+| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) set on the chip's hidden `<input>`. |
+
+{% callout severity='info' title='Good to know' %}
+Every chip toggles on its own — including `type='radio'` ones. Mantine makes a set mutually
+exclusive through a chip group, which a tag can't declare, so a row of radio chips is a row of
+independent toggles rather than a one-of-many picker. For a genuine pick-one control, use
+[SegmentedControl](/components/inputs/segmentedcontrol/) or
+[Radio](/components/inputs/radio/), whose `name` groups the buttons.
+{% endCallout %}
 
 ## CSS Selectors
 
@@ -210,7 +218,7 @@ Target a `{% raw %}{% chip %}{% endraw %}` from your own CSS with the island dat
 
 ## Injecting Attributes
 
-Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the rendered element. Here it is wired to `onchange`, so toggling it logs its checked state to the console and alerts it:
+Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the chip's hidden input. Here it is wired to `onchange`, so toggling the pill logs its checked state to the console and alerts it — `this` inside the handler is that input, so `this.checked` is the state the reader just set:
 
 {% chip attr={'onchange': '''
 const value = this.checked;

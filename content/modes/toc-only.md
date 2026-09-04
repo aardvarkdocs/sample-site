@@ -23,13 +23,13 @@ page is essential. The headings below give the TOC plenty to work with.
 
 ## Installation
 
-Install the package, point it at a content directory, and run a build. The output
-is a folder of static HTML you can host anywhere.
+Install the `vark` binary, scaffold a project with `vark new`, and run `vark build`.
+The output is a folder of static HTML you can host anywhere.
 
 ## Configuration
 
 Every project has one config file at its root. It defines the site metadata, the
-navigation tree, the theme, and any integrations.
+horizontal tabs, the theme, and any integrations.
 
 ### Site metadata
 
@@ -38,13 +38,15 @@ Name, description, and summary feed the page title, meta tags, and the generated
 
 ### Navigation
 
-The nav is a list of groups, each with a label and a list of links. It renders as
-the left sidebar — except, of course, on a page like this one.
+The config declares the horizontal tabs; each page joins a tab's left sidebar from
+its own front matter (`menu:`, `parent:`, `weight:`). That sidebar is what a page
+like this one hides.
 
 ### Theme
 
-Colors, fonts, and logos. Colors seed both the CSS variables and the Mantine
-island theme, so the chrome and the components stay in sync.
+Fonts and logos live in the config; colors live in the theme's `theme.scss`, where
+the brand primary seeds both the chrome and the Mantine island palette, so the two
+stay in sync.
 
 ## Content authoring
 
@@ -82,6 +84,6 @@ the sitemap and `llms.txt` use absolute links.
 
 ## Wrapping up
 
-That's nine headings and several subsections — enough that jumping around with the
-TOC genuinely beats scrolling. On a screen narrower than 1100px the TOC hides
+That's eight sections and five subsections — enough that jumping around with the
+TOC genuinely beats scrolling. On a screen 1100px wide or narrower the TOC hides
 site-wide, so this page falls back to a plain single column.

@@ -16,3 +16,7 @@ like Pro or Business, with the saved card on your dashboard. Or, for a **signed 
 negotiated allowance, seats, and member rate, we can provision it out of band — billed separately,
 with no card on file for the plan, and your dashboard reflecting your contract terms. Either way
 your "max possible bill" is shown for the plan you're on.
+
+Good to know: a contract plan is managed through us rather than self-serve — plan and seat
+changes go through support — and cancelling it ends it immediately rather than at the end of a
+paid period.

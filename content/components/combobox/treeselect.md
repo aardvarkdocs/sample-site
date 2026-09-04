@@ -130,8 +130,10 @@ Each node is an object:
 ```
 
 `value` must be unique across the whole tree — it's what gets selected; `label` is what the
-reader sees. A node with no `children` is a selectable leaf. Unlike the flat select family,
-`treeselect` takes only this nested JSON tree, not a comma-separated `data` list.
+reader sees. A node with no `children` is a selectable leaf; a node that has them is a
+container, and clicking it expands or collapses that branch instead of selecting it. Unlike
+the flat select family, `treeselect` takes only this nested JSON tree, not a comma-separated
+`data` list.
 
 ## With other components
 
@@ -195,17 +197,18 @@ Every attribute is optional; omit one to take its Mantine default. The body is i
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `data` | JSON array string | The hierarchy — a JSON array of nested `{value, label, children}` nodes. A node without `children` is a selectable leaf. |
+| `data` | JSON array string | The hierarchy — a JSON array of nested `{value, label, children}` nodes. A node without `children` is a selectable leaf. A value that is not valid JSON, or is JSON but not an array, warns at build time and leaves the tree empty. |
 | `label` | String | The field label. |
 | `placeholder` | String | Empty-state text on the trigger. |
 | `description` | String | Helper text below the label. |
 | `error` | String | Validation message; also styles the field red. |
-| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Input size. |
-| `radius` | `xs`, `sm`, `md`, `lg`, `xl` | Corner radius. |
+| `size` | `xs`, `sm`, `md`, `lg`, `xl` (default `sm`) | Input size. |
+| `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | Corner radius. |
 | `variant` | `default`, `filled`, `unstyled` | Input style. |
 | `clearable` | `true`, `false` (default `false`) | Show an × to clear the selection. |
 | `searchable` | `true`, `false` (default `false`) | Add a search field that filters the tree as you type. |
 | `disabled` | `true`, `false` (default `false`) | Disable the input. |
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="TreeSelect"]` — or through the Mantine Styles API classes (`.mantine-TreeSelect-root` and its inner parts):

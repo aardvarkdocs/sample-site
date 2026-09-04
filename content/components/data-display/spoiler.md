@@ -167,6 +167,13 @@ page.print(component('aardvark', 'spoiler', maxHeight=50,
 | `showLabel` | string | Toggle text while collapsed. Defaults to `Show more`. |
 | `hideLabel` | string | Toggle text while expanded. Defaults to `Hide`. |
 | `transitionDuration` | integer (ms) | Reveal animation duration. Defaults to `200`; set `0` to disable the animation. |
+
+> **Good to know.** Whether the body overflows is measured in the browser, so the toggle is
+> added once the page's JavaScript has run — until then the body is clipped to `maxHeight` with
+> no control to open it, so keep anything a reader must not miss outside the spoiler.
+> `maxHeight` is compared against the body's rendered height, so a value larger than the content
+> shows everything and no toggle appears at all.
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="Spoiler"]` — or through the Mantine Styles API classes (`.mantine-Spoiler-root` and its inner parts):
@@ -179,6 +186,7 @@ Target the rendered element through its island marker — `[data-aardvark-island
 /* Mantine Styles API class on the root element */
 .mantine-Spoiler-root { }
 .mantine-Spoiler-content { }
+.mantine-Spoiler-control { }
 ```
 {% endraw %}
 

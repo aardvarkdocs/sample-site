@@ -209,7 +209,7 @@ component('aardvark', 'card', title='Release history', subtitle='The last three 
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `items` | JSON array of event objects | The events: each `{title, content, bullet?, color?, lineVariant?}` (see per-item fields below). |
+| `items` | JSON array of event objects | The events: each `{title, content, bullet?, color?, lineVariant?}` (see per-item fields below). Entries that are not objects are skipped. |
 | `active` | int | Index of the last highlighted (completed) item; earlier ones highlight too. |
 | `bulletSize` | int (px) | Diameter of the bullet circles. |
 | `lineWidth` | int (px) | Thickness of the connecting line. |
@@ -223,11 +223,20 @@ component('aardvark', 'card', title='Release history', subtitle='The last three 
 
 | Field | Valid values | Description |
 | --- | --- | --- |
-| `title` | string | The item's heading. |
-| `content` | string | The item's body text. |
+| `title` | string | The item's heading. Plain text — Markdown in it is not rendered. |
+| `content` | string | The item's body text. Plain text — Markdown in it is not rendered. |
 | `bullet` | a Tabler icon name, emoji, number, or short label | Shown in the bullet circle. Omit for Mantine's default dot. |
 | `color` | a Mantine color name or hex | Override the accent color for just this item. |
 | `lineVariant` | `solid` (default), `dashed`, `dotted` | The line below this item. |
+
+> **Good to know.** `items` must be valid JSON. A malformed value renders an empty timeline
+> rather than stopping the build, so a timeline that vanishes usually means a stray quote or
+> comma, and entries that are not objects are skipped. An item's `title` and `content` are
+> inserted as plain text, so Markdown written in them is not rendered. A `bullet` that reads
+> like a Tabler icon name is fetched from the icon CDN in the browser, so those glyphs appear
+> after the page's JavaScript runs; emoji and short-text bullets are baked into the page and
+> need none.
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="Timeline"]` — or through the Mantine Styles API classes (`.mantine-Timeline-root` and its inner parts):
@@ -241,7 +250,9 @@ Target the rendered element through its island marker — `[data-aardvark-island
 .mantine-Timeline-root { }
 .mantine-Timeline-item { }
 .mantine-Timeline-itemBullet { }
+.mantine-Timeline-itemTitle { }
 .mantine-Timeline-itemBody { }
+.mantine-Timeline-itemContent { }
 ```
 {% endraw %}
 

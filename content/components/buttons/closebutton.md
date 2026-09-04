@@ -7,9 +7,8 @@ description: "The built-in closebutton tag — Mantine's ✕ dismiss button. Siz
 # CloseButton
 
 `{% raw %}{% closebutton %}{% endraw %}` is a **built-in** tag for a **dismiss button** —
-the small ✕ you put on dialogs, alerts, chips, and panels. It renders a Mantine
-CloseButton, which ships the ✕ glyph and an accessible default name ("Close button") for
-free.
+the small ✕ you put on dialogs, alerts, chips, and panels. It ships the ✕ glyph, and
+names itself `Close` for screen readers unless you give it a `label` of your own.
 
 Use it as `{% raw %}{% closebutton %}{% endraw %}` in Markdown, or call it from Python
 logic (loops, snippets) via `component('aardvark', 'closebutton', …)`.
@@ -64,7 +63,8 @@ component('aardvark', 'closebutton', size='xl', radius='xl')
 
 ## Variant and color
 
-`variant` is `subtle` (default) or `transparent`; `color` takes any theme or CSS color.
+`variant` is `subtle` (default) or `transparent`; `color` tints the ✕ itself and takes any
+theme or CSS color.
 
 {% closebutton variant='subtle' %} {% closebutton variant='transparent' %} {% closebutton color='red' %} {% closebutton color='grape' %}
 
@@ -122,7 +122,8 @@ component('aardvark', 'closebutton', icon='x', label='Dismiss')
 
 ## Accessible name
 
-Mantine names the button "Close button" by default. Pass a `label` to override it when the
+A ✕ carries no text, so the button would otherwise reach a screen reader unnamed. It is
+given an `aria-label` of `Close` for you; pass a `label` to replace that whenever the
 button does something more specific (the example above names it "Remove").
 
 ## Disabled
@@ -190,10 +191,10 @@ set the option to `True`; in Python pass `=True`.
 | --- | --- | --- |
 | `icon` | Tabler name / Font Awesome class / image path / emoji / inline `<svg>` | An icon spec to replace the default ✕. Read like [{% raw %}`{% icon %}`{% endraw %}](/components/data-display/icon/). |
 | `filled` | bool flag | Use the filled Tabler style for a bare Tabler name. |
-| `label` | string | Accessible name (`aria-label`). Defaults to "Close button". |
+| `label` | string | Accessible name (`aria-label`). Defaults to `Close`. |
 | `variant` | `subtle` (default), `transparent` | Visual style. |
-| `color` | theme color name or CSS color | Button color. |
-| `size` | `xs`–`xl` | Button size. |
+| `color` | theme color name or CSS color | Color of the ✕ glyph. |
+| `size` | `xs`–`xl` (default `md`) | Button size. |
 | `radius` | `xs`–`xl` or any CSS value | Corner radius. |
 | `disabled` | bool flag | Render disabled. |
 | `id` | string | HTML `id` on the rendered button. |

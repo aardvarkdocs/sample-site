@@ -127,10 +127,10 @@ Omit any attribute to take its Mantine default.
 | `defaultValue` | number (float OK) | Stars selected on load. A float, so `2.5` works with `fractions`. |
 | `count` | integer | Number of symbols (default `5`). |
 | `fractions` | integer | Sub-symbol steps — `2` gives half-stars, `4` quarters (default `1`). |
-| `color` | theme color name (`yellow`, `blue`, …) | Color of the filled symbols. |
-| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Overall size. |
+| `color` | theme color name (`yellow`, `blue`, …) | Color of the filled symbols (default `yellow`). |
+| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Overall size (default `sm`). |
 | `readOnly` | bare flag (`true`) | Display-only; the reader can't change it. |
-| `name` | string | Radio-group name — set a stable one if a page has several ratings. |
+| `name` | string | Name of the radio group behind the symbols. Omit it and each rating gets its own generated name; set one to give a rating a stable name inside a form. |
 | `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) applied to the rendered root. |
 
 ## CSS Selectors

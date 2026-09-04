@@ -143,18 +143,18 @@ Omit any attribute to take its default. Numeric attributes keep a deliberate `0`
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `variant` | `fade`, `pulse`, `grow`, `trail` | Animation style. |
-| `segments` | Integer | Number of spinner segments (spokes). |
-| `segmentShape` | `line`, `dot`, `arc` | Shape of each segment. |
-| `size` | `xs`–`xl` or a number of px | Overall spinner size. |
-| `thickness` | Number | Stroke thickness of each segment. |
-| `inner` | Number | Inner radius of the spinner. |
+| `variant` | `fade` (default), `pulse`, `grow`, `trail` | Animation style. |
+| `segments` | Integer (default `12`) | Number of spinner segments (spokes). |
+| `segmentShape` | `line` (default), `dot`, `arc` | Shape of each segment. |
+| `size` | `xs`–`xl` (default `md`), a CSS length, or a number | Overall spinner size. |
+| `thickness` | Number (default `3`) | Stroke thickness of each segment. |
+| `inner` | Number (default `8`) | Size of the spinner's empty middle. |
 | `color` | Any theme color or CSS color | Spinner color. |
-| `direction` | `clockwise`, `counter-clockwise` | Rotation direction. |
-| `duration` | Number (seconds) | One full animation cycle's duration. |
-| `glow` | Number | Glow / bloom intensity (`0` = none). |
-| `progress` | `0`–`100` | Determinate progress; renders a fixed indicator. |
-| `minOpacity` | Number (0–1) | Lowest opacity a fading segment reaches. |
+| `direction` | `clockwise` (default), `counter-clockwise` | Rotation direction. |
+| `duration` | Number (ms, default `1200`) | One full animation cycle's duration. |
+| `glow` | Number (blur radius in px) | Adds a glow/bloom around each segment. Off unless set; `0` is no blur. |
+| `progress` | `0`–`100` | Determinate progress: segments fill proportionally, the animation stops, and the spinner is exposed as a `progressbar` to assistive technology. |
+| `minOpacity` | Number (0–1, default `0`) | Lowest opacity a fading segment reaches. |
 | `hueRotate` | `true` / `false` (default `false`) | Cycle segment hues for a rainbow effect. |
 | `gradientFrom` | Any theme color or CSS color | Gradient start color. |
 | `gradientTo` | Any theme color or CSS color | Gradient end color. |
@@ -165,25 +165,28 @@ the center of the spinner — handy for a progress percentage.
 
 ## CSS Selector
 
-The spinner is rendered as an SVG element. Its size is driven by the `--spinner-size` CSS
-custom property (set from the `size` prop and any responsive `size` object via media
-queries), so you can override sizing from your own stylesheet:
+The spinner is rendered as an SVG element — that `<svg>` is the root, so an `attr={…}` hook and
+your CSS both land on it directly. Its size is driven by the `--spinner-size` custom property,
+which the component sets from `size` through a media-query stylesheet rather than inline, so
+your own rule can override it:
 
 ```css
-.my-loader svg {
+[data-loader='page'] {
   --spinner-size: 64px;
 }
 ```
 
-Target a specific instance by forwarding a class with `attr={…}` (see below).
+Give a specific instance its own hook with `attr={…}` (see below).
 
 ## Injecting Attributes
 
 The `attr={…}` channel forwards raw HTML attributes straight onto the rendered spinner
-element — use it for `id`, `class`, `data-*`, ARIA attributes, or anything else not exposed
-as a typed parameter.
+element — use it for `id`, `data-*`, ARIA attributes, or anything else not exposed as a typed
+parameter. Keep `class`, `className` and `style` out of it: React manages those on this
+element, so the runtime warns and your value can be overwritten. A `data-*` hook does the same
+job for a stylesheet rule.
 
-{% spinner color='cyan' attr={'class': 'my-loader', 'aria-label': 'Loading'} %}
+{% spinner color='cyan' attr={'data-loader': 'page', 'aria-label': 'Loading'} %}
 
 <br>
 
@@ -191,13 +194,13 @@ as a typed parameter.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% spinner color='cyan' attr={'class': 'my-loader', 'aria-label': 'Loading'} %}
+{% spinner color='cyan' attr={'data-loader': 'page', 'aria-label': 'Loading'} %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'spinner', color='cyan', attr={'class': 'my-loader', 'aria-label': 'Loading'})
+component('aardvark', 'spinner', color='cyan', attr={'data-loader': 'page', 'aria-label': 'Loading'})
 ```
 {% endAccordionSection %}
 {% endAccordion %}

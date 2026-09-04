@@ -240,7 +240,7 @@ and labels a {% raw %}{% card %}{% endraw %}:
 {% badge color='green' variant='light' leftSection='✓' %}Verified{% endBadge %} — status {% icon "circle-check" color="green" label="All systems go" %}
 
 {% card title="Fast builds" icon="bolt" accent="yellow" %}
-The icon chip up top is the same engine — `{% raw %}{% card %}{% endraw %}` takes an `icon=`.
+The icon chip up top is the same engine — a card takes an `icon=` of its own.
 {% endCard %}
 
 <br>
@@ -252,7 +252,7 @@ The icon chip up top is the same engine — `{% raw %}{% card %}{% endraw %}` ta
 {% badge color='green' variant='light' leftSection='✓' %}Verified{% endBadge %} — status {% icon "circle-check" color="green" label="All systems go" %}
 
 {% card title="Fast builds" icon="bolt" accent="yellow" %}
-The icon chip up top is the same engine — {% card %} takes an icon=.
+The icon chip up top is the same engine — a card takes an `icon=` of its own.
 {% endCard %}
 ```
 {% endraw %}
@@ -264,7 +264,7 @@ page.print(component('aardvark', 'badge', color='green', variant='light',
            + " — status "
            + component('aardvark', 'icon', 'circle-check', color='green', label='All systems go'))
 page.print(component('aardvark', 'card', title='Fast builds', icon='bolt', accent='yellow',
-                     children='The icon chip up top is the same engine.'))
+                     children='The icon chip up top is the same engine — a card takes an icon= of its own.'))
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -307,16 +307,19 @@ fetch). To self-host the icons or pin a different release, set one of these in
 | `color` | a [Mantine color](https://mantine.dev/theming/colors/) name or any CSS color | Tints the glyph (and the chip for non-transparent variants); image/emoji keep their own colors. |
 | `size` | a Mantine size (`xs`–`xl`) or a number of pixels | Icon size. With no `size`, the icon is `1em` and tracks the surrounding text. |
 | `radius` | a Mantine radius (`xs`–`xl`) or a number | The chip's corner rounding. |
-| `mt` `mb` `ml` `mr` `mx` `my` `m` / `pt` … `p` | a bare number (pixels, negatives nudge) or a Mantine size (`mx="xs"`) | Mantine [margin/padding style props](https://mantine.dev/styles/style-props/) to nudge/space a glyph. |
+| `m` `mx` `my` `mt` `mb` `ms` `me` `ml` `mr` / `p` `px` `py` `pt` `pb` `ps` `pe` `pl` `pr` | a bare number (pixels, negatives nudge) or a Mantine size (`mx="xs"`) | Mantine [margin/padding style props](https://mantine.dev/styles/style-props/) to nudge/space a glyph. `ms`/`me` (and `ps`/`pe`) are the writing-direction-aware start/end edges. |
 | `gradientFrom` / `gradientTo` / `gradientDeg` | colors / integer degrees | For `variant="gradient"`, compose the `{from, to, deg}`. Omit to use the theme's default gradient. |
+| `gradient` | `"from,to,deg"`, e.g. `"orange,red,90"` | Shorthand for the three attributes above. It splits on commas, so a functional color such as `rgb(…)` must use the discrete attributes instead. |
 | `autoContrast` | bool flag | Flip the glyph to light/dark for legibility against its background. |
 | `filled` | bool flag | Use Tabler's **filled** variant instead of the default outline (Tabler icons only). |
 | `label` | string | Show a Mantine **Tooltip** on hover/focus, name the icon for assistive tech (`aria-label`), and make it keyboard-focusable. For **standalone** icons only — for an icon inside a link/button, leave it decorative and name the outer element instead. Omit it for decorative icons, which are hidden from assistive tech. |
 
 A bare name (no `fa-…` class, no file extension, ASCII) is read as a Tabler icon — if it isn't a
 real Tabler name, the loader logs a console warning and leaves the slot empty, so check the name
-at [tabler.io/icons](https://tabler.io/icons). Keep `{% raw %}{% icon %}{% endraw %}` on the same
-line as adjacent text: an icon alone on its own line is treated as a block, not an inline glyph.
+at [tabler.io/icons](https://tabler.io/icons). An icon is always an inline glyph, so keep
+`{% raw %}{% icon %}{% endraw %}` on the same line as the text it belongs to — on a line of its
+own it still renders as a glyph, but in a paragraph of its own.
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="Icon"]` — or through the Mantine Styles API classes (`.mantine-ThemeIcon-root` and its inner parts):

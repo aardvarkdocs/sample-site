@@ -85,7 +85,7 @@ two-page spread as the cover opens. Pick the curl `variant` (`flat` or `rounded`
 
 ## With other components
 
-Each page's `front`/`back` is rendered content, so a Book sits naturally under an introductory
+The book is a block like any other, so it sits naturally under an introductory
 [Title](/components/typography/title/):
 
 {% raw %}
@@ -122,6 +122,17 @@ Omit any attribute to take its default. Bare flags (e.g. `withCover`) become `=T
 | `withCover` | `true` / `false` (default `false`) | Treat as a bound volume: hard covers + centered closed book. |
 | `disabled` | `true` / `false` (default `false`) | Disable the drag interaction on every page. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element. |
+
+{% callout severity="info" title="Good to know" %}
+`pages` is parsed as JSON at build time. A value that isn't a valid JSON array raises a build
+warning and renders an empty book rather than failing the build — so if a book comes up blank,
+check the brackets and the quoting first. Because the value is single-quoted in the tag, keep
+the JSON's own strings in double quotes.
+
+Each `front` / `back` string is rendered as **text**: Markdown and HTML written there appear
+literally, and other tags are not expanded. Pages are plain copy; style them with
+`props` per page or through the CSS variables below.
+{% endCallout %}
 
 ## CSS Selector
 

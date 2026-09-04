@@ -217,6 +217,9 @@ yarn add my-app
 | `defaultValue` | A tab label | On the **first** code group of a page, the language every group opens on; on a later group it only shows before the shared language applies. Overridden once a reader picks a language (remembered site-wide). Defaults to the first tab. Match the label — the language name (e.g. `JavaScript`) or a fence's `title`. |
 | `variant` | `pills`, `default`, `outline` | The tab style, shared with [Tabs](/components/navigation/tabs/). Defaults to `pills`; `default` / `outline` give the sliding underline. |
 | `attr` | `{…}` | Raw HTML attributes forwarded onto the widget's root element (see below). |
+| `radius` | `xs`–`xl`, or any CSS length | Corner rounding of the tab strip. |
+| `color` | A theme color | The active tab's accent. |
+| `orientation` | `horizontal`, `vertical` | Puts the tab strip above the code, or beside it. |
 
 Per-tab, on the fence itself:
 
@@ -227,6 +230,15 @@ Per-tab, on the fence itself:
 
 Use a `~~~` fence (tildes) for a block whose own code contains a ` ``` ` run — the tab body is
 taken verbatim.
+
+{% callout title="Good to know" %}
+Because the body is verbatim, a code group is the place to *show* Aardvark syntax: a
+`{% raw %}{% … %}{% endraw %}` inside a fence here is displayed literally, never executed.
+
+Two authoring mistakes surface as build warnings rather than silently odd output. A code group
+with **no** fenced block renders nothing at all — if a group vanishes, its content most likely
+wasn't fenced. And a fence that is never closed swallows everything after it into one tab.
+{% endCallout %}
 
 ## CSS Selectors
 

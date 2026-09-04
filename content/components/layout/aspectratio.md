@@ -13,6 +13,14 @@ width divided by height — and the block body is the content that fills the box
 Use it as `{% raw %}{% aspectratio %}{% endraw %}` in Markdown, or call it from Python logic
 (loops, snippets) via `component('aardvark', 'aspectratio', …)`.
 
+{% callout title="Good to know" severity="info" %}
+The ratio is set on **each top-level element in the body**, not on the box as a whole — a body
+with two blocks in it gives you two ratio-locked boxes stacked, not one box holding both. An image
+or video that lands directly inside the box is *cropped* to fill it (`object-fit: cover`) rather
+than letterboxed, so the visible framing is the middle of the picture. The box itself never grows
+wider than the space it sits in.
+{% endCallout %}
+
 ## Widescreen (16:9)
 
 `1.7777` is the classic 16∶9 widescreen video ratio. Cap the size with `maw` (max width) so
@@ -107,7 +115,7 @@ The body is ordinary Markdown, so the most common use is wrapping a media embed 
 Markdown image — so the box holds its shape before the image arrives.
 
 {% aspectratio ratio=1.7777 maw=480 %}
-![A wide landscape placeholder](https://placehold.co/480x270?text=16:9)
+![A still mountain lake at dusk](/landscape.jpg)
 {% endAspectratio %}
 
 <br>
@@ -117,14 +125,14 @@ Markdown image — so the box holds its shape before the image arrives.
 {% raw %}
 ```aardvark
 {% aspectratio ratio=1.7777 maw=480 %}
-![A wide landscape placeholder](https://placehold.co/480x270?text=16:9)
+![A still mountain lake at dusk](/landscape.jpg)
 {% endAspectratio %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-img = '![A wide landscape placeholder](https://placehold.co/480x270?text=16:9)'
+img = '![A still mountain lake at dusk](/landscape.jpg)'
 component('aardvark', 'aspectratio', ratio=1.7777, maw=480, children=img)
 ```
 {% endAccordionSection %}
@@ -138,13 +146,15 @@ system. Omit any attribute to take its Mantine default (ratio `1`).
 | Attribute | Values | Description |
 | --- | --- | --- |
 | `ratio` | a number, width ÷ height (`1` default) | The aspect ratio. `1.7777` ≈ 16∶9, `1.3333` ≈ 4∶3, `1` = square. |
-| `w` / `h` | `xs`–`xl` or any CSS size | Width / height of the box. |
-| `miw` / `mih` | any CSS size | Minimum width / height. |
-| `maw` / `mah` | any CSS size | Maximum width / height — `maw` caps an embed's width. |
+| `w` / `h` | any CSS length (`480px`, `60%`); a bare number is read as pixels | Width / height of the box. |
+| `miw` / `mih` | any CSS length | Minimum width / height. |
+| `maw` / `mah` | any CSS length | Maximum width / height — `maw` caps an embed's width. |
 | `m`, `mt`, `mb`, `ml`, `mr`, `mx`, `my` | `xs`–`xl` or any CSS size | Margin — all sides, or a single side / axis. |
 | `p`, `pt`, `pb`, `pl`, `pr`, `px`, `py` | `xs`–`xl` or any CSS size | Padding — all sides, or a single side / axis. |
 | `bg` | a theme color or any CSS color | Background color. |
 | `c` | a theme color or any CSS color | Text (content) color. |
+
+{% include '/components/_partials/sizing-props-note.md' %}
 
 
 ## CSS Selectors

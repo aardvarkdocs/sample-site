@@ -1,6 +1,6 @@
 ---
 title: "DataTable"
-description: "The built-in datatable tag — a feature-rich data grid wrapping icflorescu's mantine-datatable. Columns/records as JSON, live sorting and striped variants, and attribute pass-through."
+description: "The built-in datatable tag — a themed data grid wrapping icflorescu's mantine-datatable. Columns and records as JSON, striped and bordered variants, column alignment, and attribute pass-through."
 menu: components
 parent: community
 weight: 110
@@ -8,10 +8,10 @@ weight: 110
 
 # DataTable
 
-A feature-rich **data grid** built on top of `@mantine/core`. Give it `columns` (a JSON array
-of column definitions) and `records` (a JSON array of row objects), and it renders a clean,
-themed, semantic table — server-side for the static rows, hydrating into an interactive island
-for sorting and selection.
+A **data grid** built on top of `@mantine/core`. Give it `columns` (a JSON array of column
+definitions) and `records` (a JSON array of row objects), and it renders a clean, themed,
+semantic table with borders, zebra striping, hover highlighting, per-column alignment and a
+scrollable body — the presentation layer of a much larger grid, driven entirely from Markdown.
 
 A **Community Component** — wraps [Mantine DataTable](https://icflorescu.github.io/mantine-datatable/)
 by **icflorescu**, **MIT** licensed, npm `mantine-datatable`.
@@ -64,12 +64,11 @@ component('aardvark', 'datatable', withTableBorder=True,
 ### Striped, with hover highlight
 
 Turn on `striped` for zebra rows and `highlightOnHover` so the row under the cursor stands out.
-Mark a column `sortable` and the header becomes clickable once the grid hydrates in the browser.
 
 {% datatable withTableBorder=true striped=true highlightOnHover=true columns='[
-  {"accessor":"product","title":"Product","sortable":true},
+  {"accessor":"product","title":"Product"},
   {"accessor":"region","title":"Region"},
-  {"accessor":"units","title":"Units","textAlign":"right","sortable":true}
+  {"accessor":"units","title":"Units","textAlign":"right"}
 ]' records='[
   {"product":"Aardvark Pro","region":"NA","units":1280},
   {"product":"Aardvark Pro","region":"EU","units":960},
@@ -84,9 +83,9 @@ Mark a column `sortable` and the header becomes clickable once the grid hydrates
 {% raw %}
 ```aardvark
 {% datatable withTableBorder=true striped=true highlightOnHover=true columns='[
-  {"accessor":"product","title":"Product","sortable":true},
+  {"accessor":"product","title":"Product"},
   {"accessor":"region","title":"Region"},
-  {"accessor":"units","title":"Units","textAlign":"right","sortable":true}
+  {"accessor":"units","title":"Units","textAlign":"right"}
 ]' records='[
   {"product":"Aardvark Pro","region":"NA","units":1280},
   {"product":"Aardvark Pro","region":"EU","units":960},
@@ -140,7 +139,7 @@ Omit any attribute to take its default. Bare flags (e.g. `striped`) become `=Tru
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `columns` | JSON array of column defs | Each `{accessor, title?, textAlign?, sortable?, width?}`; `accessor` names the field on a record row. Required for a non-empty table. |
+| `columns` | JSON array of column defs | Each `{accessor, title?, textAlign?, width?}`; `accessor` names the field on a record row. Required for a non-empty table. |
 | `records` | JSON array of row objects | The rows to render, one per table row, keyed by each column's `accessor`. |
 | `withTableBorder` | `true` / `false` (default `false`) | Draw a border around the whole table. |
 | `withColumnBorders` | `true` / `false` (default `false`) | Draw vertical borders between columns. |
@@ -152,21 +151,38 @@ Omit any attribute to take its default. Bare flags (e.g. `striped`) become `=Tru
 | `noRecordsText` | string | Text shown when `records` is empty. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element (see below). |
 
+{% callout severity="info" title="Good to know" %}
+Both JSON arrays are parsed at build time. A value that isn't a valid JSON array raises a
+build warning and renders an empty table instead of failing the build, so an unexpectedly
+blank grid usually means a bracket or a quote. Because the value is single-quoted in the tag,
+keep the JSON's own strings in double quotes.
+
+The tag is the grid's **presentation**: it takes columns, rows and the display toggles. Column
+sorting, row selection and pagination are controlled features — the grid needs both the
+current state and a handler to change it, which a static page has nowhere to keep. A column
+marked `sortable` would get a header that looks and focuses like a button but never fires, so the
+tag drops that key and warns instead of shipping it. Sort the records in the generator or the
+Python caller that builds them.
+
+Cell values are rendered as text, keyed by `accessor`. A record missing a column's key leaves
+that cell empty rather than erroring.
+{% endCallout %}
+
 ## CSS Selector
 
-The tag mounts an island wrapper you can target directly. The grid itself carries
-`mantine-datatable`'s own classes, but everything sits under the island marker:
+The grid's own class names are stable and unprefixed, and everything sits under the wrapper
+attribute so a rule can be scoped to grids alone:
 
-```css
-/* The DataTable island wrapper */
-[data-aardvark-island="DataTable"] {
-  /* … */
-}
-```
+| Selector | Targets |
+| --- | --- |
+| `[data-aardvark-island="DataTable"]` | The wrapper around one grid. |
+| `.mantine-datatable` | The grid root (`.mantine-datatable-with-border` when `withTableBorder` is on). |
+| `.mantine-datatable-table` | The `<table>` itself. |
+| `.mantine-datatable-header` | The header row. |
+| `.mantine-datatable-scroll-area` | The scroll container around the body. |
 
-`mantine-datatable` ships its own stylesheet (pulled in automatically via a CSS `@import` in the
-component's co-located stylesheet), and the grid reads Mantine's theme CSS variables, so it
-matches the rest of the site out of the box.
+The grid reads Mantine's theme CSS variables, so it matches the rest of the site out of the
+box; its stylesheet loads with the page.
 
 ## Injecting Attributes
 

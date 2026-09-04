@@ -160,7 +160,7 @@ instead); `lineClamp` clips to a fixed number of lines. Both need a width to act
 {% raw %}
 ```aardvark
 {% text truncate maw='20rem' %}This sentence is far too long to fit on one short line and will be cut off.{% endText %}
-{% text lineClamp=2 maw='20rem' %}This longer passage is clamped to two lines: anything past the second line is hidden behind an ellipsis.{% endText %}
+{% text lineClamp=2 maw='20rem' %}This longer passage is clamped to two lines: anything past the second line is hidden behind an ellipsis so cards and previews stay tidy and the same height.{% endText %}
 ```
 {% endraw %}
 {% endAccordionSection %}
@@ -170,7 +170,7 @@ component('aardvark', 'text',
           children='This sentence is far too long to fit on one short line and will be cut off.',
           truncate=True, maw='20rem')
 component('aardvark', 'text',
-          children='This longer passage is clamped to two lines: anything past the second line is hidden behind an ellipsis.',
+          children='This longer passage is clamped to two lines: anything past the second line is hidden behind an ellipsis so cards and previews stay tidy and the same height.',
           lineClamp=2, maw='20rem')
 ```
 {% endAccordionSection %}

@@ -21,7 +21,7 @@ logic (loops, snippets) via `component('aardvark', 'backgroundimage', …)`. Clo
 The block body is the overlaid content. Here a white heading sits over the image; `p='xl'`
 pads it away from the edges and `mah='180'` caps the height.
 
-{% backgroundimage src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800' radius='md' p='xl' mah='180' %}
+{% backgroundimage src='/landscape.jpg' radius='md' p='xl' mah='180' %}
 {% text fw='700' c='white' size='xl' %}Overlaid heading{% endText %}
 {% endBackgroundimage %}
 
@@ -31,7 +31,7 @@ pads it away from the edges and `mah='180'` caps the height.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% backgroundimage src='/cover.jpg' radius='md' p='xl' mah='180' %}
+{% backgroundimage src='/landscape.jpg' radius='md' p='xl' mah='180' %}
 {% text fw='700' c='white' size='xl' %}Overlaid heading{% endText %}
 {% endBackgroundimage %}
 ```
@@ -40,7 +40,7 @@ pads it away from the edges and `mah='180'` caps the height.
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'backgroundimage',
-          src='/cover.jpg', radius='md', p='xl', mah='180',
+          src='/landscape.jpg', radius='md', p='xl', mah='180',
           children=component('aardvark', 'text', fw='700', c='white', size='xl',
                              children='Overlaid heading'))
 ```
@@ -53,7 +53,7 @@ component('aardvark', 'backgroundimage',
 `maw`, `mah`, `p`, `m`, …) set and pad the box. A fully round `radius` plus a fixed `w`/`h`
 makes a circular cover.
 
-{% backgroundimage src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800' radius='100%' w='120' h='120' %}
+{% backgroundimage src='/landscape.jpg' radius='100%' w='120' h='120' %}
 {% endBackgroundimage %}
 
 <br>
@@ -62,7 +62,7 @@ makes a circular cover.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% backgroundimage src='/cover.jpg' radius='100%' w='120' h='120' %}
+{% backgroundimage src='/landscape.jpg' radius='100%' w='120' h='120' %}
 {% endBackgroundimage %}
 ```
 {% endraw %}
@@ -70,7 +70,7 @@ makes a circular cover.
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'backgroundimage',
-          src='/cover.jpg', radius='100%', w='120', h='120')
+          src='/landscape.jpg', radius='100%', w='120', h='120')
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -80,8 +80,8 @@ component('aardvark', 'backgroundimage',
 Overlay any built-in tag. Here a [`{% raw %}{% text %}{% endraw %}`](/components/typography/text/)
 heading and a caption stack on the background:
 
-{% backgroundimage src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800' radius='md' p='xl' mah='200' %}
-{% text fw='700' c='white' size='xl' %}Mountain retreat{% endText %}
+{% backgroundimage src='/landscape.jpg' radius='md' p='xl' mah='200' %}
+{% text fw='700' c='white' size='xl' %}Mountain sunset{% endText %}
 {% text c='white' size='sm' %}A box with content overlaid on an image.{% endText %}
 {% endBackgroundimage %}
 
@@ -91,8 +91,8 @@ heading and a caption stack on the background:
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% backgroundimage src='/cover.jpg' radius='md' p='xl' mah='200' %}
-{% text fw='700' c='white' size='xl' %}Mountain retreat{% endText %}
+{% backgroundimage src='/landscape.jpg' radius='md' p='xl' mah='200' %}
+{% text fw='700' c='white' size='xl' %}Mountain sunset{% endText %}
 {% text c='white' size='sm' %}A box with content overlaid on an image.{% endText %}
 {% endBackgroundimage %}
 ```
@@ -101,11 +101,11 @@ heading and a caption stack on the background:
 {% accordionSection title="Source: Python" %}
 ```python
 heading = component('aardvark', 'text', fw='700', c='white', size='xl',
-                    children='Mountain retreat')
+                    children='Mountain sunset')
 caption = component('aardvark', 'text', c='white', size='sm',
                     children='A box with content overlaid on an image.')
 component('aardvark', 'backgroundimage',
-          src='/cover.jpg', radius='md', p='xl', mah='200',
+          src='/landscape.jpg', radius='md', p='xl', mah='200',
           children=heading + caption)
 ```
 {% endAccordionSection %}
@@ -118,13 +118,22 @@ Omit any attribute to take its default.
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `src` | Image URL (**required**) | The background image. |
-| `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | Corner rounding. |
+| `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS value | Corner rounding. Corners are square unless you set it. |
 | `m`, `mt`, `mb`, `ml`, `mr`, `mx`, `my` | Mantine size token (`xs`–`xl`) or any CSS value | Outer margin (all / top / bottom / left / right / horizontal / vertical). |
 | `p`, `pt`, `pb`, `pl`, `pr`, `px`, `py` | Mantine size token (`xs`–`xl`) or any CSS value | Inner padding (all / top / bottom / left / right / horizontal / vertical). |
 | `w`, `h` | any CSS value | Box width and height. |
 | `miw`, `mih` | any CSS value | Minimum width and height. |
 | `maw`, `mah` | any CSS value | Maximum width and height. |
 | body | Markdown / components | The content overlaid on top of the background. |
+
+> **Good to know.** The picture is painted as a CSS background, so there is no `alt` to set and
+> screen readers never announce it — keep it decorative and put anything a reader must know in
+> the body or nearby prose. For a meaningful picture that needs alt text, reach for
+> [`{% raw %}{% image %}{% endraw %}`](/components/data-display/image/) instead.
+>
+> A background box also has **no size of its own**: with an empty body and no `h`/`mih`, it
+> collapses to nothing and the image never shows. Give it content, or a height.
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="BackgroundImage"]` — or through the Mantine Styles API classes (`.mantine-BackgroundImage-root` and its inner parts):
@@ -143,7 +152,7 @@ Target the rendered element through its island marker — `[data-aardvark-island
 
 `attr={…}` forwards raw HTML attributes — including event handlers — straight onto the rendered element, so you can wire DOM behavior the tag does not expose. The handler can be a full multi-line script, not just one expression — this one logs the value to the console and shows it in an alert:
 
-{% backgroundimage src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800' radius='md' p='xl' mah='180' attr={'onclick': '''
+{% backgroundimage src='/landscape.jpg' radius='md' p='xl' mah='180' attr={'onclick': '''
 const value = this.tagName;
 console.log('attr demo value:', value);
 alert(value);
@@ -155,7 +164,7 @@ alert(value);
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% backgroundimage src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800' radius='md' p='xl' mah='180' attr={'onclick': '''
+{% backgroundimage src='/landscape.jpg' radius='md' p='xl' mah='180' attr={'onclick': '''
 const value = this.tagName;
 console.log('attr demo value:', value);
 alert(value);
@@ -166,8 +175,7 @@ alert(value);
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'backgroundimage',
-          src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800',
-          radius='md', p='xl', mah='180', attr={'onclick': '''
+          src='/landscape.jpg', radius='md', p='xl', mah='180', attr={'onclick': '''
 const value = this.tagName;
 console.log('attr demo value:', value);
 alert(value);

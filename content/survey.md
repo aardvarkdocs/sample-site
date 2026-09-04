@@ -1,5 +1,5 @@
 ---
-description: Ask readers a short, Google-Surveys-style question and record the answers to Google Analytics.
+description: Ask readers a short, Google-Surveys-style question and record the answers to Google Analytics — and, with the AI assistant on, to your Aardvark cloud dashboard.
 icon: fa-solid fa-square-poll-horizontal
 menu: docs
 title: Reader surveys
@@ -10,7 +10,9 @@ weight: 53
 
 A reader **survey** is a small inline prompt — modeled on the discontinued Google
 Surveys product — that asks site visitors a short question and records their answers to
-**Google Analytics**. It appears at the end of every page and asks one question at a time.
+**Google Analytics** (and, when the [AI assistant](#full-comments-with-the-ai-assistant) is on,
+to your Aardvark cloud dashboard as well). It appears at the end of every page and asks one
+question at a time.
 
 It's off by default. Turn it on with a `survey:` block:
 
@@ -48,6 +50,12 @@ These keys go directly under `survey:`.
 | `sampleRate` | `1.0` | Fraction of visitors (`0`–`1`) who ever see it. |
 | `requireConsent` | `false` | Gate the prompt and its GA events behind analytics consent (see **Consent gating** below). |
 | `id` | content hash | The GA `survey_id` label. Defaults to a hash of the questions; set it explicitly for a stable label when you edit the wording (see **Survey identity** below). |
+
+Two things the build does **not** check here, unlike the `search.*` and `contentReach` blocks:
+an unknown key under `survey:` (a typo like `sampleRatee`) is silently ignored rather than
+warned about, and `sampleRate` is clamped into `0`–`1` without a warning — `sampleRate: 50`
+(meant as a percentage) reads as `1.0` and shows the prompt to everyone, and a non-numeric value
+falls back to `1.0` too.
 
 ## Question types
 
@@ -110,8 +118,9 @@ The prompt appears on **every page**, as soon as the reader is eligible — ther
   inherits the site setting. Surveys must be enabled in `aardvark.config.yaml` first —
   front matter cannot turn them on for a site where they are off.
 - **Sampling.** `sampleRate` (0–1, default `1.0`) shows it to only a stable fraction of
-  visitors: one roll is stored per visitor, so the same person is consistently in or out
-  across pages.
+  visitors: one roll is stored in the browser's `localStorage`, so the same person is
+  consistently in or out across pages and return visits in that browser (a different browser,
+  or a cleared profile, rolls again).
 
 ## Survey identity
 
@@ -155,23 +164,30 @@ stops at 100 with a live counter, and a multi-select joins whole labels up to th
 ## Full comments with the AI assistant
 
 GA4 caps every event parameter at 100 characters, which truncates a real comment. When your site
-has the [AI assistant](/ai-assistant/) enabled (`ai.assistant`), the survey **also** posts each
-open-ended **`text`** answer to your Aardvark **gateway** at full length — up to **2000
-characters** — so the whole comment survives. This is automatic; there's nothing extra to
-configure beyond enabling the assistant.
+has the [AI assistant](/ai-assistant/) enabled (`ai.assistant`), the survey **also** posts every
+answer to your Aardvark cloud **gateway** at full fidelity — an open-ended **`text`** answer at
+full length, up to **2000 characters** — so nothing is lost to that cap. This is automatic;
+there's nothing extra to configure beyond enabling the assistant.
 
-- **What's sent:** the comment text (full), the page it was left on (`page_url`, pathname only —
-  same path-only, no-query rule as the GA event), and the `survey_id` / `question_id`. It rides the
-  same baked public key and origin allowlist as the assistant's chat and feedback calls, so no new
-  credentials are involved. It's best-effort and never blocks the reader.
+- **What's sent:** every answered question, as a structured record — the `survey_id` /
+  `question_id`, the question type, the page it was left on (`page_url`, pathname only — the
+  same path-only, no-query rule as the GA event), and the answer: the chosen label for `single`,
+  the list of chosen labels for `multi`, the star count for `rating`, and the full text for
+  `text`. A `text` answer is stored a second time as a page comment, so it lists alongside your
+  other reader comments. Everything rides the same baked public key and origin allowlist as the
+  assistant's chat and feedback calls, so no new credentials are involved. It's best-effort and
+  never blocks the reader.
 - **What still goes to GA:** everything above — the `survey_response` event still fires with the
   first 100 characters of the answer and the page. GA keeps the aggregate view; the gateway keeps
-  the full text.
-- **Where to read them:** open your gateway **dashboard**, paste your secret key, and scroll to
-  **Page comments** — the most recent 50, each with its page and full comment text.
-- **Scope:** only `text` answers go to the gateway (that's where the 100-char cap is lossy).
-  `single` / `multi` / `rating` answers are short and stay GA-only. With the assistant **off**, the
-  survey behaves exactly as documented above — GA only, `text` capped at 100.
+  the full-fidelity copy.
+- **Where to read them:** open your gateway dashboard's **Reader Feedback** tab. **Reader survey
+  responses** lists each survey's questions with a per-choice count for `single` / `multi` and an
+  average for `rating`, followed by **Open-ended comments** — the 50 most recent `text` answers,
+  each with its page and full text.
+- **Limits:** the gateway keeps at most 5,000 survey answers and 5,000 comments per account in
+  any rolling 24 hours; anything past that is acknowledged but not stored, so a very busy site sees a plateau
+  rather than an error — `sampleRate` is the lever if you get near it. With the assistant
+  **off**, the survey behaves exactly as documented above — GA only, `text` capped at 100.
 
 > **Privacy:** the same caution as the GA path applies, and more so since the gateway keeps the
 > *full* text — readers see the *"Please don't include personal information."* notice, but review

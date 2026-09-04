@@ -115,7 +115,7 @@ Here two of them ride a `{% raw %}{% cardGrid %}{% endraw %}`:
 
 {% cardGrid colsBase=1 colsSm=2 %}
 {% articleCard variant="vertical" title="Anatomy of a Mantine island" href="/blog/anatomy-of-a-mantine-island/" image="/img/sample-landscape.svg" imageAlt="" badge="Deep dive" authorName="Aardvark engineering" authorAvatar="/img/sample-square.svg" date="2026-06-18" tags="components, engineering" %}{% endArticleCard %}
-{% articleCard variant="vertical" title="vark 0.9 release roundup" href="/blog/vark-0-9-release-roundup/" image="/landscape.jpg" imageAlt="" badge="Release" authorName="The Aardvark team" authorAvatar="/favicon.svg" date="2026-05-30" tags="release, cli" %}{% endArticleCard %}
+{% articleCard variant="vertical" title="Aardvark 0.4.1 release roundup" href="/blog/aardvark-0-4-1-release-roundup/" image="/landscape.jpg" imageAlt="" badge="Release" authorName="The Aardvark team" authorAvatar="/favicon.svg" date="2026-09-01" tags="release, cli" %}{% endArticleCard %}
 {% endCardGrid %}
 
 <br>
@@ -126,7 +126,7 @@ Here two of them ride a `{% raw %}{% cardGrid %}{% endraw %}`:
 ```aardvark
 {% cardGrid colsBase=1 colsSm=2 %}
 {% articleCard variant="vertical" title="Anatomy of a Mantine island" href="/blog/anatomy-of-a-mantine-island/" image="/img/sample-landscape.svg" imageAlt="" badge="Deep dive" authorName="Aardvark engineering" authorAvatar="/img/sample-square.svg" date="2026-06-18" tags="components, engineering" %}{% endArticleCard %}
-{% articleCard variant="vertical" title="vark 0.9 release roundup" href="/blog/vark-0-9-release-roundup/" image="/landscape.jpg" imageAlt="" badge="Release" authorName="The Aardvark team" authorAvatar="/favicon.svg" date="2026-05-30" tags="release, cli" %}{% endArticleCard %}
+{% articleCard variant="vertical" title="Aardvark 0.4.1 release roundup" href="/blog/aardvark-0-4-1-release-roundup/" image="/landscape.jpg" imageAlt="" badge="Release" authorName="The Aardvark team" authorAvatar="/favicon.svg" date="2026-09-01" tags="release, cli" %}{% endArticleCard %}
 {% endCardGrid %}
 ```
 {% endraw %}
@@ -171,11 +171,19 @@ Set what you need, omit the rest.
 | `authorAvatar` | image URL | The byline avatar. Omitted, the byline falls back to the author's **initials** in a colored disc. |
 | `date` | `YYYY-MM-DD`, optionally with a time | The article date shown on the card. |
 | `dateDisplay` | string | A pre-formatted date string to show instead of the default formatting of `date`. |
-| `variant` | `horizontal`, `footer`, `background`, `vertical`, `plain` | Card layout. |
-| `cta` | string | Call-to-action label — rendered by the `background` variant only (as a button-styled affordance inside the card's single link). |
+| `variant` | `horizontal` (default), `footer`, `background`, `vertical`, `plain` | Card layout. The gallery's own names are accepted too — `withfooter` for `footer`, `image` for `background`, `grid` for `plain`. An unrecognized value warns during the build and falls back to `horizontal`. |
+| `cta` | string | Call-to-action label. Rendered by the `background` variant only, and only when that card has both an `image` and a link — it is a button-styled affordance inside the card's single link, not a second link. |
 | `tags` | comma-separated string | Accepted for payload parity with cards supplied through a [taxonomy](/components/extras/taxonomy/) article listing (whose islands filter on the data) — a **standalone** card neither renders nor filters by them. |
 | `onclick` | JS expression | A JS click handler on the card root (a raw HTML attribute; in Python it rides `attr={'onclick': …}`). |
 | `attr={…}` | mapping | Forward raw HTML attributes — `id`, `data-*`, ARIA, analytics hooks, event handlers — onto the rendered card root. See [Injecting Attributes](#injecting-attributes) below. |
+
+> **Good to know.** The `title` is what makes a card clickable: it carries the card's one link and
+> is that link's accessible name. A card with an `href` but **no title** would be a large click
+> target that screen readers cannot name, so it is rendered non-clickable instead and the build
+> says so — give every link card a title.
+>
+> `date` is what gets formatted; `dateDisplay` is shown verbatim if you set it. An unparseable
+> `date` warns during the build and the card simply drops the date rather than failing the page.
 
 ## CSS Selectors
 
@@ -196,8 +204,8 @@ inner parts use the `.aardvark-articlecard-*` prefix:
 `attr={…}` forwards raw HTML attributes — `id`, `data-*`, ARIA, analytics hooks — onto the
 rendered card root:
 
-{% articleCard variant="plain" title="vark 0.9 release roundup" href="/blog/vark-0-9-release-roundup/" date="2026-05-30" attr={'data-analytics': 'blog-card', 'aria-label': 'Release roundup'} %}
-A self-generating CLI reference, a faster dev loop, and the best of the 0.8 line.
+{% articleCard variant="plain" title="Aardvark 0.4.1 release roundup" href="/blog/aardvark-0-4-1-release-roundup/" date="2026-09-01" attr={'data-analytics': 'blog-card', 'aria-label': 'Release roundup'} %}
+What shipped in the latest release, in one read.
 {% endArticleCard %}
 
 <br>
@@ -206,18 +214,17 @@ A self-generating CLI reference, a faster dev loop, and the best of the 0.8 line
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% articleCard variant="plain" title="vark 0.9 release roundup" href="/blog/vark-0-9-release-roundup/" date="2026-05-30" attr={'data-analytics': 'blog-card', 'aria-label': 'Release roundup'} %}
-A self-generating CLI reference, a faster dev loop, and the best of the 0.8 line.
+{% articleCard variant="plain" title="Aardvark 0.4.1 release roundup" href="/blog/aardvark-0-4-1-release-roundup/" date="2026-09-01" attr={'data-analytics': 'blog-card', 'aria-label': 'Release roundup'} %}
+What shipped in the latest release, in one read.
 {% endArticleCard %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'articleCard', variant='plain', title='vark 0.9 release roundup',
-          href='/blog/vark-0-9-release-roundup/', date='2026-05-30',
-          children='A self-generating CLI reference, a faster dev loop, and the '
-                   'best of the 0.8 line.',
+component('aardvark', 'articleCard', variant='plain', title='Aardvark 0.4.1 release roundup',
+          href='/blog/aardvark-0-4-1-release-roundup/', date='2026-09-01',
+          children='What shipped in the latest release, in one read.',
           attr={'data-analytics': 'blog-card', 'aria-label': 'Release roundup'})
 ```
 {% endAccordionSection %}

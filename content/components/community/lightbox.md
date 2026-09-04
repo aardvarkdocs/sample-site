@@ -149,19 +149,31 @@ Omit any attribute to take its default.
 | `cols` | integer | Thumbnails per row in the grid. Defaults to `3`. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the grid wrapper element. See [Injecting Attributes](#injecting-attributes). |
 
+{% callout severity="info" title="Good to know" %}
+`images` must be valid JSON: a parse error **fails the build** with the offending value, and so
+does a `src` using an unsafe scheme. Keep the JSON's own strings in double quotes inside the
+single-quoted attribute.
+
+Give every image an `alt`. It is the thumbnail's alternative text and also names the button
+that opens it ("Open Forest"); without one the button falls back to "Open image 3".
+
+The overlay only exists after the page's JavaScript runs — a no-JS reader still gets the
+thumbnail grid, but clicking does nothing, so don't make the full-size image the only way to
+read something.
+{% endCallout %}
+
 ## CSS Selector
 
-The grid wrapper carries `data-aardvark-lightbox`, and each thumbnail button carries the
-class `aardvark-lightbox-thumb`; target them to restyle the gallery:
+The grid on the page and the full-screen overlay are styled separately — the overlay is
+portalled out of the gallery, so a rule nested under the grid won't reach it:
 
-```css
-[data-aardvark-lightbox] .aardvark-lightbox-thumb:hover {
-  transform: scale(1.05);
-}
-```
+| Selector | Targets |
+| --- | --- |
+| `[data-aardvark-lightbox]` | The thumbnail grid wrapper. |
+| `[data-aardvark-lightbox] .aardvark-lightbox-thumb` | One thumbnail button — e.g. `:hover { transform: scale(1.05); }`. |
 
 The full-screen overlay and carousel chrome are styled by the upstream
-`@mantine-bites/lightbox` stylesheet, which the component pulls in automatically.
+`@mantine-bites/lightbox` stylesheet, which loads with the page.
 
 ## Injecting Attributes
 

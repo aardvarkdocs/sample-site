@@ -19,32 +19,64 @@ ships **no** JavaScript, a snippet **is** JavaScript: it's bundled and mounts as
 
 ## Write one
 
-A snippet is a `.jsx` file under `snippets/` that default-exports a React component.
-Its props arrive as the component's props, and anything you wrap becomes `children`:
+A snippet is a `.jsx` (or `.tsx`) file under `snippets/` that default-exports a React
+component. Its props arrive as the component's props, and anything you wrap becomes
+`children`:
 
 ```jsx
 // snippets/Stepper.jsx
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 import { Button } from '@mantine/core';
 
-export default function Stepper({ label = 'Clicks', start = 0 }) {
+const Stepper = forwardRef(function Stepper({ label = 'Clicks', start = 0 }, ref) {
   const [n, setN] = useState(start);
-  return <Button onClick={() => setN((c) => c + 1)}>{label}: {n}</Button>;
-}
+  return <Button ref={ref} onClick={() => setN((c) => c + 1)}>{label}: {n}</Button>;
+});
+
+export default Stepper;
 ```
 
 That `useState` is the tell — it holds live client state, which a `.md` macro can't.
-The file name (`Stepper`) is the component name.
+The file name (`Stepper`) is the component name. It's bundled into the site's single
+islands bundle alongside everything else, and a stylesheet it imports
+(`import './Stepper.css'`) rides along with it — this site's `snippets/CodeBlock.jsx`
+does exactly that.
+
+{% callout title="Good to know" severity="info" %}
+
+- **Forward the ref** (`forwardRef`, with the ref placed on a real DOM element, as above).
+  That's what lets `attr={% raw %}{…}{% endraw %}` reach your snippet's root; a snippet that
+  swallows the ref silently drops every `attr` pair — no error, the attributes just never land.
+- **Touch the browser only in effects and handlers.** By default islands are prerendered to
+  HTML at build time (see [How islands render](/authoring/components-and-snippets/)), where
+  there is no `window`, `document` or `localStorage`. Read them inside `useEffect` or an event
+  handler, and gate anything that must differ between server and browser (a portal, a
+  measured size) behind a `mounted` flag set in an effect. Otherwise the prerender of that
+  page fails (it then mounts client-side only), or the baked markup disagrees with what the
+  browser renders and React replaces it on load — the reflow prerendering exists to avoid.
+- **A snippet's name wins.** `snippets/Button.jsx` replaces Mantine's `Button` everywhere
+  `component('Button')` is called — the built-in `{% raw %}{% button %}{% endraw %}` tag
+  included — see
+  [Overriding a built-in](/authoring/components-and-snippets/#overriding-a-built-in).
+
+{% endCallout %}
 
 ## Two ways to use it
 
 A snippet is reachable both as a **call** and as a **tag**; both mount the same island,
-so use whichever reads better. This site ships `snippets/ProductCard.jsx`:
+so use whichever reads better. This site ships `snippets/ProductCard.jsx`. The call form:
 
 {% raw %}
 ```aardvark
-{% component('ProductCard', product='Aardvark Pro', badge='New') %}   {# call form #}
-{% ProductCard product="Aardvark Pro" badge="New" %}                  {# tag  form #}
+{% component('ProductCard', product='Aardvark Pro', badge='New') %}
+```
+{% endraw %}
+
+and the tag form:
+
+{% raw %}
+```aardvark
+{% ProductCard product="Aardvark Pro" badge="New" %}
 ```
 {% endraw %}
 
@@ -69,7 +101,7 @@ both render the same island, live:
 Both let you define your own building block and call it as a `{% raw %}{% Tag %}{% endraw %}`.
 The difference is **what's behind the tag**:
 
-| | [Custom component](/authoring/custom-components/) (`.md`) | Custom snippet (`.jsx`) |
+| | [Custom component](/authoring/custom-components/) (`.md`) | Custom snippet (`.jsx` / `.tsx`) |
 |---|---|---|
 | What it is | A build-time **macro** | A real **React component** |
 | Ships JavaScript? | No — expands into `component()` calls at build | Yes — bundled, mounts as an island |

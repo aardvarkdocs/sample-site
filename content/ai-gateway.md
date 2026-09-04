@@ -36,17 +36,20 @@ the balance.)
 
 **Subscribers** add a monthly **included-AI grant** on top of this. A metered request drains the
 grant first (any rollover, then the current period's grant) and only then — per the account's
-**overflow policy** — the prepaid balance:
+**overflow policy**, chosen on the Billing tab — the prepaid balance:
 
-- **Cap-and-hold** (the default): when the grant is spent, paid AI **pauses** and readers fall back
-  to `:free` answers **even while the prepaid balance is still funded** — so the bill stays
-  predictable. Adding funds does **not** resume paid AI here; the next period's grant (or a plan
-  change) does.
-- **Fall back to your balance** (opt-in): overflow draws the prepaid balance at the subscriber's
-  member rate, up to a customer-set **cap**, then pauses like cap-and-hold.
+- **Cap & hold** (the default): when the grant is spent, **paid** AI pauses **even while the prepaid
+  balance is still funded** — so the bill stays predictable. `:free` models keep answering; a reader
+  asking a paid model sees the assistant's usage-limit message. Adding funds does **not** resume
+  paid AI here — switching the overflow policy does, and so does the next period's grant.
+- **Fall back to balance** (opt-in): overflow draws the prepaid balance at the subscriber's member
+  rate, up to a customer-set **cap**, then pauses like cap & hold. A cap above **twice** the monthly
+  grant has to be acknowledged explicitly when it is saved.
+- **Hard shutoff** (opt-in): pauses **all** AI when the grant is spent, `:free` models included.
 
 So for a subscriber, "out of funds" and "included AI used up" are **distinct** states with different
-recovery actions — the dashboard says which one an account is in.
+recovery actions — the dashboard says which one an account is in, and the assistant's error message
+tells the reader which applies.
 
 An account is funded in one of two ways:
 
@@ -58,8 +61,9 @@ An account is funded in one of two ways:
 ## Customer self-funding (card-on-file + auto-top-up)
 
 When the operator has enabled Stripe, a customer manages their own funding from the **Billing &
-Auto Top-Up** section of the gateway **dashboard** (open `/dashboard` on the gateway and sign in via
-the magic link emailed to the account owner — the dashboard is email-login only).
+Auto Top-Up** section of the gateway **dashboard** (open `/dashboard` on the gateway and sign in with
+the magic link it emails you — there are no passwords; a team on a plan with single sign-on signs in
+through its identity provider instead).
 
 **Dashboard roles.** Team accounts have three roles: **owner**, **admin**, and **member**. Owners and
 admins see the **Billing** tab; plain members do not, and direct Billing links fall back to the
@@ -90,9 +94,11 @@ Auto-top-up is built to be safe to leave on:
 
 - **Charged at most once per low-balance episode.** Overlapping triggers — or a manual *Top up now*
   firing at the same moment — cannot double-charge the card.
-- **Self-disables after repeated declines.** A consistently failing card stops being retried on
-  every crossing, and the customer is alerted to fix it.
-- **Whole-cent amounts, with a minimum** (a **$10** floor by default).
+- **Self-disables after repeated declines.** Three card declines in a row switch auto-top-up off
+  and alert the customer to fix the card; a transient Stripe error is not a decline and doesn't
+  count, so a brief outage can't disarm a working card.
+- **Whole-cent amounts, with a minimum** (a **$10** floor by default). An amount with sub-cent
+  precision is rejected when saved.
 - **Durable crediting.** A captured charge credits the balance exactly once, even if something
   fails between the charge and the credit.
 
@@ -120,8 +126,12 @@ until you configure Stripe**, and turning it on is, in short:
    account until the grace sweep catches up.
 3. Apply the gateway's payment **database migrations** before deploying the updated Worker.
 
-With Stripe left unconfigured the gateway behaves exactly as before — operator top-ups only. Full
-steps, optional tuning, and a test-mode walkthrough are in `gateway/DEPLOYMENT.md`.
+With Stripe left unconfigured the gateway behaves exactly as before — operator top-ups only. Two
+optional Worker variables tune the safety properties above: `AUTO_TOPUP_MIN_USD` (the top-up floor,
+default `10`) and `AUTO_TOPUP_MAX_FAILURES` (the decline streak that self-disables auto-top-up,
+default `3`). Raising the floor applies to new and re-enabled setups; an auto-top-up already armed
+below the new floor keeps charging its saved amount until the customer next edits it. Full steps,
+further tuning, and a test-mode walkthrough are in `gateway/DEPLOYMENT.md`.
 
 ## Reader attachments
 
@@ -139,12 +149,25 @@ ai:
       maxFiles: 4          # per-message file cap (default 4)
       maxFileSizeMb: 10    # per-file size cap in MB (default 10)
       pdfEngine: pdf-text  # PDF parsing: pdf-text (default) | mistral-ocr (scanned) | native
+      accept:              # allowed MIME types / extensions (default: images + PDF + text/code)
+        - image/png
+        - image/jpeg
+        - application/pdf
+        - .md
+        - .txt
 ```
 
 Beyond the per-file cap, the picker also enforces a **combined** image/PDF budget (base64-encoded)
-that matches the gateway's hard per-request limit, so it rejects a set that would always be refused
-upstream rather than failing mid-send. (Text attachments are inlined as text and don't count toward
-that budget.)
+of **48 MiB**, matching the gateway's own per-request byte limit, so it rejects a set that would
+always be refused upstream rather than failing mid-send. (Text attachments are inlined as text and
+don't count toward that budget.) The `accept` list seeds both the file picker's filter and the
+client-side check, so a file outside it is refused before anything is read.
+
+{% callout severity="warning" title="Keep `maxFiles` at 20 or below" %}
+The gateway refuses any request carrying more than **20** image/PDF parts. `maxFiles` is not
+clamped to that, so setting it higher lets the picker accept a set the gateway then rejects — the
+one case where a reader hits the error at send time instead of when picking the file.
+{% endCallout %}
 
 How each kind is sent to the model:
 
@@ -190,5 +213,8 @@ carries files, and the true cost is settled when the turn completes.
   the operator analytics dashboard (Insights, Conversations, digests) it feeds.
 - [Content Reach](/content-reach/) — which sections of each page readers reach and which controls
   they use, on the Business and Enterprise plans. Carries no spend: it is telemetry, not metered AI.
-- [Build-time AI](/ai-features/) — opt-in features that run during the build, also via OpenRouter.
+- [Build-time AI](/ai-features/) — opt-in features that run during the build, also through the
+  gateway.
+- [Aardvark Gateway API](/api/) — the gateway's HTTP reference: chat, telemetry, dashboard analytics,
+  account and key management, billing.
 - [Self-hosting & MCP](/self-hosting/) — running a built site (and its MCP server) yourself.

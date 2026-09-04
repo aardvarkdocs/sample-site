@@ -40,9 +40,9 @@ component('aardvark', 'numberinput', label='Quantity',
 
 ## Bounds, step, and precision
 
-`min`, `max`, and `step` constrain the value; `decimalScale` fixes the number of decimal
-places; `clampBehavior` is `strict` (keep the value inside the bounds while typing), `blur`
-(clamp on blur), or `none`.
+`min`, `max`, and `step` constrain the value (`step` defaults to `1`); `decimalScale` caps
+how many decimal places the value keeps; `clampBehavior` is `strict` (keep the value inside
+the bounds while typing), `blur` (clamp when focus leaves — the default), or `none`.
 
 {% numberinput label='Rating (0–5, halves)' min=0 max=5 step=0.5 decimalScale=1 defaultValue=2.5 %}
 
@@ -271,6 +271,15 @@ component('aardvark', 'card', title='Order line', children=price + qty)
 {% endAccordionSection %}
 {% endAccordion %}
 
+{% callout severity='warning' title='The stepper buttons do not fire a change event' %}
+The `+`/`−` controls and the <kbd>↑</kbd>/<kbd>↓</kbd> keys set the value from JavaScript, and
+setting a value that way does not raise the browser's `change` event. So a handler attached
+with `attr={'onchange': …}` runs when someone **types** into the field and then leaves it — the
+ordinary native behavior — but stays silent while they click the steppers. Read the value when
+you actually need it (on submit, or from the element) rather than counting on a change event
+for every adjustment; add `hideControls` if a stepper-driven edit must not slip past a handler.
+{% endCallout %}
+
 ## Attributes
 
 Omit any attribute to take its Mantine default.
@@ -284,17 +293,17 @@ Omit any attribute to take its Mantine default.
 | `defaultValue` | number | Initial numeric value. |
 | `min` | number | Lowest allowed value. |
 | `max` | number | Highest allowed value. |
-| `step` | number | Increment applied by the stepper buttons and arrow keys. |
-| `decimalScale` | integer | Fixed number of decimal places to display. |
+| `step` | number | Increment applied by the stepper buttons and arrow keys. Defaults to `1`. |
+| `decimalScale` | integer | Most decimal places the value may keep; extra digits are dropped. It caps, it does not pad — `1999.5` with `decimalScale=2` stays `1,999.5`. |
 | `prefix` | string | Text shown immediately before the value. |
 | `suffix` | string | Text shown immediately after the value. |
 | `thousandSeparator` | string (e.g. `,`) | Digit-group separator. |
 | `allowNegative` | bool (`true` / `false`) | Allow negative values (default `true`; set `false` to block). |
 | `allowDecimal` | bool (`true` / `false`) | Allow a decimal point (default `true`; set `false` for whole numbers). |
 | `hideControls` | bool (`true` / `false`) | Remove the increment/decrement stepper buttons. |
-| `clampBehavior` | `strict`, `blur`, `none` | When the value is clamped to `min`/`max`. |
+| `clampBehavior` | `strict`, `blur`, `none` | When the value is clamped to `min`/`max`. Defaults to `blur`. |
 | `variant` | `default`, `filled`, `unstyled` | Visual style of the input. |
-| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Control size. |
+| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Control size. Defaults to `sm`. |
 | `radius` | `xs`, `sm`, `md`, `lg`, `xl`, or any CSS length | Corner radius. |
 | `required` | bool (`true` / `false`) | Mark the field required and add the asterisk. |
 | `withAsterisk` | bool (`true` / `false`) | Add the asterisk without the HTML `required` attribute. |

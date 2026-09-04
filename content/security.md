@@ -26,8 +26,8 @@ the built-in protections work, and how to reach us about a vulnerability.
 
 `vark build` writes plain HTML, CSS, and JavaScript into `build/`. You can host that
 directory anywhere — [your own server or CDN](/deployment/), [`vark serve`](/self-hosting/)
-in your own infrastructure, or Aardvark cloud's managed hosting on the
-[paid plans](/pricing/).
+in your own infrastructure, or Aardvark cloud's [managed hosting](/hosting-onboarding/) on
+the [paid plans](/pricing/).
 
 - **The core runtime is local.** Interactive components are delivered as one
   JavaScript bundle, built at build time and served **from your own site** alongside
@@ -90,12 +90,15 @@ cloud feature is a separate, deliberate opt-in:
   site. While it is on, a reader who arrives without a valid session is *redirected* to the
   gateway (`/v1/reader-auth/login`) before any page is served: the gateway checks that they
   are signed in to the Aardvark dashboard and are an active member of the team that owns the
-  site, then sends them back to your site with a short-lived signed token, which the serving
-  worker exchanges for a session cookie scoped to that hostname. So on a gated site the
-  reader's browser does contact the gateway on the way in — for the sign-in check only; the
-  pages themselves still come from your hosted site. Unlike the features above this one is
-  not keyed to your public key, and it applies to previews and custom domains as well as
-  production.
+  site — honoring the team's SSO enforcement — then sends them back to your site with a
+  short-lived signed token, which the serving worker exchanges for a session cookie scoped
+  to that hostname and good for 12 hours. So on a gated site the reader's browser does
+  contact the gateway on the way in — for the sign-in check only; the pages themselves
+  still come from your hosted site. Unlike the features above this one is not keyed to your
+  public key, and it applies to previews and custom domains as well as production. The
+  practical limits — the short cache window after the switch, and a removed member's
+  session outlasting their removal by up to 12 hours — are spelled out on the
+  [managed hosting](/hosting-onboarding/#branch-previews) page.
 
 ## Password-protected sections
 
@@ -104,7 +107,10 @@ time with **AES-256-GCM**, deriving the key from your password via PBKDF2 (SHA-2
 600,000 iterations). Only the ciphertext is published; readers decrypt in the browser
 with the password. The mechanism is **fail-closed**: if a configured password variable
 is missing or empty at build time, the build aborts before writing anything, rather than
-publishing the pages in the clear.
+publishing the pages in the clear. That is also why a push-to-deploy site on managed
+hosting can't carry a `protected:` section — its build runs with no secrets of yours —
+while a [`vark deploy`](/hosting-onboarding/#deploy-from-your-machine-with-vark-deploy)
+upload can, because the encryption happens on your machine.
 
 ## Team security in the dashboard
 
@@ -116,17 +122,25 @@ The Aardvark cloud dashboard is built for teams that have to answer to a securit
   or grant the admin/owner tier; **members** can read general dashboard data and manage
   their own public keys, and never see billing.
 - **Single sign-on.** **OIDC SSO** is available for configuration on the Business and
-  Enterprise plans: sign-ins for an email domain you've verified ownership of route
-  through your identity provider, and a separate **enforce-SSO** setting requires SSO
-  for the team. Even under enforcement, the account owner deliberately keeps
-  magic-link access, so a misconfigured or unavailable IdP can never lock you out of
-  your own account. **SAML is not yet available**; it is on the roadmap.
+  Enterprise plans: you prove ownership of an email domain with a DNS TXT record
+  (`_aardvark-verify.<domain>`), sign-ins for that domain then route through your identity
+  provider, and a separate **enforce-SSO** setting requires SSO for the team. The domain
+  proof is good for 90 days; once it lapses, sign-ins fall back to magic links until you
+  re-verify. Even under enforcement, the account owner deliberately keeps magic-link
+  access, so a misconfigured or unavailable IdP can never lock you out of your own account.
+  **SAML 2.0** is built in but ships **switched off**: it is enabled for the gateway as a
+  whole by the Aardvark operator after a dedicated security review — not by a per-account
+  setting — and until then the dashboard reports SAML as unavailable and refuses a SAML
+  configuration. If you need SAML rather than OIDC, ask through your plan's
+  [support channel](/pricing/).
 - **SCIM provisioning** lets your identity provider create, update, and — crucially —
-  deactivate dashboard users automatically. Deprovisioning is never blocked by billing
-  state: a lapsed card can't stop your IdP from removing access. Plan availability is
-  listed on the [pricing page](/pricing/).
+  deactivate dashboard users automatically. The SCIM bearer token is minted and rotated by
+  the account owner from the dashboard on the plans that include SCIM (listed on the
+  [pricing page](/pricing/)), but provisioning itself is never blocked by billing state:
+  a lapsed card can't stop your IdP from removing access.
 - **Audit-log export.** Business and Enterprise accounts can export the account audit
-  log as CSV from the dashboard.
+  log as CSV from the dashboard's **Billing** tab — newest first, up to 10,000 rows, and
+  the download says so if it had to cut off there.
 - **Secrets encrypted at rest, fail-closed for new writes.** SSO client secrets you
   save are encrypted at rest; if the encryption key is unavailable, the gateway refuses
   to store a new secret at all rather than fall back to plaintext. A secret stored
@@ -151,6 +165,10 @@ In practice:
 - To build genuinely untrusted content, isolate the build in an ephemeral container or
   VM with no secrets in its environment.
 
+Managed hosting applies the same rule to itself: a push-to-deploy build runs your
+generators on Aardvark's runners in a job that holds no gateway key, no repository token,
+and no environment variables of yours, so build-time code can reach nothing it shouldn't.
+
 The [build-time Python](/generators/) docs cover this guidance in full.
 
 ## Reporting a vulnerability
@@ -172,13 +190,24 @@ against the most recent version before reporting.
 
 The `vark` CLI ships as a **compiled binary** — via
 [Homebrew](/getting-started/installation/) on macOS, and as direct downloads from the
-release page for Linux (tarball) and Windows (zip). Windows binaries are **unsigned by
-default**: Authenticode signing is in place as an opt-in step that the release operator
-enables by configuring a code-signing certificate, and today's published downloads are
-built without one. While a release is unsigned, the first launch may show a SmartScreen
-warning ("Windows protected your PC"); click **More info → Run anyway**. Once a release
-is signed, that prompt eases as the certificate earns reputation. Either way, some
-antivirus engines can flag compiled single-file binaries as false positives.
+release page for macOS, Linux (tarball), and Windows (zip). The **Linux** tarballs ship
+beside a `SHA256SUMS` file listing them, so that download can be checked with
+`sha256sum -c SHA256SUMS` before you run it; the macOS and Windows assets carry no
+published checksum file today.
+
+The macOS binaries carry an ad-hoc signature, not an Apple Developer ID, and are not
+notarized. That is all `brew install` needs — Homebrew doesn't quarantine formula
+downloads — but a tarball fetched **directly** in a browser is quarantined by Gatekeeper:
+right-click → **Open** the binary once, or clear the flag with
+`xattr -dr com.apple.quarantine <file>`.
+
+Windows binaries are **unsigned by default**: Authenticode signing is in place as an
+opt-in step that the release operator enables by configuring a code-signing certificate,
+and today's published downloads are built without one. While a release is unsigned, the
+first launch may show a SmartScreen warning ("Windows protected your PC"); click **More
+info → Run anyway**. Once a release is signed, that prompt eases as the certificate earns
+reputation. On every platform, some antivirus engines can flag compiled single-file
+binaries as false positives.
 
 ## Questions
 

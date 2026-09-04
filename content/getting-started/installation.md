@@ -81,6 +81,20 @@ The binary bundles the default theme and the islands runtime, so it works out of
 the box. Node is still required on the build machine to bundle interactive
 islands — see [Deployment](/deployment/) for details.
 
+Every plain release archive — macOS and Linux tarballs, Windows zip — contains just
+the `vark` executable, with no `aardvark` alias, so create your own symlink if you want
+the long name from a downloaded archive.
+
+## Staying up to date
+
+`vark update` asks the release feed whether a newer version exists and prints how
+to get it — it never downloads or replaces the binary itself, so upgrade with
+`brew upgrade aardvark` or by downloading the new archive. Every other command,
+when run in an interactive terminal, makes the same check in the background and
+prints a one-line reminder when you're behind. Set `AARDVARK_NO_UPDATE_CHECK=1`
+to silence it; it's already quiet when output isn't a terminal, for `--help` /
+`--version`, and for shell completion.
+
 ## AI features
 
 Aardvark's AI features are built into the binary — there's nothing extra to

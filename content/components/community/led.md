@@ -153,14 +153,14 @@ Omit any attribute to take its default. Bare flags (e.g. `animate`) become `=Tru
 | `value` | `true` / `false` | On/off state. Omit for the package default; `value=false` is an explicitly-off LED. |
 | `color` | Any theme color or CSS color | Color when lit. |
 | `offColor` | Any theme color or CSS color | Color when off. |
-| `size` | `xs`–`xl` | LED size. |
+| `size` | `xs`–`xl`, a number of px, or a CSS length | LED size. |
 | `variant` | `flat`, `3d`, `neon`, `dot` | Visual style. |
 | `shape` | `circle`, `square`, `rectangle` | Form factor. |
-| `radius` | `xs`–`xl` | Corner rounding (for square/rectangle). |
+| `radius` | `xs`–`xl`, a number of px, or a CSS length | Corner rounding (for square/rectangle). |
 | `animate` | `true` / `false` (default `false`) | Enable animation. |
-| `animationType` | `pulse`, `flash`, `breathe`, `blink`, `glow` | Animation effect. |
+| `animationType` | `pulse`, `flash`, `breathe`, `blink`, `glow`, `none` | Animation effect. |
 | `animationDuration` | Number (seconds) | Animation speed. |
-| `intensity` | Number | Glow strength. |
+| `intensity` | Number `0`–`100` | Light intensity — how hard the LED glows. |
 | `label` | String | Descriptive text next to the LED. |
 | `labelPosition` | `left`, `right` | Label placement. |
 | `tooltip` | String | Hover tooltip text. |
@@ -173,26 +173,28 @@ label when no plain-text `label` is set.
 
 ## CSS Selector
 
-The LED exposes Mantine Styles API selectors you can target with `classNames` in your own
-React, or style directly:
+Each part of the indicator carries a stable `mantine-Led-*` class you can target from
+`custom.css` (the same names work as Styles API `classNames` keys in your own React):
 
-| Selector | Element |
+| Selector | Targets |
 | --- | --- |
-| `root` | The wrapper element. |
-| `led` | The LED indicator itself. |
-| `label` | The label text area. |
-| `glow` | The outer glow layer. |
-| `light` | The inner light reflection. |
+| `.mantine-Led-root` | The wrapper element. |
+| `.mantine-Led-led` | The LED indicator itself. |
+| `.mantine-Led-label` | The label text area. |
+| `.mantine-Led-glow` | The outer glow layer. |
+| `.mantine-Led-light` | The inner light reflection. |
 
-Forward a class with `attr={…}` (see below) to scope a stylesheet rule to one instance.
+Those classes are shared by every LED on the page; give one instance an `id` or a `data-*`
+hook through `attr={…}` (see below) when a rule should apply to it alone.
 
 ## Injecting Attributes
 
 The `attr={…}` channel forwards raw HTML attributes straight onto the rendered LED root —
-use it for `id`, `class`, `data-*`, ARIA attributes, or anything else not exposed as a typed
-parameter.
+use it for `id`, `data-*`, ARIA attributes, or anything else not exposed as a typed
+parameter. Don't send `class`, `className`, or `style` through it: those are managed by the
+component, and the page logs a console warning if you try.
 
-{% led color='green' attr={'class': 'status-led', 'data-service': 'api'} %}
+{% led color='green' attr={'id': 'api-led', 'data-service': 'api'} %}
 
 <br>
 
@@ -200,14 +202,14 @@ parameter.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% led color='green' attr={'class': 'status-led', 'data-service': 'api'} %}
+{% led color='green' attr={'id': 'api-led', 'data-service': 'api'} %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'led', color='green',
-          attr={'class': 'status-led', 'data-service': 'api'})
+          attr={'id': 'api-led', 'data-service': 'api'})
 ```
 {% endAccordionSection %}
 {% endAccordion %}

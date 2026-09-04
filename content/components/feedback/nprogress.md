@@ -32,6 +32,7 @@ The bar is a single `<NavigationProgress />` element — mount it once (the snip
 page), and from then on you move it with the imperative `nprogress` helpers rather than props:
 
 - `nprogress.start()` — begin trickling toward the top edge (it eases forward but never reaches 100% on its own).
+- `nprogress.stop()` — freeze the trickle where it is, leaving the bar on screen.
 - `nprogress.complete()` — fill to 100% and fade out.
 - `nprogress.set(value)` — jump to an exact percentage (0–100), e.g. tie it to upload progress.
 - `nprogress.increment()` / `nprogress.decrement()` — nudge it by a step.

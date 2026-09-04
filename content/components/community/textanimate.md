@@ -133,13 +133,13 @@ Omit any attribute to take its default.
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `animate` | `in` / `out` / `loop` / `static` / `none` | Animation mode. `in` reveals once, `loop` runs continuously, `static` shows the text without motion. |
-| `animation` | `fade` / `blur` / `scale` / `slideUp` / `slideDown` / `slideLeft` / `slideRight` (plus `*Elastic`, `blurUp`, `blurDown`) | The effect applied to each segment. |
-| `by` | `text` / `word` / `character` / `line` | Granularity the text is split into for the animation. |
-| `duration` | Number (seconds) | Length of the animation. |
-| `delay` | Number (seconds) | Delay before the animation starts. |
-| `segmentDelay` | Number (seconds) | Stagger between consecutive segments. |
-| `loopDelay` | Integer (ms) | Pause between loop cycles (`animate='loop'`). |
-| `trigger` | `inView` | Start when the text scrolls into view, instead of immediately. |
+| `animation` | `fade` (default) / `blur` / `scale` / `slideUp` / `slideDown` / `slideLeft` / `slideRight` (plus `*Elastic`, `blurUp`, `blurDown`) | The effect applied to each segment. |
+| `by` | `text` / `word` (default) / `character` / `line` | Granularity the text is split into for the animation. |
+| `duration` | Number (seconds, default `0.3`) | Length of the animation. |
+| `delay` | Number (seconds, default `0`) | Delay before the animation starts. |
+| `segmentDelay` | Number (seconds) | Stagger between consecutive segments. Left unset, it follows the chosen `animation` (roughly 0.03–0.06). |
+| `loopDelay` | Integer (ms, default `2000`) | Pause between loop cycles (`animate='loop'`). |
+| `trigger` | `mount` (default) / `inView` / `manual` | When the animation starts: as soon as the text mounts, when it scrolls into view, or not until something else starts it (`manual` leaves it still). |
 | `text` | string | Plain-text alternative to the block body (HTML-escaped). The block body wins when both are set. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element (see [Injecting Attributes](#injecting-attributes)). |
 

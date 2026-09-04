@@ -133,18 +133,28 @@ Omit any attribute to take its default. Bare flags (e.g. `autoPlay`) become `=Tr
 | `aspectRatio` | CSS ratio, e.g. `16/9` (default `16/9`) | Aspect ratio of the container. |
 | `radius` | `xs`–`xl`, a number, or a CSS length (default `md`) | Corner rounding. |
 | `angle` | `0`–`360` (default `0`) | Divider angle: `0` = vertical, `90` = horizontal. |
-| `position` | `0`–`100` | Controlled divider position. |
-| `defaultPosition` | `0`–`100` (default `50`) | Initial divider position (uncontrolled). |
-| `minDragBound` / `maxDragBound` | `0`–`100` | Constrain how far the divider can travel. |
+| `position` | `0`–`100` | Pin the divider at a fixed position — see *Good to know*. |
+| `defaultPosition` | `0`–`100` (default `50`) | Where the divider starts. |
+| `minDragBound` / `maxDragBound` | `0`–`100` (defaults `0` / `100`) | Constrain how far the divider can travel. |
 | `sliderColor` | a Mantine color | Divider line / handle color. |
 | `sliderWidth` | number (px, default `2`) | Divider line width. |
-| `keyboardStep` / `keyboardShiftStep` | number | Keyboard nudge size (and with Shift). |
+| `keyboardStep` / `keyboardShiftStep` | `1`–`50` (defaults `1` / `10`) | How far an arrow key moves the divider, on its own and with Shift held. |
 | `autoPlay` | `true` / `false` (default `false`) | Continuously slide back and forth. |
 | `autoPlaySpeed` | `1`–`100` (default `50`) | Auto-play pace (higher = faster). |
-| `autoPlayEasing` | `linear` / `ease-in` / `ease-out` / `ease-in-out` / `spring` | Auto-play easing. |
+| `autoPlayEasing` | `linear` (default) / `ease-in` / `ease-out` / `ease-in-out` / `spring` | Auto-play easing. |
 | `disabled` | `true` / `false` (default `false`) | Disable all interaction. |
 | `handleOnly` | `true` / `false` (default `false`) | Only drag from the handle, not the whole line. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element. |
+
+{% callout severity="info" title="Good to know" %}
+`position` is the *controlled* value: setting it fixes the divider there and dragging no
+longer moves it, because nothing on a static page can write the new value back. For a
+comparison readers can move, set `defaultPosition` instead.
+
+Both images fill the same box, cropped to `aspectRatio` — so give the two sources the same
+proportions, or one of them will be cropped differently from the other. The divider is
+keyboard-operable, so always set `leftAlt` and `rightAlt`.
+{% endCallout %}
 
 ## CSS Selector
 

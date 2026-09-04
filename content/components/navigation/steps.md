@@ -110,6 +110,11 @@ list as ordinary Markdown.
 With Steps on, a nested numbered list flattens into the step body rather than forming
 its own timeline. Bullet lists are never Steps, at any level.
 
+A numbered list holding **task items** (`- [ ]` / `- [x]`) is also left alone: checkboxes
+win, so the list stays a plain ordered list whose items render as checkboxes rather than
+becoming a timeline. Mixing a checkbox into a numbered list is therefore the one way to
+turn a single list back into an `<ol>` without touching the site-wide setting.
+
 **Preview**
 
 1. A top-level step — rendered as a Step.
@@ -178,6 +183,14 @@ site-wide, set `steps: false` in `aardvark.config.yaml`:
 steps: false
 ```
 
+The longer mapping form is equivalent, and is what to write if you ever want to hang more
+keys off the block:
+
+```yaml
+steps:
+  enabled: false
+```
+
 ## Attributes
 
 Steps has no tag and therefore no per-instance attributes. Its only setting is the
@@ -185,7 +198,7 @@ site-wide config flag.
 
 | Setting | Valid values | Description |
 | --- | --- | --- |
-| `steps` (in `aardvark.config.yaml`) | bool (default `true`) | `false` renders numbered lists as plain `<ol>` instead of a Steps timeline, site-wide. |
+| `steps` (in `aardvark.config.yaml`) | bool (default `true`), or a mapping with `enabled:` | `false` renders numbered lists as plain `<ol>` instead of a Steps timeline, site-wide. |
 
 ## CSS Selectors
 
@@ -198,7 +211,8 @@ A top-level numbered list becomes a client-mounted `Stepper` island (a Mantine `
 .mantine-Timeline-root           /* the timeline */
 .mantine-Timeline-item           /* a single step */
 .mantine-Timeline-itemBullet     /* the numbered badge */
-.mantine-Timeline-itemBody       /* the step's content */
+.mantine-Timeline-itemBody       /* the step's body, beside the badge */
+.mantine-Timeline-itemContent    /* the rendered Markdown inside that body */
 ```
 {% endraw %}
 

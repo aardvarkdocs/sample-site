@@ -13,4 +13,5 @@ taxonomy:
 
 Just switch back to your current plan before your next renewal. You stay exactly where you
 were, at your **original price** — even if our catalog prices happened to change in the
-meantime. Undoing a scheduled downgrade never quietly re-prices you.
+meantime. Undoing a scheduled downgrade never quietly re-prices you. Only one plan change can be
+scheduled at a time, so switch back first if you'd rather pick a different plan.

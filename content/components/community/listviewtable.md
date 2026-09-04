@@ -102,13 +102,13 @@ a container.
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `data` | JSON array string | The rows — an array of record objects. Parsed at build time; a malformed value warns and degrades to an empty array. |
-| `columns` | JSON array string | The columns — an array of `{key, title, sortable, width, minWidth, maxWidth, textAlign, sticky, noWrap, ellipsis, hidden}` objects. `key` selects the record field; `title` labels the header. |
-| `height` | CSS length (string) | Cap the table height; the body scrolls past it. |
+| `columns` | JSON array string | The columns — an array of `{key, title, sortable, resizable, draggable, width, minWidth, maxWidth, textAlign, sticky, noWrap, ellipsis, hidden}` objects. `key` selects the record field (dot notation reaches a nested one); `title` labels the header. |
+| `height` | CSS length (string, default `auto`) | Cap the table height; the body scrolls past it. |
 | `rowKey` | String | Record field to use as the unique row key. |
 | `borderRadius` | `xs`, `sm`, `md`, `lg`, `xl` | Outer container radius when `withTableBorder` is on (default `sm`). |
 | `striped` | `true` / `false` (default `false`) | Stripe alternate rows. |
 | `withTableBorder` | `true` / `false` (default `false`) | Draw a border around the table. |
-| `withColumnBorders` | `true` / `false` (default `false`) | Draw borders between columns. |
+| `withColumnBorders` | `true` / `false` (default `true`) | Draw borders between columns; set `=false` to drop them. |
 | `withRowBorders` | `true` / `false` (default `true`) | Draw borders between rows. |
 | `highlightOnHover` | `true` / `false` (default `false`) | Highlight a row on hover. |
 | `stickyHeader` | `true` / `false` (default `false`) | Keep the header row sticky while the body scrolls. |
@@ -119,7 +119,12 @@ a container.
 
 Per-column custom cell renderers (`renderCell` / `renderHeader`) are React functions, so they
 can't ride this JSON channel; columns here are plain field projections that display the record's
-value for each column `key`.
+value for each column `key`. The same goes for a function-valued `rowKey` — name the field
+instead.
+
+> **Good to know.** The table is drawn in the browser, so a reader with JavaScript turned off
+> sees an empty space where it would be. Keep anything that must be readable without scripting
+> outside the tag.
 
 ## CSS Selector
 

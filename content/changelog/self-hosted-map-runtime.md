@@ -24,8 +24,9 @@ drops the interactive map and falls back to the accessible list of locations the
 renders for readers without JavaScript — the build still succeeds, which is what makes a
 vanished map easy to overlook. Pin the version exactly: a copy that is not 0.4.0 is dropped the
 same way, since that is the version the map surface is built against. Sites scaffolded by 0.3.3
-already carry the pin. On 0.3.3 the install is required; a later release ships the runtime inside
-Aardvark itself and drops the step.
+already carry the pin. **This install requirement is 0.3.3 only** — 0.4.0 ships the runtime inside
+Aardvark and stages it automatically, so a project that installs nothing gets a working map again
+(a project with its own installed copy keeps using that one).
 
 Three knobs are gone with the CDN they pointed at: `map.maplibreVersion`, `map.maplibreJs`
 and `map.maplibreCss` no longer do anything, and are ignored without a warning — delete

@@ -39,5 +39,27 @@ correctness, and a docs generator that sometimes publishes stale pages is worse 
 one. Until we can make the skip provably safe, rebuilding everything — and keeping
 "everything" cheap — is the honest default.
 
+## What is cached, then
+
+Plenty — just not the page HTML. The expensive work that *can* be keyed honestly is:
+
+- **The island prerender.** Since 0.3.3 each page's baked island markup is stored under
+  `.aardvark-cache/prerender/` under a content key covering the page's HTML, both JS
+  bundles, your lockfile and install-state markers, the Aardvark version, the Node binary
+  and a short list of environment variables. A page whose HTML didn't move reuses its bake
+  byte-for-byte, and a page holding no island never reaches Node at all. Two gaps the key
+  can't see: an island that renders from the clock or `process.env`, and a linked package
+  edited in place.
+- **Everything fetched or highlighted at build time** — repo-browser archives, their
+  Markdown previews and highlighted source — so a rebuild doesn't re-download or re-render
+  what it already has.
+- **The whole-site PDF**, which a site can republish for `pdf.reuseForDays` instead of
+  re-rendering every page into it.
+
+Which is the shape of the honest answer: cache the parts whose inputs you can enumerate,
+re-render the part whose inputs you can't. If you want the fastest possible loop while
+authoring, `vark dev --no-ssr` drops island prerendering too — at the cost of dev pages no
+longer matching what `vark build` publishes, so verify with a real build before you ship.
+
 The dev-loop details live in the [`dev` command docs](/cli/), and the
 [changelog](/changelog/) has the release notes.

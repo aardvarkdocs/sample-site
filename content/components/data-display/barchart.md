@@ -7,10 +7,22 @@ description: "The built-in barchart tag — a bar chart from JSON data and serie
 
 A **bar chart** for comparing values across categories. Give it the rows in `data` (a JSON array
 of objects) and the bars in `series` (a JSON array of `{name, color}`), with `dataKey` naming the
-category axis. Renders in the browser and hydrates into an interactive island.
+category axis. Several series put their bars side by side in each category group, and hovering a
+group opens a tooltip with its values.
 
 Use it as `{% raw %}{% barchart %}{% endraw %}` in Markdown, or call it from Python logic (loops,
 snippets) via `component('aardvark', 'barchart', …)`.
+
+> **The charts need the `charts` component library.** Chart tags resolve against
+> [`@mantine/charts`](https://mantine.dev/charts/getting-started/), which a site opts into: the
+> package has to be installed **and** a `charts:` entry has to be declared under
+> `componentLibraries:` in your theme's `theme.yaml`. Without it the chart renders nothing and
+> the build reports an unknown component library. A site scaffolded by `vark new` installs the
+> package but ships no `theme.yaml` — add one to turn the chart tags on. This site's copy, in
+> `themes/vark/theme.yaml`, is a working example.
+>
+> Charts are drawn **in the browser** (they measure their live container), so they are not part
+> of the pre-rendered HTML and do not appear with JavaScript turned off.
 
 ## A basic bar chart
 
@@ -47,12 +59,13 @@ component('aardvark', 'barchart', h=260, dataKey='product', withLegend=True,
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `data` | JSON array of row objects | The chart rows. |
-| `series` | JSON array of `{name, color}` | One bar series per entry. |
+| `data` | JSON array of row objects | The chart rows. Malformed JSON warns during the build and draws an empty chart. |
+| `series` | JSON array of `{name, color}` | One bar series per entry. `name` is the row field to plot; `color` is a theme color with a shade (`violet.6`) or any CSS color. |
 | `dataKey` | string | The row field used for the category axis. |
 | `h` | integer (px, default `300`) | Chart height. |
-| `unit` | string | Unit appended to axis/tooltip values. |
-| `withLegend` | bool (`true` / `false`) | Show the legend. |
+| `unit` | string | Unit appended to the value-axis ticks and the tooltip values. |
+| `withLegend` | bool (`true` / `false`, default `false`) | Show the legend. |
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="BarChart"]` (or the more specific `[data-aardvark-lib="charts"][data-aardvark-island="BarChart"]` when several libraries share the page) — or through the Mantine Styles API classes (`.mantine-BarChart-root` and its inner parts):

@@ -142,15 +142,17 @@ component('aardvark', 'list', items='["Pipe in a | value", "A plain item", "Anot
 
 Items render inline Markdown, so `` `code` `` and `[links]` format inside each item.
 
-{% list icon='arrow-right' items='Run `vark build` | Ship a [static site](https://aardvark.dev) | Watch it **just work**' %}
+{% list icon='arrow-right' items='Run `vark build` | Ship a [static site](https://aardvarkdocs.com) | Watch it **just work**' %}
 
 To compose items out of *other built-in tags* (Code, Mark, …), build the item strings in
-Python and pass them as a list — the call form lets you mix tag output into each item.
+Python and hand them over as a JSON array — `json.dumps` is the reliable way to do that,
+since it quotes and escapes each item for you no matter what it contains.
 
 {%
+import json
 run = "Run " + component('aardvark', 'code', children='vark build')
 ship = "Ship a " + component('aardvark', 'mark', color='lime', children='static site')
-page.print(component('aardvark', 'list', icon='arrow-right', items=[run, ship]))
+page.print(component('aardvark', 'list', icon='arrow-right', items=json.dumps([run, ship])))
 %}
 
 <br>
@@ -159,7 +161,7 @@ page.print(component('aardvark', 'list', icon='arrow-right', items=[run, ship]))
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% list icon='arrow-right' items='Run `vark build` | Ship a [static site](https://aardvark.dev) | Watch it **just work**' %}
+{% list icon='arrow-right' items='Run `vark build` | Ship a [static site](https://aardvarkdocs.com) | Watch it **just work**' %}
 ```
 {% endraw %}
 {% endAccordionSection %}
@@ -167,9 +169,10 @@ page.print(component('aardvark', 'list', icon='arrow-right', items=[run, ship]))
 {% raw %}
 ```aardvark
 {%
+import json
 run = "Run " + component('aardvark', 'code', children='vark build')
 ship = "Ship a " + component('aardvark', 'mark', color='lime', children='static site')
-page.print(component('aardvark', 'list', icon='arrow-right', items=[run, ship]))
+page.print(component('aardvark', 'list', icon='arrow-right', items=json.dumps([run, ship])))
 %}
 ```
 {% endraw %}
@@ -180,7 +183,7 @@ page.print(component('aardvark', 'list', icon='arrow-right', items=[run, ship]))
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `items` | Pipe-separated string (`First \| Second`) or a JSON array; Python also accepts a list | The list items. Each renders inline Markdown. Empty entries are dropped. |
+| `items` | Pipe-separated string (`First \| Second`), or a JSON array of strings | The list items. Each renders inline Markdown. Empty entries are dropped, so a trailing `\|` adds no blank item. |
 | `type` | `unordered` (default) `ordered` | Bulleted or numbered list. |
 | `size` | `xs` `sm` `md` `lg` `xl` | Text size. |
 | `spacing` | A Mantine size token (`xs`–`xl`) | Gap between items. |
@@ -189,6 +192,14 @@ page.print(component('aardvark', 'list', icon='arrow-right', items=[run, ship]))
 | `icon` | A [Tabler](https://tabler.io/icons) icon name (e.g. `circle-check`) | Used as the bullet for every item. |
 
 Items render inline Markdown, so `**bold**`, `` `code` ``, and `[links]` all format.
+
+{% callout severity="info" title="Good to know" %}
+- **From Python, pass the JSON as a string** — `items=json.dumps([...])`. A bare Python list
+  arrives as one item, not a list.
+- **A malformed JSON array renders as a single item** rather than failing the build.
+- **`icon` takes a lowercase Tabler name** (`circle-check`). Capitals, spaces or a Font Awesome
+  class are ignored and the list keeps its normal bullets.
+{% endCallout %}
 
 ## CSS Selectors
 
@@ -203,6 +214,7 @@ Target the rendered element through its island marker, `[data-aardvark-island="L
 .mantine-List-root { }
 .mantine-List-item { }
 .mantine-List-itemWrapper { }
+.mantine-List-itemIcon { }
 .mantine-List-itemLabel { }
 ```
 {% endraw %}

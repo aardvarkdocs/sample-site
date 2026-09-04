@@ -26,15 +26,19 @@ depletion date. No "≈N answers" marketing math.
 **cap-and-hold**: paid AI pauses, readers fall back to free models, and your max possible
 bill is your subscription price plus any fixed add-on-seat charges and any overflow already
 incurred this month. If you opt into pay-as-you-go overflow, the dashboard also includes
-whatever remains under the cap *you* set. Raising that cap past 2× your allowance asks for
-an explicit acknowledgment,
-once, because a large overage should be a decision rather than a surprise.
+whatever remains under the cap *you* set — and raising that cap past 2× your allowance asks
+for an explicit acknowledgment, once, because a large overage should be a decision rather
+than a surprise. A third setting, **shutoff**, stops all AI including free models until the
+next month's allowance arrives, for anyone who would rather the panel go quiet than keep
+answering.
 
 **Guardrails assume something will go wrong.** An automatic safety brake pauses paid AI
-when spending runs far above your account's normal pattern — one click resumes it.
-Concurrent paid requests are capped per account. And we're precise about our own
-precision: the cutoff stops within roughly one request's cost of your limit, not to the
-exact cent, and the docs say so.
+when spending runs far above your account's normal pattern — one click resumes it, and it
+guards every account, free ones included, because a scraped embed or a looping script
+doesn't check which plan you are on first. Concurrent paid requests are capped per account;
+past the cap a request gets a brief `429` with a `Retry-After` rather than queueing up a
+bill. And we're precise about our own precision: the cutoff stops within roughly one
+request's cost of your limit, not to the exact cent, and the docs say so.
 
 Some smaller choices fell out of the same principle. Unused allowance rolls over one
 month, capped at about two months banked, so a quiet period can't build into a bill-shaped

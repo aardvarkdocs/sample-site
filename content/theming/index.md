@@ -26,7 +26,8 @@ the full source. Edit the files right there in `themes/vark/`.
 For a one-off tweak where you don't want to fork the whole theme, drop a single file in
 **`templates/`** instead: any file there overrides the same-named file in the active
 theme (delete it to fall back). So `themes/vark/` is "I own this theme" and `templates/`
-is "I'm patching one file of it".
+is "I'm patching one file of it". A layout override there is named `default.html`; the
+older name `base.html` still works but warns at build time.
 
 Theme CSS/JS/asset files must sit at the **top level** of the theme (or `templates/`) —
 only top-level files are emitted to `/_aardvark/`, with per-build fingerprinted
@@ -44,6 +45,10 @@ instead, where the whole tree is copied and fingerprinted.
   `/_aardvark/theme-<sha>.css` at build time. See [Colors](#colors). In source
   templates, keep writing `/_aardvark/theme.css`; Aardvark rewrites it during the build.
 - **`themes/vark/color-scheme.js`** — light/dark handling (see [Light & dark mode](/theming/dark-mode/)).
+- **`themes/vark/theme.yaml`** — optional. A manifest of extra React component libraries
+  the theme makes callable from Markdown beyond Mantine and your own snippets. The packaged
+  theme ships none; this site's copy powers
+  [Component libraries](/components/extras/component-libraries/).
 
 ## Selecting a theme
 
@@ -76,7 +81,10 @@ pagetype: landing      # renders with the theme's landing.html
 `pagetype: landing` resolves `landing.html` through the same cascade as the default
 layout (your `templates/landing.html` first, then the active theme's). A `pagetype:`
 that names a template the theme doesn't have warns at build time and falls back to
-`default.html`, so a misspelling degrades gracefully instead of failing.
+`default.html`, so a misspelling degrades gracefully instead of failing. The value must
+be a bare template name — anything with a slash or `..` in it is rejected with a warning
+and the page renders with `default.html`; `pagetype: default` is the same as leaving it
+unset.
 
 This site ships a `landing.html` in its theme and a page that opts into it. Here's the
 whole template, read straight from the theme file so it never drifts from what actually
@@ -104,8 +112,19 @@ addition to the usual `data`/`site`/`config`/`page`):
 | `breadcrumbs_html` | The breadcrumb trail (a Mantine island), or `""` |
 | `toc_html` | The on-this-page table of contents |
 | `page_url` | The current page's URL |
+| `full_title` | The complete `<title>` text |
+| `seo_head` | The canonical, robots, Open Graph / Twitter, hreflang, and JSON-LD tags |
+| `theme_style` | The inline `<style>` with the resolved theme variables (palette, syntax colors, background image) |
+| `layout_class` | The page's `mode:` class for the layout grid (`aardvark-mode-wide`, …), `""` for the default layout |
+| `lang` | The page's language code |
+| `brand_html` / `tabs_html` | The header brand and the horizontal tab bar |
+| `top_buttons_html` / `search_html` | The header call-to-action buttons and the search box |
+| `footer_html` / `powered_by_html` | The site-wide footer and the Powered-by line (`""` when off) |
+| `banner_html` / `banner_id` | The announcement banner and its id (`""` when there is none) |
 | `css_files` / `js_files` | Your root CSS/JS assets, already rewritten to fingerprinted build URLs |
 | `head_extra` / `body_extra` | Integration + islands tags |
+| `t(key)` / `escape(s)` | Translate a UI string into the page's language; escape a string for use in an HTML attribute |
+| `asset(path)` | Resolve a stable path (`/_aardvark/theme.css`, `/img/logo.svg`) to its fingerprinted build URL |
 
 Because it's the same engine, you can use Python, `component(...)`, and
 `asset(path)` in the layout too — e.g. embed a Mantine component in the header
@@ -120,19 +139,29 @@ still shows your static `404.md`, just without the "Were you looking for…" isl
 
 ## Nav
 
-The sidebar comes from the `nav:` tree in `aardvark.config.yaml`: groups with
-`items`, each item a `label` + `link`. The current page is highlighted
-automatically.
+The horizontal tabs are the only navigation configured in `aardvark.config.yaml`
+(`tabs:`, each with a `label`, a `link`, and an `id`). The left sidebar is a property
+of the content: a page joins a tab's menu with `menu: <tab-id>` in its front matter,
+nests under another page with `parent: <id>`, orders itself with `weight:`, and can
+put a section divider above itself with `heading:`. Each tab gets its own isolated
+tree, and the current page is highlighted automatically with its ancestor branches
+expanded. See [Navigation menus](/authoring/navigation/) for the full mechanism,
+including sections that assemble themselves from folders.
 
 ## Breadcrumbs
 
 Every page (except the home page) gets a breadcrumb trail at the top of the
 content, rendered with Mantine's
-[Breadcrumbs](https://mantine.dev/core/breadcrumbs/) component. The trail is **menu-based**:
-Aardvark finds the current page in your `nav:` tree and shows the path of menu
-labels to it — e.g. a page under the *Buttons & actions* group shows
-`Home / Buttons & actions / Button`. Pages absent from the nav fall back to
-`Home / <page title>`.
+[Breadcrumbs](https://mantine.dev/core/breadcrumbs/) component. The trail is
+**menu-based**, not URL-based: Aardvark finds the page in its tab's sidebar tree and
+reads *tab → section → ancestors → page*. It leads with the page's owning tab, then
+the `heading:` divider that groups the page (if there is one), then each ancestor
+branch, then the page itself — on this site the Installation page shows
+`Docs / Getting Started / Installation`, and the Button reference shows
+`Components / Buttons / Button`. A page that belongs to no tab menu falls back to
+`Home / <page title>` (its `navtitle` when set). Ancestor pages link to themselves,
+the tab crumb links when the tab has a `link:`, a section divider is a label only,
+and the last crumb — the current page — never links.
 
 It's on by default. Turn it off — or tune it — with a top-level `breadcrumbs:`
 block in `aardvark.config.yaml`:
@@ -144,16 +173,17 @@ breadcrumbs: false            # disable entirely
 ```yaml
 breadcrumbs:
   enabled: true               # default
-  home: true                  # prepend a linked Home crumb (default true)
-  homeLabel: Home             # its label (localized like nav labels)
-  separator: "/"              # Mantine's separator (defaults to "/")
+  home: true                  # keep the leading crumb — the owning tab, or Home (default true)
+  homeLabel: Home             # label of the Home fallback crumb (localized like nav labels)
+  separator: "/"              # the separator between crumbs (defaults to "/")
 ```
 
 Individual pages can opt out without touching the config: set `breadcrumb: false`
-in a page's front matter to hide the trail on just that page. The Changelog does
-this, since a `Home / Changelog` crumb adds nothing above its title. This hides
-only the *visible* trail — the page's hover-card preview and its `BreadcrumbList`
-structured data still reflect its place in the hierarchy.
+in a page's front matter to hide the trail on just that page. This site's Changelog,
+Blog, and Support pages all do it — each is the landing page of its own tab, so its
+trail would just repeat the tab's name above the title (`Changelog / Changelog`).
+This hides only the *visible* trail — the page's hover-card preview and its
+`BreadcrumbList` structured data still reflect its place in the hierarchy.
 
 Labels and links are localized per language just like the sidebar nav. The
 trail is rendered into the `breadcrumbs_html` layout variable, so editing
@@ -191,8 +221,8 @@ $table-stripe-light:    $neutral-light;  $table-stripe-dark:    $neutral-dark;  
 $table-header-bg-light: $fg-light;       $table-header-bg-dark: $fg-dark;        // header band
 ```
 
-Because it's real Sass, you can **derive** shades instead of hand-picking each one — the accent
-fill is just `rgba($primary-light, 0.12)`, so it tracks the brand automatically. The full set of
+Because it's real Sass, you can **derive** shades instead of hand-picking each one — the
+active-nav fill is just `rgba($primary-light, 0.12)`, so it tracks the brand automatically. The full set of
 variables — chrome, brand, code, tables, diff, plus advanced semantic colors (API method chips,
 status dots, shadows) — sits grouped and commented at the top of `theme.scss`.
 
@@ -275,8 +305,9 @@ Every page ends with a small **Powered by Aardvark** footer linking to
 [aardvarkdocs.com](https://aardvarkdocs.com). Its logo swaps with the active light/dark
 scheme, just like the header brand.
 
-It's on by default. Sites with [build-time AI](/ai-features/) enabled — any `ai:` feature —
-can remove it from `aardvark.config.yaml`:
+It's on by default. Sites with any [build-time AI](/ai-features/) feature enabled —
+`ai.frontmatter`, `ai.examples`, or `ai.skills` (the reader-facing assistant alone doesn't
+count) — can remove it from `aardvark.config.yaml`:
 
 ```yaml
 poweredBy: false              # honored on the AI/paid tier
@@ -309,8 +340,9 @@ then render as plain `<pre><code>` with no token coloring.
 
 `theme` and `themeDark` accept any Pygments style — for example `monokai`, `dracula`,
 `nord`, `github-dark`, `solarized-light`, `solarized-dark`, or `gruvbox-dark` — plus the
-built-in `one-light` / `one-dark` pair used by default. A dark preset also sets the code
-block's background so themes like Monokai look right.
+built-in `one-light` / `one-dark` pair used by default. A named preset also sets the code
+block's background so themes like Monokai look right. A name Pygments doesn't know warns
+at build time and keeps the built-in default.
 
 To fine-tune, override individual token colors by name (these win over the preset).
 Light colors go under `colors:`, dark under `colorsDark:`:

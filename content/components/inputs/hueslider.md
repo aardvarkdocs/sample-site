@@ -7,8 +7,8 @@ description: "The built-in hueslider tag — pick a hue (0–360) along the colo
 
 A **built-in** tag for a hue slider — a thin track of the full color spectrum for picking a
 hue from 0 to 360. It's one of Mantine's color-picker building blocks. It ships with Aardvark,
-so it's a single tag with no setup. Set `defaultValue` for the starting hue, and tune the
-track with `size` and `radius`.
+so it's a single tag with no setup. Set `defaultValue` for the starting hue and `size` for
+the thickness of the track.
 
 Use it as `{% raw %}{% hueslider %}{% endraw %}` in Markdown, or call it from Python logic
 (loops, snippets) via `component('aardvark', 'hueslider', …)`.
@@ -18,6 +18,7 @@ Use it as `{% raw %}{% hueslider %}{% endraw %}` in Markdown, or call it from Py
 ### Basic hue
 
 Set a `defaultValue` from 0 to 360 (the starting hue). Drag along the spectrum to change it.
+Leave it off and the slider starts at `0` — red, the left end of the track.
 
 {% hueslider defaultValue=120 %}
 
@@ -38,11 +39,12 @@ component('aardvark', 'hueslider', defaultValue=120)
 {% endAccordionSection %}
 {% endAccordion %}
 
-### Sizes and radius
+### Sizes
 
-`size` sets the track thickness (`xs`–`xl`) and `radius` rounds its ends (`xs`–`xl`).
+`size` sets the thickness of the track and the size of the thumb, from `xs` to `xl`
+(default `md`).
 
-{% hueslider defaultValue=0 size='xl' radius='xl' %}
+{% hueslider defaultValue=0 size='xl' %}
 
 {% hueslider defaultValue=200 size='sm' %}
 
@@ -52,14 +54,15 @@ component('aardvark', 'hueslider', defaultValue=120)
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% hueslider defaultValue=0 size='xl' radius='xl' %}
+{% hueslider defaultValue=0 size='xl' %}
+
 {% hueslider defaultValue=200 size='sm' %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'hueslider', defaultValue=0, size='xl', radius='xl')
+component('aardvark', 'hueslider', defaultValue=0, size='xl')
 component('aardvark', 'hueslider', defaultValue=200, size='sm')
 ```
 {% endAccordionSection %}
@@ -112,10 +115,17 @@ Omit any attribute to take its default.
 
 | Attribute | Values | Description |
 | --- | --- | --- |
-| `defaultValue` | integer `0`–`360` | Starting hue — the reader can drag it. |
-| `size` | `xs`–`xl` | Track thickness. |
-| `radius` | `xs`–`xl` | Corner rounding of the track ends. |
+| `defaultValue` | integer `0`–`360` | Starting hue — the reader can drag it. Defaults to `0` (red). |
+| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Thickness of the track and size of the thumb. Defaults to `md`. |
 | `attr` | raw-HTML map | Extra HTML attributes, passed as `attr={…}`. |
+
+{% callout severity='info' title='The change event fires when the drag ends' %}
+The slider keeps its own value as the reader drags, and emits one `change` event when the
+drag finishes or an arrow key commits a step — not on every pixel of movement. So an
+`attr={'onchange': …}` handler runs once per adjustment rather than hundreds of times, and
+reads the hue the reader settled on. Arrow keys move the hue in 5% steps of the full
+spectrum (18°) while the track has focus.
+{% endCallout %}
 
 ## CSS Selectors
 

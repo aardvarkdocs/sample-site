@@ -45,9 +45,11 @@ const point = { x: 10, y: 20 }
 
 ## Showing errors
 
-By default Twoslash treats a compiler error as a build problem. To *show* an error on
-purpose, declare its code with `// @errors:` — the block then renders with the squiggle and
-the message inline instead of failing the build:
+A block that doesn't type-check doesn't get Twoslash treatment: it falls back to a plain
+highlighted code block and `vark build` warns, naming the page and the compiler error, so
+a broken example can't ship silently as a working one. To *show* an error on purpose,
+declare its code with `// @errors:` — the block then renders with the squiggle and the
+message inline, with no warning:
 
 ```ts twoslash
 // @errors: 2322
@@ -92,17 +94,26 @@ twoslash:
   timeout: 120              # seconds to allow the render before falling back (default: 120)
 ```
 
-Set `twoslash: false` to disable the feature everywhere, or add `twoslash: false` to a single
-page's front matter to disable it just there — useful for a page of deliberately incomplete
-snippets. Either way, a `twoslash`-tagged fence falls back to a normal highlighted code block.
+Set `twoslash: false` (or `twoslash: {enabled: false}`) to disable the feature everywhere, or
+add `twoslash: false` to a single page's front matter to disable it just there — useful for a
+page of deliberately incomplete snippets. Either way, a `twoslash`-tagged fence falls back to
+a normal highlighted code block.
+
+Every `twoslash` block on the site is rendered in **one** pass by a single Node process: the
+TypeScript program is built once and reused, so the first block costs a few seconds and the
+rest are nearly free. `timeout` bounds that whole pass — if it's hit, the build warns and
+*every* block falls back to plain highlighting for that build. Raise it only for a very large
+set of blocks. There is no cache across builds; the pass runs on every `vark build`.
 
 ## Requirements
 
-Twoslash needs Node and three build-time packages — `shiki`, `@shikijs/twoslash`, and
-`typescript` — which ship in the scaffolded `package.json`, so `npm install` once and
-`vark build` renders your twoslash blocks. If Node or the packages aren't available (or you
-build with `--no-bundle`), tagged blocks degrade gracefully to plain highlighted code and the
-build prints a one-line notice — it never fails the build over a missing toolchain.
+Twoslash needs Node and four build-time packages — `shiki`, `@shikijs/twoslash`, `twoslash`,
+and `typescript`. They ship in the scaffolded `package.json`, so `npm install` once and
+`vark build` renders your twoslash blocks; they're also part of the JavaScript toolchain
+Aardvark bundles, so a project with no `node_modules` of its own still renders them. If Node
+or the packages aren't available (or you build with `--no-bundle`), tagged blocks degrade
+gracefully to plain highlighted code and the build warns once — it never fails the build
+over a missing toolchain.
 
 **Keep twoslash snippets short.** So the hover and `// ^?` popovers can escape the block, a
 `twoslash` block isn't horizontally scrollable the way a plain code block is — a very long line

@@ -15,10 +15,13 @@ automatically — there's no special syntax or component to reach for:
 
 - **Sortable headers.** Each column header is a button: click it to sort by that
   column, click again to reverse. Columns whose cells are all numbers sort
-  numerically (commas, a leading currency sign and a trailing `%` are tolerated);
-  everything else sorts as text.
+  numerically (commas, a leading `$`, `£` or `€` and a trailing `%` are tolerated;
+  empty cells always sort last); everything else sorts as text, in natural order
+  (`v2` before `v10`, case-insensitive).
 - **Filter box.** Hover a table — or tab into it — and a search field appears
-  above it; typing filters the rows live.
+  above it; typing filters the rows live, matching anywhere in a row's text. When
+  nothing matches, a *No matching rows* line takes the rows' place; **Escape** clears
+  the box and puts it away.
 - **Styling.** The header row is filled with the body text color (with the page
   background as its text), and rows are lightly striped for readability. Both
   track the active light/dark color scheme.
@@ -65,10 +68,16 @@ rendered with the {% raw %}`{% openapi %}`{% endraw %} directive. Either way the
 table stays styled, striped and horizontally scrollable — only the interactivity is
 removed.
 
+Write the switches as bare YAML booleans. Only a literal `false` turns a feature off;
+a quoted `"false"` is a non-empty string and leaves it on.
+
 ## Notes
 
 - Enhancement applies to any table with a header row and at least two body rows.
   Smaller tables are left as static — but still styled — tables.
+- Tables rendered inside an island — the API reference, a `{% raw %}{% component('Table') %}{% endraw %}`
+  — are left to that component, which brings its own sorting and filtering where it
+  has any; the enhancer only touches the tables your Markdown produces.
 - The filter field floats just above the table so revealing it never shifts the
   table (which keeps the sortable headers from moving out from under the cursor).
   If you wrap tables in a container with `overflow: hidden`, leave it room above —

@@ -54,6 +54,21 @@ Le binaire embarque le thème par défaut et le runtime des îlots, il fonctionn
 donc immédiatement. Node n'est nécessaire qu'à la *compilation du site* pour les
 îlots interactifs — voir [Déploiement](/deployment/) pour les détails.
 
+Toutes les archives de release simples — tarballs macOS et Linux, zip Windows — ne
+contiennent que l'exécutable `vark`, sans alias `aardvark` : créez votre propre lien
+symbolique si vous voulez le nom long à partir d'une archive téléchargée.
+
+## Rester à jour
+
+`vark update` interroge le flux des releases pour savoir si une version plus
+récente existe et indique comment l'obtenir — il ne télécharge ni ne remplace
+jamais le binaire lui-même : mettez à jour avec `brew upgrade aardvark` ou en
+téléchargeant la nouvelle archive. Toute autre commande, lancée dans un terminal
+interactif, effectue la même vérification en arrière-plan et affiche un rappel
+d'une ligne si vous êtes en retard. Définissez `AARDVARK_NO_UPDATE_CHECK=1` pour
+le faire taire ; il est déjà silencieux quand la sortie n'est pas un terminal,
+pour `--help` / `--version` et pour la complétion du shell.
+
 ## Fonctionnalités IA
 
 Les fonctionnalités IA d'Aardvark sont intégrées au binaire — rien d'autre à

@@ -13,9 +13,10 @@ Call `component('Name', **props)` to drop a React component into a page. At
 build time Aardvark records a mount point and bundles the component; in the browser
 it mounts as an **island** wrapped in a Mantine provider.
 
-> **How islands render:** by default the build **prerenders** each widget to
-> static HTML (`islands.ssr`, on out of the box), so crawlers and no-JS readers
-> see real markup and the first paint doesn't shift; the bundled runtime then
+> **How islands render:** by default the build **prerenders** each SSR-capable
+> widget to static HTML (`islands.ssr`, on out of the box) — the browser-only ones,
+> most community widgets and the native map, mount on the client instead — so
+> crawlers and no-JS readers see real markup and the first paint doesn't shift; the bundled runtime then
 > hydrates that markup on load. Set `islands: false` to skip the prerender —
 > islands then mount client-side with React (`createRoot`) on load. A build
 > *without* the Node toolchain is a different case: it can't produce the bundle
@@ -41,13 +42,18 @@ renders, live:
 - All other keyword args become props. They must be JSON-serializable, so pass
   data and `defaultValue`/`defaultChecked` rather than functions. To attach an
   event handler or any raw HTML attribute, use the `attr` argument (below).
+- A name nothing registers — a typo, or a Mantine export your installed version
+  doesn't have — doesn't fail the build: the call renders as an HTML comment (so the page
+  shows nothing there) and `vark build` warns which name it couldn't find, on which pages.
+  The `components` variable lists every name that *is* registered (see
+  [What's in scope](/authoring/templating/#whats-in-scope)).
 
 See the [Component gallery](/components/) for live examples.
 
 ## Custom snippets
 
-Put a React component in `snippets/` and reference it by filename. This site
-includes `snippets/ProductCard.jsx`:
+Put a React component in `snippets/` (a `.jsx` or `.tsx` file) and reference it by
+filename. This site includes `snippets/ProductCard.jsx`:
 
 {% raw %}
 ```aardvark
@@ -133,20 +139,26 @@ work inline (here an IIFE; swap in a `fetch`, analytics, a modal — anything):
 '''}) %}
 
 Values may be strings, numbers, or booleans (`True` → a bare boolean attribute;
-`False`/`None` → omitted). They're applied with `setAttribute`, so a value can only
-set an attribute on that one element — it can never inject markup elsewhere.
+`False`/`None` → omitted). A plain attribute is applied with `setAttribute`, so a value
+can only set an attribute on that one element — it can never inject markup elsewhere.
+An `on*` handler is wired as an event listener on that element: inside it `this` is the
+element, `event` is the event, and returning `false` calls `preventDefault()`. The
+handler's source stays inspectable on the element as `data-aardvark-event-<name>`.
 
 - Use `attr` for **event handlers** (`onclick`, …), **`data-*`** / **`aria-*`**,
   `id`, and other custom attributes.
 - Use normal **props** for `className` and `style` — React manages those, and an
   `attr` would fight it (Aardvark warns in the console if you try).
 - A few Mantine components render only context and have no DOM node of their own —
-  `Accordion`, `Combobox`, `MenuSub`, `NumberFormatter`. `attr` on these
+  `Accordion`, `MenuSub`, `NumberFormatter`. `attr` on these
   applies only at the top level; nested, put the `attr` on a child element instead.
   (`Menu`, `Popover`, and `HoverCard` *do* take `attr`, but it lands on the rendered
-  `.Dropdown` overlay — not the trigger.)
+  `.Dropdown` overlay — not the trigger; on `Combobox` it lands on the input.)
 - Custom snippets support `attr` when they **forward their ref** to a root element —
-  see `snippets/ProductCard.jsx`. Every Mantine component supports it out of the box.
+  see `snippets/ProductCard.jsx` and [Custom snippets](/authoring/custom-snippets/#write-one).
+  Every Mantine component supports it out of the box.
+- An attribute name that isn't well-formed, or that the site's `attrPolicy` (below)
+  rejects, is **dropped with a build warning** — never applied, never fatal.
 
 A **custom class or style** is the one case to reach past `attr`: pass them as the
 `className` and `style` props so Mantine *merges* them with its own. (Setting `class`
@@ -173,6 +185,11 @@ attrPolicy:
   deny: ['on*']                 # block inline event handlers
   # allow: ['data-*', 'aria-*', 'id']   # …or allowlist-only
 ```
+
+Matching is case-insensitive and exact unless the pattern ends in `*`. `deny` always
+wins; a non-empty `allow` turns the policy into an allowlist, so list every name you
+still want — `data-*` and `aria-*` aren't exempt. The policy covers every `attr` on the
+site, including one forwarded by a tag such as `{% raw %}{% button onclick=… %}{% endraw %}`.
 
 ## Nesting
 

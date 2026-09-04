@@ -78,7 +78,7 @@ Maximum number of results to return. Must be between **1** and **100**.
 {% endField %}
 
 {% field name="petId" type="string" required=true location="path" %}
-The unique identifier of the pet, from a prior list response.
+The unique identifier of the pet, from a prior [list response](/components/extras/openapi/).
 {% endField %}
 
 {% field name="X-Api-Version" type="string" deprecated=true location="header" %}
@@ -163,7 +163,7 @@ badge. Nothing else differs — the two render identically.
 
 {% raw %}
 ```aardvark
-{% field name="petId" type="integer" required=true location="path" %}
+{% field name="petId" type="string" required=true location="path" %}
 A request parameter — the `location` badge marks where it rides.
 {% endField %}
 
@@ -201,7 +201,7 @@ The lifecycle state of the pet. One of:
 - `pending` — an adoption is in progress.
 - `sold` — no longer available.
 
-See the status guide for the full state machine.
+See the [status guide](/components/extras/openapi/) for the full state machine.
 {% endField %}
 ```
 {% endraw %}
@@ -212,7 +212,7 @@ See the status guide for the full state machine.
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `name` | Any string (**required**) | The field name, shown in monospace. The row's anchor. |
+| `name` | Any string (**required**) | The field name, shown in monospace. |
 | `type` | Any string | The field's type (`string`, `integer`, `array`, …), shown as dimmed mono text. |
 | `required` | `true` / `false` (default) | Shows a `required` badge when true. |
 | `deprecated` | `true` / `false` (default) | Shows a `deprecated` badge when true. |
@@ -220,6 +220,15 @@ See the status guide for the full state machine.
 | `location` | `query`, `path`, `body`, `header`, `cookie` (or any string) | A color-coded badge showing where the parameter is sent in the request. Omit it for a response field. |
 | `attr` | `{…}` | Raw HTML attributes forwarded onto the rendered field row (see below). |
 | *(body)* | Markdown | The description, written between the open and close tags (`children=` from Python). |
+
+{% callout title="Good to know" %}
+A row carries **no `id` of its own** — the field name is not an anchor. To link straight to one,
+give it an id yourself with `attr={'id': '…'}` ([below](#injecting-attributes)).
+
+An agent reading the page's Markdown twin still gets each row: the name, type, badges, location,
+and default are folded into one identity line above the description, so a hand-authored reference
+survives into `llms-full.txt` intact.
+{% endCallout %}
 
 ## CSS Selectors
 

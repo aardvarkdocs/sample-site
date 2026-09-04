@@ -141,6 +141,16 @@ Omit any attribute to take its default. Bare flags (e.g. `loop`) become `=True`.
 | `loop` | `true` / `false` (default `false`) | Wrap from the last card to the first and back. |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element. |
 
+{% callout severity="info" title="Good to know" %}
+`data` is parsed as JSON at build time. A value that isn't a valid JSON array raises a build
+warning and renders an empty stack rather than failing the build, so an empty-looking
+component usually means a bracket or a quote. Because the tag's value is single-quoted, keep
+the JSON's own strings in double quotes.
+
+Each `view` is rendered as text — Markdown and other tags written there appear literally.
+Every `value` must be unique: it identifies the card, and `defaultValue` matches against it.
+{% endCallout %}
+
 ## CSS Selector
 
 The island mounts under a stable wrapper you can target from your own CSS:

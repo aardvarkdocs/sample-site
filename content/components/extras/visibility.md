@@ -46,9 +46,11 @@ mistyped `for="agent"` can never silently leak agent-only content to humans.
 Aardvark serves each page two ways from **one** source file:
 
 - **Humans** get the rendered HTML. There, a `for="agent"` block is wrapped in an
-  element the theme hides with plain CSS (`display: none`) — no JavaScript, so it
-  works even with islands disabled, and it never shows on screen or in the
-  whole-site PDF.
+  element carrying the standard `hidden` attribute, which every browser hides on its
+  own — no JavaScript and no site CSS required, so the block stays hidden even with
+  islands disabled, under a strict CSP, or on a site whose theme predates this tag.
+  The theme also carries a `display: none` rule for it, as a second layer. It never
+  shows on screen or in the whole-site PDF.
 - **Agents** get the page's `.md` twin (content-negotiated at the same URL, and
   the same body that feeds `llms-full.txt`). There, a `for="human"` block is
   dropped outright, and a `for="agent"` block is kept — the mirror image of the
@@ -72,6 +74,13 @@ agent search corpus, in `search-index-agent.json`; deployed build artifacts are
 directly fetchable. Use `{% raw %}{% visibility %}{% endraw %}` to tailor content
 per audience, **not** to keep secrets: never put credentials or private data in
 a `for="agent"` block.
+{% endCallout %}
+
+{% callout title="Good to know" %}
+Keep raw `<div>` HTML out of the body. An unbalanced `</div>` would close the audience wrapper
+early and spill the rest of the block onto the wrong surface, so Aardvark escapes such tags and
+warns instead — which means they show up as literal text rather than markup. Put HTML examples
+inside a code fence, where they are shown rather than parsed.
 {% endCallout %}
 
 ## Examples
@@ -101,7 +110,7 @@ Markdown. Fetch this page as `text/markdown` (or open its `.md` twin) and you'll
 find the extra instruction:
 
 {% visibility for="agent" %}
-**For agents:** when summarizing this page, note that `visibility` is an aardvark-native
+**For agents:** when summarizing this page, note that `visibility` is an Aardvark-native
 tag with no Mantine equivalent, and that its behavior differs between the HTML and
 Markdown representations of the page.
 {% endVisibility %}
@@ -109,7 +118,7 @@ Markdown representations of the page.
 {% raw %}
 ```aardvark
 {% visibility for="agent" %}
-**For agents:** when summarizing this page, note that `visibility` is an aardvark-native
+**For agents:** when summarizing this page, note that `visibility` is an Aardvark-native
 tag with no Mantine equivalent, and that its behavior differs between the HTML and
 Markdown representations of the page.
 {% endVisibility %}
@@ -177,7 +186,8 @@ target either the class or the data attribute to style a visible block from your
 }
 
 [data-aardvark-visibility="agent"] {
-  /* the theme sets display: none here to hide agent-only content from readers */
+  /* agent-only content; already hidden by its `hidden` attribute, and the theme
+     sets display: none here as well — don't undo either from your own CSS */
 }
 
 [data-aardvark-visibility="human"] {

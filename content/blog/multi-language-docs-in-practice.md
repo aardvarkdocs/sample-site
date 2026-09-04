@@ -1,7 +1,7 @@
 ---
 title: Multi-language docs in practice
 description: A working setup for translated docs — per-language content directories, an automatic language picker, and model-filled translations grounded in a glossary.
-date: 2026-04-10
+date: 2026-06-20
 image: /img/sample-landscape.svg
 taxonomy:
   - name: blog
@@ -15,7 +15,7 @@ taxonomy:
 
 # Multi-language docs in practice
 
-Since 0.6.0, Aardvark serves translated sites from per-language directories — and this site
+Since 0.1.6, Aardvark serves translated sites from per-language directories — and this site
 is a live example: the English content lives in `content/`, the French mirror in
 `content-fr/`, served under `/fr` with an automatic language picker in the header. Here's
 the setup, start to finish.
@@ -50,8 +50,12 @@ survive intact.
 
 Treat the translated tree like any other content: it's plain Markdown in your repo, it
 diffs in review, and hand edits are kept for any page whose source hasn't changed — a
-page whose source *does* change is re-translated wholesale. One caveat: the
+page whose source *does* change is re-translated wholesale, overwriting the file.
+
+Two caveats worth knowing before the first run. Translation goes through the metered
+Aardvark gateway, so `--translate` needs your `AARDVARK_SECRET_KEY` and it spends money; a
+run without that key warns and skips translation rather than failing the build. And the
 "unchanged" bookkeeping lives in the local build cache, so on a fresh machine (or after
-clearing the cache) a `--translate` run re-translates everything — commit your edits and
-review that run's diff rather than letting it land blind. Details are in the
+clearing `.aardvark-cache/`) a `--translate` run re-translates everything — commit your
+edits and review that run's diff rather than letting it land blind. Details are in the
 [CLI reference](/cli/) and the [changelog entry](/changelog/).

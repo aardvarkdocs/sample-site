@@ -162,7 +162,7 @@ note, pinned open so you can see them:
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% popover target='Build' shadow='md' width='260' withArrow=true %}
+{% popover target='Build' opened=true shadow='md' width='260' withArrow=true %}
 {% badge color='green' variant='light' %}Passing{% endBadge %}
 
 {% text size='sm' c='dimmed' %}Last run 3 minutes ago on `main`.{% endText %}
@@ -172,7 +172,7 @@ note, pinned open so you can see them:
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'popover', target='Build', shadow='md', width='260',
+component('aardvark', 'popover', target='Build', opened=True, shadow='md', width='260',
           withArrow=True,
           children=component('aardvark', 'badge', color='green',
                              variant='light', children='Passing')

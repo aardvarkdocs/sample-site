@@ -9,7 +9,7 @@ description: "The built-in actionicon tag — Mantine's icon-only button. Render
 
 `{% raw %}{% actionicon %}{% endraw %}` is a **built-in** tag for an **icon-only button** —
 a compact, square button whose whole content is a single icon. It renders a Mantine
-ActionIcon, so it carries that component's full surface. The `icon` is read exactly like
+ActionIcon, and the attributes below are the ones it accepts. The `icon` is read exactly like
 the [{% raw %}`{% icon %}`{% endraw %}](/components/data-display/icon/) tag, and an icon-only
 button needs a `label` for its accessible name.
 
@@ -71,6 +71,15 @@ component('aardvark', 'actionicon', icon='🔍', label='Search', variant='defaul
 {% endAccordionSection %}
 {% endAccordion %}
 
+{% callout severity='info' title='Good to know' %}
+The four icon forms reach the button by different routes. A bare Tabler name is fetched
+from the Tabler CDN in the browser and injected when it arrives, so that glyph paints a
+moment after the button around it. A Font Awesome class needs the Font Awesome stylesheet,
+which a site only loads when it sets `theme.fontawesome: true`. An image spec must be a
+relative path or an `http(s)` URL. A spec matching none of these renders nothing and names
+the offending value in the browser console.
+{% endCallout %}
+
 ## Accessible name
 
 An icon-only button has no visible text, so screen readers can't name it. Always pass a
@@ -97,7 +106,7 @@ component('aardvark', 'actionicon', icon='trash', color='red', label='Delete ite
 
 ## Variant
 
-`variant` is one of `filled`, `light` (default), `outline`, `subtle`, `transparent`,
+`variant` is one of `filled` (default), `light`, `outline`, `subtle`, `transparent`,
 `white`, `default`, or `gradient`.
 
 {% actionicon icon='star' variant='filled' label='filled' %} {% actionicon icon='star' variant='light' label='light' %} {% actionicon icon='star' variant='outline' label='outline' %} {% actionicon icon='star' variant='subtle' label='subtle' %} {% actionicon icon='star' variant='default' label='default' %} {% actionicon icon='star' variant='transparent' label='transparent' %}
@@ -280,7 +289,7 @@ Omit any attribute to take its Mantine default. Bare boolean flags (`filled`, `l
 | `icon` | Tabler name / Font Awesome class / image path / emoji / inline `<svg>` | The icon spec, read like [{% raw %}`{% icon %}`{% endraw %}](/components/data-display/icon/). |
 | `filled` | bool flag | Use the filled Tabler style for a bare Tabler name. |
 | `label` | string | Accessible name (`aria-label`) — always set this. |
-| `variant` | `filled`, `light` (default), `outline`, `subtle`, `transparent`, `white`, `default`, `gradient` | Visual style. |
+| `variant` | `filled` (default), `light`, `outline`, `subtle`, `transparent`, `white`, `default`, `gradient` | Visual style. |
 | `color` | theme color name or CSS color | Button color. |
 | `size` | `xs`–`xl` | Button size. |
 | `radius` | `xs`–`xl` or any CSS value | Corner radius. |

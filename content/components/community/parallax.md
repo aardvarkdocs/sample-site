@@ -123,10 +123,10 @@ Omit any attribute to take its default. Bare flags (e.g. `lightEffect`) become `
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `disabled` | `true` / `false` (default `false`) | Freeze the tilt. |
-| `perspective` | A number | 3D perspective depth. |
-| `maxRotation` | A number (degrees) | Maximum tilt angle. |
+| `perspective` | A number (default `1000`) | 3D perspective depth. |
+| `maxRotation` | A number (degrees) | Clamps the tilt: the panel never leans further than this in any direction. Unset, the tilt is uncapped. |
 | `hoverScale` | A number (default `1`) | Scale applied on hover. |
-| `threshold` | A number | Pointer-movement threshold before tilting. |
+| `threshold` | A number (default `40`) | Pointer-movement threshold before tilting. |
 | `transitionDuration` | A number (ms, default `300`) | Tilt transition time. |
 | `transitionEasing` | A CSS easing (default `ease-out`) | Tilt transition easing. |
 | `touchEnabled` | `true` / `false` (default on) | Respond to touch drags. |
@@ -134,13 +134,13 @@ Omit any attribute to take its default. Bare flags (e.g. `lightEffect`) become `
 | `invertRotation` | `true` / `false` (default `false`) | Flip the tilt direction. |
 | `lightEffect` | `true` / `false` (default `false`) | Pointer-following highlight. |
 | `lightColor` | A CSS color | Highlight color. |
-| `lightIntensity` | A number | Highlight strength. |
+| `lightIntensity` | A number (default `0.2`) | Highlight strength. |
 | `glareEffect` | `true` / `false` (default `false`) | Glossy glare sweep. |
 | `glareColor` | A CSS color | Glare color. |
-| `glareMaxOpacity` | A number `0`–`1` | Maximum glare opacity. |
+| `glareMaxOpacity` | A number `0`–`1` (default `0.4`) | Maximum glare opacity. |
 | `shadowEffect` | `true` / `false` (default `false`) | Dynamic drop shadow. |
 | `shadowColor` | A CSS color | Shadow color. |
-| `shadowBlur` | A number | Shadow blur. |
+| `shadowBlur` | A number (default `30`) | Shadow blur. |
 | `springEffect` | `true` / `false` (default `false`) | Bouncy spring physics. |
 | `springStiffness` | A number (default `150`) | Spring stiffness. |
 | `springDamping` | A number (default `12`) | Spring damping. |

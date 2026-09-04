@@ -94,15 +94,24 @@ Omit any attribute to take its Mantine default.
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `accept` | MIME list (`image/png,image/jpeg`) or a JSON array | Restrict accepted file types; omit to accept any file. |
-| `maxSize` | integer (bytes) | Maximum size of a single file. |
+| `maxSize` | integer (bytes) | Maximum size of a single file. Unlimited when omitted. |
 | `multiple` | bool (`true` / `false`) | Allow several files at once (default `true`). |
-| `loading` | bool (`true` / `false`) | Show a loading overlay over the zone. |
+| `loading` | bool (`true` / `false`) | Show a loading overlay over the zone. It also stops the zone accepting files while it's on. |
 | `disabled` | bool (`true` / `false`) | Disable file capturing and grey the zone out. |
 | `radius` | `xs`–`xl` or a CSS length | Corner radius. |
 | `h` | number or CSS length | Height of the zone. |
 | `minHeight` | number or CSS length | Minimum height of the zone. |
 | `maw` | number or CSS length | Maximum width of the zone. |
-| `name` | string | Form control name submitted with the value. |
+| `name` | string | `name` for the hidden file input, so a surrounding `<form>` can pick the files up. |
+| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) applied to the zone's root element. |
+| *(body)* | Markdown | The zone's resting content. In Python, pass it as `children`. |
+
+{% callout severity='info' title='Good to know' %}
+The zone collects files; it doesn't upload them. Dropping or choosing files updates the summary
+line under the prompt — the first three names, then "and N more" — and fires a `change` event
+carrying them, which is where your own upload code hooks in (see below). Files that miss `accept`
+or exceed `maxSize` are refused and listed as rejected instead, in the same line.
+{% endCallout %}
 
 ## CSS Selectors
 

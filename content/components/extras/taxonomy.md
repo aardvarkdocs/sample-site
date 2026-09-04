@@ -77,9 +77,12 @@ else is optional:
 
 Several **top-level** front-matter keys also feed the entry: `title` (the entry headline),
 `date` (`YYYY-MM-DD`, optionally with a time — `2026-05-28 16:30` — the full timestamp
-drives the newest-first sort), `description` (the card / KB excerpt text), `version` (a
+drives the newest-first sort; `datePublished` outranks it, and `published` stands in when
+neither is set), `description` (the card / KB excerpt text, with `excerpt` as its
+fallback), `author` (the byline name for an entry that sets no `authorName`), `version` (a
 changelog release badge beside the date), and `image` / `imageAlt` (a blog card cover
-image and its alt text — omit `imageAlt` when the cover is decorative).
+image and its alt text — omit `imageAlt` when the cover is decorative). A member with no
+usable date still appears — undated entries sort last.
 
 ### The listing page
 
@@ -93,13 +96,13 @@ changelog- or blog-style listing usually wants a wide layout (`mode: full` or
 | --- | --- |
 | `name="…"` | The taxonomy to render (**required**) — matches the members' `name`. |
 | `type="…"` | The listing shape: `changelog` (timeline), `kb` (knowledge base), or `articles` (blog-style cards; `blog` is an alias). |
-| `tagFilter="…"` | Show only members carrying this tag (case-insensitive). A comma-separated value matches members carrying **any** listed tag — unless the whole value exactly matches a single tag whose own name contains a comma (`tagFilter="Plans, seats & hosting"`), which wins. |
+| `tagFilter="…"` | Show only members carrying this tag (case-insensitive). A comma-separated value matches members carrying **any** listed tag — unless the whole value exactly matches a single tag whose own name contains a comma (`tagFilter="Plans, seats & hosting"`), which wins. A term no member carries warns at build time and matches nothing. |
 | `cardVariant="…"` | Card look for article listings: `horizontal`, `footer` (alias `withfooter`), `background` (alias `image`), `vertical`, or `plain` (alias `grid`). |
-| `wide` | Lay the tag cloud out in a sticky right-hand column. **Requires a wide layout mode** — `mode: wide`, `full`, or `uncapped` in the page front matter (see [Modes](/modes/wide/)). |
-| `limitEntries=20` | Show at most *N* entries (after the newest-first sort). `limit` is an alias. |
+| `wide` | Lay the tag cloud out in a sticky right-hand column. **Requires a wide layout mode** — `mode: wide`, `full`, or `uncapped` in the page front matter (see [Modes](/modes/wide/)). Not a `kb` option: its categories render in the body, so `wide` there stops the build instead of being quietly ignored. |
+| `limitEntries=20` | Show at most *N* entries (after the newest-first sort). `limit` is an alias for the same cap; setting both to **different** values is a build error rather than a silent winner. |
 | `limitDays=90` | Changelog type only — show only entries from the last *N* days, counted from the build date. |
 | `combineByDay` | Changelog type only — merge all of a day's entries into one timeline entry. The day becomes the atomic item, so the tag cloud / `#tag=` filter then works at day granularity (selecting a tag keeps any day that carries it, showing that day's other entries too). |
-| `cols=3` | Column count for article-card grids, on desktop. Like [`{% raw %}{% cardGrid %}{% endraw %}`](/components/data-display/card/), the grid steps down on its own — two columns on a tablet, one on a phone — so the cards wrap instead of shrinking. |
+| `cols=3` | Column count for article-card grids, on desktop. Like [`{% raw %}{% cardGrid %}{% endraw %}`](/components/data-display/card/), the grid steps down on its own — two columns on a tablet, one on a phone — so the cards wrap instead of shrinking. Must be at least 1. |
 | `topCount=5` | Knowledge base only — how many featured **top questions** to surface (`topCount=0` drops the section). |
 | `emptyText="…"` | The no-matches message, on every listing type. Override it to localize the listing's chrome. |
 | `filterLabel=` / `clearLabel=` | Changelog/articles — the tag cloud's "Filter by tag" heading and its "Clear" button. Override to localize. |
@@ -109,7 +112,7 @@ changelog- or blog-style listing usually wants a wide layout (`mode: full` or
 | `banner=false` | Knowledge base only — drop the **hero banner**. By default a KB listing opens with a banner holding an "ask your question" field: the question goes to the site's [AI assistant](/ai-assistant/) when one is enabled, else it opens **search** pre-filled. With neither surface enabled the banner drops on its own. |
 | `bannerTitle=` / `bannerText=` / `askPlaceholder=` / `askLabel=` | Knowledge base only — the banner's heading (default "How can we help?"), optional subtitle, the ask field's placeholder, and its submit button label. Override to localize. |
 | `toc=false` | Changelog type only — don't add per-entry headings to the page's "On this page" list (added by default in a non-wide layout; article and KB listings never contribute TOC entries). |
-| `feed=false` | Changelog and article listings only — don't publish an RSS feed (one is emitted for each by default, advertised in the page's `<head>`). KB listings never publish a feed. |
+| `feed=false` | Changelog and article listings only — don't publish an RSS feed (one is emitted for each by default, advertised in the page's `<head>`). KB listings never publish a feed. An article feed carries only **dated** members, since a feed item needs a publish date; a [password-protected](/protected-pages/) listing publishes none at all. |
 | `attr={…}` | Forward raw HTML attributes onto the rendered root — see [below](#injecting-attributes). |
 
 ## A changelog listing
@@ -218,7 +221,11 @@ your loop prints its own headline, and relative links are rebased onto the membe
 URL. Island components are suppressed with a build warning — they render only on the
 member's own page, the same contract as the inline changelog view. Calling it from
 inside a member's own body is rejected (a member embedding other members could
-recurse). Here are this site's two most recent release notes, re-rendered in full:
+recurse), and a [password-protected](/protected-pages/) member is refused outright —
+its body is encrypted at build time and must never be re-rendered in the clear on
+whatever page called the loop. (For the same reason a protected page can only ever be
+a taxonomy's *listing* page, never one of its members.) Here are this site's two most
+recent release notes, re-rendered in full:
 
 {% raw %}
 ```aardvark

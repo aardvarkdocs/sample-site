@@ -49,19 +49,26 @@ Omit any attribute to take its Mantine default.
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `defaultValue` | `YYYY-MM-DD HH:mm:ss` string | Initial value (a date-time string). |
-| `valueFormat` | a dayjs format string | How the value is displayed. |
+| `valueFormat` | a dayjs format string | How the value is displayed. Defaults to `DD/MM/YYYY HH:mm` — or `DD/MM/YYYY HH:mm:ss` with `withSeconds`. |
 | `withSeconds` | bool (`true` / `false`) | Show and capture seconds. |
 | `label` | string | Field label above the input. |
 | `description` | string | Helper text below the label. |
 | `placeholder` | string | Placeholder shown when empty. |
 | `error` | string | Validation message; switches the field to the error color. |
-| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Control size. |
+| `size` | `xs`, `sm` (default), `md`, `lg`, `xl` | Control size. |
 | `radius` | `xs`–`xl` or a CSS length | Corner radius. |
 | `variant` | `default`, `filled`, `unstyled` | Input style. |
 | `required` | bool (`true` / `false`) | Mark required and add the asterisk. |
 | `withAsterisk` | bool (`true` / `false`) | Add the asterisk without the HTML `required`. |
 | `disabled` | bool (`true` / `false`) | Render the field disabled. |
 | `clearable` | bool (`true` / `false`) | Show an × to clear the value. |
+
+{% callout severity='info' title='Good to know' %}
+Left to itself the field displays day-first — `31/01/2026 09:30` — which reads as a January date
+to some visitors and a wrong one to others. Set `valueFormat` explicitly (the example above uses
+`MMM D, YYYY HH:mm:ss`) whenever the audience expects month-first or a spelled-out month. The
+stored value is unaffected: it stays the `YYYY-MM-DD HH:mm:ss` string either way.
+{% endCallout %}
 
 ## CSS Selectors
 

@@ -135,7 +135,7 @@ component('aardvark', 'panel',
 | --- | --- | --- |
 | `title` | Any string | Optional heading shown above the body. Omit it for a plain surface. |
 | `side` | `right` (default), `left` | Which edge the panel floats to on a wide viewport. |
-| `width` | Any CSS length (e.g. `18rem`, `40%`) | Cap the floated panel's width. Defaults to a comfortable column. |
+| `width` | Any CSS length (e.g. `18rem`, `40%`) | Cap the floated panel's width (default `20rem`). Applies only while the panel floats — stacked, it fills the line. A value that isn't a plain CSS length is ignored with a build warning. |
 | `shadow` | `xs` (default) / `sm` / `md` / `lg` / `xl` | Drop shadow / elevation. |
 | `radius` | `xs`–`xl`, or any CSS value | Corner rounding (default `md`). |
 | `withBorder` | bare flag or `true` / `false` (default `true`) | The 1px border. |
@@ -143,10 +143,17 @@ component('aardvark', 'panel',
 | `attr` | `{…}` | Raw HTML attributes forwarded onto the rendered element (see below). |
 | *(body)* | Markdown | The panel content, written between `{% raw %}{% panel %}{% endraw %}` and `{% raw %}{% endPanel %}{% endraw %}` (`children=` from Python). |
 
+{% callout title="Good to know" %}
+The switch between floating and stacking is a **viewport** width of 720px, not a measurement of
+the surrounding column — so a panel in an already-narrow area still floats on a wide screen. The
+floated column is capped at `20rem` unless you set `width`.
+{% endCallout %}
+
 ## CSS Selectors
 
 Each `panel` carries `data-aardvark-island="Panel"` on its wrapper, and the rendered Mantine Paper
-exposes its root as `mantine-Paper-root` — target either to style it from your theme CSS.
+exposes its root as `mantine-Paper-root` — target either to style it from your theme CSS. The
+surface itself carries `data-panel-side="right"` / `"left"`.
 
 {% raw %}
 ```css

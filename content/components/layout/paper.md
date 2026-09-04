@@ -55,14 +55,18 @@ The `shadow` prop controls elevation — `xs` is subtle, `xl` floats:
 {% raw %}
 ```aardvark
 {% paper shadow='xs' p='md' withBorder=true %}shadow xs, with border{% endPaper %}
+
 {% paper shadow='md' p='md' %}shadow md{% endPaper %}
+
 {% paper shadow='xl' p='md' %}shadow xl{% endPaper %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-for sh in ('xs', 'md', 'xl'):
+component('aardvark', 'paper', shadow='xs', p='md', withBorder=True,
+          children='shadow xs, with border')
+for sh in ('md', 'xl'):
     component('aardvark', 'paper', shadow=sh, p='md', children=f'shadow {sh}')
 ```
 {% endAccordionSection %}
@@ -156,6 +160,15 @@ Omit any attribute to take its Mantine default (no shadow, no border). Padding d
 
 `attr={...}` forwards raw HTML attributes onto the rendered element.
 
+### Good to know
+
+- The `md` padding applies only while you set no padding at all. Any padding attribute — the `p`
+  shorthand, an axis (`px` / `py`), or a single side (`pt` / `pb` / `pl` / `pr`) — takes over
+  completely, so `pt='xl'` on its own gives a panel with roomy top padding and none on the other
+  three sides. Spell out the sides you want (`pt='xl' px='md' pb='md'`) rather than expecting the
+  default to fill the gaps.
+- Corner rounding follows the theme's default radius unless you set `radius`, so a panel matches
+  the other surfaces on the page without being told to.
 
 ## CSS Selectors
 

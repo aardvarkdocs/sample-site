@@ -102,6 +102,7 @@ Omit any attribute to take its default. Bare flags (e.g. `disabled`) become `=tr
 | --- | --- | --- |
 | `data` | comma-separated list, e.g. `'Red, Green, Blue'` | The options shown on the wheel. |
 | `defaultValue` | one of the `data` values | The initially selected item (defaults to the first). |
+| `value` | one of the `data` values | Same starting selection as `defaultValue`, and wins when both are set. The wheel owns its selection from there — this seeds it, it does not pin it. |
 | `itemHeight` | integer px (`40` default) | Height of each row. |
 | `visibleItems` | odd integer (`3` default) | How many rows are visible at once. |
 | `loop` | `true` (default) / `false` | Wrap around past the last item back to the first. |
@@ -124,17 +125,27 @@ The picker renders inside an island wrapper you can target in custom CSS:
 }
 ```
 
-The package also exposes its own CSS variables on the picker root — `--picker-height`,
-`--picker-item-height`, `--picker-animation-duration`, `--picker-mask-height`, and more — which
-you can set through the `attr` style passthrough below.
+The wheel's proportions ride its own CSS variables — `--picker-height`, `--picker-item-height`,
+`--picker-animation-duration`, `--picker-mask-height`, and more. It writes them onto the picker
+root as it renders, so `itemHeight` and `visibleItems` are the reliable way to resize it; a rule
+from your own stylesheet only wins over an inline value with `!important`:
+
+```css
+[data-testid='qty-picker'] {
+  --picker-mask-height: 40% !important;
+}
+```
+
+Give the instance that `data-*` hook with `attr={…}` (below).
 
 ## Injecting Attributes
 
-Pass `attr={…}` to forward raw HTML attributes (data attributes, ARIA, inline `style`) straight
-onto the rendered element — handy for hooks your own CSS or scripts key off, or for setting the
-package's CSS variables.
+Pass `attr={…}` to forward raw HTML attributes (data attributes, ARIA) straight onto the
+rendered element — handy for hooks your own CSS or scripts key off. Keep `class`, `className`
+and `style` out of it: React manages those on this element, so the runtime warns and your value
+can be overwritten. Reach for a `data-*` hook and a stylesheet rule instead.
 
-{% picker data='1, 2, 3, 4, 5' attr={'data-testid': 'qty-picker', 'style': '--picker-mask-height: 40%'} %}
+{% picker data='1, 2, 3, 4, 5' attr={'data-testid': 'qty-picker', 'aria-label': 'Quantity'} %}
 
 <br>
 
@@ -142,13 +153,13 @@ package's CSS variables.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% picker data='1, 2, 3, 4, 5' attr={'data-testid': 'qty-picker', 'style': '--picker-mask-height: 40%'} %}
+{% picker data='1, 2, 3, 4, 5' attr={'data-testid': 'qty-picker', 'aria-label': 'Quantity'} %}
 ```
 {% endraw %}
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'picker', data='1, 2, 3, 4, 5', attr={'data-testid': 'qty-picker', 'style': '--picker-mask-height: 40%'})
+component('aardvark', 'picker', data='1, 2, 3, 4, 5', attr={'data-testid': 'qty-picker', 'aria-label': 'Quantity'})
 ```
 {% endAccordionSection %}
 {% endAccordion %}

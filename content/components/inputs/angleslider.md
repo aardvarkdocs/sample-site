@@ -138,18 +138,25 @@ Omit any attribute to take its default.
 
 | Attribute | Values | Description |
 | --- | --- | --- |
-| `size` | integer | Diameter of the dial in pixels. |
-| `step` | integer | Increment per move, in degrees. |
+| `size` | integer | Diameter of the dial in pixels. Defaults to `60`. |
+| `step` | integer | Increment per move, in degrees. Defaults to `1`. |
 | `defaultValue` | integer | Starting angle in degrees — the reader can drag it. |
-| `thumbSize` | integer | Diameter of the thumb in pixels. |
+| `thumbSize` | integer | Diameter of the thumb in pixels. Defaults to a fifth of `size`. |
 | `marks` | JSON array string | Labelled ticks as `[{"value": n, "label": "…"}, …]`. |
 | `withLabel` | boolean | Show the degree label in the center (on by default; set `false` to hide). |
-| `disabled` | boolean | Make the dial read-only. |
-| `attr` | raw-HTML map | Extra HTML attributes, passed as `attr={…}`. |
+| `disabled` | boolean | Make the dial read-only — it stops responding to drags and drops out of the tab order. |
+| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) applied to the dial's root element. |
 
-The center label format (`formatLabel` in Mantine) is a JavaScript function rather than a
-value, so it can't be set from a build-time tag or `component('aardvark', 'angleslider', …)`
-call — the dial shows the raw degree value. Toggle it off entirely with `withLabel=false`.
+The center label always shows the raw degree value. Mantine formats it through `formatLabel`,
+a JavaScript function, and props are serialized as JSON on their way to the component, so no
+tag or `component('aardvark', 'angleslider', …)` call can supply one. Turn the label off
+entirely with `withLabel=false`.
+
+{% callout severity='info' title='Good to know' %}
+`marks` is parsed at build time. A value that isn't valid JSON doesn't fail the build — the
+dial renders without marks — but it does emit a build warning, so a typo shows up in the
+build output rather than as a silently unmarked dial.
+{% endCallout %}
 
 ## CSS Selectors
 
@@ -164,12 +171,14 @@ Target a `{% raw %}{% angleslider %}{% endraw %}` from your own CSS with the isl
 .mantine-AngleSlider-root { }
 .mantine-AngleSlider-thumb { }
 .mantine-AngleSlider-label { }
+.mantine-AngleSlider-marks { }
+.mantine-AngleSlider-mark { }
 ```
 {% endraw %}
 
 ## Injecting Attributes
 
-Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the rendered element. Here it is wired to `onchange`, so turning the dial reads the changed control value, logs it to the console, and alerts it:
+Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the rendered element. The `change` event fires when a drag finishes or an arrow key steps the angle — not continuously while the thumb is moving — and carries the new value in degrees. Here it is wired to `onchange`, so turning the dial reads the changed control value, logs it to the console, and alerts it:
 
 {% angleslider size=80 defaultValue=90 attr={'onchange': '''
 const control = event.target.closest('[role="slider"], input') || this.querySelector('[role="slider"], input');

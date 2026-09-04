@@ -190,6 +190,16 @@ component('aardvark', 'fieldset', legend='Application', children=inner)
 {% endAccordionSection %}
 {% endAccordion %}
 
+{% callout severity='info' title='It is a button, and the file names are the value' %}
+The picker renders as a button that opens the operating system's file dialog — the native
+file input itself stays hidden, so the field can carry the same border, sections, and error
+styling as the text fields beside it. Once files are chosen, their names replace the
+placeholder text. A handler attached with `attr={'onchange': …}` runs on that rendered
+control after each selection: `event.target.files` is the chosen `File` list and
+`event.target.value` is their names joined with commas. With `multiple` on, the selection
+is a list even when it holds a single file.
+{% endCallout %}
+
 ## Attributes
 
 Omit any attribute to take its Mantine default.
@@ -204,13 +214,14 @@ Omit any attribute to take its Mantine default.
 | `multiple` | `true` / `false` | Allow selecting several files. Default `false`. |
 | `clearable` | `true` / `false` | Show a clear button once a file is chosen. Default `false`. |
 | `variant` | `default`, `filled`, `unstyled` | Visual style. |
-| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Field size. |
+| `size` | `xs`, `sm`, `md`, `lg`, `xl` | Field size. Defaults to `sm`. |
 | `radius` | `xs`, `sm`, `md`, `lg`, `xl` (or any CSS value) | Corner radius. |
 | `required` | `true` / `false` | Mark the field required and add the asterisk. Default `false`. |
 | `withAsterisk` | `true` / `false` | Add the asterisk without the `required` semantics. Default `false`. |
 | `disabled` | `true` / `false` | Render the field disabled. Default `false`. |
 | `leftSection` | string | Text shown inside the field on the left. |
 | `rightSection` | string | Text shown inside the field on the right. |
+| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) applied to the rendered control — a `<button>` here, since the native file input stays hidden. |
 
 ## CSS Selectors
 

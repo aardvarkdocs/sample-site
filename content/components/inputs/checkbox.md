@@ -185,13 +185,21 @@ Omit any attribute to take its Mantine default.
 | `disabled` | bare flag (`true`) | Render non-interactive. |
 | `color` | theme color name (`blue`, `green`, `grape`, …) | Fill color when checked. |
 | `size` | `xs`, `sm`, `md`, `lg`, `xl` | Overall size. |
-| `radius` | `xs`, `sm`, `md`, `lg`, `xl` | Corner rounding of the box. |
+| `radius` | `xs`, `sm`, `md`, `lg`, `xl` (or any CSS value) | Corner rounding of the box. |
 | `labelPosition` | `right` (default), `left` | Which side of the box the label sits on. |
 | `iconColor` | theme color name | Color of the check mark itself. |
 | `description` | string | Helper text shown below the label. |
-| `error` | string | Error text shown below the label (also marks the box invalid). |
+| `error` | string | Error text shown below the label; the box and the text switch to the error color. |
 | `autoContrast` | bare flag (`true`) | Auto-pick a readable check-mark color against `color`. |
-| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) applied to the rendered root. |
+| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) set on the checkbox `<input>` itself. |
+
+{% callout severity='info' title='Good to know' %}
+The box is uncontrolled and carries no form-field name: `defaultChecked` sets the state the
+reader starts with, and nothing is submitted or stored for you. To read what a reader picked,
+hang an `onchange` handler on it with `attr={…}` (below) — inside that handler `this.checked`
+is the current state. For a set of fields with validation and collected values, use
+[Form](/components/inputs/form/).
+{% endCallout %}
 
 ## CSS Selectors
 
@@ -205,13 +213,16 @@ Target a `{% raw %}{% checkbox %}{% endraw %}` from your own CSS with the island
 /* Mantine Styles API parts */
 .mantine-Checkbox-root { }
 .mantine-Checkbox-input { }
+.mantine-Checkbox-icon { }
 .mantine-Checkbox-label { }
+.mantine-Checkbox-description { }
+.mantine-Checkbox-error { }
 ```
 {% endraw %}
 
 ## Injecting Attributes
 
-Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the rendered element. Here it is wired to `onchange`, so toggling it logs its checked state to the console and alerts it:
+Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the checkbox input. Here it is wired to `onchange`, so toggling it logs its checked state to the console and alerts it — `this` inside the handler is the input, so `this.checked` is the state the reader just set:
 
 {% checkbox label='Accept the terms' attr={'onchange': '''
 const value = this.checked;

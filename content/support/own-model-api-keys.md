@@ -24,6 +24,7 @@ key only if you want the upstream contract, not to lower your Aardvark bill.
 Once a key is registered, Aardvark never quietly falls back to a managed key: if your
 provider rejects the key or your provider account is out of credit, the request is
 **refused and not billed** rather than run on Aardvark's account behind your back. Remove
-the key to move traffic back to the managed keys.
+the key to move traffic back to the managed keys — that stays true even if your Enterprise
+plan later lapses; a registered key keeps being used until you delete it.
 
 Your key is encrypted at rest, and no API ever returns more than its last four characters.

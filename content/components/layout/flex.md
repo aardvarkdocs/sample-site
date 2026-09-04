@@ -153,9 +153,9 @@ component('aardvark', 'flex', justify='space-between', align='center',
 
 ## Attributes
 
-Flex sets no defaults of its own — it's a thin Box over CSS flex, so an omitted option falls
-back to the CSS initial value. The flex options come first; the rest is the shared Mantine
-spacing/sizing system.
+Flex sets no defaults of its own, so an omitted option keeps the CSS initial behavior — a `row`
+that doesn't wrap, children packed at the start and stretched across the cross axis, and no gap.
+The flex options come first; the rest is the shared Mantine spacing/sizing system.
 
 | Attribute | Values | Description |
 | --- | --- | --- |
@@ -166,13 +166,15 @@ spacing/sizing system.
 | `gap` | `xs`–`xl` or any CSS value | Gap on both axes. |
 | `rowGap` | `xs`–`xl` or any CSS value | Vertical gap only. |
 | `columnGap` | `xs`–`xl` or any CSS value | Horizontal gap only. |
-| `w` / `h` | `xs`–`xl` or any CSS size | Width / height of the container. |
-| `miw` / `mih` | any CSS size | Minimum width / height. |
-| `maw` / `mah` | any CSS size | Maximum width / height. |
+| `w` / `h` | any CSS length (`320px`, `60%`); a bare number is read as pixels | Width / height of the container. |
+| `miw` / `mih` | any CSS length | Minimum width / height. |
+| `maw` / `mah` | any CSS length | Maximum width / height. |
 | `m`, `mt`, `mb`, `ml`, `mr`, `mx`, `my` | `xs`–`xl` or any CSS size | Margin — all sides, or a single side / axis. |
 | `p`, `pt`, `pb`, `pl`, `pr`, `px`, `py` | `xs`–`xl` or any CSS size | Padding — all sides, or a single side / axis. |
 | `bg` | a theme color or any CSS color | Background color. |
 | `c` | a theme color or any CSS color | Text (content) color. |
+
+{% include '/components/_partials/sizing-props-note.md' %}
 
 
 ## CSS Selectors

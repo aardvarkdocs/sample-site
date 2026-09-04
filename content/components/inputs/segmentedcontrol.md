@@ -37,16 +37,17 @@ component('aardvark', 'segmentedcontrol', data='Preview, Code, Export',
 {% endAccordionSection %}
 {% endAccordion %}
 
-From Python you can pass `data` as a real list of strings or `{label, value}` dicts —
-handy when building it in a loop:
+`data` is a string in both forms, so from Python you build that string — join the labels with
+commas when the options come from a loop:
 
 <br>
 
 {% accordion %}
 {% accordionSection title="Source: Python" %}
 ```python
+views = ['Preview', 'Code', 'Export']
 component('aardvark', 'segmentedcontrol',
-          data=['Preview', 'Code', 'Export'], defaultValue='Code')
+          data=', '.join(views), defaultValue='Code')
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -54,7 +55,10 @@ component('aardvark', 'segmentedcontrol',
 ## Separate label and value
 
 When the value you store differs from the label, pass a **JSON array** of
-`{label, value}` objects.
+`{label, value}` objects (an array of plain strings works too, and is the same as the
+comma-separated form). It has to be real JSON — double-quoted keys and values. A value that
+starts with `[` but doesn't parse renders no segments and warns during the build, so a typo
+shows up in the build log rather than as a mysteriously empty control.
 
 {% segmentedcontrol data='[{"label": "On", "value": "1"}, {"label": "Off", "value": "0"}]' defaultValue='1' color='teal' %}
 
@@ -70,8 +74,10 @@ When the value you store differs from the label, pass a **JSON array** of
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'segmentedcontrol',
-          data=[{'label': 'On', 'value': '1'}, {'label': 'Off', 'value': '0'}],
+import json
+
+options = [{'label': 'On', 'value': '1'}, {'label': 'Off', 'value': '0'}]
+component('aardvark', 'segmentedcontrol', data=json.dumps(options),
           defaultValue='1', color='teal')
 ```
 {% endAccordionSection %}
@@ -191,7 +197,7 @@ Omit any attribute to take its Mantine default.
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
-| `data` | comma-separated labels (`One, Two, Three`) or a JSON array of `{label, value}` | The options. A bare label list uses each label as its own value; from Python, also a real list of strings or dicts. |
+| `data` | comma-separated labels (`One, Two, Three`) or a JSON array of `{label, value}` objects or plain strings | The options. A bare label list uses each label as its own value. Always a string — from Python, join the labels or `json.dumps` the array. |
 | `defaultValue` | one of the option values | Which option starts selected. |
 | `color` | theme color name (`blue`, `teal`, …) | Color of the active indicator. |
 | `size` | `xs`, `sm`, `md`, `lg`, `xl` | Overall size. |

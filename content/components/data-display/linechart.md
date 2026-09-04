@@ -57,9 +57,17 @@ component('aardvark', 'linechart', h=260, dataKey='month', withLegend=True,
 | `series` | JSON array of `{name, color}` | One line per entry; `name` is a key in each row, `color` a Mantine color. |
 | `dataKey` | string | The row field used for the x-axis. |
 | `h` | integer (px, default `300`) | Chart height. |
-| `curveType` | `monotone`, `linear`, `natural`, `step`, … | Line interpolation. |
+| `curveType` | `monotone` (default), `bump`, `linear`, `natural`, `step`, `stepBefore`, `stepAfter` | Line interpolation. |
 | `unit` | string | Unit appended to axis/tooltip values. |
-| `withLegend` | bool (`true` / `false`) | Show the legend. |
+| `withLegend` | bool (default `false`) | Show the legend. |
+
+> **Good to know.** The chart is drawn in the browser, because it sizes itself to the live
+> container — so it appears once the page's JavaScript has run, and the page's Markdown twin and
+> the whole-site PDF carry no chart. A `data` or `series` value that is not valid JSON, or is
+> JSON but not an array, warns during the build and draws an empty chart rather than stopping
+> the build. Charts need the `charts` component library declared in the theme, with
+> `@mantine/charts` installed; this site declares it, so the tag works here as written.
+
 ## CSS Selectors
 
 Target the rendered element through its island marker — `[data-aardvark-island="LineChart"]` (or the more specific `[data-aardvark-lib="charts"][data-aardvark-island="LineChart"]` when several libraries share the page) — or through the Mantine Styles API classes (`.mantine-LineChart-root` and its inner parts):

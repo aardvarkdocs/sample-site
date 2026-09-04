@@ -177,15 +177,22 @@ Omit any attribute to take its default.
 | `description` | string | Helper text below the label. |
 | `placeholder` | string | Placeholder text for the empty field. |
 | `defaultValue` | string | Starting color (matching the `format`). |
-| `format` | `hex`, `hexa`, `rgb`, `rgba`, `hsl`, `hsla` | How the value reads back; the `*a` formats add an alpha channel. |
+| `format` | `hex` (default), `hexa`, `rgb`, `rgba`, `hsl`, `hsla` | How the value reads back; the `*a` formats add an alpha channel. |
 | `swatches` | comma-separated colors | Preset swatches shown under the picker (e.g. `'#fa5252, #228be6'`). |
-| `size` | `xs`–`xl` | Field size. |
-| `radius` | `xs`–`xl` | Corner rounding of the field. |
-| `withPicker` | boolean | Show the dropdown picker (on by default; set `false` for swatch/text only). |
-| `disallowInput` | boolean | Pick-only — disable typing into the field. |
+| `size` | `xs`, `sm` (default), `md`, `lg`, `xl` | Field size. |
+| `radius` | `xs`, `sm`, `md`, `lg`, `xl` (or any CSS value) | Corner rounding of the field. |
+| `withPicker` | boolean | Show the saturation/hue picker in the dropdown (on by default; set `false` for swatches only). |
+| `disallowInput` | boolean | Pick-only — the field stops accepting typing. |
 | `withEyeDropper` | boolean | Show the eye-dropper button (on by default, where the browser supports it). |
-| `disabled` | boolean | Make the field read-only. |
-| `attr` | raw-HTML map | Extra HTML attributes, passed as `attr={…}`. |
+| `disabled` | boolean | Render the field disabled — greyed out and not interactive. |
+| `attr` | dict (`attr={…}`) | Raw HTML attributes (e.g. `onchange`) set on the field's `<input>`. |
+
+{% callout severity='info' title='Good to know' %}
+Typing is checked against the `format`: text the field can't read as a color is reverted to the
+last valid value as soon as the field loses focus, so a half-typed `#1c7` never survives a blur.
+Setting `withPicker=false` without any `swatches` leaves the dropdown with nothing to show, so
+it stops opening at all and the field becomes text-and-preview only — pair it with `swatches`.
+{% endCallout %}
 
 ## CSS Selectors
 
@@ -200,12 +207,14 @@ Target a `{% raw %}{% colorinput %}{% endraw %}` from your own CSS with the isla
 .mantine-ColorInput-root { }
 .mantine-ColorInput-input { }
 .mantine-ColorInput-colorPreview { }
+.mantine-ColorInput-dropdown { }
+.mantine-ColorInput-eyeDropperButton { }
 ```
 {% endraw %}
 
 ## Injecting Attributes
 
-Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the rendered element. Here it is wired to `onchange`, so changing the field logs its new value to the console and alerts it:
+Pass `attr={…}` to forward raw HTML attributes — including inline event handlers — straight onto the field's `<input>`. Here it is wired to `onchange`, so committing a typed color logs the new value to the console and alerts it — `this` inside the handler is the input, so `this.value` is the color:
 
 {% colorinput label='Brand color' format='hex' defaultValue='#1c7ed6' attr={'onchange': '''
 const value = this.value;

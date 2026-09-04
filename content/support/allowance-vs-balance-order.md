@@ -13,4 +13,9 @@ taxonomy:
 
 In order: any **rolled-over** allowance first (it's the oldest and expires soonest), then
 **this month's** allowance, and only then — if you've turned on pay-as-you-go overflow — your
-**prepaid balance**. Your balance is never touched unless you opt in.
+**prepaid balance**, up to the overflow cap you set. AI answers never touch your balance
+unless you opt in.
+
+The one thing billed to the prepaid balance directly is usage-based
+[GitHub Automations](/github-automation/) compute: it never draws on the allowance, in any
+overflow mode.

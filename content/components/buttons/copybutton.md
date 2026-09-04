@@ -40,10 +40,18 @@ confirms. For a fully custom trigger, write a [snippet](/authoring/custom-compon
 small React component where you have the render-prop in hand.
 {% endCallout %}
 
+{% callout severity='caution' title='Needs a secure context' %}
+Writing to the clipboard goes through `navigator.clipboard`, which browsers expose only on
+`https://` pages and on `localhost`. Over plain `http://` the click copies nothing and
+shows no confirmation — the button simply does not react. Check this one on a real
+preview rather than a bare file path.
+{% endCallout %}
+
 ## Labels and timeout
 
-`label` is the resting text; `copiedLabel` is shown after a copy; `timeout` (ms) controls
-how long the confirmation stays before reverting.
+`label` is the resting text (`Copy` when you leave it unset); `copiedLabel` is what
+replaces it after a copy (`Copied`); `timeout` is how long that confirmation stays before
+reverting, in milliseconds (1500 when unset).
 
 {% copybutton value='hello@example.com' label='Copy email' copiedLabel='Copied!' timeout=2000 %}
 
@@ -131,9 +139,9 @@ Omit any attribute to take its default.
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `value` | string | The text copied to the clipboard. |
-| `label` | string | Resting button text. |
-| `copiedLabel` | string | Text shown briefly after a copy. |
-| `timeout` | integer (milliseconds) | How long the confirmation stays before reverting. |
+| `label` | string | Resting button text. Defaults to `Copy`. |
+| `copiedLabel` | string | Text shown briefly after a copy. Defaults to `Copied`. |
+| `timeout` | integer (milliseconds) | How long the confirmation stays before reverting. Defaults to `1500`. |
 | `variant` | `filled`, `light`, `outline`, `subtle`, `default`, `transparent`, `white` | Visual style. |
 | `color` | theme color name or CSS color | Button color. |
 | `size` | `xs`–`xl` | Button size. |
