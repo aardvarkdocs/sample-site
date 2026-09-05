@@ -69,9 +69,9 @@ each audience see the right slice.
 A `for="agent"` block is only **visually** hidden from humans — the theme sets
 `display: none`, but the content is still present in the page's HTML source, so a
 reader can see it via "View source" or dev tools. Agent-facing content is also
-aggregated in the public `llms-full.txt` artifact and, when the build emits an
-agent search corpus, in `search-index-agent.json`; deployed build artifacts are
-directly fetchable. Use `{% raw %}{% visibility %}{% endraw %}` to tailor content
+aggregated in the public `llms-full.txt` artifact and, when the build emits them,
+in `search-index-agent.json` and `assistant-corpus.json`; deployed build artifacts
+are directly fetchable. Use `{% raw %}{% visibility %}{% endraw %}` to tailor content
 per audience, **not** to keep secrets: never put credentials or private data in
 a `for="agent"` block.
 {% endCallout %}

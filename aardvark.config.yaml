@@ -641,21 +641,14 @@ ai:
       # Reasoning budget: low | medium | high. `low` keeps think-time short — a good default for a snappy
       # public assistant; raise it for harder questions (omit `effort` to use the model's default).
       effort: low
-    # Token budget for what the assistant inlines into the FIRST question (replayed on every follow-up, so
-    # it's a speed-vs-tokens-per-turn dial). It inlines the LARGEST thing that fits, in order: the whole
-    # corpus (llms-full.txt → the model answers with NO fetches), else the rich metadata.json index, else
-    # the leaner llms.txt index; if none fit, the model navigates from scratch.
-    #
-    # By DEFAULT this is derived from your `model`'s real context window — sized to inlineContextWindowFraction
-    # (default 0.6) of it, leaving room for the conversation + the answer. The window is looked
-    # up at build time from OpenRouter (best-effort; falls back to a built-in table, then a 100k
-    # floor — a build with no network still works). Tune the fill level instead of pinning an
-    # absolute number:
+    # Approximate combined input budget for one request: current user content, selected docs or fallback
+    # navigation, and replay. The question/attachments are never truncated; older replay may be dropped.
+    # By default this is 0.6 of the model's build-time context-window lookup, with offline fallbacks.
+    # Local retrieval sends at most five complete pages under a separate 24k ceiling; weak or oversized
+    # matches stay agentic. Set 0 to disable page inlining and complete-corpus emission. Full artifact,
+    # size-cap, gzip, version-scope, and fallback behavior: https://aardvarkdocs.com/ai-assistant/#options
     # inlineContextWindowFraction: 0.6
-    #
-    # Or set an explicit absolute budget below to OVERRIDE the model-derived default verbatim (the fraction
-    # is then ignored); set 0 to always navigate. (This sample's corpus is ~65k tokens, so it inlines whole
-    # under the default.) Leave it unset to get the model-derived default.
+    # Set an absolute budget to override the fraction; values above 24k do not enlarge the local page block.
     # inlineContextMaxTokens: 100000
     # Shown to readers when an answer didn't help or the assistant is unavailable.
     escalationEmail: support@example.com

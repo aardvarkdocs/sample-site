@@ -31,9 +31,19 @@ your own conversations; a depleted account simply pauses analysis rather than br
 
 A floating **"Ask AI"** panel sits on every page. Readers ask a question in natural language; the
 assistant answers from **your content**, citing the pages it used, and they can rate each answer with
-👍 / 👎. It can read the whole corpus inline on the first turn (for a fast, zero-fetch answer) or
-navigate page-by-page, and it accepts **file attachments** (images, PDFs, text/code) when you leave
-them on.
+👍 / 👎. When local retrieval is on, opening Ask AI reads its config and then loads your dedicated
+agent-audience corpus when the advertised decoded size is at most 8 MiB; the streamed transfer and
+decompressed output are capped too. Readers who never open it do not download or prepare the corpus,
+and `search.compress` controls whether a pre-compressed copy is available. An oversized corpus keeps
+the page-by-page path when its compact agent index fits that artifact's separate 8 MiB browser cap;
+an oversized version-scoped compact index fails closed instead of crossing versions. It ranks locally
+and normally sends a small set of complete, structure-preserving Markdown pages in one model request.
+Broad or ambiguous questions keep page-fetching available, using a compact navigation view derived
+locally when possible; complete pages are then read from the loaded browser corpus without another
+HTTP request. Even when the entire corpus fits a model's advertised context window, repeatedly
+transferring and processing it would add avoidable first-token latency. It also
+accepts **file attachments** (images, PDFs, text/code)
+when you leave them on.
 
 ![The built-in "Ask AI" reader panel answering a question with cited sources](/img/assistant/ai-assistant-panel.png)
 
@@ -75,7 +85,7 @@ All optional except `enabled`:
 | `reasoning` | model default | Reasoning control for a reasoning-capable model — `enabled` (bool) and `effort` (`low`/`medium`/`high`). |
 | `attachments` | on | Reader file uploads — 4 files of 10 MB each by default. See [Reader attachments](/ai-gateway/#reader-attachments) for the caps and cost notes. |
 | `store_history` | `true` | Posts each finished turn to the gateway so it appears in your dashboard **and feeds the analytics below**. |
-| `inlineContextMaxTokens` | model-derived | First-turn inline budget; `0` forces page-by-page navigation. |
+| `inlineContextMaxTokens` | model-derived (local page maximum 24k) | Approximate combined pre-request target for the current question/preamble, attachments, selected documentation or fallback index, and replay history. Text uses a conservative UTF-8 bytes/3 estimate (about 3 ASCII characters/token). Current user content is not truncated and same-turn tool results may grow beyond it. `0` disables direct page inlining and omits the complete corpus on every site; a public-key versioned site retains scoped navigation only when its compact agent index fits that artifact's separate 8 MiB browser cap. |
 | `inlineContextWindowFraction` | `0.6` | How much of the model's real context window that derived budget may fill. |
 | `escalationEmail` | unset | Address behind the "Email us" offer shown under a down-voted answer — and the signal the deflection metric is measured from. |
 | `topAskButton` | `true` | The **Ask AI** button in the site header. |
@@ -88,6 +98,23 @@ gateway applies its own, separately: it refuses a turn carrying more than **20 a
 more than **48 MiB** of encoded attachment payload in total. `maxFiles` is not clamped to that ceiling,
 so a site that sets it above 20 lets readers attach files the gateway then rejects at send time — keep
 it at 20 or below.
+
+If the build cannot resolve a custom model through OpenRouter's catalog or its built-in table, it
+uses a conservative 16k combined-input budget. Set `inlineContextMaxTokens` explicitly when the
+model's window is smaller.
+
+The build serializes the complete corpus before publishing it. Above 8 MiB it warns, neither writes
+nor advertises the complete corpus, and retains compact/agentic retrieval. When the corpus is emitted,
+`assistantCorpusBytes` and `assistantCorpusSha256` are generated into
+`/_aardvark/ai-config.json`; they are not author settings. They record the exact plain-corpus size and
+SHA-256 for the browser's bounded load and generation-match validation. If either declaration is
+absent or invalid, the browser does not trust the complete corpus and retains the same fallback.
+
+The version-scoped compact fallback carries every page's flattened search text, so it has its own
+8 MiB decoded limit rather than trusting a generated size as the limit. The build advertises its exact
+size and SHA-256 as `assistantNavigationBytes` and `assistantNavigationSha256` only when it fits. Above
+that limit an assistant-only artifact is omitted; an independently needed Search/MCP copy may remain
+deployed, but the assistant does not request it and fails closed if the complete corpus is unavailable.
 
 {% callout severity="warning" title="store_history feeds the analytics" %}
 The entire analytics dashboard is built from **stored transcripts**. Leaving `store_history` on (the

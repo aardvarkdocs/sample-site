@@ -121,11 +121,17 @@ that wraps your docs as four read-only tools:
 | `list_documentation` | The navigation index — every page's title, path, headings, glossary |
 | `get_full_corpus` | The whole site as one Markdown document (size-guarded: refused past `max_bytes`, default 1 MB) |
 
-These wrap the artifacts the build already emits (`search-index.json`, `metadata.json`,
-the per-page `.md` files, `llms-full.txt`). On a site with the on-page search box or the
-[AI assistant](/ai-assistant/) enabled, those exist already. For an **MCP-only** site
-(neither enabled), set `mcp: true` in `aardvark.config.yaml` so the build still writes the
-full-text index and navigation corpus:
+These wrap the artifacts the build already emits (the agent-audience
+`search-index-agent.json` when present, otherwise `search-index.json`, plus
+`metadata.json`, the per-page `.md` files, and `llms-full.txt`). A site with the on-page
+search box already emits the human search index; Search/MCP also emits the compact agent
+twin when its audience projection differs. The [AI assistant](/ai-assistant/)'s complete
+`assistant-corpus.json` is browser-only and is not read by MCP. A public-key versioned
+assistant independently emits the compact agent index for its scope-safe browser fallback only
+when that index fits the reader's separate 8 MiB cap; an unversioned assistant does not. To
+guarantee full-text MCP artifacts with Search off,
+set `mcp: true` in `aardvark.config.yaml` so the build writes its full-text index and
+navigation corpus:
 
 ```yaml
 mcp:

@@ -45,6 +45,7 @@ import re
 import time
 import urllib.error
 
+from aardvark.ai.model_context import ASSISTANT_LOCAL_CONTEXT_MAX_TOKENS
 from aardvark.http_fetch import (
     InsecureRedirect,
     OversizeResponse,
@@ -941,17 +942,14 @@ def _context(length):
     return str(n)
 
 
-# A representative AI Assistant turn (one question -> one answer): the docs context the
-# assistant inlines (and replays on every turn) plus a typical reply. Input dominates, so
-# a single turn costs far less than the per-million output rate suggests. ~68K in / ~600
-# out reproduces a real measured Sonnet turn (~$0.32) for this site's corpus.
-TURN_INPUT_TOKENS = 68_000
+# A conservative common-path AI Assistant turn (one question -> one answer): the hard maximum
+# locally selected page context plus a typical reply. Most confident turns select less; a long
+# conversation or broad agentic fallback can use more, so this remains an estimate rather than a cap.
 TURN_OUTPUT_TOKENS = 600
 
 
 def _per_turn(pricing, context_length, rate=RATE):
-    """Estimated cost of one assistant turn at a plan's meter rate. Caps the inlined input at
-    the model's context window — a small-context model can't inline the whole corpus."""
+    """Estimated common-path turn cost, capped when the model cannot fit the selected context."""
     try:
         prompt_rate = float(pricing.get("prompt"))
         completion_rate = float(pricing.get("completion"))
@@ -980,8 +978,10 @@ def _per_turn(pricing, context_length, rate=RATE):
     except (TypeError, ValueError, OverflowError):
         # OverflowError: an infinite context window (JSON `1e999`). Unreadable either way, so
         # the estimate falls back to assuming the whole turn fits, as it does for a missing one.
-        ctx = TURN_INPUT_TOKENS + TURN_OUTPUT_TOKENS
-    in_tokens = min(TURN_INPUT_TOKENS, max(0, ctx - TURN_OUTPUT_TOKENS))
+        ctx = ASSISTANT_LOCAL_CONTEXT_MAX_TOKENS + TURN_OUTPUT_TOKENS
+    in_tokens = min(
+        ASSISTANT_LOCAL_CONTEXT_MAX_TOKENS, max(0, ctx - TURN_OUTPUT_TOKENS)
+    )
     cost = (in_tokens * prompt_rate + TURN_OUTPUT_TOKENS * completion_rate + request_rate) * rate
     if not math.isfinite(cost):
         # `request` is not part of `_renderable`'s validation (a model renders without one),
@@ -1119,12 +1119,12 @@ def _build():
     legend = (
         "{% callout severity='info' title='Reading the columns' %}\n"
         "- **Input** / **Output** are the pay-as-you-go prices per **one million tokens**.\n"
-        "- The **est./answer** columns estimate one assistant turn on each plan — roughly "
-        f"{TURN_INPUT_TOKENS // 1000}K tokens of inlined docs context plus a "
+        "- The **est./answer** columns estimate a conservative common-path assistant turn on each plan — "
+        f"up to {ASSISTANT_LOCAL_CONTEXT_MAX_TOKENS // 1000}K tokens of locally selected docs context plus a "
         f"~{TURN_OUTPUT_TOKENS}-token reply (capped at each model's context window). "
         "Input dominates, so a single answer costs far less than the per-million "
-        "output rate suggests; your real numbers vary with your docs size and "
-        "answer length. On a paid plan, answers drain the plan's included monthly "
+        "output rate suggests; your real numbers vary with selected pages, conversation history, "
+        "fallback navigation, and answer length. On a paid plan, answers drain the plan's included monthly "
         "allowance before anything is billed.\n"
         + (
             "- **Quality** is the independent [Artificial Analysis Intelligence "

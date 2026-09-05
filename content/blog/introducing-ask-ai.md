@@ -35,10 +35,12 @@ plus a spend-capped **public** gateway key (`aardvark_live_…`) baked in as the
 build-time environment variable — never a provider key in your repo, and never the secret
 key: a build handed one fails rather than shipping it inside a static site.
 
-Two design choices matter most. First, **grounding**: when your corpus fits the model's
-context budget, the assistant inlines the whole thing on the first turn and answers with zero
-fetches; when it doesn't, it navigates your docs page-by-page, reasoning about which page to
-read next. Either way the answer comes from what you actually published. Second, **honest
+Two design choices matter most. First, **grounding**: when the corpus fits the browser's 8 MiB safety
+boundary, opening Ask AI loads the site's agent-audience corpus, ranks each question locally, and sends
+a small set of complete, structure-preserving Markdown pages in one model request. Larger corpora and
+weak or ambiguous matches keep bounded page-by-page navigation; an oversized version-scoped index
+fails closed rather than mixing releases. The whole corpus is never sent merely because a large model
+window can hold it, and either path answers from what you actually published. Second, **honest
 metering**: usage bills in real dollars against the account behind that key, so a public docs
 site can offer AI answers without signing up for an unbounded bill. Point the panel at a
 `:free` model slug and it answers at $0 while you evaluate it.

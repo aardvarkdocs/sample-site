@@ -34,8 +34,10 @@ emitted with per-build filenames such as `/img/logo-<sha>.png`.
 
 Keep route and discovery files revalidatable instead: page HTML, `_headers`,
 `_redirects`, `robots.txt`, `sitemap.xml`, `.well-known/**`, `auth.md`,
-`llms*.txt`, `metadata.json`, `search-index.json`, page `.md` siblings, and
-encrypted `.enc` payloads stay at stable paths by design.
+`llms*.txt`, `metadata.json`, `search-index.json`, `search-index-agent.json`,
+`assistant-corpus.json`, their
+`.gz` copies, page `.md` siblings, and encrypted `.enc` payloads stay at stable paths
+by design.
 
 The fingerprint token is your git `HEAD` SHA. If you build where `.git` isn't
 present (a container image, or a CI job with a shallow/absent checkout), set the
