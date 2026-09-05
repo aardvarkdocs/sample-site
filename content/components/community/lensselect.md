@@ -1,7 +1,6 @@
 ---
 title: "LensSelect"
 description: "The built-in lensselect tag — a fisheye/lens magnification select where the item under the cursor swells like a macOS Dock icon and its neighbours scale by proximity. A Community Component wrapping @gfazioli/mantine-lens-select."
-menu: components
 parent: community
 weight: 70
 ---

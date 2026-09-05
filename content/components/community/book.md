@@ -1,7 +1,6 @@
 ---
 title: "Book"
 description: "The built-in book tag — an iBooks-style book whose pages turn with a draggable page-curl. A Community Component wrapping @gfazioli/mantine-book."
-menu: components
 parent: community
 weight: 50
 ---

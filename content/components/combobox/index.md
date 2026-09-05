@@ -1,5 +1,5 @@
 ---
-menu: components
+parent: components
 title: Combobox
 icon: select
 weight: 40

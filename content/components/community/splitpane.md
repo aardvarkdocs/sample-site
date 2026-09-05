@@ -1,7 +1,6 @@
 ---
 title: "SplitPane"
 description: "Community Component — two resizable panes with a styled, draggable resizer, wrapping @gfazioli/mantine-split-pane. Orientation, pane sizing, resizer styling, and live examples."
-menu: components
 parent: community
 weight: 30
 ---

@@ -3,7 +3,6 @@ title: "Community Marquee"
 description: "The communityMarquee tag — a Community Component wrapping @gfazioli/mantine-marquee
   for scrolling tickers with isometric, circle, and 3D-tilt variants, fade-edge modes, and
   responsive vertical scroll. Usage, options, and live examples."
-menu: components
 parent: community
 weight: 310
 ---

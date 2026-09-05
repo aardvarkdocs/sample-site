@@ -1,7 +1,6 @@
 ---
 title: "Flip"
 description: "The Flip Community Component — a two-faced card that flips between a front and a back face on click. Usage, options, and live examples."
-menu: components
 parent: community
 weight: 62
 ---

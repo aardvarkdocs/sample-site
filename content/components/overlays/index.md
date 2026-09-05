@@ -1,5 +1,5 @@
 ---
-menu: components
+parent: components
 title: Overlays
 icon: app-window
 weight: 80

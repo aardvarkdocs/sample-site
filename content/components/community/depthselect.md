@@ -1,7 +1,6 @@
 ---
 title: "DepthSelect"
 description: "The built-in depthselect tag — a 3D Time Machine-style stack select where cards recede into depth and you riffle through them. A Community Component wrapping @gfazioli/mantine-depth-select."
-menu: components
 parent: community
 weight: 60
 ---

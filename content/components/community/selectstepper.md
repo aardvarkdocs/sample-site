@@ -1,7 +1,6 @@
 ---
 title: "Select stepper"
 description: "The built-in selectstepper tag — an option-cycling stepper from the Mantine community. Prev/next arrows step through a list of choices. Pass data as JSON, set a label, orientation, looping, and live examples."
-menu: components
 parent: community
 weight: 20
 ---

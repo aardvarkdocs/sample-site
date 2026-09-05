@@ -1,7 +1,6 @@
 ---
 title: "Parallax"
 description: "The Parallax Community Component — tilts its content in 3D toward the pointer, with optional light, glare, and shadow effects. Usage, options, and live examples."
-menu: components
 parent: community
 weight: 63
 ---

@@ -1,9 +1,13 @@
 ---
 title: Aardvark Gateway API
+navtitle: Gateway API
 description: The live, auto-generated HTTP reference for the Aardvark cloud gateway — rendered inline by the openapi directive on a wide-mode page.
-menu: api
+menu: docs
 mode: wide
-weight: 1
+heading: API
+heading-icon: fa-solid fa-code
+icon: fa-solid fa-plug
+weight: 70
 ---
 
 The reference below is the **real, user-facing API of the [Aardvark cloud

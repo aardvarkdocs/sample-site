@@ -1,7 +1,6 @@
 ---
 title: "Compare"
 description: "The Compare community component — an image-comparison slider you drag, hover, or auto-play to reveal one image over another. Usage, options, and live examples."
-menu: components
 parent: community
 weight: 40
 ---

@@ -1,5 +1,5 @@
 ---
-menu: components
+parent: components
 title: Data Display
 icon: table
 weight: 100

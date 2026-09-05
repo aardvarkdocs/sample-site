@@ -1,7 +1,11 @@
 ---
-menu: components
-nav: false
+menu: docs
+id: components          # the node the category buckets point `parent:` at
 title: Built-in Components
+heading: Components
+heading-icon: fa-solid fa-cubes
+icon: fa-solid fa-shapes
+weight: 26
 ---
 
 # Built-in Components

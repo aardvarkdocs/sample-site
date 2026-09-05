@@ -1,7 +1,6 @@
 ---
 title: "Window"
 description: "Community Component — a draggable, resizable window with a title bar and controls, wrapping @gfazioli/mantine-window. Drag, resize, collapse, and live examples."
-menu: components
 parent: community
 weight: 20
 ---

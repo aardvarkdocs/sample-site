@@ -22,14 +22,14 @@ target. Add `icon:` to show a glyph beside the tab label.
 
 ```yaml
 tabs:
-  - label: Docs
-    icon: book-2
+  - label: Why Aardvark?
+    icon: heart
     link: /
-    id: docs
-  - label: Components
-    icon: components
-    link: /components/
-    id: components
+    id: why
+  - label: Gateway API
+    icon: code
+    link: /api/
+    id: api
 ```
 
 A tab is highlighted whenever the current page belongs to its menu, so a tab
@@ -153,14 +153,14 @@ weight: 10           # optional — overrides the alphabetical default
 
 The easy path: give a folder's `index.md` a `menu` (or `parent`), and **every
 other file in that folder joins it automatically** — no per-file front matter.
-A page's id defaults to its path, so `components/button.md` has id
-`components/button` and `modes/index.md` has id `modes`.
+A page's id defaults to its path, so `components/buttons/button.md` has id
+`components/buttons/button` and `modes/index.md` has id `modes`.
 
 ```bash
-content/components/
-  index.md        # menu: components  -> the "Components" section (a real page)
-  button.md       # auto-joins Components
-  action-icon.md  # auto-joins Components
+content/components/buttons/
+  index.md        # parent: components  -> the "Buttons" section (a real page)
+  button.md       # auto-joins Buttons
+  actionicon.md   # auto-joins Buttons
 ```
 
 ## Two kinds of entry, plus labels

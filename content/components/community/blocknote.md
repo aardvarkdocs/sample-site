@@ -1,7 +1,6 @@
 ---
 title: "BlockNote"
 description: "BlockNote — a block-based rich-text editor by TypeCellOS. A Community Component that Aardvark does NOT bundle, because its source is MPL-2.0 copyleft. This page records the license verdict and links to the project."
-menu: components
 parent: community
 weight: 130
 ---

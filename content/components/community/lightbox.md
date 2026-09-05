@@ -1,7 +1,6 @@
 ---
 title: "Lightbox"
 description: "The community Lightbox tag — a full-screen image lightbox wrapping the @mantine-bites/lightbox extension, built on Embla Carousel. Usage, options, and live examples."
-menu: components
 parent: community
 weight: 20
 ---

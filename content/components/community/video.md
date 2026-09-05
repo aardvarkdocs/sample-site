@@ -3,7 +3,6 @@ title: "Video"
 description: "The built-in video tag — a video player with Picture-in-Picture, a scrubbable
   timeline, captions, keyboard shortcuts, and fullscreen. A Community Component wrapping
   @gfazioli/mantine-video."
-menu: components
 parent: community
 weight: 91
 ---

@@ -3,7 +3,6 @@ title: "Text Animate"
 description: "The textAnimate tag — a Community Component wrapping @gfazioli/mantine-text-animate
   to reveal or loop text with fade, blur, scale, and slide effects, animated by character, word,
   or line. Usage, options, and live examples."
-menu: components
 parent: community
 weight: 320
 ---

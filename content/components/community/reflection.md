@@ -1,7 +1,6 @@
 ---
 title: "Reflection"
 description: "The Reflection Community Component — paints a mirrored reflection beneath its content, with optional water ripple and contact shadow. Usage, options, and live examples."
-menu: components
 parent: community
 weight: 64
 ---

@@ -1,7 +1,6 @@
 ---
 title: "DataTable"
 description: "The built-in datatable tag — a themed data grid wrapping icflorescu's mantine-datatable. Columns and records as JSON, striped and bordered variants, column alignment, and attribute pass-through."
-menu: components
 parent: community
 weight: 110
 ---

@@ -158,8 +158,8 @@ reads *tab → section → ancestors → page*. It leads with the page's owning 
 the `heading:` divider that groups the page (if there is one), then each ancestor
 branch, then the page itself — on this site the Installation page shows
 `Docs / Getting Started / Installation`, and the Button reference shows
-`Components / Buttons / Button`. A page that belongs to no tab menu falls back to
-`Home / <page title>` (its `navtitle` when set). Ancestor pages link to themselves,
+`Docs / Components / Built-in Components / Buttons / Button`. A page that belongs to
+no tab menu falls back to `Home / <page title>` (its `navtitle` when set). Ancestor pages link to themselves,
 the tab crumb links when the tab has a `link:`, a section divider is a label only,
 and the last crumb — the current page — never links.
 

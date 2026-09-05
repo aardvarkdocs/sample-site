@@ -1,7 +1,6 @@
 ---
 title: "ContextMenu"
 description: "The community ContextMenu tag — a right-click context menu wrapping the mantine-contextmenu extension. Usage, options, and live examples."
-menu: components
 parent: community
 weight: 10
 ---

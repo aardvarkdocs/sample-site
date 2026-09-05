@@ -2,7 +2,6 @@
 title: "Audio"
 description: "The built-in audio tag — a Mantine-native audio player (play/pause, scrubbable
   timeline, volume and speed). A Community Component wrapping @gfazioli/mantine-audio."
-menu: components
 parent: community
 weight: 90
 ---

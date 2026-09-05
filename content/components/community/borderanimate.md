@@ -3,7 +3,6 @@ title: "Border Animate"
 description: "The borderAnimate tag — a Community Component wrapping @gfazioli/mantine-border-animate
   to wrap any content in an animated border: a traveling beam, a pulsating glow, or a subtle
   pulse. Usage, options, and live examples."
-menu: components
 parent: community
 weight: 330
 ---

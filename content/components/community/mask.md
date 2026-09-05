@@ -1,7 +1,6 @@
 ---
 title: "Mask"
 description: "The Mask community component — a cursor-follow spotlight that reveals its content through a soft gradient mask tracking the pointer. Usage, options, and live examples."
-menu: components
 parent: community
 weight: 41
 ---

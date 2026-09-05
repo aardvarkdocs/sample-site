@@ -1,7 +1,6 @@
 ---
 title: "Clock"
 description: "The built-in clock tag — an analog clock that ticks live time, or shows a fixed time, with arcs, shapes, and timezone support."
-menu: components
 parent: community
 weight: 10
 ---

@@ -1,5 +1,5 @@
 ---
-menu: components
+parent: components
 title: Buttons
 weight: 50
 icon: click

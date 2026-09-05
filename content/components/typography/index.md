@@ -1,5 +1,5 @@
 ---
-menu: components
+parent: components
 title: Typography
 icon: typography
 weight: 120

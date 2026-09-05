@@ -1,7 +1,6 @@
 ---
 title: "QR code"
 description: "The built-in qrcode tag — a customizable QR code from the Mantine community. Encode any value, set colors, dot and corner styles, a center logo, error correction, and live examples."
-menu: components
 parent: community
 weight: 30
 ---

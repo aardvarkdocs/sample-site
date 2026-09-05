@@ -1,7 +1,6 @@
 ---
 title: "Scene"
 description: "The Scene community component — a decorative animated background that layers gradients, glow blobs, dot grids, and noise behind your content. Usage, options, and live examples."
-menu: components
 parent: community
 weight: 60
 ---

@@ -1,7 +1,6 @@
 ---
 title: "Spinner"
 description: "The built-in spinner tag — an SVG loading spinner with animation variants, segment shapes, gradient colors, glow, and a determinate progress mode."
-menu: components
 parent: community
 weight: 30
 ---

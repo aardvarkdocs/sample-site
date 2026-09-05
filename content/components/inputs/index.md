@@ -1,5 +1,5 @@
 ---
-menu: components
+parent: components
 title: Inputs
 icon: forms
 weight: 20

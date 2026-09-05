@@ -1,7 +1,6 @@
 ---
 title: "JsonTree"
 description: "The built-in jsontree tag — an interactive, collapsible JSON tree viewer with syntax highlighting, copy-to-clipboard, search, and configurable expansion depth. A Community Component wrapping @gfazioli/mantine-json-tree."
-menu: components
 parent: community
 weight: 70
 ---

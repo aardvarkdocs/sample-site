@@ -1,5 +1,5 @@
 ---
-menu: components
+parent: components
 title: Aardvark Extras
 icon: sparkles
 weight: 5

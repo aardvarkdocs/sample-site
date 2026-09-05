@@ -1,7 +1,6 @@
 ---
 title: "ListViewTable"
 description: "The built-in listviewtable tag — a Finder-style list-view table with sortable columns and optional drag-to-reorder and resize. A Community Component wrapping @gfazioli/mantine-list-view-table."
-menu: components
 parent: community
 weight: 71
 ---

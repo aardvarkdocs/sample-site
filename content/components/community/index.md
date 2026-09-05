@@ -1,5 +1,5 @@
 ---
-menu: components
+parent: components
 id: community
 title: Community Components
 icon: users

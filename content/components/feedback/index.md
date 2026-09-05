@@ -1,5 +1,5 @@
 ---
-menu: components
+parent: components
 title: Feedback
 icon: bell
 weight: 70

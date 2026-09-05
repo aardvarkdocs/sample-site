@@ -3,7 +3,6 @@ title: "Onboarding"
 description: "The built-in onboarding tag — a guided, step-by-step product tour that
   spotlights elements behind a dimming overlay. A Community Component wrapping
   @gfazioli/mantine-onboarding-tour."
-menu: components
 parent: community
 weight: 92
 ---

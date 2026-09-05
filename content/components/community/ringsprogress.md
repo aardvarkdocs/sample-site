@@ -1,7 +1,6 @@
 ---
 title: "Rings progress"
 description: "The built-in ringsprogress tag — a multi-ring (concentric) progress indicator from the Mantine community. Pass rings as JSON, set size, gap, glow, animation, a center label, and live examples."
-menu: components
 parent: community
 weight: 10
 ---

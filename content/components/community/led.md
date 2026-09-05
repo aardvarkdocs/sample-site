@@ -1,7 +1,6 @@
 ---
 title: "Led"
 description: "The built-in led tag — a customizable LED status indicator with on/off state, color, variants, shapes, and animations."
-menu: components
 parent: community
 weight: 20
 ---

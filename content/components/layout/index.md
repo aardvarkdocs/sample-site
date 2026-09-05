@@ -1,5 +1,5 @@
 ---
-menu: components
+parent: components
 title: Layout
 icon: layout-grid
 weight: 10

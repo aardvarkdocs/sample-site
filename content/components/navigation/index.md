@@ -1,5 +1,5 @@
 ---
-menu: components
+parent: components
 title: Navigation
 icon: menu-2
 weight: 60

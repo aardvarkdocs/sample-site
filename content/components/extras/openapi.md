@@ -15,7 +15,7 @@ whole spec for a complete reference.
 
 This page is about that **single-endpoint slice** — dropping one operation into the
 flow of a page. For the whole spec rendered as a full, immersive reference, head to
-this site's [**Gateway API**](/api/) tab — the same tag with no slice, on a
+this site's [**Gateway API**](/api/) page — the same tag with no slice, on a
 `mode: wide` page, rendering this site's own live gateway API.
 
 ## Usage
@@ -67,7 +67,7 @@ the entire reference:
 
 Because it's ordinary page content, the page chooses its own layout — give it
 `mode: wide` so the response tables get room to breathe. This site's
-[**Gateway API**](/api/) tab does exactly that — the same tag, no slice, on a wide
+[**Gateway API**](/api/) page does exactly that — the same tag, no slice, on a wide
 page, with every operation wired into the left-hand nav. It renders this site's real
 Aardvark gateway API, so it doubles as a live reference and a demonstration.
 

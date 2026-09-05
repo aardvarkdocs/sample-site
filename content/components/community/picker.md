@@ -1,7 +1,6 @@
 ---
 title: "Picker"
 description: "Community Component — an animated iOS-style scroll/wheel picker wrapping @gfazioli/mantine-picker. Options, the selection band, item sizing, and live examples."
-menu: components
 parent: community
 weight: 10
 ---

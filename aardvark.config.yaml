@@ -202,6 +202,9 @@ tabs:
       - label: Authoring
         icon: pencil
         link: /authoring/templating/
+      - label: Components
+        icon: puzzle
+        link: /components/
       - label: Layout modes
         icon: layout-2
         link: /modes/
@@ -214,6 +217,9 @@ tabs:
       - label: Deploy
         icon: rocket
         link: /deploy/
+      - label: Gateway API
+        icon: code
+        link: /api/
   - label: AI Features
     icon: sparkles
     link: /ai/
@@ -222,14 +228,6 @@ tabs:
     icon: fa-solid fa-tags
     link: /pricing/
     id: pricing
-  - label: Components
-    icon: puzzle
-    link: /components/
-    id: components
-  - label: Gateway API
-    icon: code
-    link: /api/
-    id: api
   - label: Support
     icon: lifebuoy
     link: /support/
