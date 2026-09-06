@@ -28,15 +28,20 @@
     if (t) t.setAttribute('aria-expanded', 'true');
   }
 
+  // The transient 1.5s label swap both copy buttons share; the restored text is captured at click time.
+  function labelFlasher(btn) {
+    var label = btn.querySelector('.aardvark-md-menu-item-label') || btn;
+    var original = label.textContent;
+    return function (text) {
+      label.textContent = text;
+      setTimeout(function () { label.textContent = original; }, 1500);
+    };
+  }
+
   // Fetch the page's .md and copy it to the clipboard, with a transient label swap. The
   // .md is same-origin (no CORS); fetching on demand avoids inlining it into every page.
   function copy(btn) {
-    var label = btn.querySelector('.aardvark-md-menu-item-label') || btn;
-    var original = label.textContent;
-    function flash(text) {
-      label.textContent = text;
-      setTimeout(function () { label.textContent = original; }, 1500);
-    }
+    var flash = labelFlasher(btn);
     if (!navigator.clipboard) { flash('Copy unavailable'); return; }
     fetch(btn.getAttribute('data-aardvark-copy-md'))
       .then(function (res) {
@@ -56,12 +61,7 @@
   // page's data-abs guard) means a future copy-text value that starts with "/" but must be copied
   // verbatim (e.g. a slash-command) is never silently absolutized.
   function copyText(btn) {
-    var label = btn.querySelector('.aardvark-md-menu-item-label') || btn;
-    var original = label.textContent;
-    function flash(text) {
-      label.textContent = text;
-      setTimeout(function () { label.textContent = original; }, 1500);
-    }
+    var flash = labelFlasher(btn);
     if (!navigator.clipboard) { flash('Copy unavailable'); return; }
     var value = btn.getAttribute('data-aardvark-copy-text') || '';
     if (btn.hasAttribute('data-aardvark-copy-abs') && value.charAt(0) === '/') {
