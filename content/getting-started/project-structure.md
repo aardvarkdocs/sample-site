@@ -27,10 +27,12 @@ Add these as you need them — none is required:
 
 ```bash
   templates/             # override a single file of the active theme
+  components/            # your own {% raw %}{% MyTag %}{% endraw %} components, authored in Markdown
   generators/            # build-time Python that emits pages and downloadable files
   static/  public/       # public assets -> copied and fingerprinted
   openapi/               # OpenAPI specs (any path works; this is the convention)
   versions/              # frozen doc snapshots cut by `vark version cut`
+  i18n/                  # ui-strings.yaml: translated theme chrome and nav labels
   .env                   # secrets such as AARDVARK_SECRET_KEY, auto-loaded by build/dev
 ```
 
@@ -63,6 +65,14 @@ scaffolded `.gitignore` already does):
   [Versioning](/versioning/).
 - **`snippets/`** — Your own React components, usable from Markdown by filename.
   See [Components & snippets](/authoring/components-and-snippets/).
+- **`components/`** — Optional. One `.md` file per reusable
+  `{% raw %}{% MyTag %}{% endraw %}` component: a named tag with typed params whose body
+  holds your `component(...)` calls. A build-time macro, no JS. See
+  [Custom components](/authoring/custom-components/).
+- **`i18n/`** — Optional. `i18n/ui-strings.yaml` is the committed UI-string catalog:
+  per-language translations of the theme chrome ("On this page", "Was this page
+  helpful?") and of your nav and tab labels. `vark build --translate` regenerates it,
+  and `languages.uiStrings` can point somewhere else.
 - **`openapi/`** — OpenAPI specs you render inline with the
   `{% raw %}{% openapi %}{% endraw %}` directive — a whole spec, or a single-endpoint
   slice — on an ordinary Markdown page. See [OpenAPI](/components/extras/openapi/).
