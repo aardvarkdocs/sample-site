@@ -45,7 +45,7 @@ import re
 import time
 import urllib.error
 
-from aardvark.ai.model_context import ASSISTANT_LOCAL_CONTEXT_MAX_TOKENS
+from aardvark.ai import model_context
 from aardvark.http_fetch import (
     InsecureRedirect,
     OversizeResponse,
@@ -53,6 +53,28 @@ from aardvark.http_fetch import (
     http_get_bytes,
 )
 from aardvark.report import info, warn
+
+#: The displayed assistant grounding ceiling for a `vark` that does not publish its own — a
+#: released runtime from before the locally-retrieving assistant, which this generator must build
+#: under, because the mirror gate builds the sample site with the last published release
+#: (`RUNTIME_VERSION` in `.github/workflows/test.yml`; ../../../RELEASING.md has why).
+#:
+#: Frozen deliberately, and NOT kept equal to `ASSISTANT_LOCAL_CONTEXT_MAX_TOKENS`: matching it
+#: would make this page a second owner of a number `aardvark.ai.model_context` owns, and there is
+#: nothing to track anyway — the only runtimes that read this publish no ceiling to agree with.
+#: The live value is read off the building runtime below; this one just says what was assumed
+#: instead. Complete tables, so the note is an `info` by rule 2 of the contract above.
+_LOCAL_CONTEXT_DISPLAY_DEFAULT = 24_000
+if hasattr(model_context, "ASSISTANT_LOCAL_CONTEXT_MAX_TOKENS"):
+    ASSISTANT_LOCAL_CONTEXT_MAX_TOKENS = model_context.ASSISTANT_LOCAL_CONTEXT_MAX_TOKENS
+else:
+    ASSISTANT_LOCAL_CONTEXT_MAX_TOKENS = _LOCAL_CONTEXT_DISPLAY_DEFAULT
+    info(
+        "Aardvark: pricing generator: this vark exports no assistant context ceiling "
+        "(aardvark.ai.model_context.ASSISTANT_LOCAL_CONTEXT_MAX_TOKENS), so the estimate "
+        f"columns and the legend assume {_LOCAL_CONTEXT_DISPLAY_DEFAULT // 1000}K tokens of "
+        "selected context; a vark that publishes a ceiling is estimated against that instead."
+    )
 
 MODELS_URL = "https://openrouter.ai/api/v1/models"
 #: The ONLY host the catalog fetch may contact, redirects included. Not a formality: the
