@@ -70,13 +70,12 @@ Robust and self-serve — no sales call.
 - Content Reach analytics, reader authentication for private docs
 - **Priority email support**, next-business-day target
 {% endCard %}
-{% card title="Enterprise" icon="shield-lock" accent="indigo" href="https://gateway.aardvarkdocs.com/dashboard" cta="Subscribe" %}
-**$2,750** per month
-_$2,350/mo billed annually_
+{% card title="Enterprise" icon="shield-lock" accent="indigo" href="https://calendly.com/aardvarkdocs/new-meeting" cta="Talk to us" %}
+**Custom** — quoted per contract
 
 Everything in Business, plus:
 
-- **$750/mo of AI included** — 18.75× Pro — at a 20% discount
+- **$800/mo of AI included** — 20× Pro — at a 20% discount
 - **Unlimited customization requests** — our engineering team on call to build any feature you need
 - Bring your own model-provider key (optional)
 - Unlimited seats
@@ -92,9 +91,9 @@ Every model's real cost per answer, on every plan: **[the pricing table](/pricin
 
 | | Free | Pro | Business | Enterprise |
 |---|---|---|---|---|
-| **Price** | $0 | $99/mo | $349/mo | $2,750/mo |
-| **Billed annually** | — | $1,046.40/yr (≈$87.20/mo) | $3,638.40/yr (≈$303.20/mo) | $28,200/yr (≈$2,350/mo) |
-| **Included AI** every month (member discount) | — | $40 at ≈7% off | $120 at ≈13% off (3× Pro) | $750 at 20% off (18.75× Pro) |
+| **Price** | $0 | $99/mo | $349/mo | Custom |
+| **Billed annually** | — | $1,046.40/yr (≈$87.20/mo) | $3,638.40/yr (≈$303.20/mo) | Custom |
+| **Included AI** every month (member discount) | — | $40 at ≈7% off | $120 at ≈13% off (3× Pro) | $800 at 20% off (20× Pro) |
 | **Seats** | 1 | 5 | 12 | Unlimited |
 | **Hosting** | Self-host only | Managed or self-hosted | Managed or self-hosted | Managed or self-hosted |
 | **Analytics** | Insights | Insights | Insights + Content Reach | Insights + Content Reach |
@@ -109,8 +108,12 @@ Nothing core is paywalled: self-hosting, Markdown-for-Agents, `llms.txt`, the ag
 index, whole-site PDF, and every component and theme ship on **Free**. Paid plans add
 hosting, seats, support, controls — and cheaper AI.
 
+Pro and Business are self-serve: subscribe with a card and change plans yourself. **Enterprise is
+priced per contract** — the allowance, seats, and member rate above are where a quote starts, not a
+published rate card — so [book a call](https://calendly.com/aardvarkdocs/new-meeting) and we'll put a number on it.
+
 Single sign-on is OpenID Connect, configured yourself on Business and Enterprise. SAML is
-enabled per deployment rather than self-serve — [talk to us](/support/) if you need it.
+enabled per deployment rather than self-serve — [book a call](https://calendly.com/aardvarkdocs/new-meeting) if you need it.
 
 ## The honest AI meter
 
@@ -149,12 +152,12 @@ stay unstuck? Two self-serve options, both under your control:
 
 Annual plans take **20% off the platform fee** — the included-AI allowance is funded
 monthly at full value either way (it's real usage, not a discountable line item), so the
-effective saving is about 12–15% off the yearly total — ~12% on Pro, ~13% on Business,
-~15% on Enterprise (the bigger a plan's fee is relative to its bundled allowance, the more
-of the bill the discount reaches). Pro: $1,046.40/yr (vs. $1,188 at par, ~12% off).
-Business: $3,638.40/yr (vs. $4,188, ~13% off). Enterprise: $28,200/yr (vs. $33,000, ~15%
-off). Add-on seats on an annual plan bill yearly at 12× the monthly seat rate, with no
-discount. The allowance still resets every month on annual plans.
+effective saving is about 12–13% off the yearly total — ~12% on Pro, ~13% on Business (the
+bigger a plan's fee is relative to its bundled allowance, the more of the bill the discount
+reaches). Pro: $1,046.40/yr (vs. $1,188 at par, ~12% off). Business: $3,638.40/yr (vs.
+$4,188, ~13% off). Add-on seats on an annual plan bill yearly at 12× the monthly seat rate,
+with no discount. The allowance still resets every month on annual plans. Enterprise bills on
+the term its contract sets, so it has no published annual rate to discount.
 
 ## FAQ
 

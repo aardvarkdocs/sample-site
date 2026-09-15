@@ -2478,12 +2478,12 @@
                           },
                           "price_usd": {
                             "type": "number",
-                            "description": "Monthly platform price in USD (0 for Free and custom-only plans)."
+                            "description": "Monthly platform price in USD. 0 for Free, and for any quote-only plan (self_serve false): a plan the catalog does not sell by card publishes no price here, whatever its catalog row holds — Enterprise since migration 0104, whose fee is negotiated per contract."
                           },
                           "price_annual_usd": {
                             "type": "number",
-                            "nullable": true,
-                            "description": "Annual price for 12 months in USD (20% off the platform fee, with the grant funded monthly at par — an effective ~12% off the yearly total, up to ~13% on plans whose bundled allowance is a smaller share of the fee), or null when annual isn't offered."
+                            "description": "Annual price for 12 months in USD (20% off the platform fee, with the grant funded monthly at par — an effective ~12% off the yearly total, up to ~13% on plans whose bundled allowance is a smaller share of the fee), or null when annual isn't offered — and always null for a quote-only plan (self_serve false).",
+                            "nullable": true
                           },
                           "monthly_grant_usd": {
                             "type": "number",
@@ -2906,7 +2906,7 @@
             }
           },
           "409": {
-            "description": "Conflict — `cancel_pending`, `change_pending`, `not_live`, `operator_managed`.",
+            "description": "Conflict — `cancel_pending`, `change_pending`, `not_live`, `operator_managed`, `restore_unavailable`.",
             "content": {
               "application/json": {
                 "schema": {
