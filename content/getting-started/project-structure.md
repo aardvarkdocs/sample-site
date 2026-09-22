@@ -29,7 +29,8 @@ Add these as you need them — none is required:
   templates/             # override a single file of the active theme
   components/            # your own {% raw %}{% MyTag %}{% endraw %} components, authored in Markdown
   generators/            # build-time Python that emits pages and downloadable files
-  static/  public/       # public assets -> copied and fingerprinted
+  static/                # public assets -> copied and fingerprinted
+  public/                # public assets -> copied and fingerprinted
   openapi/               # OpenAPI specs (any path works; this is the convention)
   versions/              # frozen doc snapshots cut by `vark version cut`
   i18n/                  # ui-strings.yaml: translated theme chrome and nav labels
