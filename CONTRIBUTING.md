@@ -27,7 +27,8 @@ For a new eligible change, the normal lifecycle is:
    need to rebase merely to account for private-source changes.
 4. Merging the private mirror pushes private `main`, which triggers the normal
    publisher to append a bot-authored sync commit containing the accepted
-   private snapshot to public `main`.
+   private snapshot to public `main`. That commit links your pull request and may
+   credit you, by GitHub username, as a co-author.
 5. A reconciliation job in that same publisher workflow verifies publication,
    then comments on and closes the original, still-unmerged public pull request.
 
