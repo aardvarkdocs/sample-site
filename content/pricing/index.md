@@ -8,7 +8,7 @@ description: >-
 icon: fa-solid fa-tags
 menu: pricing
 weight: 1
-mode: full
+mode: wide
 ---
 
 <style>
