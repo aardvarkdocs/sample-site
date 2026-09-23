@@ -1190,7 +1190,7 @@ def _front():
         ),
         "menu": "pricing",
         "weight": 2,  # under the hand-authored Plans page (weight 1) in the pricing menu
-        "mode": "full",  # a big table — use the full page width, no nav or right TOC
+        "mode": "wide",  # a big table — the wide column, keeping the pricing left nav
     }
 
 
