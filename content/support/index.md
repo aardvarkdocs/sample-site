@@ -12,4 +12,4 @@ taxonomy:
 
 # Support
 
-{% taxonomy name="support" type="kb" bannerText="Ask anything about plans, billing, seats, or AI usage — or browse the answers by category below." %}
+{% taxonomy name="support" type="kb" bannerText="Ask anything about plans, billing, teams, or AI usage — or browse the answers by category below." %}

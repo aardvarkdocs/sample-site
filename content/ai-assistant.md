@@ -70,7 +70,7 @@ build time. Provisioning a key and funding the account live on the [cloud gatewa
 `/_aardvark/ai-config.json` and served to every reader. Setting a secret `aardvark_secret_…` key there
 **fails the build** rather than publishing it, because a secret key can manage the account and bypasses
 the gateway's reader guardrails. With no key at all, the panel renders a "not configured" notice
-instead of answering.
+instead of answering; any other value does the same, and the build warns and doesn't bake it.
 {% endCallout %}
 
 ### Options
@@ -81,7 +81,6 @@ All optional except `enabled`:
 |-----|---------|--------------|
 | `enabled` | `false` | Master switch for the reader panel. |
 | `model` | `~anthropic/claude-sonnet-latest` | The model the assistant answers with (must be vision/file-capable if you keep attachments on). |
-| `gateway` | the managed gateway | Base URL of the gateway Worker; endpoint paths are appended to it, so keep the `/v1` suffix the shipped Worker routes on. Point it at your own gateway to self-host — a URL with no path at all warns, and so does a non-`https` one (the baked key would travel in cleartext) unless the host is `localhost`, `127.0.0.1` or `::1`. |
 | `reasoning` | model default | Reasoning control for a reasoning-capable model — `enabled` (bool) and `effort` (`low`/`medium`/`high`). |
 | `attachments` | on | Reader file uploads — 4 files of 10 MB each by default. See [Reader attachments](/ai-gateway/#reader-attachments) for the caps and cost notes. |
 | `store_history` | `true` | Posts each finished turn to the gateway so it appears in your dashboard **and feeds the analytics below**. |
@@ -143,7 +142,7 @@ with `app.iconBackground`, or drop the page, manifest, icons and install afforda
 ## The analytics dashboard
 
 Every stored conversation feeds an analytics suite on the **gateway dashboard** — open
-`gateway.aardvarkdocs.com/dashboard` (or your own gateway host) and sign in with the **magic link**
+`gateway.aardvarkdocs.com/dashboard` and sign in with the **magic link**
 emailed to you, or through **single sign-on** where your account has it configured. (The dashboard is a
 browser session; the `aardvark_secret_…` key is the API/CLI credential, and it authenticates the
 [programmatic endpoints](#programmatic-export) below.) Cron passes on the gateway classify each answer,

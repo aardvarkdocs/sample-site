@@ -3,8 +3,8 @@ title: Plans & pricing
 navtitle: Plans
 description: >-
   Aardvark is free to use forever — prebuilt binaries for macOS, Linux, and Windows,
-  self-host anywhere. Paid plans add managed hosting, seats, support, and a monthly
-  included-AI allowance metered in real dollars — never opaque credits.
+  self-host anywhere. Paid plans add managed hosting, support, and a monthly included-AI
+  allowance metered in real dollars — never opaque credits.
 icon: fa-solid fa-tags
 menu: pricing
 weight: 1
@@ -26,9 +26,9 @@ mode: wide
 
 Aardvark is **free to use, forever**: prebuilt binaries for macOS, Linux, and Windows,
 self-hosting anywhere at no cost, and an open contribution mirror for these docs.
-Paid plans are for teams that want a **predictable monthly bill** — managed hosting, more
-seats, real support, and a monthly **included-AI allowance in dollars**, keeping pricing
-simple and dollar-based. Your Aardvark key also grants you access to hundreds of AI models
+Paid plans are for teams that want a **predictable monthly bill** — managed hosting, real
+support, and a monthly **included-AI allowance in dollars**, keeping pricing simple and
+dollar-based. Team size never figures in: invite as many teammates as you like on every plan. Your Aardvark key also grants you access to hundreds of AI models
 you can use strategically to control costs as you go.
 
 <div class="plan-grid" markdown="1">
@@ -43,7 +43,7 @@ Bring your own hosting, pay only for the AI you use.
 - All components, themes, agent discovery, dashboard Insights
 - Metered AI at [published per-model prices](/pricing/models/)
 - Prepaid balance + auto top-up
-- 1 seat · community support
+- Community support
 {% endCard %}
 {% card title="Pro" icon="rocket" accent="grape" href="https://gateway.aardvarkdocs.com/dashboard" cta="Subscribe" %}
 **$99** per month
@@ -54,7 +54,6 @@ We host and run your docs.
 - Everything in Free, plus:
 - **Managed hosting** — custom domain, SSL, previews
 - **$40/mo of AI included**, at a ≈7% member discount
-- 5 seats included, add more at $10/seat
 - Community support
 {% endCard %}
 {% card title="Business" icon="building" accent="violet" href="https://gateway.aardvarkdocs.com/dashboard" cta="Subscribe" %}
@@ -65,7 +64,6 @@ Robust and self-serve — no sales call.
 
 - Everything in Pro, plus:
 - **$120/mo of AI included** — 3× Pro — at a ≈13% discount
-- 12 seats included, add more at $15/seat
 - SSO (OpenID Connect) + SCIM provisioning, audit-log export
 - Content Reach analytics, reader authentication for private docs
 - **Priority email support**, next-business-day target
@@ -78,7 +76,6 @@ Everything in Business, plus:
 - **$800/mo of AI included** — 20× Pro — at a 20% discount
 - **Unlimited customization requests** — our engineering team on call to build any feature you need
 - Bring your own model-provider key (optional)
-- Unlimited seats
 - Shared Slack access for realtime support and requests, 7 days a week
 {% endCard %}
 {% endCardGrid %}
@@ -94,7 +91,6 @@ Every model's real cost per answer, on every plan: **[the pricing table](/pricin
 | **Price** | $0 | $99/mo | $349/mo | Custom |
 | **Billed annually** | — | $1,046.40/yr (≈$87.20/mo) | $3,638.40/yr (≈$303.20/mo) | Custom |
 | **Included AI** every month (member discount) | — | $40 at ≈7% off | $120 at ≈13% off (3× Pro) | $800 at 20% off (20× Pro) |
-| **Seats** | 1 | 5 | 12 | Unlimited |
 | **Hosting** | Self-host only | Managed or self-hosted | Managed or self-hosted | Managed or self-hosted |
 | **Analytics** | Insights | Insights | Insights + Content Reach | Insights + Content Reach |
 | **SSO** (OpenID Connect) **+ SCIM / audit-log export** | — | — | Included | Included |
@@ -105,11 +101,11 @@ Every model's real cost per answer, on every plan: **[the pricing table](/pricin
 | **Self-hosting, agent discovery, PDF, all components** | Included | Included | Included | Included |
 
 Nothing core is paywalled: self-hosting, Markdown-for-Agents, `llms.txt`, the agent-skills
-index, whole-site PDF, and every component and theme ship on **Free**. Paid plans add
-hosting, seats, support, controls — and cheaper AI.
+index, whole-site PDF, and every component and theme ship on **Free** — and so does an
+unlimited team. Paid plans add hosting, support, controls — and cheaper AI.
 
 Pro and Business are self-serve: subscribe with a card and change plans yourself. **Enterprise is
-priced per contract** — the allowance, seats, and member rate above are where a quote starts, not a
+priced per contract** — the allowance and member rate above are where a quote starts, not a
 published rate card — so [book a call](https://calendly.com/aardvarkdocs/new-meeting) and we'll put a number on it.
 
 Single sign-on is OpenID Connect, configured yourself on Business and Enterprise. SAML is
@@ -137,8 +133,8 @@ Your included allowance is denominated in those same billed dollars:
 
 **Cap-and-hold is the default.** Paid AI pauses at your cap and you're notified, so it
 cannot add further overflow charges — readers keep getting free-model answers meanwhile.
-Your "max possible bill" is the subscription price plus any fixed add-on-seat charges and
-any overflow already incurred this month. (Usage-based GitHub Automations compute, if you
+Your "max possible bill" is the subscription price plus any overflow already incurred this
+month. (Usage-based GitHub Automations compute, if you
 use it, draws your prepaid balance separately and isn't included in that figure.) Prefer to
 stay unstuck? Two self-serve options, both under your control:
 
@@ -155,8 +151,7 @@ monthly at full value either way (it's real usage, not a discountable line item)
 effective saving is about 12–13% off the yearly total — ~12% on Pro, ~13% on Business (the
 bigger a plan's fee is relative to its bundled allowance, the more of the bill the discount
 reaches). Pro: $1,046.40/yr (vs. $1,188 at par, ~12% off). Business: $3,638.40/yr (vs.
-$4,188, ~13% off). Add-on seats on an annual plan bill yearly at 12× the monthly seat rate,
-with no discount. The allowance still resets every month on annual plans. Enterprise bills on
+$4,188, ~13% off). The allowance still resets every month on annual plans. Enterprise bills on
 the term its contract sets, so it has no published annual rate to discount.
 
 ## FAQ
@@ -168,6 +163,6 @@ Every question — and its exact answer — lives in the searchable support know
 organized by category with the most-asked questions up top.
 
 {% card title="Browse the support knowledge base" icon="lifebuoy" href="/support/" cta="Visit support" %}
-Included AI, overflow, plan changes, payments and safety limits, seats and hosting —
-every billing question answered, straight from the team.
+Included AI, overflow, plan changes, payments and safety limits, and hosting — every
+billing question answered, straight from the team.
 {% endCard %}

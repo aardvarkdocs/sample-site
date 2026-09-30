@@ -2,7 +2,7 @@
 
 Aardvark itself is free to use and self-host; its optional built-in AI features — the
 reader-facing Ask AI assistant and the author-assisting tools — are billed per token
-through Aardvark's metered gateway (paid plans add managed hosting, seats, and support). Aardvark is a pass-through: any OpenRouter model
+through Aardvark's metered gateway (paid plans add managed hosting and support). Aardvark is a pass-through: any OpenRouter model
 works for `ai.model` / `ai.assistant.model`, so this script lists the whole chat-model
 catalog (with context window + modality) at Aardvark's published per-token rates.
 
@@ -1111,7 +1111,7 @@ def _build():
         # one of those reporting paths.
         body = (
             "Aardvark is **free to use and self-host**; AI usage is billed per token, and "
-            "paid plans add managed hosting, seats, and support. Live model prices couldn't "
+            "paid plans add managed hosting and support. Live model prices couldn't "
             "be fetched for this build.\n\n"
             "{% callout severity='info' %}\n"
             "Current per-model rates will reappear here on the next build; see "
@@ -1161,7 +1161,7 @@ def _build():
     body = (
         "Per-token rates for every model Aardvark's metered gateway can serve — point "
         "`ai.model` / `ai.assistant.model` at **any** model below and pay only for the AI you "
-        "actually use. Looking for the platform tiers (hosting, seats, support, included AI)? "
+        "actually use. Looking for the platform tiers (hosting, support, included AI)? "
         "See **[Plans & pricing](/pricing/)**.\n\n"
         "**Input**/**Output** are the pay-as-you-go per-token prices; the per-plan columns show "
         "what one assistant answer actually costs on each tier. Subscribers get a member "

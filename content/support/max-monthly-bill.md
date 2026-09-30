@@ -1,6 +1,6 @@
 ---
 title: What's the most I could be billed in a month?
-description: Your maximum includes the plan fee, fixed add-on-seat charges, and any overflow already incurred; pay-as-you-go also includes your remaining cap headroom.
+description: Your maximum is the plan fee plus any overflow already incurred; pay-as-you-go also includes your remaining cap headroom.
 nav: false
 taxonomy:
   - name: support
@@ -12,8 +12,8 @@ taxonomy:
 
 # What's the most I could be billed in a month?
 
-With **cap-and-hold** (or shutoff), the figure is your plan fee plus any fixed add-on-seat
-charges and any overflow already incurred this month. With **pay-as-you-go**, it also includes
+With **cap-and-hold** (or shutoff), the figure is your plan fee plus any overflow already
+incurred this month. With **pay-as-you-go**, it also includes
 whatever remains under the overflow cap you set. Your dashboard shows this "max possible bill"
 figure directly. On an annual plan the fee part is the full annual price — the honest worst
 case for your renewal month, not a monthly average.

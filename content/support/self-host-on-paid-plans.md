@@ -4,7 +4,7 @@ description: Yes — managed hosting is included on paid plans, never required.
 nav: false
 taxonomy:
   - name: support
-    tags: ["Plans, seats & hosting"]
+    tags: ["Plans & hosting"]
     leftnav: true
     articleCount: true
 ---

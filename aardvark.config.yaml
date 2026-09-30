@@ -382,6 +382,11 @@ redirects:
   - { from: /components/misc/visuallyhidden/, to: /components/typography/visuallyhidden/ }
   - { from: /components/misc/focustrap/, to: /components/inputs/focustrap/ }
   - { from: /components/misc/transition/, to: /components/overlays/transition/ }
+  # 2026-09: per-member pricing retired — the four support pages about it were removed.
+  - { from: /support/how-seats-work/, to: /support/ }
+  - { from: /support/add-or-remove-seats/, to: /support/ }
+  - { from: /support/addon-seats-plan-changes/, to: /support/ }
+  - { from: /support/running-out-of-seats/, to: /support/ }
 
 # Prerender React islands to static HTML at build time. The client bundle still
 # re-renders them on load (so they stay interactive); this bakes the real widget
@@ -694,8 +699,6 @@ ai:
     # when you mint the key (POST /admin/keys), and re-mint to change them. (It is never exposed in
     # the public ai-config.json.) Setting a `prompt:` here has NO effect; the build warns and
     # ignores it, so it's intentionally omitted from this sample rather than shipped as a dead knob.
-    # Gateway base URL (defaults to the Aardvark cloud gateway). Override to self-host:
-    # gateway: https://gateway.aardvark.dev/v1
 
 # Reader survey — a Google-Surveys-style prompt (default OFF; opt-in like the assistant). When
 # enabled, a small card appears at the end of every eligible page, asks the questions one at a

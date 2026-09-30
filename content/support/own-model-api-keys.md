@@ -4,7 +4,7 @@ description: No — metered AI runs through Aardvark's managed keys, with an opt
 nav: false
 taxonomy:
   - name: support
-    tags: ["Plans, seats & hosting"]
+    tags: ["Plans & hosting"]
     leftnav: true
     articleCount: true
 ---

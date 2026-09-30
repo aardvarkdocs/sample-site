@@ -2493,14 +2493,6 @@
                             "type": "integer",
                             "description": "The plan's published member markup over OpenRouter list cost, ×100 (150 = ×1.50 Free baseline, 140 = ×1.40 Pro, 130 = ×1.30 Business, 120 = ×1.20 Enterprise)."
                           },
-                          "seats_included": {
-                            "type": "integer",
-                            "description": "Editor seats included with the plan."
-                          },
-                          "seat_price_usd": {
-                            "type": "number",
-                            "description": "Per-seat monthly price of an add-on editor seat on this plan, in USD (0 = the plan sells no add-on seats). Annual subscriptions bill seats at this rate ×12 at par. Exposed so a plan-change confirmation can disclose the seat-charge delta a switch imposes on an account already holding add-on seats."
-                          },
                           "active": {
                             "type": "boolean",
                             "description": "Whether the plan is open in the catalog (a retired plan keeps existing subscribers but takes no new ones)."
@@ -2515,7 +2507,7 @@
                     },
                     "subscription": {
                       "type": "object",
-                      "description": "The live subscription + grant meter: plan/status/interval (+ `cancel_at` when a cancellation is scheduled), `grant` (monthly/remaining/rollover/available USD + period bounds), `overflow` (mode/cap/used + the 2× acknowledgment), `seats` (add-on editor seats: `included`/`addon`/`used`/`limit` counts + `seat_price_usd` per-seat monthly price), `burn` (last-30-days USD, per-day rate, estimated depletion date), and `max_bill_usd` — the single worst-case-bill number. `free_mode` is always present as `{ active, until }`; while active, complimentary AI usage is never charged or balance/grant-gated and `max_bill_usd` is 0, while GitHub Automations compute still bills prepaid balance. `until` is the exact epoch-ms cutoff or null for an indefinite grant. Null on the free pay-as-you-go plan.",
+                      "description": "The live subscription + grant meter: plan/status/interval (+ `cancel_at` when a cancellation is scheduled), `grant` (monthly/remaining/rollover/available USD + period bounds), `overflow` (mode/cap/used + the 2× acknowledgment), `burn` (last-30-days USD, per-day rate, estimated depletion date), and `max_bill_usd` — the single worst-case-bill number. `free_mode` is always present as `{ active, until }`; while active, complimentary AI usage is never charged or balance/grant-gated and `max_bill_usd` is 0, while GitHub Automations compute still bills prepaid balance. `until` is the exact epoch-ms cutoff or null for an indefinite grant. Null on the free pay-as-you-go plan.",
                       "nullable": true
                     },
                     "anomaly_paused": {
@@ -2529,7 +2521,7 @@
                         "properties": {
                           "event": {
                             "type": "string",
-                            "description": "Event kind: subscribed, plan_changed, canceled, cancel_unscheduled, grant_reset, overflow_changed, payment_failed, payment_recovered, downgraded, paused, resumed, seats_changed."
+                            "description": "Event kind: subscribed, plan_changed, canceled, cancel_unscheduled, grant_reset, overflow_changed, payment_failed, payment_recovered, downgraded, paused, resumed. `seats_changed` appears only on rows recorded before per-member pricing was retired."
                           },
                           "actor": {
                             "type": "string",
@@ -2772,7 +2764,7 @@
         ],
         "summary": "Switch the live subscription to another plan (upgrades apply immediately; downgrades at the next boundary)",
         "operationId": "postV1BillingChangePlan",
-        "description": "Switches the live subscription to another plan. An UPGRADE (a higher-priced plan) applies IMMEDIATELY — the Stripe price is swapped with the difference prorated onto the next invoice, and the grant/markup/seats re-snapshot now. A DOWNGRADE (a lower-priced plan) is SCHEDULED for the next billing boundary with NO current-period proration: the current plan's entitlement and billing continue unchanged until then, and the switch applies at that period's invoice.paid (the response reports the scheduled plan via `pending_plan`, and switching back before the boundary unschedules it). At most ONE off-cycle re-grant applies per grant period regardless of how many times plans are swapped (swap-proof grant minting). Operator-managed (non-Stripe) subscriptions are refused — the operator re-plans via the admin surface.",
+        "description": "Switches the live subscription to another plan. An UPGRADE (a higher-priced plan) applies IMMEDIATELY — the Stripe price is swapped with the difference prorated onto the next invoice, and the grant/markup re-snapshot now. A DOWNGRADE (a lower-priced plan) is SCHEDULED for the next billing boundary with NO current-period proration: the current plan's entitlement and billing continue unchanged until then, and the switch applies at that period's invoice.paid (the response reports the scheduled plan via `pending_plan`, and switching back before the boundary unschedules it). At most ONE off-cycle re-grant applies per grant period regardless of how many times plans are swapped (swap-proof grant minting). Operator-managed (non-Stripe) subscriptions are refused — the operator re-plans via the admin surface.",
         "security": [
           {
             "sessionCookie": [],
@@ -2906,7 +2898,7 @@
             }
           },
           "409": {
-            "description": "Conflict — `cancel_pending`, `change_pending`, `not_live`, `operator_managed`, `restore_unavailable`.",
+            "description": "Conflict — `cancel_pending`, `change_pending`, `not_live`, `operator_managed`, `restore_unavailable`, `retry_pending`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3214,198 +3206,6 @@
         }
       }
     },
-    "/v1/billing/seats": {
-      "post": {
-        "tags": [
-          "Billing"
-        ],
-        "summary": "Set the total add-on editor seat count (block + buy)",
-        "operationId": "postV1BillingSeats",
-        "description": "Sets the ABSOLUTE number of purchased add-on editor seats on a Stripe-billed subscription (migration 0045). The plan's `seats_included` are free; each add-on seat bills at the plan's per-seat monthly rate. Seats are block-and-buy — invites are refused with `403 seat_limit` at the limit until more are bought here, so the bill never grows without this call. A REDUCTION can't drop below the seats already occupied (members + pending invites). Operator-managed (non-Stripe) subscriptions are refused. A positive purchase on a plan that sells no add-on seats is refused with `400 seats_not_available`, but a REMOVAL (`seats: 0`) is NOT blocked by that guard even after a plan's per-seat price has been zeroed — so a customer holding a still-billing seat item can shed it rather than be trapped. (A removal is still subject to the same `400 seats_in_use` floor as any reduction — it can't drop the limit below the seats already occupied by members + pending invites — and to the suspended/closed-account guards.)",
-        "security": [
-          {
-            "sessionCookie": [],
-            "csrfHeader": []
-          },
-          {
-            "secretKey": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "seats": {
-                    "type": "integer",
-                    "description": "The TOTAL add-on seat count (0–100, integer). Absolute, not a delta; 0 removes all add-on seats."
-                  }
-                },
-                "required": [
-                  "seats"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "seats_included": {
-                      "type": "integer",
-                      "description": "The plan's included seats (free)."
-                    },
-                    "seats_addon": {
-                      "type": "integer",
-                      "description": "The purchased add-on seat count now in effect."
-                    },
-                    "seat_price_usd": {
-                      "type": "number",
-                      "description": "The current per-add-on-seat monthly price."
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request — `bad_request`, `seats_in_use`, `seats_not_available`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "example": {
-                  "error": {
-                    "code": "bad_request",
-                    "message": "seats must be an integer between 0 and 100 (the total add-on seat count)."
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthenticated — `invalid_key`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "example": {
-                  "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
-                  }
-                }
-              }
-            }
-          },
-          "402": {
-            "description": "Payment required — `seats_failed`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "example": {
-                  "error": {
-                    "code": "seats_failed",
-                    "message": ""
-                  }
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden — `account_closed`, `account_suspended`, `csrf`, `forbidden`, `forbidden_key`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "example": {
-                  "error": {
-                    "code": "account_closed",
-                    "message": "This account is closed; it cannot change seats."
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found — `no_subscription`, `not_found`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "example": {
-                  "error": {
-                    "code": "no_subscription",
-                    "message": "Seat add-ons apply to a subscription; this account is on the free plan."
-                  }
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Conflict — `operator_managed`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "example": {
-                  "error": {
-                    "code": "operator_managed",
-                    "message": "This subscription is operator-managed; contact support to change seats."
-                  }
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Rate limited — `rate_limited`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "example": {
-                  "error": {
-                    "code": "rate_limited",
-                    "message": "Too many seat-change requests. Please wait a moment."
-                  }
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "Service unavailable — `payments_unavailable`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "example": {
-                  "error": {
-                    "code": "payments_unavailable",
-                    "message": "Card payments are not enabled on this gateway."
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/v1/billing/subscribe": {
       "post": {
         "tags": [
@@ -3552,7 +3352,7 @@
             }
           },
           "409": {
-            "description": "Conflict — `account_closed`, `already_subscribed`, `card_changed`, `not_live`.",
+            "description": "Conflict — `account_closed`, `already_subscribed`, `card_changed`, `not_live`, `retry_pending`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -16699,7 +16499,7 @@
         ],
         "summary": "Invite a teammate",
         "operationId": "postV1TeamInvite",
-        "description": "Owner/admin only. Emails a magic invite link (valid ~7 days). Owners may invite admins; admins may invite members only. Invites never grant owner. Returns 409 without sending when the plan's editor seats are already in use; acceptance rechecks the snapshotted allowance atomically. Otherwise the response is a neutral 200 regardless of delivery.",
+        "description": "Owner/admin only. Emails a magic invite link (valid ~7 days). Owners may invite admins; admins may invite members only. Invites never grant owner. Team size is never plan-gated. The response is a neutral 200 regardless of delivery.",
         "security": [
           {
             "sessionCookie": [],
@@ -16800,7 +16600,7 @@
             }
           },
           "403": {
-            "description": "Forbidden — `csrf`, `forbidden`, `forbidden_key`, `seat_limit`.",
+            "description": "Forbidden — `csrf`, `forbidden`, `forbidden_key`.",
             "content": {
               "application/json": {
                 "schema": {

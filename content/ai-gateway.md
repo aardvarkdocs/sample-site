@@ -22,9 +22,9 @@ This page is conceptual and how-to, for both **customers** (whose docs site uses
 **operators** (who run a gateway). For end-to-end deployment and Stripe setup, see
 `gateway/DEPLOYMENT.md` in the gateway source.
 
-> The gateway is **optional**. A site can point the assistant at your own OpenRouter key, or skip
-> the assistant entirely. The gateway is what you reach for when you want **metering, per-customer
-> balances, and billing** in front of the model.
+> The assistant always runs through the gateway: it is what puts **metering, per-customer
+> balances, and billing** in front of the model. A site that doesn't want that leaves the assistant
+> off.
 
 ## The prepaid model
 

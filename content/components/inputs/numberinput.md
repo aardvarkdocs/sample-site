@@ -163,7 +163,7 @@ component('aardvark', 'numberinput', label='No controls',
 `required` and `withAsterisk` add the asterisk; `error` shows a validation message; `disabled`
 greys the control out.
 
-{% numberinput label='Seats' required=true min=1 defaultValue=1 %}
+{% numberinput label='Quantity' required=true min=1 defaultValue=1 %}
 
 {% numberinput label='Discount %' error='Must be 100 or less' max=100 defaultValue=120 %}
 
@@ -175,7 +175,7 @@ greys the control out.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% numberinput label='Seats' required=true min=1 defaultValue=1 %}
+{% numberinput label='Quantity' required=true min=1 defaultValue=1 %}
 
 {% numberinput label='Discount %' error='Must be 100 or less' max=100 defaultValue=120 %}
 
@@ -185,7 +185,7 @@ greys the control out.
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'numberinput', label='Seats', required=True,
+component('aardvark', 'numberinput', label='Quantity', required=True,
           min=1, defaultValue=1)
 
 component('aardvark', 'numberinput', label='Discount %',

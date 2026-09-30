@@ -235,7 +235,7 @@ component('aardvark', 'card', variant='image', image='/landscape.jpg', alt='',
 explicitly with `gradient="from,to,deg"`):
 
 {% card variant="gradient" gradient="indigo,cyan,135" icon="sparkles" title="Pro plan" cta="Upgrade" href="/docs/#quickstart" %}
-Priority support and unlimited seats.
+Managed hosting, priority support, and a bigger monthly AI allowance.
 {% endCard %}
 
 <br>
@@ -245,7 +245,7 @@ Priority support and unlimited seats.
 {% raw %}
 ```aardvark
 {% card variant="gradient" gradient="indigo,cyan,135" icon="sparkles" title="Pro plan" cta="Upgrade" href="/docs/#quickstart" %}
-Priority support and unlimited seats.
+Managed hosting, priority support, and a bigger monthly AI allowance.
 {% endCard %}
 ```
 {% endraw %}
@@ -254,7 +254,7 @@ Priority support and unlimited seats.
 ```python
 component('aardvark', 'card', variant='gradient', gradient='indigo,cyan,135', icon='sparkles',
           title='Pro plan', cta='Upgrade', href='/docs/#quickstart',
-          children='Priority support and unlimited seats.')
+          children='Managed hosting, priority support, and a bigger monthly AI allowance.')
 ```
 {% endAccordionSection %}
 {% endAccordion %}

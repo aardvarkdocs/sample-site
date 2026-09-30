@@ -24,8 +24,7 @@ depletion date. No "≈N answers" marketing math.
 
 **The worst case is written down.** The default when your included AI runs out is
 **cap-and-hold**: paid AI pauses, readers fall back to free models, and your max possible
-bill is your subscription price plus any fixed add-on-seat charges and any overflow already
-incurred this month. If you opt into pay-as-you-go overflow, the dashboard also includes
+bill is your subscription price plus any overflow already incurred this month. If you opt into pay-as-you-go overflow, the dashboard also includes
 whatever remains under the cap *you* set — and raising that cap past 2× your allowance asks
 for an explicit acknowledgment, once, because a large overage should be a decision rather
 than a surprise. A third setting, **shutoff**, stops all AI including free models until the
