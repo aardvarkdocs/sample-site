@@ -8512,7 +8512,7 @@
         ],
         "summary": "Revoke a public key",
         "operationId": "postV1KeysIdRevoke",
-        "description": "Permanently revokes a PUBLIC key. Secret keys cannot be bare-revoked (rotate them instead) to avoid locking the owner out.",
+        "description": "Permanently revokes a PUBLIC key. Secret keys cannot be bare-revoked (rotate them instead) because they are the account's API/CLI management credential; browser sessions remain valid after rotation.",
         "security": [
           {
             "sessionCookie": [],
