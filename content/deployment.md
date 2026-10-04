@@ -23,7 +23,8 @@ any static host:
   live MCP server) from one hardened process, ready to package as a Docker image behind a CDN.
 
 Set `baseUrl` in `aardvark.config.yaml` to your production URL so `sitemap.xml` and
-`llms.txt` use absolute links.
+`llms.txt` use absolute links. Write an internationalized domain in its ASCII `xn--` form
+(`https://xn--bcher-kva.example` for `bücher.example`): a non-ASCII host is refused.
 
 ### Caching
 
@@ -83,6 +84,14 @@ local dev matches production). If `baseUrl` is also set it keeps carrying the or
 (`https://example.com`); Aardvark folds the base path into the absolute URLs used by
 `sitemap.xml`, canonical tags, and Open Graph so they stay correct.
 
+Each segment of the base path may use only ASCII letters, digits, `.`, `_`, `~` and `-`, and
+may not end in `.`, be a Windows device name like `CON`, or be longer than 255 characters —
+`/docs`, `/v2.1/docs` and
+`/team_docs` all work. Anything else (a space, a non-ASCII letter, `:`, `*`, `%`, a `.` or `..`
+segment) stops the build with a config error,
+because some browser, host rule, or operating system would read it differently from what you
+wrote.
+
 Authors keep writing site-relative links (`/guide/intro/`) — the base path is added at build
 time, so content stays portable if the prefix ever changes.
 
@@ -108,7 +117,9 @@ rootFiles: nested   # nested (default) | root
   `robots.txt` / `/.well-known/`.
 - **`root`** — writes those files at the true build root (with their paths pointed into
   `/docs/…`) while the pages nest under `build/docs/`. Use when this build is deployed as its
-  own project that owns the origin but serves the app under `/docs`.
+  own project that owns the origin but serves the app under `/docs`. The base path can't
+  then start with one of those names (`basePath: /robots.txt` is a config error), since the
+  pages would be moved onto the file.
 
 ## Custom 404 page
 
@@ -145,7 +156,9 @@ see regardless of the URL they tried. A `404.md` in a translated source dir (e.g
 `content-fr/404.md`) is still built, to `/fr/404.html`, but most hosts ignore it
 and fall back to the root page. The exception is Cloudflare Workers'
 `"404-page"` mode, which serves the *nearest* `404.html` up the path — so there a
-miss under `/fr/` returns `/fr/404.html` when it exists. Unless your host does that
+miss under `/fr/` returns `/fr/404.html` when it exists. `vark serve` and `vark dev`
+follow the same rule, which is also how a site under a `basePath` gets its own
+`/docs/404.html`. Unless your host does that
 nearest-match lookup, a single base-language `404.md` is all you need.
 
 ## Shipping Aardvark as a binary

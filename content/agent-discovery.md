@@ -213,6 +213,10 @@ are rendered in the order you list them, after `alpn` and `port`, so the artifac
 build to build. With no `dnsAid.services` at all, the build emits three clearly-labelled example
 services — `a2a`, `mcp` and `index` — so the artifacts are never empty.
 
+`<domain>` is your `baseUrl` host. With no `baseUrl`, or one whose host is an IP address or `localhost` (a
+local preview such as `http://localhost:8000`, which has no DNS zone), it is the example domain
+`docs.example.com`.
+
 Every build writes a copy-pasteable zone snippet at `/.well-known/dns-aid/records.zone` and a
 machine-readable mirror at `/.well-known/dns-aid/records.json`:
 
