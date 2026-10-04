@@ -55,6 +55,30 @@ component('aardvark', 'borderAnimate',
 {% endAccordionSection %}
 {% endAccordion %}
 
+### Beam modes
+
+`beamMode` sets how the beam is drawn: `dot` (the default) runs a soft dot along the border
+at constant speed, `wedge` sweeps a rotating gradient whose width `spread` sets in degrees,
+and `comet` draws a bright head with a fading tail.
+
+{% borderAnimate variant='beam' beamMode='comet' duration=4 radius='md' borderWidth='sm' colorFrom='blue' colorTo='violet' %}
+{% paper p='lg' radius='md' %}A comet circles this card.{% endPaper %}
+{% endBorderAnimate %}
+
+<br>
+
+{% accordion %}
+{% accordionSection title="Source: Markdown" %}
+{% raw %}
+```aardvark
+{% borderAnimate variant='beam' beamMode='comet' duration=4 radius='md' borderWidth='sm' colorFrom='blue' colorTo='violet' %}
+{% paper p='lg' radius='md' %}A comet circles this card.{% endPaper %}
+{% endBorderAnimate %}
+```
+{% endraw %}
+{% endAccordionSection %}
+{% endAccordion %}
+
 ### Glow
 
 `variant='glow'` surrounds the content with a soft, pulsating light. `blur` (xs–xl) controls
@@ -127,22 +151,23 @@ to mark a featured tier.
 ## Attributes
 
 Omit any attribute to take its default. Bare flags (e.g. `pauseOnHover`) become `=True`;
-`withMask` and `animate` default on, so set them to `false` to turn them off.
+`animate` defaults on, so set it to `false` to turn it off.
 
 | Attribute | Valid values | Description |
 | --- | --- | --- |
 | `variant` | `beam` / `glow` / `pulse` (default `beam`) | The animation style. |
-| `beamMode` | `path` (default) / `conic` | How the beam travels (beam variant). `path` runs a dot along the border at constant speed; `conic` rotates a gradient wedge, which reads faster on the short edges of a rectangle. |
-| `size` | `xs`–`xl` or a number (default `sm`) | Beam size — the dot's diameter in `path` mode, the wedge's angular spread in `conic` mode. |
+| `beamMode` | `dot` (default) / `wedge` / `comet` | How the beam is drawn (beam variant). `dot` runs a dot along the border at constant speed; `wedge` rotates a gradient wedge, which reads faster on the short edges of a rectangle; `comet` draws a head with a fading tail. |
+| `size` | `xs`–`xl` or a number (default `sm`) | Size of the dot in `dot` mode. |
+| `spread` | Number (degrees, default `36`) | Width of the wedge in `wedge` mode. |
 | `duration` | Number (seconds, default `5`) | Animation speed (lap time). |
 | `colorFrom` | A color (token or CSS color, default `yellow.6`) | Start of the gradient. |
 | `colorTo` | A color (token or CSS color, default `violet.6`) | End of the gradient. |
 | `radius` | A Mantine radius token, a number of px, or a CSS length (default `md`) | Border radius of the effect. |
 | `blur` | `xs`–`xl`, a number, or a CSS length (default `xs`) | Softness of the glow (glow variant). |
-| `angle` | Integer `0`–`360` (degrees, default `0`) | Where the beam sits when `animate=false`. Ignored while the animation runs. |
+| `progress` | Number `0`–`100` (default `100`) | Where the effect sits when `animate=false`, as a percentage of the way around the border. While the animation runs it only affects `comet`, shifting where the comet starts. |
 | `borderWidth` | `xs`–`xl`, a number of px, or a CSS length (default `xs`) | Thickness of the animated border. |
 | `borderOpacity` | Number `0`–`1` (default `1`) | Opacity of the effect. |
-| `withMask` | `true` / `false` (default `true`) | Clip the effect to the border (vs. fill behind the content). |
+| `withMask` | `true` / `false` (default `true`, `false` for `glow`) | Clip the effect to the border (vs. fill behind the content). |
 | `pauseOnHover` | `true` / `false` (default `false`) | Pause the animation while the pointer is over the content. |
 | `animate` | `true` / `false` (default `true`) | Enable the animation (set `false` for a static border). |
 | `attr={…}` | An object of HTML attributes | Forwards raw HTML attributes onto the rendered element (see [Injecting Attributes](#injecting-attributes)). |
@@ -152,28 +177,29 @@ The wrapper is an inline-block that hugs its content, and the border is drawn on
 so set the corner rounding on **both** sides: a `radius` here that matches the wrapped
 component's own radius, or the beam will trace a rectangle around a rounded card.
 
-`angle` only applies with `animate=false`. Reach for that pair when you want a static
-gradient border and no motion at all; readers with `prefers-reduced-motion` already get the
-static border automatically.
+`progress` places the effect when `animate=false`. Reach for that pair when you want a
+static gradient border and no motion at all; readers with `prefers-reduced-motion` already get
+the static border automatically.
 {% endCallout %}
 
 ## CSS Selector
 
-Target the wrapper, the two Styles API parts, or one animation state:
+Target the wrapper, the Styles API parts, or one animation state:
 
 | Selector | Targets |
 | --- | --- |
 | `[data-aardvark-island='BorderAnimate']` | The Aardvark wrapper around the effect — the place to set layout and margins. |
 | `.mantine-BorderAnimate-root` | The element the content sits in. |
-| `.mantine-BorderAnimate-border` | The animated border layer itself. |
-| `[data-variant='glow']` / `[data-beam-mode='conic']` | One variant or beam mode. |
+| `.mantine-BorderAnimate-border` | The animated border layer of the `dot` / `wedge` beam, glow and pulse. |
+| `.mantine-BorderAnimate-svg` / `.mantine-BorderAnimate-stroke` | The SVG ring and its stroke, which draw the `comet` beam. |
+| `[data-variant='glow']` / `[data-beam-mode='wedge']` | One variant or beam mode. |
 | `[data-animate='false']` / `[data-with-mask='false']` | The static border, or the unmasked (filled) effect. |
 
-The look is driven by CSS variables on those two parts — `--border-animate-radius` on the
-root, and `--border-animate-duration`, `--border-animate-width`, `--border-animate-color-from`
-/ `-color-to`, `--border-animate-blur`, `--border-animate-opacity` and
-`--border-animate-static-angle` on the border — so most tweaks are a variable override. The
-stylesheet ships from `@gfazioli/mantine-border-animate/styles.css` and loads with the page.
+The look is driven by CSS variables on the root — `--border-animate-radius`,
+`--border-animate-duration`, `--border-animate-width`, `--border-animate-color-from` /
+`-color-to`, `--border-animate-blur`, `--border-animate-opacity` and
+`--border-animate-progress` — so most tweaks are a variable override. The stylesheet ships
+from `@gfazioli/mantine-border-animate/styles.css` and loads with the page.
 
 ## Injecting Attributes
 
