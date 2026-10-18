@@ -266,7 +266,11 @@ Each run **spends from your gateway balance** on two things, both shown per run 
 - **AI** — the capability's model calls, metered exactly as a local `vark build` / `vark ai-enrich`
   would be.
 - **Compute** — because the run executes on Aardvark's runners (not your own GitHub Actions), the
-  runner minutes are metered too and billed to your balance.
+  runner minutes are metered too and billed to your balance: GitHub's billable minutes for the run,
+  rounded up to whole minutes, at {% data.pricing.rate %}× GitHub's standard 2-core Linux runner
+  price (today ${% data.pricing.compute_per_minute_usd %} a minute, so ${% RunnerMinutePrice %} per
+  started minute). This is a per-minute meter, separate from the per-token AI meter; the
+  [pricing page](/pricing/) states both.
 
 Schedule the heavier capabilities (translation, or a style-guide pass over a large site) accordingly,
 and keep an eye on your balance from the [cloud gateway](/ai-gateway/) dashboard. A run is skipped

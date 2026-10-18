@@ -241,6 +241,6 @@ five most recent comments. The gateway keeps at most 5,000 ratings per account i
 
 The events above tell you a page was opened and how it was rated. To see *which sections*
 of it readers actually got to — and which install commands were copied, which CTAs were
-clicked — turn on [Content Reach](/content-reach/) (Business and Enterprise). It records
+clicked — turn on [Content Reach](/content-reach/). It records
 section visibility using your page's own heading anchors, with no cookies, no
 coordinates, and no visitor identity.

@@ -42,8 +42,7 @@ weak or ambiguous matches keep bounded page-by-page navigation; an oversized ver
 fails closed rather than mixing releases. The whole corpus is never sent merely because a large model
 window can hold it, and either path answers from what you actually published. Second, **honest
 metering**: usage bills in real dollars against the account behind that key, so a public docs
-site can offer AI answers without signing up for an unbounded bill. Point the panel at a
-`:free` model slug and it answers at $0 while you evaluate it.
+site can offer AI answers without signing up for an unbounded bill.
 
 Behind the panel sits a conversation-analytics dashboard — top questions, coverage gaps,
 intent tags — so every reader question becomes product insight. You're reading the docs of

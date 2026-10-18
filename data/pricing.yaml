@@ -1,0 +1,16 @@
+# Aardvark's published prices, the one copy this site quotes. The Model rates generator
+# (generators/pricing.py) prices its table at `rate`, the Pricing, cloud gateway and Docs Quality
+# Checks pages render these values as `data.pricing.*` expressions, and the billed runner-minute
+# price they quote comes from the RunnerMinutePrice tag (components/RunnerMinutePrice.md), so a
+# price change is one edit here. Each value mirrors a gateway constant (`rate` is MARKUP in
+# gateway/src/metering.ts, `compute_per_minute_usd` is DEFAULT_COMPUTE_RATE_USD_PER_MIN in
+# gateway/src/github/runner.ts, `model_suffix` is SUPPORTED_MODEL_SUFFIX in gateway/src/pricing.ts and
+# src/aardvark/ai/client.py), and tests/test_pricing_rate_drift.py holds each equal to its source.
+
+# The one pay-as-you-go rate over a model's OpenRouter list price, also applied to runner minutes.
+rate: 1.5
+# GitHub's standard 2-core Linux runner price per minute, in USD, before `rate` is applied.
+compute_per_minute_usd: 0.008
+# The id suffix of the only models the gateway serves (OpenRouter's auto-updating aliases); the Model
+# rates table lists only ids that end in it.
+model_suffix: -latest

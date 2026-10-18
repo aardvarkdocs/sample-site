@@ -1,6 +1,6 @@
 ---
-title: What happens to my prepaid balance if I cancel, downgrade, or a payment fails?
-description: Your prepaid balance is always yours — cancelling, downgrading, or a lapsed payment never spends it.
+title: What happens to my prepaid balance if a top-up fails or I remove my card?
+description: Your prepaid balance is always yours — a declined charge or a removed card never spends it; it just stops adding to it.
 nav: false
 taxonomy:
   - name: support
@@ -9,9 +9,11 @@ taxonomy:
     articleCount: true
 ---
 
-# What happens to my prepaid balance if I cancel, downgrade, or a payment fails?
+# What happens to my prepaid balance if a top-up fails or I remove my card?
 
-It's always yours. Cancelling, downgrading, or a lapsed subscription payment never spends or
-absorbs your prepaid balance — it's kept completely separate from your plan, and it keeps
-serving pay-as-you-go usage after the plan ends. What does end with the plan is any unspent
-included allowance: it isn't converted into balance.
+It's always yours. Whatever you have funded keeps serving AI until it is spent, and nothing
+that goes wrong with a card touches it. A failed auto top-up never debits the balance — it
+simply doesn't add to it; after three declines in a row [auto top-up](/support/auto-top-up/)
+switches itself off and emails you, and the balance carries on serving requests until it is
+exhausted. [Removing your saved card](/support/removing-saved-card/) works the same way: the
+card is gone, auto top-up is off, and the balance stays exactly where it was.

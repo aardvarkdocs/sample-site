@@ -90,6 +90,6 @@ its own.
 
 ## What it does not do
 
-- **No effect without Content Reach.** With the feature off, or on a plan that doesn't include it, the marker is inert markup — harmless, and costing nothing.
+- **No effect without Content Reach.** With the feature off, the marker is inert markup — harmless, and costing nothing.
 - **Nothing reaches the agent Markdown.** The wrapper is stripped from each page's `.md` twin and from `llms-full.txt`, so an AI agent reading your docs never sees it.
 - **It captures no content.** Marking a region records that the region was on screen and that its controls were used, never anything inside it.

@@ -1,6 +1,6 @@
 ---
 title: Aardvark 0.4.1 release roundup
-description: The 0.4.1 fixes in one read, plus the 0.4.0 release behind them — an islands toolchain that ships with Aardvark, prerendering on by default, and a deploy command.
+description: The 0.4.1 fixes in one read, plus the 0.4.0 release behind them — an islands toolchain that ships with Aardvark and prerendering on by default.
 date: 2026-09-01
 image: /landscape.jpg
 aliases:
@@ -61,14 +61,6 @@ island's rendered HTML into its static pages, so crawlers and no-JS readers see 
 the first paint doesn't shift — then the client hydrates that markup in place. The browser-only
 ones — most community widgets, the native map, and any component library configured without SSR
 — mount on the client instead. `islands: {ssr: false}` opts out and keeps the client bundle.
-
-**`vark deploy` publishes from the command line.** It runs the same full production build as
-`vark build` and uploads the output to Aardvark cloud managed hosting — no connected
-repository needed. Managed hosting serves a site on its custom domain, so the deploy prints a
-URL once you have attached one; before that it uploads and stores the build without a
-reachable address. It authenticates with your secret key in
-`AARDVARK_SECRET_KEY`, an interrupted deploy resumes rather than restarting, and a site that
-*is* connected to a GitHub repository is refused before the build runs rather than after.
 
 **The repo browser reads GitLab, and stops growing without limit.**
 {% raw %}`{% gitfolder %}`{% endraw %} and `github=` fences accept `https://gitlab.com/…` URLs

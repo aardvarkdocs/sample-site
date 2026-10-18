@@ -1,10 +1,11 @@
-"""Generate the Pricing page from OpenRouter's live model catalog.
+"""Generate the Model rates page from OpenRouter's live model catalog.
 
 Aardvark itself is free to use and self-host; its optional built-in AI features — the
 reader-facing Ask AI assistant and the author-assisting tools — are billed per token
-through Aardvark's metered gateway (paid plans add managed hosting and support). Aardvark is a pass-through: any OpenRouter model
-works for `ai.model` / `ai.assistant.model`, so this script lists the whole chat-model
-catalog (with context window + modality) at Aardvark's published per-token rates.
+through Aardvark's metered gateway, pay-as-you-go from a prepaid balance. The gateway serves
+only OpenRouter's auto-updating `latest` aliases (the same rule the CLI enforces on
+`ai.model` / `ai.assistant.model`), so this script lists exactly those models (with context
+window + modality) at Aardvark's one published per-token rate.
 
 It runs on every build; output is reconciled idempotently, so an unchanged catalog
 rewrites nothing (and `vark dev` never loops on it). Output is sorted, so it's
@@ -84,13 +85,13 @@ MODELS_URL = "https://openrouter.ai/api/v1/models"
 #: is not on this list BEFORE contacting it, which is what makes that unreachable rather than
 #: merely unlikely. Redirect-following is not hand-rolled here for the same reason.
 OPENROUTER_HOSTS = frozenset({"openrouter.ai"})
-# Aardvark's published per-token rate over the upstream list price — the Free / pay-as-you-go
-# meter. Subscribers meter the same tokens at their plan's lower member rate (the seeded plan
-# catalog in gateway/migrations/0044: Pro 1.4 / Business 1.3 / Enterprise 1.2), shown on the
-# table as per-plan Est./answer columns rather than as multipliers — the customer-facing copy
-# talks in included dollars and member discounts, never in markup math or upstream branding.
-RATE = 1.5
-PLAN_RATES = [("Free", 1.5), ("Pro", 1.4), ("Business", 1.3), ("Enterprise", 1.2)]
+# Aardvark's one published per-token rate over OpenRouter's list price. data/pricing.yaml is the
+# site's one copy of it (the hand-written pricing pages quote the same value), and
+# tests/test_pricing_rate_drift.py holds it equal to the multiplier the gateway meters with.
+# Pay-as-you-go only; there are no plans or member rates. Direct indexing, like
+# generators/downloads.py: a missing or renamed data file fails the build rather than
+# pricing the table at a guessed rate.
+RATE = data["pricing"]["rate"]
 CACHE_TTL_SECONDS = 3600
 # Defensive cap on a fetched response body (both catalogs are well under 1 MB today). An
 # oversize body is rejected BEFORE parsing on both transport legs — the curl leg raises
@@ -396,15 +397,45 @@ def _modality_names(value):
     return names, None
 
 
+#: The suffix that marks an auto-updating alias, from data/pricing.yaml like the rate: a missing key
+#: fails the build, and tests/test_pricing_rate_drift.py holds it equal to the CLI's and the gateway's.
+_SUPPORTED_MODEL_SUFFIX = data["pricing"]["model_suffix"]
+
+
+def _is_floating(model_id):
+    """The auto-updating router aliases (e.g. ``~anthropic/claude-sonnet-latest``) — the only
+    models the gateway serves; the same test as the gateway's ``model_not_available`` gate and
+    the CLI's ``ai/client.py::validate_model``: exact, case-sensitive, no ``:variant`` tail."""
+    return model_id.endswith(_SUPPORTED_MODEL_SUFFIX)
+
+
 def _renderable(model):
     """``(row, problems)`` for one entry.
 
     Three outcomes: ``(model, [])`` renders cleanly, ``(None, [])`` is legitimately not for
-    this table (an absent field, a sentinel price), and a non-empty ``problems`` list is what
-    we could not read. Problems can come WITH a row: a field that only decides how a row is
-    LABELLED is reported without costing the row, while one that decides whether the row is
-    correct at all drops it. Nothing is skipped silently on a type it did not expect.
+    this table (a pinned version the gateway does not serve, an absent field, a sentinel
+    price), and a non-empty ``problems`` list is what we could not read. Problems can come
+    WITH a row: a field that only decides how a row is LABELLED is reported without costing
+    the row, while one that decides whether the row is correct at all drops it. Nothing is
+    skipped silently on a type it did not expect.
+
+    The id is judged first: a readable id that is not a ``latest`` alias was never a
+    candidate for this table, so an oddity in its other fields is not drift the table
+    suffers from, and reporting it as "missing from the table" would be untrue.
     """
+    mid = model.get("id")
+    if not isinstance(mid, str):
+        # Not `str(mid or "")`: coercion is what lets a list or an object become a
+        # plausible-looking slug that renders and that nobody can point `ai.model` at.
+        return None, ["an id given as a JSON " + type(mid).__name__ if mid is not None
+                      else "no id at all"]
+    if not mid.strip():
+        return None, ["a blank id"]
+    if not _encodable(mid):
+        return None, ["an id UTF-8 cannot encode (a lone surrogate)"]
+    if not _is_floating(mid):
+        return None, []  # a pinned version: the gateway refuses it, so the table omits it
+
     architecture, problem = _mapping(model.get("architecture"), "an architecture")
     if problem:
         return None, [problem]
@@ -429,17 +460,6 @@ def _renderable(model):
             # Unpriced, or one of OpenRouter's dynamic routers, whose rates are the -1
             # "depends on routing" sentinel. Nothing to show; no defect.
             return None, []
-
-    mid = model.get("id")
-    if not isinstance(mid, str):
-        # Not `str(mid or "")`: coercion is what lets a list or an object become a
-        # plausible-looking slug that renders and that nobody can point `ai.model` at.
-        return None, ["an id given as a JSON " + type(mid).__name__ if mid is not None
-                      else "no id at all"]
-    if not mid.strip():
-        return None, ["a blank id"]
-    if not _encodable(mid):
-        return None, ["an id UTF-8 cannot encode (a lone surrogate)"]
 
     name = model.get("name")
     if isinstance(name, str) and not _encodable(name):
@@ -545,9 +565,11 @@ def _catalog(payload, source):
             else f"none of the {entries} entries it listed are JSON objects"
             if not models
             else (
-                f"none of the {len(models)} models it listed are priceable chat models "
-                f"({_reasons(unreadable) or 'the modality or pricing fields this page reads '
-                                            'have changed'})"
+                f"none of the {len(models)} models it listed are supported `latest` aliases "
+                "with published prices "
+                f"({_reasons(unreadable) or 'either no auto-updating alias is listed, or the '
+                                            'modality or pricing fields this page reads have '
+                                            'changed'})"
             ),
         )
     # Sorted by slug so the catalog groups by provider and is deterministic build-to-build.
@@ -768,7 +790,7 @@ def _index(payload, source):
 
     ``idx`` maps namespaced model keys -> the BEST index seen for that key (so
     reasoning/non-reasoning variants that collapse to one key report the higher score);
-    ``families`` is (creator, token-set, score) triples used to resolve version-less '-latest'
+    ``families`` is (token-set, score) pairs used to resolve version-less '-latest'
     aliases. Like :func:`_catalog`, it validates as far as the finished index, because a
     payload whose score field was renamed parses perfectly and yields nothing.
     """
@@ -806,18 +828,9 @@ def _index(payload, source):
                 if k not in ("n:", "s:", "ns:", "ss:"):  # skip empty
                     if score > idx.get(k, float("-inf")):
                         idx[k] = score
-        creator_block, problem = _mapping(m.get("model_creator"), "a model_creator block")
-        if problem:
-            # The exact name/slug keys above still work; only the FAMILY entry is lost, which
-            # is what resolves a versionless '-latest' alias — so this is reported rather than
-            # quietly dropping those aliases' Quality values.
-            problems.append(problem)
-        creator, problem = _text(creator_block.get("slug"), "a model_creator slug")
-        if problem:
-            problems.append(problem)
         fam = frozenset(_key_toks(slug) or _key_toks(name))
-        if creator and fam:
-            families.append(("".join(_toks(creator)), fam, score))
+        if fam:
+            families.append((fam, score))
         # dropped=False: this model's own score IS in the index; only detail was lost.
         unreadable += [_Unreadable(mid, p, dropped=False) for p in problems]
     if not idx:
@@ -865,11 +878,11 @@ def _fetch_intelligence(cache_path, api_key):
 
 def _or_candidates(model):
     """Strings to try matching an OpenRouter model against AA: its name (minus the
-    'Provider: ' prefix) and its slug's last segment (minus any ':free' tag)."""
-    mid = str(model.get("id") or "").lstrip("~")
+    'Provider: ' prefix) and its slug's last segment."""
+    mid = str(model.get("id") or "")
     name = str(model.get("name") or "")
     short = name.split(": ", 1)[1] if ": " in name else name
-    last = mid.split("/")[-1].split(":")[0]
+    last = mid.split("/")[-1]
     return [short, last]
 
 
@@ -884,18 +897,12 @@ def _intelligence(model, idx, families):
             for k in _keys(c):
                 if k.startswith(kind) and k in idx:
                     return f"{idx[k]:.1f}"
-    mid = str(model.get("id") or "")
-    if mid.endswith("latest"):
-        # The alias's family+tier tokens (e.g. {claude, sonnet}, {kimi}) are vendor-distinct,
-        # so we don't gate on creator — OpenRouter's creator slug ('moonshotai') and AA's
-        # ('kimi') don't share a vocabulary, which would otherwise drop matches like kimi-latest.
-        want = set(_key_toks(cands[1]))  # last segment, e.g. {claude, sonnet} / {kimi}
-        best = None
-        for _fcreator, ftoks, score in families:
-            if want and want <= ftoks:
-                best = score if best is None else max(best, score)
-        if best is not None:
-            return f"{best:.1f}"
+    # Every rendered model is a latest alias. Match its family+tier tokens; creator slugs
+    # differ between catalogs (OpenRouter's 'moonshotai' is Artificial Analysis's 'kimi').
+    want = set(_key_toks(cands[1]))
+    best = max((score for ftoks, score in families if want and want <= ftoks), default=None)
+    if best is not None:
+        return f"{best:.1f}"
     return "—"
 
 
@@ -970,8 +977,9 @@ def _context(length):
 TURN_OUTPUT_TOKENS = 600
 
 
-def _per_turn(pricing, context_length, rate=RATE):
-    """Estimated common-path turn cost, capped when the model cannot fit the selected context."""
+def _per_turn(pricing, context_length):
+    """Estimated common-path turn cost at :data:`RATE`, capped when the model cannot fit the
+    selected context."""
     try:
         prompt_rate = float(pricing.get("prompt"))
         completion_rate = float(pricing.get("completion"))
@@ -1004,7 +1012,7 @@ def _per_turn(pricing, context_length, rate=RATE):
     in_tokens = min(
         ASSISTANT_LOCAL_CONTEXT_MAX_TOKENS, max(0, ctx - TURN_OUTPUT_TOKENS)
     )
-    cost = (in_tokens * prompt_rate + TURN_OUTPUT_TOKENS * completion_rate + request_rate) * rate
+    cost = (in_tokens * prompt_rate + TURN_OUTPUT_TOKENS * completion_rate + request_rate) * RATE
     if not math.isfinite(cost):
         # `request` is not part of `_renderable`'s validation (a model renders without one),
         # so it can still be large enough to overflow the sum even when both token rates fit.
@@ -1028,11 +1036,6 @@ def _type(architecture):
     return "Text + " + "/".join(extra) if extra else "Text"
 
 
-def _is_floating(model_id):
-    """The auto-updating router aliases (e.g. ``~anthropic/claude-sonnet-latest``)."""
-    return model_id.endswith("latest")
-
-
 def _row(model, intel=None):
     """One table row. ``intel`` is the ``(idx, families)`` pair `_fetch_intelligence` returns,
     or None to omit the Quality column."""
@@ -1049,10 +1052,9 @@ def _row(model, intel=None):
     cells += [
         _price(pricing.get("prompt")),
         _price(pricing.get("completion")),
+        # What one assistant answer actually costs, in dollars at the one published rate.
+        _per_turn(pricing, ctx),
     ]
-    # One Est./answer column PER PLAN — the table shows what an answer actually costs on each
-    # tier, so plan pricing is concrete dollars here rather than multiplier math anywhere.
-    cells += [_per_turn(pricing, ctx, rate) for _, rate in PLAN_RATES]
     return "| " + " | ".join(cells) + " |"
 
 
@@ -1062,31 +1064,9 @@ def _header(has_intel):
     if has_intel:
         cols.append("Quality")
         align.append("--:")
-    cols += ["Input", "Output"]
-    align += ["--:", "--:"]
-    cols += [f"{name} est./answer" for name, _ in PLAN_RATES]
-    align += ["--:"] * len(PLAN_RATES)
+    cols += ["Input", "Output", "Est./answer"]
+    align += ["--:", "--:", "--:"]
     return "| " + " | ".join(cols) + " |\n| " + " | ".join(align) + " |"
-
-# A prominent warning about $0.00 (free-pool) models. Plain string (NOT an f-string)
-# so its `{% %}` directive and `{ }` aren't treated as fields/template by Python.
-_FREE_WARNING = (
-    "{% callout severity='warning' title='Free ($0.00) models come with hard limits' %}\n"
-    "A model priced **$0.00** runs on a shared upstream **free pool** — handy for trying "
-    "things out, but with real trade-offs you should plan around:\n\n"
-    "- **Slow and queue-bound.** Free requests are low priority and share a queue, so "
-    "responses are slower and degrade further under load.\n"
-    "- **Capped per day and per minute.** Free usage is limited to roughly a few dozen "
-    "requests per day plus a low per-minute rate; once you hit the cap, requests are "
-    "refused until the window resets.\n"
-    "- **Best-effort availability.** Free endpoints can be throttled, deprecated, or "
-    "briefly unavailable with no notice.\n"
-    "- **Your inputs may train models.** Some free providers may use prompts for training, "
-    "so don't send anything sensitive through a free model.\n\n"
-    "For a public **Ask AI assistant** under real traffic, choose a paid model — the limits "
-    "above will otherwise rate-limit or stall your readers.\n"
-    "{% endCallout %}\n\n"
-)
 
 
 def _build():
@@ -1094,10 +1074,11 @@ def _build():
     # and `site`) — the same ambient names a page's {% %} blocks see, plus the page writer.
     cache_dir = config.root / ".aardvark-cache"
     cache = cache_dir / "openrouter-models.json"
-    # Already filtered to priceable chat models and sorted by slug: selecting the renderable
-    # rows is part of validating the payload (see `_catalog`), because a catalog that yields
-    # no rows must be treated as a schema failure rather than cached over the last good one.
-    chat, _failure = _fetch_models(cache)
+    # Already filtered to the supported `latest` aliases with published prices and sorted by
+    # slug: selecting the renderable rows is part of validating the payload (see `_catalog`),
+    # because a catalog that yields no rows must be treated as a schema failure rather than
+    # cached over the last good one.
+    models, _failure = _fetch_models(cache)
 
     # Optional quality column from Artificial Analysis (only when a key is configured).
     idx, families = _fetch_intelligence(
@@ -1105,49 +1086,34 @@ def _build():
     )
     intel = (idx, families) if idx else None
 
-    if not chat:
+    if not models:
         # No second warning here: the load path above has already reported the cause AND this
         # consequence in one sentence, and an empty result can only reach this branch through
         # one of those reporting paths.
         body = (
-            "Aardvark is **free to use and self-host**; AI usage is billed per token, and "
-            "paid plans add managed hosting and support. Live model prices couldn't "
-            "be fetched for this build.\n\n"
+            "Aardvark is **free to use and self-host**; AI usage is billed per token from a "
+            "prepaid balance. Live model prices couldn't be fetched for this build.\n\n"
             "{% callout severity='info' %}\n"
-            "Current per-model rates will reappear here on the next build; see "
-            "[Plans & pricing](/pricing/) for what each plan includes.\n"
+            "Current per-model rates will reappear here on the next build; how billing works "
+            "is on **[Pricing](/pricing/)**.\n"
             "{% endCallout %}\n"
         )
         generate("pricing/models.md", _front(), body)
         return
 
-    recommended = [m for m in chat if _is_floating(str(m.get("id") or ""))]
-    rec_table = ""
-    if recommended:
-        rec_table = (
-            "## Recommended (auto-updating)\n\n"
-            "These floating aliases always route to the provider's newest model, so you "
-            "never pin a version. Aardvark's default config uses "
-            "`~anthropic/claude-sonnet-latest`.\n\n"
-            f"{_header(intel is not None)}\n"
-            + "\n".join(_row(m, intel) for m in recommended)
-            + "\n\n"
-        )
-
-    # A single column legend up top, so the meaning of every table column is
-    # explained before either table. Input/Output and Est./answer are always
-    # present; the Quality line is added only when the Artificial Analysis index
-    # powers that column. (Renders as a Markdown list inside the callout.)
+    # A single column legend up top, so the meaning of every table column is explained before
+    # the table. Input/Output and Est./answer are always present; the Quality line is added only
+    # when the Artificial Analysis index powers that column. (Renders as a Markdown list inside
+    # the callout.)
     legend = (
         "{% callout severity='info' title='Reading the columns' %}\n"
         "- **Input** / **Output** are the pay-as-you-go prices per **one million tokens**.\n"
-        "- The **est./answer** columns estimate a conservative common-path assistant turn on each plan — "
+        "- The **est./answer** column estimates a conservative common-path assistant turn — "
         f"up to {ASSISTANT_LOCAL_CONTEXT_MAX_TOKENS // 1000}K tokens of locally selected docs context plus a "
         f"~{TURN_OUTPUT_TOKENS}-token reply (capped at each model's context window). "
         "Input dominates, so a single answer costs far less than the per-million "
         "output rate suggests; your real numbers vary with selected pages, conversation history, "
-        "fallback navigation, and answer length. On a paid plan, answers drain the plan's included monthly "
-        "allowance before anything is billed.\n"
+        "fallback navigation, and answer length.\n"
         + (
             "- **Quality** is the independent [Artificial Analysis Intelligence "
             "Index](https://artificialanalysis.ai/) (higher is better); it's blank "
@@ -1159,22 +1125,17 @@ def _build():
     )
 
     body = (
-        "Per-token rates for every model Aardvark's metered gateway can serve — point "
-        "`ai.model` / `ai.assistant.model` at **any** model below and pay only for the AI you "
-        "actually use. Looking for the platform tiers (hosting, support, included AI)? "
-        "See **[Plans & pricing](/pricing/)**.\n\n"
-        "**Input**/**Output** are the pay-as-you-go per-token prices; the per-plan columns show "
-        "what one assistant answer actually costs on each tier. Subscribers get a member "
-        "discount on every metered dollar — about **7% off on Pro**, **13% off on Business**, "
-        "and **20% off on Enterprise** — on top of their plan's included monthly AI allowance.\n\n"
+        "Per-token rates for every model Aardvark's metered gateway serves — point "
+        "`ai.model` / `ai.assistant.model` at any model below. Aardvark bills pay-as-you-go "
+        f"from a prepaid balance at one published rate ({RATE:g}× OpenRouter's list price): no "
+        "plans, no subscriptions. How the balance, top-ups and spend cutoff work is on "
+        "**[Pricing](/pricing/)**.\n\n"
         + legend
-        + f"{rec_table}"
-        + "## All models\n\n"
-        + _FREE_WARNING
-        + "Click a column header to sort. "
-        f"{len(chat)} models with published per-token pricing are available.\n\n"
+        + "These aliases always route to the provider's newest model, so you never pin a "
+        "version. Aardvark's default config uses `~anthropic/claude-sonnet-latest`. Click a "
+        "column header to sort.\n\n"
         + f"{_header(intel is not None)}\n"
-        + "\n".join(_row(m, intel) for m in chat)
+        + "\n".join(_row(m, intel) for m in models)
         + "\n\n_Rates are pulled at build time and can change._\n"
     )
     generate("pricing/models.md", _front(), body)
@@ -1185,11 +1146,11 @@ def _front():
         "title": "AI model rates",
         "navtitle": "Model rates",
         "description": (
-            "Per-token rates for every model Aardvark's gateway can serve, "
-            "at the pay-as-you-go meter; subscribers pay their plan's member rate."
+            "Per-token rates for every model Aardvark's gateway serves, "
+            "at the one pay-as-you-go rate."
         ),
         "menu": "pricing",
-        "weight": 2,  # under the hand-authored Plans page (weight 1) in the pricing menu
+        "weight": 2,  # under the hand-authored Pricing page (weight 1) in the pricing menu
         "mode": "wide",  # a big table — the wide column, keeping the pricing left nav
     }
 

@@ -3,7 +3,7 @@ title: Security & trust
 navtitle: Security
 description: How Aardvark keeps your docs secure — a static architecture with no
   third-party runtime scripts by default, opt-in-only cloud features, encrypted
-  protected sections, and enterprise team controls.
+  protected sections, and team roles.
 icon: fa-solid fa-shield-halved
 menu: docs
 weight: 63
@@ -25,9 +25,8 @@ the built-in protections work, and how to reach us about a vulnerability.
 ## A static site, under your control
 
 `vark build` writes plain HTML, CSS, and JavaScript into `build/`. You can host that
-directory anywhere — [your own server or CDN](/deployment/), [`vark serve`](/self-hosting/)
-in your own infrastructure, or Aardvark cloud's [managed hosting](/hosting-onboarding/) on
-the [paid plans](/pricing/).
+directory anywhere — [your own server or CDN](/deployment/), or [`vark serve`](/self-hosting/)
+in your own infrastructure.
 
 - **The core runtime is local.** Interactive components are delivered as one
   JavaScript bundle, built at build time and served **from your own site** alongside
@@ -76,8 +75,8 @@ cloud feature is a separate, deliberate opt-in:
 - **[Build-time AI](/ai-features/)** — generating front matter, example responses, or
   agent skills is opt-in per feature, runs only when you invoke it, and caches its
   results so rebuilds don't re-send your content.
-- **[Content Reach](/content-reach/)** — off by default even on the plans that include
-  it. When enabled, it records which *sections* of a page came into view, how long the
+- **[Content Reach](/content-reach/)** — off by default. When enabled, it records
+  which *sections* of a page came into view, how long the
   page was visibly in the foreground, how long each section held the reader's scroll
   position, and which controls readers used — no cookies, no fingerprinting, no
   visitor IDs, and no screen
@@ -86,19 +85,6 @@ cloud feature is a separate, deliberate opt-in:
   are retained server-side and **deleted after 90 days** by default. Readers with
   **Do Not Track** or **Save-Data** enabled send nothing at all, and `requireConsent`
   defers all recording to your site's own consent banner.
-- **Reader authentication on managed hosting** — off unless you turn it on for a hosted
-  site. While it is on, a reader who arrives without a valid session is *redirected* to the
-  gateway (`/v1/reader-auth/login`) before any page is served: the gateway checks that they
-  are signed in to the Aardvark dashboard and are an active member of the team that owns the
-  site — honoring the team's SSO enforcement — then sends them back to your site with a
-  short-lived signed token, which the serving worker exchanges for a session cookie scoped
-  to that hostname and good for 12 hours. So on a gated site the reader's browser does
-  contact the gateway on the way in — for the sign-in check only; the pages themselves
-  still come from your hosted site. Unlike the features above this one is not keyed to your
-  public key, and it applies to previews and custom domains as well as production. The
-  practical limits — the short cache window after the switch, and a removed member's
-  session outlasting their removal by up to 12 hours — are spelled out on the
-  [managed hosting](/hosting-onboarding/#branch-previews) page.
 
 ## Password-protected sections
 
@@ -107,10 +93,8 @@ time with **AES-256-GCM**, deriving the key from your password via PBKDF2 (SHA-2
 600,000 iterations). Only the ciphertext is published; readers decrypt in the browser
 with the password. The mechanism is **fail-closed**: if a configured password variable
 is missing or empty at build time, the build aborts before writing anything, rather than
-publishing the pages in the clear. That is also why a push-to-deploy site on managed
-hosting can't carry a `protected:` section — its build runs with no secrets of yours —
-while a [`vark deploy`](/hosting-onboarding/#deploy-from-your-machine-with-vark-deploy)
-upload can, because the encryption happens on your machine.
+publishing the pages in the clear. The encryption happens on the machine that runs the
+build, so the password never has to leave your own environment.
 
 ## Team security in the dashboard
 
@@ -121,31 +105,10 @@ The Aardvark cloud dashboard is built for teams that have to answer to a securit
   **admins** can manage billing and non-owner teammates, but can't touch the secret key
   or grant the admin/owner tier; **members** can read general dashboard data and manage
   their own public keys, and never see billing.
-- **Single sign-on.** **OIDC SSO** is available for configuration on the Business and
-  Enterprise plans: you prove ownership of an email domain with a DNS TXT record
-  (`_aardvark-verify.<domain>`), sign-ins for that domain then route through your identity
-  provider, and a separate **enforce-SSO** setting requires SSO for the team. The domain
-  proof is good for 90 days; once it lapses, sign-ins fall back to magic links until you
-  re-verify. Even under enforcement, the account owner deliberately keeps magic-link
-  access, so a misconfigured or unavailable IdP can never lock you out of your own account.
-  **SAML 2.0** is built in but ships **switched off**: it is enabled for the gateway as a
-  whole by the Aardvark operator after a dedicated security review — not by a per-account
-  setting — and until then the dashboard reports SAML as unavailable and refuses a SAML
-  configuration. If you need SAML rather than OIDC, ask through your plan's
-  [support channel](/pricing/).
-- **SCIM provisioning** lets your identity provider create, update, and — crucially —
-  deactivate dashboard users automatically. The SCIM bearer token is minted and rotated by
-  the account owner from the dashboard on the plans that include SCIM (listed on the
-  [pricing page](/pricing/)), but provisioning itself is never blocked by billing state:
-  a lapsed card can't stop your IdP from removing access.
-- **Audit-log export.** Business and Enterprise accounts can export the account audit
-  log as CSV from the dashboard's **Billing** tab — newest first, up to 10,000 rows, and
-  the download says so if it had to cut off there.
-- **Secrets encrypted at rest, fail-closed for new writes.** SSO client secrets you
-  save are encrypted at rest; if the encryption key is unavailable, the gateway refuses
-  to store a new secret at all rather than fall back to plaintext. A secret stored
-  before encryption was configured stays readable until the next configuration save,
-  which re-encrypts it under the current key.
+- **Sign-in.** The dashboard signs you in with an **emailed magic link** — there are no
+  passwords to set, store, leak, or reuse. Each link is single-use and short-lived, and the
+  session it opens is scoped to the dashboard; it never grants anything to your docs site
+  or to the public key baked into it.
 
 ## Build-time code runs with your privileges
 
@@ -164,10 +127,6 @@ In practice:
   environments, and keep self-hosted runners off public repositories.
 - To build genuinely untrusted content, isolate the build in an ephemeral container or
   VM with no secrets in its environment.
-
-Managed hosting applies the same rule to itself: a push-to-deploy build runs your
-generators on Aardvark's runners in a job that holds no gateway key, no repository token,
-and no environment variables of yours, so build-time code can reach nothing it shouldn't.
 
 The [build-time Python](/generators/) docs cover this guidance in full.
 
@@ -213,5 +172,4 @@ binaries as false positives.
 
 For anything this page doesn't answer, browse the [support knowledge base](/support/) or
 open an issue on the
-[public sample-site repository](https://github.com/aardvarkdocs/sample-site) —
-plan-based support channels are listed on the [pricing page](/pricing/).
+[public sample-site repository](https://github.com/aardvarkdocs/sample-site).

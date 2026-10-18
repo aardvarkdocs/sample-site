@@ -10,7 +10,8 @@ weight: 30
 # Build-time AI
 
 Aardvark has optional, build-time AI features that run through the metered **Aardvark
-cloud gateway**, so you can use **any model it proxies**. They are **off by default**, run
+cloud gateway**, using OpenRouter's auto-updating `latest` aliases (the only models the
+gateway serves). They are **off by default**, run
 only when explicitly enabled, and their results are **cached** by content hash in
 `.aardvark-cache/ai/` — so unchanged content never re-calls the API and builds stay fast
 and deterministic.
@@ -30,12 +31,15 @@ and deterministic.
      frontmatter: true   # generate missing description + keywords
      examples: true      # example API responses for OpenAPI pages
      skills: true        # plan + generate skills/ (on demand, via vark ai-enrich)
-     model: "~anthropic/claude-sonnet-latest"   # any model the gateway proxies; "latest" alias needs the leading ~
+     model: "~anthropic/claude-sonnet-latest"   # an OpenRouter `latest` alias — the only model ids the gateway serves; most carry a leading ~
    ```
 
    Any run can override the configured model with `--model <slug>` (e.g.
    `vark build --model "~anthropic/claude-sonnet-latest"`); with neither set, the default
-   is `~anthropic/claude-sonnet-latest`. Without a key the features stay dormant — the
+   is `~anthropic/claude-sonnet-latest`. Either value must be a `latest` alias: a configured
+   `ai.model` that isn't one fails at config load, and a `--model` that isn't one is a usage
+   error — the gateway would refuse it (`400 model_not_available`) before spending anything, so
+   the CLI says so first. Without a key the features stay dormant — the
    build runs exactly as if they were off. A key that isn't a secret key (a public
    `aardvark_live_…` key, for example) is refused with a warning and enrichment is
    skipped rather than failing the build.

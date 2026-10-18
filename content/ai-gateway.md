@@ -12,11 +12,13 @@ weight: 20
 
 The **Aardvark cloud gateway** is the managed metering proxy that sits behind the built-in
 **"Ask AI"** assistant. The assistant in a reader's browser never talks to a model directly — it
-calls the gateway, which proxies the request to the model behind Aardvark's managed keys
-(or, for an Enterprise account that registered one, its own provider key),
-**meters** the spend at Aardvark's published [per-model rates](/pricing/models/)
-(subscription plans meter at a member discount), and **cuts off** an account that has run out
-of credit.
+calls the gateway, which proxies the request to the model behind Aardvark's managed keys,
+**meters** the spend at Aardvark's published [per-model rates](/pricing/models/) — one published
+rate, {% data.pricing.rate %}× the model's OpenRouter list price — and **cuts off** an account
+that has run out of credit. It serves only OpenRouter's auto-updating `latest` aliases (e.g.
+`~anthropic/claude-sonnet-latest`, `openai/gpt-chat-latest` — not every alias carries the leading
+`~`); any other model id is refused with `400 model_not_available` before anything is reserved or
+sent upstream.
 
 This page is conceptual and how-to, for both **customers** (whose docs site uses the gateway) and
 **operators** (who run a gateway). For end-to-end deployment and Stripe setup, see
@@ -28,28 +30,26 @@ This page is conceptual and how-to, for both **customers** (whose docs site uses
 
 ## The prepaid model
 
-Every account holds a **prepaid balance**. On the **Free / pay-as-you-go** tier, each metered chat
-request **debits** the balance at the published per-model rate; when the balance is exhausted, the
-gateway stops serving that account's **paid** chat requests until it is funded again — so spend can
-never run away past what the account holds. (A `:free` model always answers at $0 and never touches
-the balance.)
+Every account holds a **prepaid balance**. Each metered request **debits** the balance at the
+published per-model rate; when the balance is exhausted, the gateway stops serving that account's
+new requests until it is funded again. Requests already in flight finish and bill what they used,
+so the balance can go below zero; see [spend cutoff precision](/support/spend-cutoff-precision/).
 
-**Subscribers** add a monthly **included-AI grant** on top of this. A metered request drains the
-grant first (any rollover, then the current period's grant) and only then — per the account's
-**overflow policy**, chosen on the Billing tab — the prepaid balance:
+### What is metered
 
-- **Cap & hold** (the default): when the grant is spent, **paid** AI pauses **even while the prepaid
-  balance is still funded** — so the bill stays predictable. `:free` models keep answering; a reader
-  asking a paid model sees the assistant's usage-limit message. Adding funds does **not** resume
-  paid AI here — switching the overflow policy does, and so does the next period's grant.
-- **Fall back to balance** (opt-in): overflow draws the prepaid balance at the subscriber's member
-  rate, up to a customer-set **cap**, then pauses like cap & hold. A cap above **twice** the monthly
-  grant has to be acknowledged explicitly when it is saved.
-- **Hard shutoff** (opt-in): pauses **all** AI when the grant is spent, `:free` models included.
+Everything that runs a model through the gateway debits the one balance, in real dollars — the
+same number the dashboard meter and your usage ledger show:
 
-So for a subscriber, "out of funds" and "included AI used up" are **distinct** states with different
-recovery actions — the dashboard says which one an account is in, and the assistant's error message
-tells the reader which applies.
+- **Reader-assistant answers** from the Ask AI panel.
+- **Build-time AI** — generated front matter, example responses, and skills.
+- **`vark author`** runs from the CLI.
+- **Insights passes** that grade and cluster your stored conversations. They run on their own
+  model, not the answering one; turn `store_history` off if you'd rather nothing were stored to
+  analyse.
+- **Docs Quality Checks** runner compute.
+
+All metered AI runs on Aardvark's managed keys; there is no bring-your-own-key option — you never
+create, rotate, or secure a provider key.
 
 An account is funded in one of two ways:
 
@@ -62,8 +62,7 @@ An account is funded in one of two ways:
 
 When the operator has enabled Stripe, a customer manages their own funding from the **Billing &
 Auto Top-Up** section of the gateway **dashboard** (open `/dashboard` on the gateway and sign in with
-the magic link it emails you — there are no passwords; a team on a plan with single sign-on signs in
-through its identity provider instead).
+the magic link it emails you — there are no passwords).
 
 **Dashboard roles.** Team accounts have three roles: **owner**, **admin**, and **member**. Owners and
 admins see the **Billing** tab; plain members do not, and direct Billing links fall back to the
@@ -110,20 +109,15 @@ The gateway runs as a prepaid-only metering proxy out of the box. Customer self-
 until you configure Stripe**, and turning it on is, in short:
 
 1. Set two Worker secrets — `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`.
-2. Create a Stripe **webhook** pointing at `…/v1/stripe/webhook`, subscribed to all seven events the
-   gateway handles — the two PaymentIntent ones that back top-ups, plus the five subscription-lifecycle
-   events that back the monthly plans:
+2. Create a Stripe **webhook** pointing at `…/v1/stripe/webhook`, subscribed to the two
+   PaymentIntent events the gateway handles — they back top-ups:
 
    ```text
    payment_intent.succeeded          payment_intent.payment_failed
-   customer.subscription.created     customer.subscription.updated     customer.subscription.deleted
-   invoice.paid                      invoice.payment_failed
    ```
 
-   The webhook is the durable credit backstop. If you already had an endpoint from before the
-   subscription work, **edit it to add the five subscription events** — without them plan invoices
-   never flip an account to `past_due` or recover it, and a Stripe-side cancel won't downgrade the
-   account until the grace sweep catches up.
+   The webhook is the durable credit backstop: a captured charge is credited even when the
+   dashboard request that started it never hears back.
 3. Apply the gateway's payment **database migrations** before deploying the updated Worker.
 
 With Stripe left unconfigured the gateway behaves exactly as before — operator top-ups only. Two
@@ -212,7 +206,7 @@ carries files, and the true cost is settled when the turn completes.
 - [AI assistant & analytics](/ai-assistant/) — enabling the built-in Ask AI panel for readers, and
   the operator analytics dashboard (Insights, Conversations, digests) it feeds.
 - [Content Reach](/content-reach/) — which sections of each page readers reach and which controls
-  they use, on the Business and Enterprise plans. Carries no spend: it is telemetry, not metered AI.
+  they use. Carries no spend: it is telemetry, not metered AI.
 - [Build-time AI](/ai-features/) — opt-in features that run during the build, also through the
   gateway.
 - [Aardvark Gateway API](/api/) — the gateway's HTTP reference: chat, telemetry, dashboard analytics,

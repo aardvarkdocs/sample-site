@@ -1,168 +1,78 @@
 ---
-title: Plans & pricing
-navtitle: Plans
+title: Pricing
+navtitle: Pricing
 description: >-
-  Aardvark is free to use forever — prebuilt binaries for macOS, Linux, and Windows,
-  self-host anywhere. Paid plans add managed hosting, support, and a monthly included-AI
-  allowance metered in real dollars — never opaque credits.
+  Aardvark is free to self-host. AI use and Docs Quality Checks runner time draw from
+  one prepaid balance at published rates.
 icon: fa-solid fa-tags
 menu: pricing
 weight: 1
-mode: wide
 ---
 
-<style>
-/* Plan-card polish, scoped to this page's grid. Literal values only — a var()/color-mix here
-   would break the whole-site PDF (see the homepage's identical warning). */
-.plan-grid [data-aardvark-card] .aardvark-card-title,
-.aardvark-content .plan-grid [data-aardvark-card] a.aardvark-card-link.aardvark-card-title {
-  font-size: 1.5rem;
-}
-.plan-grid [data-aardvark-card] ul {
-  padding-left: 1.05em;
-  margin: 0.5em 0;
-}
-</style>
-
 Aardvark is **free to use, forever**: prebuilt binaries for macOS, Linux, and Windows,
-self-hosting anywhere at no cost, and an open contribution mirror for these docs.
-Paid plans are for teams that want a **predictable monthly bill** — managed hosting, real
-support, and a monthly **included-AI allowance in dollars**, keeping pricing simple and
-dollar-based. Team size never figures in: invite as many teammates as you like on every plan. Your Aardvark key also grants you access to hundreds of AI models
-you can use strategically to control costs as you go.
+self-hosting anywhere at no cost, and an open contribution mirror for these docs. There is
+no platform fee, no tier to pick and no seat to count — invite as many teammates as you like.
+Aardvark charges for two things, both in **dollars** (never opaque credits) and both from one
+prepaid balance: the **AI you actually use**, metered per token, and — only if you connect a
+repository — the runner minutes that [Docs Quality Checks](/github-automation/) consume.
 
-<div class="plan-grid" markdown="1">
+{% cardGrid cols=3 %}
+{% card title="Free to self-host" icon="sparkles" accent="gray" href="/getting-started/installation/" cta="Install the CLI" %}
+**$0** — every build, every feature
 
-{% cardGrid cols=4 %}
-{% card title="Free" icon="sparkles" accent="gray" href="https://gateway.aardvarkdocs.com/dashboard" cta="Start free" %}
-**$0** — pay as you go
-
-Bring your own hosting, pay only for the AI you use.
-
-- Self-host anywhere, full feature set
-- All components, themes, agent discovery, dashboard Insights
-- Metered AI at [published per-model prices](/pricing/models/)
-- Prepaid balance + auto top-up
-- Community support
+- Prebuilt binaries for macOS, Linux, and Windows
+- Every component and theme, agent discovery (`llms.txt`, Markdown-for-Agents, the skills index), whole-site PDF
+- Dashboard **Insights**, conversation analytics, and **Content Reach** — all included
+- Host the static `build/` anywhere, or run `vark serve`
 {% endCard %}
-{% card title="Pro" icon="rocket" accent="grape" href="https://gateway.aardvarkdocs.com/dashboard" cta="Subscribe" %}
-**$99** per month
-_$87.20/mo billed annually_
+{% card title="AI, metered" icon="calculator" accent="grape" href="/pricing/models/" cta="See model rates" %}
+**One published rate** — {% data.pricing.rate %}× the model's OpenRouter list price
 
-We host and run your docs.
-
-- Everything in Free, plus:
-- **Managed hosting** — custom domain, SSL, previews
-- **$40/mo of AI included**, at a ≈7% member discount
-- Community support
+- Billed per token, in dollars, at the rate on [the pricing table](/pricing/models/)
+- Supported models are OpenRouter's auto-updating `latest` aliases — the gateway serves no other model id
+- Reader answers, build-time AI, `vark author` runs, and Insights passes all meter the same way
+- Runs on Aardvark's managed keys — nothing of yours to create, rotate, or secure
 {% endCard %}
-{% card title="Business" icon="building" accent="violet" href="https://gateway.aardvarkdocs.com/dashboard" cta="Subscribe" %}
-**$349** per month
-_$303.20/mo billed annually_
+{% card title="Prepaid balance" icon="credit-card" accent="violet" href="https://gateway.aardvarkdocs.com/dashboard" cta="Open the dashboard" %}
+**You fund it, you own it** — serving stops when the balance is gone; only the requests already in flight finish and bill what they used
 
-Robust and self-serve — no sales call.
-
-- Everything in Pro, plus:
-- **$120/mo of AI included** — 3× Pro — at a ≈13% discount
-- SSO (OpenID Connect) + SCIM provisioning, audit-log export
-- Content Reach analytics, reader authentication for private docs
-- **Priority email support**, next-business-day target
-{% endCard %}
-{% card title="Enterprise" icon="shield-lock" accent="indigo" href="https://calendly.com/aardvarkdocs/new-meeting" cta="Talk to us" %}
-**Custom** — quoted per contract
-
-Everything in Business, plus:
-
-- **$800/mo of AI included** — 20× Pro — at a 20% discount
-- **Unlimited customization requests** — our engineering team on call to build any feature you need
-- Bring your own model-provider key (optional)
-- Shared Slack access for realtime support and requests, 7 days a week
+- Save a card through hosted Stripe Checkout (card details never touch Aardvark)
+- **Top up now** for a one-off charge, or turn on **auto top-up** with your own amount and threshold ($10 floor)
+- Remove the card any time; the balance stays yours
+- Operators can also credit a balance directly
 {% endCard %}
 {% endCardGrid %}
 
-</div>
+Every supported model's rate and estimated cost per answer: **[the pricing table](/pricing/models/)**.
 
-Every model's real cost per answer, on every plan: **[the pricing table](/pricing/models/)**.
+## Safety limits
 
-## Compare plans
+A metered feature has to be impossible to run away with. Four guardrails are on for every
+account, and each is documented exactly:
 
-| | Free | Pro | Business | Enterprise |
-|---|---|---|---|---|
-| **Price** | $0 | $99/mo | $349/mo | Custom |
-| **Billed annually** | — | $1,046.40/yr (≈$87.20/mo) | $3,638.40/yr (≈$303.20/mo) | Custom |
-| **Included AI** every month (member discount) | — | $40 at ≈7% off | $120 at ≈13% off (3× Pro) | $800 at 20% off (20× Pro) |
-| **Hosting** | Self-host only | Managed or self-hosted | Managed or self-hosted | Managed or self-hosted |
-| **Analytics** | Insights | Insights | Insights + Content Reach | Insights + Content Reach |
-| **SSO** (OpenID Connect) **+ SCIM / audit-log export** | — | — | Included | Included |
-| **Reader authentication** (private docs) | — | — | Included | Included |
-| **Bring your own provider key** | — | — | — | Optional |
-| **Customization** | — | — | — | Unlimited requests |
-| **Support** | Community | Community | Priority email | Realtime shared Slack |
-| **Self-hosting, agent discovery, PDF, all components** | Included | Included | Included | Included |
+- **The cutoff** stops serving AI when the balance is exhausted. It is bounded, not exact: the
+  requests already in flight finish and bill their actual cost, so keep a small buffer for a
+  hard ceiling; the concurrency cap keeps that set small — [the docs say so](/support/spend-cutoff-precision/).
+- **An unusual-usage brake** pauses AI when a day's spend spikes far above your normal
+  pattern — a scraped widget, a CI loop — and [one click resumes it](/support/unusual-usage-pause/).
+- **A concurrency cap** bounds how many requests can start before their usage is billed, so a
+  burst gets a brief `429` with a `Retry-After` instead of [a bill](/support/concurrent-request-limits/).
+- **Your balance is always yours.** A declined top-up or a removed card never spends it —
+  [it just stops adding to it](/support/prepaid-balance-safety/).
 
-Nothing core is paywalled: self-hosting, Markdown-for-Agents, `llms.txt`, the agent-skills
-index, whole-site PDF, and every component and theme ship on **Free** — and so does an
-unlimited team. Paid plans add hosting, support, controls — and cheaper AI.
-
-Pro and Business are self-serve: subscribe with a card and change plans yourself. **Enterprise is
-priced per contract** — the allowance and member rate above are where a quote starts, not a
-published rate card — so [book a call](https://calendly.com/aardvarkdocs/new-meeting) and we'll put a number on it.
-
-Single sign-on is OpenID Connect, configured yourself on Business and Enterprise. SAML is
-enabled per deployment rather than self-serve — [book a call](https://calendly.com/aardvarkdocs/new-meeting) if you need it.
-
-## The honest AI meter
-
-Every competitor meters AI in credits you can't reason about. Aardvark bills AI in
-**dollars**: [the pricing table](/pricing/models/) publishes what every model costs per
-answer on every plan — real figures, no conversion math. Subscribers pay less per metered
-dollar the more they commit (≈7% off on Pro, ≈13% on Business, 20% on Enterprise), on top
-of the allowance their plan includes. All of it runs on **Aardvark's managed keys** — you
-never create, rotate, or secure a model-provider key. Enterprise accounts can optionally
-register their own provider key so upstream calls run on their own provider contract; the
-metered price is the same either way, so it is a contracting choice, not a discount.
-
-Your included allowance is denominated in those same billed dollars:
-
-- The dashboard shows **dollars included, dollars used**, your own trailing burn rate, and
-  an estimated depletion date — no "≈N answers" marketing math.
-- Unused allowance **rolls over one month**, up to 2× your monthly amount.
-- Answers served by `:free` models never bill and never touch your allowance.
-
-## When the included AI runs out
-
-**Cap-and-hold is the default.** Paid AI pauses at your cap and you're notified, so it
-cannot add further overflow charges — readers keep getting free-model answers meanwhile.
-Your "max possible bill" is the subscription price plus any overflow already incurred this
-month. (Usage-based GitHub Automations compute, if you
-use it, draws your prepaid balance separately and isn't included in that figure.) Prefer to
-stay unstuck? Two self-serve options, both under your control:
-
-1. **Fall back to your balance** — flip overflow to draw from your prepaid balance at your
-   plan's discounted member pricing, with a cap you set (raising it past 2× your allowance
-   asks for an explicit acknowledgment).
-2. **Auto top-up** — keep the balance funded automatically with your chosen amount and
-   threshold, so overflow never stalls.
-
-## Annual billing
-
-Annual plans take **20% off the platform fee** — the included-AI allowance is funded
-monthly at full value either way (it's real usage, not a discountable line item), so the
-effective saving is about 12–13% off the yearly total — ~12% on Pro, ~13% on Business (the
-bigger a plan's fee is relative to its bundled allowance, the more of the bill the discount
-reaches). Pro: $1,046.40/yr (vs. $1,188 at par, ~12% off). Business: $3,638.40/yr (vs.
-$4,188, ~13% off). The allowance still resets every month on annual plans. Enterprise bills on
-the term its contract sets, so it has no published annual rate to discount.
+[Docs Quality Checks](/github-automation/) runner compute — the authoring runs that open pull
+requests against your repository — is a separate meter billed to the same prepaid balance: each
+run's runner time, rounded up to whole minutes, at {% data.pricing.rate %}× GitHub's standard
+2-core Linux runner price (today ${% data.pricing.compute_per_minute_usd %} a minute, so
+**${% RunnerMinutePrice %} per started minute**), shown per run in the dashboard next to the
+run's AI spend. So there is still one number to watch.
 
 ## FAQ
 
-Billing is designed to be predictable and never to surprise you. Here's exactly what happens
-in the situations people ask about most.
-
-Every question — and its exact answer — lives in the searchable support knowledge base,
-organized by category with the most-asked questions up top.
+Billing is designed to be predictable and never to surprise you. Every question — and its
+exact answer — lives in the searchable support knowledge base.
 
 {% card title="Browse the support knowledge base" icon="lifebuoy" href="/support/" cta="Visit support" %}
-Included AI, overflow, plan changes, payments and safety limits, and hosting — every
-billing question answered, straight from the team.
+Top-ups, auto top-up, the spend cutoff, concurrent-request limits, and removing a card —
+every billing question answered, straight from the team.
 {% endCard %}

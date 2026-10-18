@@ -138,11 +138,11 @@ tab is one of these; here, filtered to a single category:
 
 {% raw %}
 ```aardvark
-{% taxonomy name="support" type="kb" tagFilter="Included AI" %}
+{% taxonomy name="support" type="kb" tagFilter="Payments & limits" %}
 ```
 {% endraw %}
 
-{% taxonomy name="support" type="kb" tagFilter="Included AI" %}
+{% taxonomy name="support" type="kb" tagFilter="Payments & limits" %}
 
 ## An article list
 

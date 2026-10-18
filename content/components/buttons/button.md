@@ -418,12 +418,12 @@ component('aardvark', 'button', text='Painted', bg='grape.6', c='white')
 A button sits naturally inside other primitives — here in a [card](/components/data-display/card/),
 with a `{% raw %}{% group %}{% endraw %}` to lay a pair side by side:
 
-{% card title='Upgrade your plan' %}
-Unlock private repos, custom domains, and priority support.
+{% card title='Go Studio' %}
+Unlimited projects, shared workspaces, and a 24-hour support window.
 
 {% group %}
 {% button text='Upgrade' variant='gradient' gradientFrom='grape' gradientTo='pink' gradientDeg=135 %}
-{% button text='Compare plans' variant='subtle' url='/components/' %}
+{% button text="See what's included" variant='subtle' url='/components/' %}
 {% endGroup %}
 {% endCard %}
 
@@ -433,12 +433,12 @@ Unlock private repos, custom domains, and priority support.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% card title='Upgrade your plan' %}
-Unlock private repos, custom domains, and priority support.
+{% card title='Go Studio' %}
+Unlimited projects, shared workspaces, and a 24-hour support window.
 
 {% group %}
 {% button text='Upgrade' variant='gradient' gradientFrom='grape' gradientTo='pink' gradientDeg=135 %}
-{% button text='Compare plans' variant='subtle' url='/components/' %}
+{% button text="See what's included" variant='subtle' url='/components/' %}
 {% endGroup %}
 {% endCard %}
 ```
@@ -448,7 +448,7 @@ Unlock private repos, custom domains, and priority support.
 ```python
 component('aardvark', 'button', text='Upgrade', variant='gradient',
           gradientFrom='grape', gradientTo='pink', gradientDeg=135)
-component('aardvark', 'button', text='Compare plans', variant='subtle', url='/components/')
+component('aardvark', 'button', text="See what's included", variant='subtle', url='/components/')
 ```
 {% endAccordionSection %}
 {% endAccordion %}

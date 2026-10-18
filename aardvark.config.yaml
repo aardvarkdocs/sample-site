@@ -224,7 +224,7 @@ tabs:
     icon: sparkles
     link: /ai/
     id: ai
-  - label: Pricing                 # the /pricing/ page is built by generators/pricing.py
+  - label: Pricing                 # /pricing/models/ is built by generators/pricing.py; /pricing/ is hand-written
     icon: fa-solid fa-tags
     link: /pricing/
     id: pricing
@@ -387,6 +387,27 @@ redirects:
   - { from: /support/add-or-remove-seats/, to: /support/ }
   - { from: /support/addon-seats-plan-changes/, to: /support/ }
   - { from: /support/running-out-of-seats/, to: /support/ }
+  # 2026-10: managed hosting and subscription plans retired — the hosting page, the `vark deploy`
+  # changelog entry and the seventeen plan-era support articles were removed.
+  - { from: /hosting-onboarding/, to: /deployment/ }
+  - { from: /changelog/vark-deploy-command/, to: /changelog/ }
+  - { from: /support/allowance-vs-balance-order/, to: /support/ }
+  - { from: /support/annual-billing-savings/, to: /support/ }
+  - { from: /support/enterprise-billing/, to: /support/ }
+  - { from: /support/failed-subscription-payment/, to: /support/ }
+  - { from: /support/included-ai-rollover/, to: /support/ }
+  - { from: /support/max-monthly-bill/, to: /support/ }
+  - { from: /support/overflow-cap-acknowledgment/, to: /support/ }
+  - { from: /support/overflow-options/, to: /support/ }
+  - { from: /support/own-model-api-keys/, to: /support/ }
+  - { from: /support/price-changes-after-subscribing/, to: /support/ }
+  - { from: /support/raising-cap-again/, to: /support/ }
+  - { from: /support/self-host-on-paid-plans/, to: /support/ }
+  - { from: /support/undo-scheduled-downgrade/, to: /support/ }
+  - { from: /support/use-up-included-ai/, to: /support/ }
+  - { from: /support/what-counts-against-included-ai/, to: /support/ }
+  - { from: /support/what-happens-when-i-cancel/, to: /support/ }
+  - { from: /support/when-plan-changes-take-effect/, to: /support/ }
 
 # Prerender React islands to static HTML at build time. The client bundle still
 # re-renders them on load (so they stay interactive); this bakes the real widget
@@ -441,7 +462,7 @@ gitfolder:
 # defaults to the theme's primary). Omit the whole key to get the Login/Sign up
 # defaults below; set `topButtons: []` for none.
 # Both buttons go to the CLOUD GATEWAY DASHBOARD (email magic-link login) — the one place a
-# reader can sign up, fund an account, and subscribe to a plan; the /pricing/ cards point there too.
+# reader can sign up, add a card and fund a prepaid balance; the /pricing/ cards point there too.
 topButtons:
   - text: Login
     url: https://gateway.aardvarkdocs.com/dashboard
@@ -616,19 +637,18 @@ ai:
   frontmatter: false
   examples: false
   skills: false
-  # Any OpenRouter model slug; overridable per run with `--model`. The "latest" router alias needs its
-  # LEADING TILDE; quotes are optional for the full slug (only standalone `~` is YAML null). Or pin a
-  # version like anthropic/claude-sonnet-4.6.
+  # One of OpenRouter's auto-updating `latest` aliases (the gateway refuses any other id); overridable
+  # per run with `--model`, which must also be one. The alias usually needs its LEADING TILDE; quotes
+  # are optional for the full slug (only standalone `~` is YAML null).
   model: "~anthropic/claude-sonnet-latest"
   # The reader-facing "Ask AI" assistant. It streams answers from the metered Aardvark
   # cloud gateway (which holds the managed OpenRouter key) using a spend-capped AARDVARK_KEY
   # set as a *build* env var (e.g. in Cloudflare Pages build settings) — never in this file.
   assistant:
     enabled: true
-    # Sent to the gateway per request; any OpenRouter slug. The current alias target is a PAID
-    # model, so the public key spends real money per question — keep the account funded and size
-    # the spend cap to the exposure you accept (the cap + origin lock are the controls; a :free
-    # model was the old cost-free pick).
+    # Sent to the gateway per request; any `latest` alias. The public key spends real money per
+    # question — keep the account funded and size the spend cap to the exposure you accept (the
+    # cap + origin lock are the controls).
     # OpenRouter's floating Gemini Flash alias includes the leading `~`; quotes are optional for
     # the full slug but kept here for clarity. The alias follows the latest Flash release automatically.
     model: "~google/gemini-flash-latest"
@@ -754,7 +774,7 @@ protected:
   - path: /secretpage
     passwordEnv: SECRET_PAGE_PW
 
-# Content Reach (Business/Enterprise): section-level VISIBILITY and INTERACTION analytics for the
+# Content Reach: section-level VISIBILITY and INTERACTION analytics for the
 # owner dashboard — which sections of each page readers actually reach, how long each one holds the
 # reader's position, and which controls they use. Opt-in and default OFF; it rides `ai-config.json`
 # for the gateway endpoint and the public key, so it only takes effect on an AI-enabled site.

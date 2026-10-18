@@ -17,11 +17,9 @@ It reports on your page's own **sections** — the headings you already wrote, p
 region you mark yourself — and never on screen coordinates. There is no cookie, no
 fingerprint, no visitor id, and nothing that survives closing a browser tab.
 
-> **Content Reach is available on the Business and Enterprise plans**, and needs the
-> [AI assistant](/ai-assistant/) configured (it shares that gateway key). It is **off by
-> default** even then — turn it on deliberately. The plan is checked by the gateway, not the
-> build: on any other plan the first beacon is refused, the client stops for the rest of that
-> browser tab, and nothing on the page is affected.
+> **Content Reach is included with every Aardvark cloud account.** It needs the
+> [AI assistant](/ai-assistant/) configured (it shares that gateway key) and is **off by
+> default** even then — turn it on deliberately.
 
 ## Turn it on
 

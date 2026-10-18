@@ -441,7 +441,7 @@ reader's query. In short: the widget + `store_terms` protect readers' text clien
 allowlist is the server-side backstop that keeps other sites out.
 
 Search analytics answers "what did readers look for". Its companion,
-[Content Reach](/content-reach/) (Business and Enterprise), answers "which parts of the
+[Content Reach](/content-reach/), answers "which parts of the
 page did they get to once they landed" — including how often a search result click leads
 to a section actually coming into view. The two use **separate** tab-session ids on
 purpose, and no query text ever crosses into Content Reach. They do both record the page

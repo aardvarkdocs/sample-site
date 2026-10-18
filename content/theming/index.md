@@ -310,10 +310,10 @@ It's on by default. Sites with any [build-time AI](/ai-features/) feature enable
 count) — can remove it from `aardvark.config.yaml`:
 
 ```yaml
-poweredBy: false              # honored on the AI/paid tier
+poweredBy: false              # honored with ai.frontmatter / ai.examples / ai.skills on
 ```
 
-On the free tier the link is kept — the attribution is genuinely appreciated — so
+With none of those build-time AI features on the link is kept — the attribution is genuinely appreciated — so
 `poweredBy: false` there is ignored, and the build prints a friendly note. Either way the
 footer is wrapped in a stable id, so you can always hide it with one line of CSS (in a root
 stylesheet or `themes/vark/theme.scss`):

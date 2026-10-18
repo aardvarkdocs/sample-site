@@ -1,7 +1,7 @@
 ---
 breadcrumb: false
 title: Support
-description: Answers to common questions about Aardvark plans, billing, and AI usage.
+description: Answers to common questions about funding your Aardvark account and the limits that keep AI spend predictable.
 menu: support
 taxonomy:
   - name: support
@@ -12,4 +12,4 @@ taxonomy:
 
 # Support
 
-{% taxonomy name="support" type="kb" bannerText="Ask anything about plans, billing, teams, or AI usage — or browse the answers by category below." %}
+{% taxonomy name="support" type="kb" bannerText="Ask anything about top-ups, auto top-up, spend limits or your saved card — or browse the answers below." %}

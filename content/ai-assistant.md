@@ -58,7 +58,7 @@ finished answer is syntax-highlighted in your own theme palette.
 ai:
   assistant:
     enabled: true
-    model: "~anthropic/claude-sonnet-latest"   # any model the gateway proxies; "latest" alias needs the leading ~
+    model: "~anthropic/claude-sonnet-latest"   # an OpenRouter `latest` alias — the only model ids the gateway serves; most carry a leading ~
     escalationEmail: support@example.com       # optional: offer a human under a down-voted answer
 ```
 
@@ -80,7 +80,7 @@ All optional except `enabled`:
 | Key | Default | What it does |
 |-----|---------|--------------|
 | `enabled` | `false` | Master switch for the reader panel. |
-| `model` | `~anthropic/claude-sonnet-latest` | The model the assistant answers with (must be vision/file-capable if you keep attachments on). |
+| `model` | `~anthropic/claude-sonnet-latest` | The model the assistant answers with — an OpenRouter `latest` alias, the only model ids the gateway serves (most carry a leading `~`; any other id fails the build). Must be vision/file-capable if you keep attachments on. |
 | `reasoning` | model default | Reasoning control for a reasoning-capable model — `enabled` (bool) and `effort` (`low`/`medium`/`high`). |
 | `attachments` | on | Reader file uploads — 4 files of 10 MB each by default. See [Reader attachments](/ai-gateway/#reader-attachments) for the caps and cost notes. |
 | `store_history` | `true` | Posts each finished turn to the gateway so it appears in your dashboard **and feeds the analytics below**. |
@@ -142,11 +142,10 @@ with `app.iconBackground`, or drop the page, manifest, icons and install afforda
 ## The analytics dashboard
 
 Every stored conversation feeds an analytics suite on the **gateway dashboard** — open
-`gateway.aardvarkdocs.com/dashboard` and sign in with the **magic link**
-emailed to you, or through **single sign-on** where your account has it configured. (The dashboard is a
-browser session; the `aardvark_secret_…` key is the API/CLI credential, and it authenticates the
-[programmatic endpoints](#programmatic-export) below.) Cron passes on the gateway classify each answer,
-cluster the corpus into themes, and surface where your docs fall short.
+`gateway.aardvarkdocs.com/dashboard` and sign in with the **magic link** emailed to you. (The
+dashboard is a browser session; the `aardvark_secret_…` key is the API/CLI credential, and it
+authenticates the [programmatic endpoints](#programmatic-export) below.) Cron passes on the gateway
+classify each answer, cluster the corpus into themes, and surface where your docs fall short.
 
 {% callout severity="warning" title="Grading reads the model's reasoning" %}
 The analysis pass classifies an answer from the model's own **chain-of-thought**, so it only grades turns

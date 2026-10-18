@@ -1,5 +1,5 @@
 ---
-description: Every vark command — new, build, deploy, dev, link-check, convert,
+description: Every vark command — new, build, dev, link-check, convert,
   ai-enrich, author, serve, update, version, and web-bot-auth-keygen — and the options
   each takes, generated from vark --help.
 aliases:
@@ -45,7 +45,6 @@ The islands toolchain (react, @mantine/*, esbuild) ships inside Aardvark: a proj
 | --- | --- |
 | `vark new` | Scaffold a new site in PATH. |
 | `vark build` | Build the site to the output directory. |
-| `vark deploy` | Build the site and publish it to Aardvark cloud managed hosting. |
 | `vark dev` | Serve the site locally and rebuild on change. |
 | `vark link-check` | Check internal links, anchors, and images across the site (a build smoke test). |
 | `vark convert` | Import a docs site built for another platform into an Aardvark site. |
@@ -86,7 +85,7 @@ Generation scripts run before page discovery, so `--no-generators` builds from w
 | `--bundle / --no-bundle` | `--bundle` | Build the islands JS bundle. |
 | `--pdf / --no-pdf` | `--pdf` | Render the whole-site PDF when enabled in config (off in `vark dev`). |
 | `--pdf-reuse / --no-pdf-reuse` | `--pdf-reuse` | Reuse the live PDF within `pdf.reuseForDays` instead of re-rendering. --no-pdf-reuse forces a fresh render. |
-| `--model TEXT` | — | Override the model for AI features (a gateway model slug). |
+| `--model TEXT` | — | Override the model for AI features: an OpenRouter auto-updating alias, i.e. an id ending in '-latest' such as ~anthropic/claude-sonnet-latest (keep the leading ~ when the alias has one). |
 | `--translate / --no-translate` | `--no-translate` | Refresh missing + changed translations with Claude (requires AARDVARK_SECRET_KEY). |
 | `--retranslate-all` | off | Re-translate every page, overwriting existing translations (implies --translate). |
 | `--generators / --no-generators` | `--generators` | Run generation scripts in generators/ (write Markdown pages before the build). |
@@ -100,30 +99,6 @@ Examples:
 vark build               # build ./ into ./build
 vark build --no-bundle   # skip the islands JS bundle (no Node needed)
 vark build -v            # stream per-phase progress to stderr
-```
-
-## `vark deploy`
-
-Build the site and publish it to Aardvark cloud managed hosting.
-
-Runs the same full production build as `vark build`, then uploads the output directory to your Aardvark cloud site and makes it live, printing the site's URL once a custom domain is attached — a production site is served on its own domain, so until you attach one there is no URL to print. Pass `--no-build` to upload an already-built output directory as-is (it errors if none exists).
-
-This publishes only to a CLI-created site. A site connected to a GitHub repository keeps deploying from that repository, so `vark deploy` refuses it — before running the build, not after.
-
-Authenticates with your Aardvark **secret** key in `AARDVARK_SECRET_KEY` — the same possession-based CLI credential the AI features use, read from the environment or your project's `.env`. On the first deploy of an account with no site, the site is created for you (pass `--slug` to choose its name); an account already hosting a CLI site deploys to that one. If a previous deploy was interrupted, the upload resumes it, and re-uploading an unchanged file is always safe.
-
-| Option | Default | Effect |
-| --- | --- | --- |
-| `--root DIRECTORY` | `.` | Project directory (defaults to the current directory). |
-| `--slug TEXT` | — | Site slug to deploy to. Defaults to the account's only site; when no site matches, one is created with this slug. |
-| `--build / --no-build` | `--build` | Run a full production build first (the same build as vark build). --no-build uploads the existing output directory as-is. |
-
-Examples:
-
-```bash
-vark deploy                     # build, then upload ./build to Aardvark cloud
-vark deploy --no-build          # upload the existing ./build as-is
-vark deploy --slug my-docs      # deploy to (or create) the site my-docs
 ```
 
 ## `vark dev`
@@ -219,7 +194,7 @@ Fills in a missing `description` and `keywords` in each page's Markdown frontmat
 | Option | Default | Effect |
 | --- | --- | --- |
 | `--root DIRECTORY` | `.` | Project directory (defaults to the current directory). |
-| `--model TEXT` | — | Override the model for AI features (a gateway model slug). |
+| `--model TEXT` | — | Override the model for AI features: an OpenRouter auto-updating alias, i.e. an id ending in '-latest' such as ~anthropic/claude-sonnet-latest (keep the leading ~ when the alias has one). |
 | `--plain / --no-plain` | auto | Force plain (or rich) output. Auto-detected off a TTY, or under CI / NO_COLOR. |
 
 Examples:
@@ -241,7 +216,7 @@ Running an action (or the interactive menu) requires your Aardvark **secret** ke
 | Option | Default | Effect |
 | --- | --- | --- |
 | `--root DIRECTORY` | `.` | Project directory (defaults to the current directory). |
-| `--model TEXT` | — | Override the model for the agent (a gateway model slug). |
+| `--model TEXT` | — | Override the model for the agent: an OpenRouter auto-updating alias, i.e. an id ending in '-latest' such as ~anthropic/claude-sonnet-latest (keep the leading ~ when the alias has one). |
 | `--page TEXT` | — | Pre-select a page by content-relative path (e.g. guide/intro.md) or URL, skipping the picker. |
 | `--action TEXT` | — | Run ONE authoring action non-interactively across pages (headless / CI). See --list-actions for the available ids. |
 | `--all` | off | With --action, run on every page (the default when no --path/--diff is given). |

@@ -234,8 +234,8 @@ component('aardvark', 'card', variant='image', image='/landscape.jpg', alt='',
 `variant="gradient"` paints the card with a gradient (derived from the theme accent, or set
 explicitly with `gradient="from,to,deg"`):
 
-{% card variant="gradient" gradient="indigo,cyan,135" icon="sparkles" title="Pro plan" cta="Upgrade" href="/docs/#quickstart" %}
-Managed hosting, priority support, and a bigger monthly AI allowance.
+{% card variant="gradient" gradient="indigo,cyan,135" icon="sparkles" title="Studio tier" cta="Upgrade" href="/docs/#quickstart" %}
+Unlimited projects, shared workspaces, and a 24-hour support window.
 {% endCard %}
 
 <br>
@@ -244,8 +244,8 @@ Managed hosting, priority support, and a bigger monthly AI allowance.
 {% accordionSection title="Source: Markdown" %}
 {% raw %}
 ```aardvark
-{% card variant="gradient" gradient="indigo,cyan,135" icon="sparkles" title="Pro plan" cta="Upgrade" href="/docs/#quickstart" %}
-Managed hosting, priority support, and a bigger monthly AI allowance.
+{% card variant="gradient" gradient="indigo,cyan,135" icon="sparkles" title="Studio tier" cta="Upgrade" href="/docs/#quickstart" %}
+Unlimited projects, shared workspaces, and a 24-hour support window.
 {% endCard %}
 ```
 {% endraw %}
@@ -253,8 +253,8 @@ Managed hosting, priority support, and a bigger monthly AI allowance.
 {% accordionSection title="Source: Python" %}
 ```python
 component('aardvark', 'card', variant='gradient', gradient='indigo,cyan,135', icon='sparkles',
-          title='Pro plan', cta='Upgrade', href='/docs/#quickstart',
-          children='Managed hosting, priority support, and a bigger monthly AI allowance.')
+          title='Studio tier', cta='Upgrade', href='/docs/#quickstart',
+          children='Unlimited projects, shared workspaces, and a 24-hour support window.')
 ```
 {% endAccordionSection %}
 {% endAccordion %}

@@ -184,7 +184,7 @@ page.print('\n'.join(css))
 <div class="wa-stats">
 <div class="wa-stat"><span class="wa-stat__n">160+</span><span class="wa-stat__l">built-in components</span></div>
 <div class="wa-stat"><span class="wa-stat__n">16</span><span class="wa-stat__l">analytics integrations</span></div>
-<div class="wa-stat"><span class="wa-stat__n">300+</span><span class="wa-stat__l">AI models, every major lab</span></div>
+<div class="wa-stat"><span class="wa-stat__n">Latest</span><span class="wa-stat__l">models from major labs</span></div>
 <div class="wa-stat"><span class="wa-stat__n">1</span><span class="wa-stat__l">binary to deploy</span></div>
 </div>
 
@@ -266,7 +266,7 @@ There are {% raw %}{% data.products.count %}{% endraw %} plans.
 <div class="wa-section-head">
 <div class="wa-kicker">AI, built in</div>
 <h2>An assistant your readers can install</h2>
-<p>Ship a docs assistant that adds to the home screen, answers from your own content, and reads what readers hand it — backed by hundreds of models and billed only when it runs.</p>
+<p>Ship a docs assistant that adds to the home screen, answers from your own content, and reads what readers hand it — backed by the newest models from major labs and billed only when it runs.</p>
 </div>
 <div class="wa-features">
 <div class="wa-feature"><div class="wa-feature__ico"><i aria-hidden="true" class="fa-solid fa-mobile-screen-button"></i></div><h3>Installable assistant</h3><p>A progressive web app — readers add it to a phone or desktop and launch straight into full-screen chat. No app store.</p></div>
@@ -274,23 +274,16 @@ There are {% raw %}{% data.products.count %}{% endraw %} plans.
 <div class="wa-feature"><div class="wa-feature__ico"><i aria-hidden="true" class="fa-solid fa-bolt"></i></div><h3>Instant, no-backend search</h3><p>⌘K scores a prebuilt index right in the browser — no Algolia, no crawler, no server to keep running.</p></div>
 </div>
 <div class="wa-payline">
-<p><strong>Free to use.</strong> Aardvark builds a plain static site you can host anywhere — Netlify, Vercel, S3, or your own box. You only pay for AI, and only when it runs: <strong>pay-as-you-go</strong>, metered per token through the cloud gateway.</p>
+<p><strong>Free to use.</strong> Aardvark builds a plain static site you can host anywhere — Netlify, Vercel, S3, or your own box. AI usage is <strong>pay-as-you-go</strong>, metered per token through the cloud gateway.</p>
 </div>
-<div class="wa-marquee-head">300+ models, from every major lab</div>
+<div class="wa-marquee-head">The newest models from major labs</div>
 </div>
-{% marquee direction='right' duration=16500 fadeEdges=true gap='0' attr={'role': 'img', 'aria-label': 'Models from every major lab: OpenAI, Anthropic, Google, Meta, Mistral, DeepSeek, xAI, Qwen, Cohere, Perplexity, Microsoft, Amazon, and more'} %}
+{% marquee direction='right' duration=16500 fadeEdges=true gap='0' attr={'role': 'img', 'aria-label': 'Models from major labs: OpenAI, Anthropic, Google, xAI, and DeepSeek'} %}
 <span class="wa-logo"><img src="/logos/ai-labs/openai.svg" alt="">OpenAI</span>
 <span class="wa-logo"><img src="/logos/ai-labs/anthropic.svg" alt="">Anthropic</span>
 <span class="wa-logo"><img src="/logos/ai-labs/google.svg" alt="">Google</span>
 <span class="wa-logo"><img src="/logos/ai-labs/xai.svg" alt="">xAI</span>
-<span class="wa-logo"><img src="/logos/ai-labs/meta.svg" alt="">Meta</span>
-<span class="wa-logo"><img src="/logos/ai-labs/mistral.svg" alt="">Mistral AI</span>
 <span class="wa-logo"><img src="/logos/ai-labs/deepseek.svg" alt="">DeepSeek</span>
-<span class="wa-logo"><img src="/logos/ai-labs/cohere.svg" alt="">Cohere</span>
-<span class="wa-logo"><img src="/logos/ai-labs/qwen.svg" alt="">Qwen</span>
-<span class="wa-logo"><img src="/logos/ai-labs/perplexity.svg" alt="">Perplexity</span>
-<span class="wa-logo"><img src="/logos/ai-labs/microsoft.svg" alt="">Microsoft</span>
-<span class="wa-logo"><img src="/logos/ai-labs/amazon.svg" alt="">Amazon</span>
 {% endMarquee %}
 </section>
 
