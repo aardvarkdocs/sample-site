@@ -58,9 +58,9 @@ component('aardvark', 'communityMarquee', duration=20,
 
 ### Pause on hover and fade edges
 
-`pauseOnHover` stops the scroll while the pointer is over it; `fadeEdges` softens the edges so
-content fades in and out instead of clipping (set it to a bare flag for the default fade, or
-name a mode — `linear`, `ellipse`, `rect`).
+`pauseOnHover` stops the scroll while the pointer is over it, or while keyboard focus is inside
+it; `fadeEdges` softens the edges so content fades in and out instead of clipping (set it to a
+bare flag for the default fade, or name a mode — `linear`, `ellipse`, `rect`).
 
 {% communityMarquee duration=25 pauseOnHover=true fadeEdges='linear' %}
 React · Mantine · Aardvark · Static sites · Islands · Markdown ·
@@ -159,9 +159,9 @@ Omit any attribute to take its default. Bare flags (e.g. `pauseOnHover`, `fadeEd
 | `direction` | `left` / `right` / `up` / `down` (default `left`) | Scroll axis and direction. Maps to the package's `vertical` (up/down) + `reverse` (right/down). |
 | `variant` | `default` / `isometric` / `circle` | Layout variant. `isometric` and `circle` add a 3D / ring presentation. |
 | `duration` | Integer **seconds** | Time for one full loop. |
-| `gap` | `xs`–`xl` or a CSS length (e.g. `2rem`) | Space between the items and between the looping copies. |
+| `gap` | `xs`–`xl` or a CSS length (e.g. `2rem`) | Space between the items and between the looping copies. A size name is a step of the theme's spacing scale; the default is `md`. |
 | `repeat` | Integer (minimum `2`) | How many times the content is cloned to fill the row. |
-| `pauseOnHover` | `true` / `false` (default `false`) | Pause scrolling while the pointer is over the marquee. |
+| `pauseOnHover` | `true` / `false` (default `false`) | Pause scrolling while the pointer is over the marquee, or while keyboard focus is inside it. |
 | `fadeEdges` | bare flag / `linear` / `ellipse` / `rect` | Fade the edges with a mask. A bare flag (or `linear`) fades the leading and trailing edges; `ellipse` fades all round; `rect` fades all four edges independently. |
 | `fadeEdgesSize` | `xs`–`xl` or a CSS length | Size of the edge fade. |
 | `tilt` | Integer (degrees, default `45`) | Plane inclination — how far the scroll plane tips back (`isometric`), or the viewing angle of the ring (`circle`). Ignored by the default variant. |
@@ -192,9 +192,10 @@ This ticker and the built-in [`{% raw %}{% marquee %}{% endraw %}`](/components/
 both style themselves with `mantine-Marquee-*` classes, so a rule written against those names
 hits **both** tags. Scope it under the island attribute above when you mean only this one.
 
-The look is driven by CSS variables on the root — `--marquee-duration`, `--marquee-gap`,
-`--marquee-fade-edge-size`, `--marquee-tilt`, `--marquee-perspective`, `--marquee-rotate`,
-`--marquee-skew` — so most tweaks are a variable override. The stylesheet ships from
+The look is driven by CSS variables the package sets inline on the root — `--marquee-duration`,
+`--marquee-gap`, `--marquee-fade-edge-size`, `--marquee-tilt`, `--marquee-perspective`,
+`--marquee-rotate`, `--marquee-skew` — so most tweaks are a variable override, marked
+`!important` so it beats the inline value. The stylesheet ships from
 `@gfazioli/mantine-marquee/styles.css` and loads with the page.
 
 ## Injecting Attributes
