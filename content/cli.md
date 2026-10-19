@@ -17,7 +17,7 @@ weight: 62
 
 # CLI reference
 
-Aardvark — a Mantine-powered static site generator.
+aardvark — a Mantine-powered static site generator.
 
 Author your content in Markdown and build it into a fast, fully static site: Mantine-powered interactive components, built-in client-side search, automatic Open Graph cards, and optional build-time AI enrichment. Scaffold a project with `vark new`, preview it live with `vark dev`, and produce the deployable site with `vark build`.
 
@@ -37,7 +37,7 @@ cd my-docs && vark dev  # preview at http://localhost:8000, live-reload
 vark build              # build the static site into ./build
 ```
 
-The islands toolchain (react, @mantine/*, esbuild) ships inside Aardvark: a project with no node_modules gets it staged automatically on the first build — no npm install, nothing downloaded (Node itself is the one prerequisite). npm runs only when your package.json needs packages Aardvark doesn't ship (opt out with AARDVARK_NO_AUTO_NPM); a node_modules you install yourself always wins.
+The islands toolchain (react, @mantine/*, esbuild) ships inside aardvark: a project with no node_modules gets it staged automatically on the first build — no npm install, nothing downloaded (Node itself is the one prerequisite). npm runs only when your package.json needs packages aardvark doesn't ship (opt out with AARDVARK_NO_AUTO_NPM); a node_modules you install yourself always wins.
 
 ## Commands
 
@@ -47,11 +47,11 @@ The islands toolchain (react, @mantine/*, esbuild) ships inside Aardvark: a proj
 | `vark build` | Build the site to the output directory. |
 | `vark dev` | Serve the site locally and rebuild on change. |
 | `vark link-check` | Check internal links, anchors, and images across the site (a build smoke test). |
-| `vark convert` | Import a docs site built for another platform into an Aardvark site. |
-| `vark ai-enrich` | Run opt-in build-time enrichment (frontmatter, examples, skills). |
+| `vark convert` | Import a docs site built for another platform into an aardvark site. |
+| `vark ai-enrich` | Fill missing source frontmatter and optionally generate skills. |
 | `vark author` | Run agentic authoring tasks on your docs — interactively or headless. |
 | `vark serve` | Serve a built site (and a live MCP server) for production. |
-| `vark update` | Check whether a newer version of Aardvark is available. |
+| `vark update` | Check whether a newer version of aardvark is available. |
 | `vark version` | Manage documentation versions (snapshot-in-tree docs versioning). |
 | `vark web-bot-auth-keygen` | Generate an Ed25519 keypair for Web Bot Auth. |
 
@@ -59,7 +59,7 @@ The islands toolchain (react, @mantine/*, esbuild) ships inside Aardvark: a proj
 
 Scaffold a new site in PATH.
 
-Creates PATH and fills it with starter content, a sample data file, the editable default theme under `themes/vark/`, an example snippet, and a `package.json` for the Mantine islands toolchain. Next: `cd` into PATH and run `vark dev` — the first build stages the islands toolchain shipped with Aardvark (no npm install, nothing downloaded; npm only runs for packages Aardvark doesn't ship, and a `node_modules` you install yourself always wins). Node is the one prerequisite; without it the site builds without the islands bundle.
+Creates PATH and fills it with starter content, a sample data file, the editable default theme under `themes/vark/`, an example snippet, and a `package.json` for the Mantine islands toolchain. Next: `cd` into PATH and run `vark dev` — the first build stages the islands toolchain shipped with aardvark (no npm install, nothing downloaded; npm only runs for packages aardvark doesn't ship, and a `node_modules` you install yourself always wins). Node is the one prerequisite; without it the site builds without the islands bundle.
 
 Examples:
 
@@ -105,7 +105,7 @@ vark build -v            # stream per-phase progress to stderr
 
 Serve the site locally and rebuild on change.
 
-Builds once, serves the result, watches your sources, and live-reloads the browser on every change. Your browser opens to the site automatically when the server starts (pass `--no-open` to skip that). The per-phase timing summary prints on the first build and on every rebuild, so you can see exactly what each change cost. Generation scripts run on every rebuild; pass `--no-generators` for a fully offline loop when a generator's network call is slow or its cache is cold.
+Builds once, serves the result, watches your sources, and live-reloads the browser on every change. Your browser opens to the site automatically when the server starts (pass `--no-open` to skip that). The per-phase timing summary prints on the first build and on every rebuild, so you can see exactly what each change cost. Generation scripts run on every rebuild; pass `--no-generators` to skip their work and network calls. Other build features may still use the network.
 
 Dev builds skip the two heaviest phases — Open Graph cards and the whole-site PDF — so rebuilds stay fast. The pages still carry their `og:image` tags and the Download PDF menu link, but those files exist only after a real `vark build`, so social-preview unfurls and that download don't resolve against the dev server.
 
@@ -118,7 +118,7 @@ The live dashboard paints on the terminal's alternate screen, so its log vanishe
 | `--root DIRECTORY` | `.` | Project directory (defaults to the current directory). |
 | `--port INTEGER` | `8000` | Port to serve the site on. |
 | `--open / --no-open` | `--open` | Open the site in your browser when the server starts. |
-| `--generators / --no-generators` | `--generators` | Run generation scripts on each rebuild. Pass --no-generators for a faster, fully offline dev loop when a generator makes a slow/uncached network call. |
+| `--generators / --no-generators` | `--generators` | Run generation scripts on each rebuild. Pass --no-generators to skip their work and network calls; other build features may still use the network. |
 | `--ssr / --no-ssr` | auto | Prerender islands on each rebuild (defaults to the site's islands.ssr setting). Pass --no-ssr to skip both the SSR renderer build and the prerender: islands then mount client-side, so dev pages flash on load and no longer match production output. |
 | `-v, --verbose` | off | Stream per-phase progress on every rebuild. |
 | `--plain` | off | Disable the live dashboard; use plain line-by-line output (also implied off a TTY or under CI / NO_COLOR). |
@@ -137,14 +137,14 @@ vark dev --log-file dev.log   # also append the log to a file you can paste from
 
 Check internal links, anchors, and images across the site (a build smoke test).
 
-Renders every page in memory and verifies that internal links, `#anchors`, and local images resolve, without writing HTML output — the same check `vark build` runs. Use it for a fast pass/fail in CI or a pre-commit hook. A link to a missing page or a missing local image is printed to stderr and fails (exit non-zero). A link to a missing `#anchor` on a page that DOES exist is a warning by default (still exits 0) — set `links: {strictAnchors: true}` in config to make those fail too. Generation scripts run first so generated pages are checked too; pass `--no-generators` to skip them (e.g. an offline check of a site whose generators call the network).
+Renders every page in memory and verifies that internal links, `#anchors`, and local images resolve, without writing HTML output — the same check `vark build` runs. Use it for a fast pass/fail in CI or a pre-commit hook. A link to a missing page or a missing local image is printed to stderr and fails (exit non-zero). A link to a missing `#anchor` on a page that DOES exist is a warning by default (still exits 0) — set `links: {strictAnchors: true}` in config to make those fail too. Generation scripts run first so generated pages are checked too; pass `--no-generators` to skip their source-page reconciliation. This is not a general offline/read-only mode: remote code fences may fetch and cache source, and trusted template Python still runs.
 
 Image checking covers Markdown images, raw `<img>` / `srcset` / `<video poster>` references, CSS background images, and built-in image-bearing islands. It validates only local files the site would publish from `static/`, `public/`, and theme assets; external and data-URI images are skipped.
 
 | Option | Default | Effect |
 | --- | --- | --- |
 | `--root DIRECTORY` | `.` | Project directory (defaults to the current directory). |
-| `--generators / --no-generators` | `--generators` | Run generation scripts before checking (so generated pages are link-checked too). --no-generators is a fully read-only check that writes nothing to content/ — use it in CI when generated pages are already committed/cached, or for an offline check. |
+| `--generators / --no-generators` | `--generators` | Run generation scripts before checking (so generated pages are link-checked too). --no-generators skips source-page reconciliation when generated pages are already present. Remote code fences and trusted templates can still fetch data or write caches. |
 | `--plain / --no-plain` | auto | Force plain (or rich) output. Auto-detected off a TTY, or under CI / NO_COLOR. |
 
 Examples:
@@ -155,11 +155,11 @@ vark link-check   # verify internal links and images without writing output
 
 ## `vark convert PLATFORM INPUT_PATH OUTPUT_PATH`
 
-Import a docs site built for another platform into an Aardvark site.
+Import a docs site built for another platform into an aardvark site.
 
-Reads the source docs at INPUT_PATH (a project built for PLATFORM), translates its navigation, pages, components, and assets into Aardvark's format, and writes a buildable site to OUTPUT_PATH — an `aardvark.config.yaml`, `content/*.md`, and `static/` you can immediately `vark build` or `vark dev`. Where the source declares them, its look carries over too: brand colors become a project-owned `themes/vark/theme.scss`, and its custom stylesheets land at the output root (where the build auto-links them). Conversion is best-effort: the summary reports how many pages and assets were converted and flags any construct that didn't map cleanly, so you know exactly what to review by hand.
+Reads the source docs at INPUT_PATH (a project built for PLATFORM), translates its navigation, pages, components, and assets into aardvark's format, and writes a buildable site to OUTPUT_PATH — an `aardvark.config.yaml`, `content/*.md`, and `static/` you can immediately `vark build` or `vark dev`. Where the source declares them, its look carries over too: brand colors become a project-owned `themes/vark/theme.scss`, and its custom stylesheets land at the output root (where the build auto-links them). Conversion is best-effort: the summary reports how many pages and assets were converted and flags any construct that didn't map cleanly, so you know exactly what to review by hand.
 
-A converted page is TRUSTED CONTENT, exactly like one you wrote. Aardvark passes raw HTML in a Markdown page through to the built site, so anything a source page carries inline — an event handler such as `onerror=`, a `javascript:` or `data:` URL, a `<script>` or `<iframe>` embed — is carried too, and is live once built. That is deliberate: a converted page keeps the third-party embeds its author put there, and the converter does not decide which of them you meant. Link targets from the source's CONFIG are the exception — a `javascript:` tab, footer or logo link is refused and reported, because those become chrome on every page rather than one page's markup. So convert only sources you trust, and read the diff before you publish: a conversion is exactly as trustworthy as the site it read.
+A converted page is TRUSTED CONTENT, exactly like one you wrote. aardvark passes raw HTML in a Markdown page through to the built site, so anything a source page carries inline — an event handler such as `onerror=`, a `javascript:` or `data:` URL, a `<script>` or `<iframe>` embed — is carried too, and is live once built. That is deliberate: a converted page keeps the third-party embeds its author put there, and the converter does not decide which of them you meant. Link targets from the source's CONFIG are the exception — a `javascript:` tab, footer or logo link is refused and reported, because those become chrome on every page rather than one page's markup. So convert only sources you trust, and read the diff before you publish: a conversion is exactly as trustworthy as the site it read.
 
 The supported PLATFORM values are named in the epilog below (and running with an unknown one lists them). OUTPUT_PATH must be empty unless `--force` is given.
 
@@ -187,9 +187,9 @@ vark convert mkdocs ./src ./out --force -v        # overwrite a non-empty ./out
 
 ## `vark ai-enrich`
 
-Run opt-in build-time enrichment (frontmatter, examples, skills).
+Fill missing source frontmatter and optionally generate skills.
 
-Fills in a missing `description` and `keywords` in each page's Markdown frontmatter — a value you wrote yourself is never overwritten, and a page that already has both is skipped — and, when `ai.skills` is enabled, (re)generates a `SKILL.md` for each planned skill under `skills/` in your project root. This is the only command that touches skills — `vark build` leaves them alone. Runs through Aardvark's metered gateway: the only thing you need to set is your `AARDVARK_SECRET_KEY` (without it the command prints a note and does nothing).
+Fills in a missing `description` and `keywords` in each page's Markdown frontmatter — regardless of `ai.frontmatter`; a value you wrote yourself is never overwritten, and a page that already has both is skipped — and, when `ai.skills` is enabled, (re)generates a `SKILL.md` for each planned skill under `skills/` in your project root. This is the only command that touches skills — `vark build` leaves them alone. Runs through Aardvark's metered gateway: the only thing you need to set is your `AARDVARK_SECRET_KEY` (without it the command prints a note and does nothing).
 
 | Option | Default | Effect |
 | --- | --- | --- |
@@ -211,7 +211,7 @@ With no `--action`, opens a menu of AI-assisted actions — regenerate keywords,
 
 With `--action <id>` it runs ONE action non-interactively (for CI / automation), previewing diffs unless `--yes` is given to write. Scope it with `--path <file-or-dir>` (repeatable), `--diff <ref>` (only pages changed vs a git ref), or `--page` for one; with none of those it runs on every page. This is the mode the gateway's GitHub integration drives on a runner. The styleguide action additionally REQUIRES `--rulesets` — the style ruleset ids to apply, comma-separated in precedence order (list order, first wins conflicts); no other action accepts the flag.
 
-Running an action (or the interactive menu) requires your Aardvark **secret** key in `AARDVARK_SECRET_KEY` — the possession-based CLI credential; every call goes through Aardvark's metered gateway, never a model provider directly. (`--list-actions` only prints the headless action ids and needs no key.) The model is `--model` when you pass it, else `ai.model` from `aardvark.config.yaml`, else Aardvark's default — the same precedence as `vark build` and `vark ai-enrich`.
+Running an action (or the interactive menu) requires your Aardvark **secret** key in `AARDVARK_SECRET_KEY` — the possession-based CLI credential; every call goes through Aardvark's metered gateway, never a model provider directly. (`--list-actions` only prints the headless action ids and needs no key.) The model is `--model` when you pass it, else `ai.model` from `aardvark.config.yaml`, else aardvark's default — the same precedence as `vark build` and `vark ai-enrich`.
 
 | Option | Default | Effect |
 | --- | --- | --- |
@@ -245,11 +245,11 @@ vark author --action keywords --diff main --yes
 
 Serve a built site (and a live MCP server) for production.
 
-The hardened, headless counterpart to `vark dev`: a single uvicorn/Starlette process that serves the already-built `./build` — honoring the build's own `_headers` / `_redirects` so content types, redirects, and the `ai-config.json` no-store rule match a CDN host — and, unless `--no-mcp`, exposes a stateless MCP server at `/mcp` that wraps the site's docs as read-only tools (search, fetch, list, full corpus).
+The hardened, headless counterpart to `vark dev`: a uvicorn/Starlette server using one worker by default (`--workers N` starts N workers). It serves the already-built `./build` and honors the build's own `_headers` / `_redirects` so content types, redirects, and the `ai-config.json` no-store rule match a CDN host. Unless `--no-mcp`, it exposes a stateless MCP server at `/mcp` that wraps the site's docs as read-only tools (search, fetch, list, full corpus).
 
-It does NOT build, watch, or live-reload — run `vark build` first. Designed to sit behind a CDN, which terminates TLS and absorbs the static volume; the per-IP `/mcp` rate limit is a single-process backstop, not a DDoS shield. For full-text MCP search on a site without the on-page search box, set `mcp: true` in `aardvark.config.yaml` before building.
+It does NOT build, watch, or live-reload — run `vark build` first. Designed to sit behind a CDN, which terminates TLS and absorbs the static volume. Each worker keeps its own per-IP `/mcp` rate limiter, so N workers allow an effective cap of roughly N times `--mcp-rate-limit`, with no shared limit across workers. These in-process limits are a backstop for the CDN's abuse controls. For full-text MCP search on a site without the on-page search box, set `mcp: true` in `aardvark.config.yaml` before building.
 
-The serve stack (starlette/uvicorn/mcp) ships with every Aardvark install — pip, the standalone binary, and the Docker image — so there is nothing extra to install.
+The serve stack (starlette/uvicorn/mcp) ships with every aardvark install — pip, the standalone binary, and the Docker image — so there is nothing extra to install.
 
 | Option | Default | Effect |
 | --- | --- | --- |
@@ -271,7 +271,7 @@ vark serve --trusted-proxy 173.245.48.0/20  # trust a CDN's forwarded IPs
 
 ## `vark update`
 
-Check whether a newer version of Aardvark is available.
+Check whether a newer version of aardvark is available.
 
 Queries the public Homebrew tap for the latest published release. If you're behind, it prints how to upgrade — `brew upgrade aardvark`, or a direct binary download for your Mac (for people who don't use Homebrew). It only checks and reports; it never touches your installation, and degrades gracefully when offline.
 
@@ -299,7 +299,7 @@ vark version remove v1     # delete the v1 snapshot + config entry
 
 Generate an Ed25519 keypair for Web Bot Auth.
 
-Prints the public key to add under `webBotAuth.keys` in `aardvark.config.yaml` (so `vark build` publishes it at `/.well-known/http-message-signatures-directory`) and the private key to store as a secret for whatever agent signs requests on your site's behalf. Aardvark only ever publishes the public directory — it never stores the private key, so save it now; it is not recoverable.
+Prints the public key to add under `webBotAuth.keys` in `aardvark.config.yaml` (so `vark build` publishes it at `/.well-known/http-message-signatures-directory`) and the private key to store as a secret for whatever agent signs requests on your site's behalf. aardvark only ever publishes the public directory — it never stores the private key, so save it now; it is not recoverable.
 
 | Option | Default | Effect |
 | --- | --- | --- |

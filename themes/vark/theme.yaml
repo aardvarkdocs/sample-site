@@ -5,8 +5,8 @@
 # be installed in the project's node_modules (they are — see package.json).
 #
 # This file lives only in the sample site (it powers /components/component-libraries/);
-# the packaged default theme ships no manifest, so a stock Aardvark site depends on
-# nothing but Mantine until it declares its own libraries.
+# the packaged default theme ships no manifest. Shipped builtin islands still import
+# their own npm dependencies; these declarations add explicit library-key access.
 componentLibraries:
   # Stripe's React SDK — its Element components render the real, PCI-compliant card fields
   # (powers /components/component-libraries/). The cross-origin iframe only mounts in the

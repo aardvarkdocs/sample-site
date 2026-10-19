@@ -10,7 +10,7 @@ weight: 10
 
 # AI assistant & analytics
 
-Aardvark ships a **native "Ask AI" assistant** for your readers, and behind it a full
+aardvark ships a **native "Ask AI" assistant** for your readers, and behind it a full
 **conversation-analytics dashboard** that turns every question into product insight. It is a
 first-party feature — the assistant calls the [Aardvark cloud gateway](/ai-gateway/), which proxies
 the model, meters the spend, and records the conversation for analysis. There is no third-party
@@ -116,10 +116,11 @@ that limit an assistant-only artifact is omitted; an independently needed Search
 deployed, but the assistant does not request it and fails closed if the complete corpus is unavailable.
 
 {% callout severity="warning" title="store_history feeds the analytics" %}
-The entire analytics dashboard is built from **stored transcripts**. Leaving `store_history` on (the
-default) is what populates Insights, Conversations, Top Questions, and the rest. Set it to `false` and
-the assistant still works — questions still travel to the gateway to be answered — but no transcript is
-posted or stored, so the dashboard has nothing to analyze.
+Conversation analytics use **stored transcripts**. Leaving `store_history` on (the default)
+populates Conversations, transcript-based Insights, Top Questions, and Coverage Gaps. Set it to
+`false` and the assistant still answers questions through the gateway, but posts no new transcripts
+for those analyses. Existing history remains, and separately enabled feedback, search analytics,
+and Content Reach continue to collect their own events.
 {% endCallout %}
 
 ### Install it as an app
@@ -132,7 +133,8 @@ app opens straight into that fullscreen chat.
 Readers install it three ways: the browser's own install offer (which appears on any page of the site),
 an **Install app** button in the panel's empty state, and the **Install Assistant** entry in the page-actions
 menu. The installed app's scope is `/_assistant/` alone — it is the assistant, not a copy of your docs —
-and there is no service worker, so it never serves stale content. The page itself carries `noindex` and
+and there is no service worker or offline content cache. Ordinary browser and hosting cache rules
+still apply. With `basePath` configured, the app URL and scope carry that prefix. The page carries `noindex` and
 stays out of your nav, sitemap, search index and `llms.txt`.
 
 Name the app with `app.name` (default "{site name} Assistant") and `app.shortName`, set the icon backdrop

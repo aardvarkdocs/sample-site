@@ -1,7 +1,7 @@
-# Agent guide: Aardvark sample site (contribution mirror)
+# Agent guide: aardvark sample site (contribution mirror)
 
 This repository is the public contribution mirror of the sample site in
-Aardvark's private source repository. Read [README.md](README.md) for what the
+aardvark's private source repository. Read [README.md](README.md) for what the
 site is and how it is structured, and [CONTRIBUTING.md](CONTRIBUTING.md) for the
 full contribution lifecycle, before making changes here.
 
@@ -9,7 +9,7 @@ Rules that keep automated work safe in this repository:
 
 - Never merge a pull request or push to `main` here. Public pull requests are
   never merged into public `main`; that branch accepts only bot-authored
-  outbound sync commits from the Aardvark repository, and normal publishing is
+  outbound sync commits from the aardvark repository, and normal publishing is
   append-only, so open pull requests and forks retain their merge bases.
 - To propose a change, open a pull request against `main` and leave it open. A
   bot validates and replays the eligible file changes into a private mirror

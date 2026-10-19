@@ -1,12 +1,12 @@
-# Aardvark sample site
+# aardvark sample site
 
-This is the example site for Aardvark, a Mantine-powered static site generator:
+This is the example site for aardvark, a Mantine-powered static site generator:
 author in Markdown, build to static HTML with interactive React islands. It
 doubles as a starter template for new documentation sites and as the project's
 own documentation.
 
 > This repository is the public contribution mirror of the sample site in
-> Aardvark's private source repository. “Two-way” describes the contribution
+> aardvark's private source repository. “Two-way” describes the contribution
 > loop, not shared write access: public changes travel inward for review and
 > accepted snapshots travel outward. Issues and pull requests are welcome. See
 > [CONTRIBUTING](CONTRIBUTING.md) for how they are reviewed and synced.
@@ -19,7 +19,7 @@ For a new eligible change, the normal lifecycle is:
    this repository.
 2. The existing GitHub App sends a signed event that immediately enqueues the
    private sync for this exact pull request. A bot validates and replays eligible
-   file changes into a ready-for-review PR in the private Aardvark source repository.
+   file changes into a ready-for-review PR in the private aardvark source repository.
    Reopening the PR or pushing follow-up commits immediately redispatches that
    same exact PR; there is no scheduled poll, public sync workflow, or public secret.
 3. Maintainers review the complete private diff, run isolated CI, resolve any
@@ -43,7 +43,7 @@ further changes. Those later commits are not part of the accepted revision.
 
 The private repository remains the source of truth. Public pull requests are
 never merged into public `main`; that branch accepts only bot-authored outbound
-sync commits from the Aardvark repository. Normal publishing is append-only, so
+sync commits from the aardvark repository. Normal publishing is append-only, so
 open pull requests and forks retain their merge bases.
 
 ## Use it for a new project
@@ -54,15 +54,15 @@ configuration in `aardvark.config.yaml`.
 
 ## Building
 
-> Note: building requires the `aardvark` CLI, which is not yet publicly
-> distributed. Until it is, this repository is most useful as a reference for how
-> an Aardvark site is structured, for proposing sample-site changes, and for
-> filing issues. The steps below are what a build looks like once the CLI is
-> available.
+Install the public aardvark CLI from the
+[installation guide](https://aardvarkdocs.com/getting-started/installation/) and make
+sure Node.js is available. This sample includes a protected-page demo; set its
+demonstration password before building.
 
 ```bash
-npm install            # React, Mantine, esbuild (bundles the interactive islands)
-aardvark build         # renders content/ to ./build
+npm ci                 # install the sample site's locked dependencies
+# Set SECRET_PAGE_PW=secret! in a local .env file (do not commit it).
+vark build             # renders content/ to ./build
 python3 -m http.server 8000 --directory build
 # open http://127.0.0.1:8000
 ```
@@ -74,7 +74,7 @@ python3 -m http.server 8000 --directory build
 - `data/` — JSON/YAML/CSV data available to pages
 - `generators/` — Python hooks that create pages and other build outputs
 - `snippets/` — custom React components
-- `components/` — custom Markdown block components
+- `components/` — custom Markdown macro components
 - `templates/` — HTML theme overrides
 - `static/` — assets copied as-is
 - `openapi/` — OpenAPI specs rendered as reference pages

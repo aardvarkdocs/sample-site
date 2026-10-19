@@ -18,7 +18,7 @@ import './RichTextEditor.css';
 // `content` seeds the initial document; it accepts an HTML string (e.g.
 // '<p>Hello <strong>world</strong></p>'), which Tiptap parses into its document model.
 //
-// SSR: the build prerenders islands with renderToStaticMarkup, which has no DOM. Tiptap's
+// SSR: the build prerenders islands with renderToString, which has no DOM. Tiptap's
 // default eager render touches the document, so `immediatelyRender: false` defers the first
 // render to the client. We also hold back the whole editor until mounted — until then the
 // useEditor() instance is null, and <RichTextEditor editor={null}> would throw — rendering a
