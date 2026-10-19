@@ -144,9 +144,10 @@ Three of the five checks are `vark author` actions run headless; the other two a
 
 The `vark author` checks **preview a diff by default** — add `--yes` to write the changes. They run on
 **every page** unless you [scope the run](#scope-a-run) with `--path <file-or-dir>` or `--diff <ref>`
-(or `--page <path>` for one), and `--model <slug>` overrides the configured model. `vark ai-enrich` and
-`vark build --translate` take no page scope: each works from the whole site and skips what it has
-already done.
+(or `--page <path>` for one), and `--model <slug>` overrides the configured model. A dashboard run
+passes no `--model`, so every check uses the model in your `ai.model` setting, or Aardvark's default
+when you set none. `vark ai-enrich` and `vark build --translate` take no page scope: each works from
+the whole site and skips what it has already done.
 
 > `vark author --list-actions` prints exactly the actions that can run headless — the three above. The
 > `vark author` menu has two more, **Check outbound links** and **Writing agent (chat)**, that are

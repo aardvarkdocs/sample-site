@@ -211,7 +211,7 @@ With no `--action`, opens a menu of AI-assisted actions — regenerate keywords,
 
 With `--action <id>` it runs ONE action non-interactively (for CI / automation), previewing diffs unless `--yes` is given to write. Scope it with `--path <file-or-dir>` (repeatable), `--diff <ref>` (only pages changed vs a git ref), or `--page` for one; with none of those it runs on every page. This is the mode the gateway's GitHub integration drives on a runner. The styleguide action additionally REQUIRES `--rulesets` — the style ruleset ids to apply, comma-separated in precedence order (list order, first wins conflicts); no other action accepts the flag.
 
-Running an action (or the interactive menu) requires your Aardvark **secret** key in `AARDVARK_SECRET_KEY` — the possession-based CLI credential; every call goes through Aardvark's metered gateway, never a model provider directly. (`--list-actions` only prints the headless action ids and needs no key.)
+Running an action (or the interactive menu) requires your Aardvark **secret** key in `AARDVARK_SECRET_KEY` — the possession-based CLI credential; every call goes through Aardvark's metered gateway, never a model provider directly. (`--list-actions` only prints the headless action ids and needs no key.) The model is `--model` when you pass it, else `ai.model` from `aardvark.config.yaml`, else Aardvark's default — the same precedence as `vark build` and `vark ai-enrich`.
 
 | Option | Default | Effect |
 | --- | --- | --- |
