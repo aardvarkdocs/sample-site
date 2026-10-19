@@ -54,7 +54,7 @@ cloud feature is a separate, deliberate opt-in:
   the assistant retrieves as context, and any reader file attachments (**on by
   default**; set `attachments: false` to disable) — travels through the gateway to the
   model provider to be answered. By default (`store_history: true`) each finished turn
-  (question, answer, and a confidence label) is also stored for your dashboard's chat
+  (question, answer, and any reasoning and cited pages) is also stored for your dashboard's chat
   history and analytics; `store_history: false` stops transcripts from being posted or
   stored, while the assistant's 👍/👎 answer feedback and its engagement beacons still
   reach the gateway. Spending on the public key is bounded by your account's prepaid

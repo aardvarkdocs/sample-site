@@ -274,9 +274,10 @@ Each run **spends from your gateway balance** on two things, both shown per run 
 
 Schedule the heavier capabilities (translation, or a style-guide pass over a large site) accordingly,
 and keep an eye on your balance from the [cloud gateway](/ai-gateway/) dashboard. A run is skipped
-(and shown as such) if your balance can't cover it — top up to resume. The gateway can also cap how
-many runs an account has in flight at once; a run refused by that cap shows as skipped and fires again
-on its next schedule.
+(and shown as such) unless your available balance is above zero — it doesn't check what the run will
+cost, so a run can take your balance below zero; top up to resume. The gateway can also cap how many
+runs an account has in flight at once; a run refused by that cap shows as skipped and fires again on
+its next trigger.
 
 ## For operators
 
