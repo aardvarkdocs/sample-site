@@ -66,8 +66,9 @@ the magic link it emails you — there are no passwords).
 
 **Dashboard roles.** Team accounts have three roles: **owner**, **admin**, and **member**. Owners and
 admins see the **Billing** tab; plain members do not, and direct Billing links fall back to the
-dashboard overview. Billing reads and mutations — saved card, auto-top-up, manual top-ups, and the
-self-serve lift for a billing-driven pause — are enforced server-side for owners and admins only.
+dashboard overview. Billing reads and mutations — saved card, auto-top-up, manual top-ups, and
+lifting the automatic pause the gateway sets when it can't confirm what requests cost — are
+enforced server-side for owners and admins only.
 
 **Store a card.** Adding a card sends the customer to **hosted Stripe Checkout** — a full-page
 redirect to Stripe's own form. Card details are entered on Stripe, never on the dashboard; the
