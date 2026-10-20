@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
+// pure/: loads Stripe.js on loadStripe(), not on import (Node ESM needs the file path)
+import { loadStripe } from '@stripe/stripe-js/pure/index.mjs';
 import { Elements } from '@stripe/react-stripe-js';
 
 // Aardvark keeps the resolved light/dark scheme in <html data-mantine-color-scheme> (see the

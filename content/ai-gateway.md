@@ -198,7 +198,9 @@ carries files, and the true cost is settled when the turn completes.
   enter the model's context and can carry injected instructions. This is inherent to letting readers
   supply content; treat assistant answers accordingly.
 - **Privacy.** Attachments are sent to the model provider (via the gateway to OpenRouter) to answer
-  the question. Stored chat transcripts keep the **question text only**, not attachment bytes.
+  the question. Stored chat transcripts keep the text of the turn, never attachment bytes;
+  [what we process about readers](/trust/privacy/#reader-data) says what a stored turn holds and
+  what of an attachment can end up in it.
 - **Payload limits.** The client caps file count and size; the gateway also enforces per-request
   count and byte limits, so an oversized upload is rejected rather than billed.
 

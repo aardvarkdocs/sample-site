@@ -269,6 +269,16 @@ footer:
           href: /llms-and-sitemap/
         - label: "Self-hosting & MCP"
           href: /self-hosting/
+    - heading: Trust
+      links:
+        - label: Trust Center
+          href: /trust/
+        - label: Privacy policy
+          href: /trust/privacy/
+        - label: Terms of Service
+          href: /trust/terms/
+        - label: Security
+          href: /security/
     - heading: Start
       links:
         - label: Installation
@@ -675,8 +685,9 @@ ai:
     # inlineContextWindowFraction: 0.6
     # Set an absolute budget to override the fraction; values above 24k do not enlarge the local page block.
     # inlineContextMaxTokens: 100000
-    # Shown to readers when an answer didn't help or the assistant is unavailable.
-    escalationEmail: support@example.com
+    # Shown to readers when an answer didn't help or the assistant is unavailable. This is the
+    # Aardvark docs site's own support address — replace it before deploying your own copy.
+    escalationEmail: support@aardvarkdocs.com
     # Show/hide the floating question field pinned to the bottom of every page (default: true).
     # Set false to remove it — useful when the trigger button alone is sufficient or the float
     # bar conflicts with other fixed-position page elements.

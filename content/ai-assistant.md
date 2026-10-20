@@ -259,8 +259,8 @@ your secret key:
 The reader assistant uses your configured `model` (a capable chat model by default). The **analytics**
 passes deliberately default to a cheap, large-context model (`~google/gemini-flash-latest`) so
 classifying and clustering a corpus stays inexpensive; an operator can override each pass
-independently. Every call — reader chat and analytics alike — rides the gateway's managed upstream key
-and is **metered to your account** at the published rate. Spend can't run away: each pass is bounded
+independently. Every call — reader chat and analytics alike — is **metered to your account** at the
+published rate and rides the gateway's own OpenRouter key. Spend can't run away: each pass is bounded
 per cron tick and per account, an answer the model can't classify is retried only a couple of times,
 and an account with no balance is skipped until it's funded again. Full pricing, funding, and Stripe
 details are on the [cloud gateway](/ai-gateway/) page.
@@ -269,16 +269,24 @@ details are on the [cloud gateway](/ai-gateway/) page.
 
 The analytics are deliberately **leaner on identity than third-party tools**: there is no durable
 per-visitor id, so the dashboard reports **active conversations**, never a "unique users" count.
-Stored transcripts keep the **question, the answer, and the model's reasoning for that answer** — the
-reasoning is what the grading reads — plus the pages the answer cited. Attachment bytes are never
-stored. Transcripts age out on the gateway's retention schedule (90 days by default), and everything
-derived from them — verdicts, tags, cited-source events — is pruned with them.
+What a stored transcript holds, and what of an attachment can end up in it, is under
+[what we process about readers](/trust/privacy/#reader-data); the grading reads the model's
+reasoning, so only turns with one are graded. Transcripts and the per-turn records derived from
+them — verdicts, tags, cited-source events — age out on the
+[retention schedule](/trust/data-retention/#schedule), which also says that each period's
+Insights snapshot and 👍/👎 feedback are not pruned with them.
+
+A message can carry things the reader doesn't type: a hidden note for the model about the page
+they're on, how they opened the assistant and, with the first message of a conversation, that
+browser tab's session, so it can read the question in context;
+[what is sent](/trust/subprocessors/#what-is-sent) lists what the note contains and when it is sent.
+The note lives in the tab's session storage, isn't shown in the chat, and has no setting to turn it
+off.
 
 The panel shows readers no "this chat is stored" notice of its own, so if your policy requires
 disclosing that reader questions are retained, say so in your privacy policy or near the assistant —
-or turn `store_history` off, which stops transcripts being posted or stored. It does not stop questions
-reaching the gateway: they still travel there, with any attachments and the pages the assistant
-retrieved, to be answered at all. The 👍/👎 feedback and engagement beacons keep reaching it too.
+or turn `store_history` off; [what we process about readers](/trust/privacy/#reader-data) says what
+that stops and what still reaches the gateway.
 
 ## Related
 

@@ -46,22 +46,23 @@ in your own infrastructure.
 ## What talks to Aardvark cloud — and when
 
 A default build makes no calls to Aardvark cloud and bakes no keys into the output. Each
-cloud feature is a separate, deliberate opt-in:
+cloud feature below is off until you turn it on — and turning on the AI assistant also
+turns on [other reader features](/trust/privacy/#reader-data) by default:
 
 - **The [AI assistant](/ai-assistant/)** — when enabled, the reader panel calls the
   [Aardvark cloud gateway](/ai-gateway/) with your **public** key (`aardvark_live_…`),
-  which is designed to ship in the static site. Each question — together with the pages
-  the assistant retrieves as context, and any reader file attachments (**on by
-  default**; set `attachments: false` to disable) — travels through the gateway to the
-  model provider to be answered. By default (`store_history: true`) each finished turn
-  (question, answer, and any reasoning and cited pages) is also stored for your dashboard's chat
-  history and analytics; `store_history: false` stops transcripts from being posted or
-  stored, while the assistant's 👍/👎 answer feedback and its engagement beacons still
-  reach the gateway. Spending on the public key is bounded by your account's prepaid
-  balance and spend cap, and the gateway ignores any system prompt a caller supplies
-  with a public key — it uses the one stored for your account. The build **fails
-  closed** if it finds a secret key where the public one belongs: a secret key in
-  `AARDVARK_KEY` aborts the build rather than publishing it.
+  which is designed to ship in the static site. Each question travels through the gateway
+  to the model provider to be answered, with its context:
+  [what is sent](/trust/subprocessors/#what-is-sent) lists what a request carries,
+  including reader attachments and a hidden note about the reader's page and session. By
+  default each finished turn is also stored for your dashboard's chat history and
+  analytics; [what we process about readers](/trust/privacy/#reader-data) says what a
+  stored turn holds, which settings turn attachments and stored conversations off, and
+  what still reaches the gateway when stored conversations are off. Spending on the public key is
+  bounded by your account's prepaid balance and spend cap, and the gateway ignores any
+  system prompt a caller supplies with a public key — it uses the one stored for your
+  account. The build **fails closed** if it finds a secret key where the public one
+  belongs: a secret key in `AARDVARK_KEY` aborts the build rather than publishing it.
 - **Reader-feedback surfaces that ride the assistant's key.** With the assistant
   enabled, three other built-in surfaces report to your dashboard: [on-site
   search](/search/#search-analytics-dashboard-ai-enabled-sites) analytics is on by
@@ -74,7 +75,12 @@ cloud feature is a separate, deliberate opt-in:
   assistant is off.
 - **[Build-time AI](/ai-features/)** — generating front matter, example responses, or
   agent skills is opt-in per feature, runs only when you invoke it, and caches its
-  results so rebuilds don't re-send your content.
+  results so rebuilds don't re-send your content. [`vark author`](/cli/#vark-author)
+  likewise calls the gateway with your **secret** key, sending
+  [the page each action works on](/trust/subprocessors/#what-is-sent), and a
+  [Docs Quality Check](/github-automation/) does the same with a key minted for that run
+  and revoked when it ends, from a runner that keeps no cache between runs, so each run
+  re-sends every page in its scope.
 - **[Content Reach](/content-reach/)** — off by default. When enabled, it records
   which *sections* of a page came into view, how long the
   page was visibly in the foreground, how long each section held the reader's scroll
@@ -82,7 +88,7 @@ cloud feature is a separate, deliberate opt-in:
   visitor IDs, and no screen
   coordinates. Nothing identifying survives in the browser past the tab: the per-tab
   session marker dies when the reader closes it. The recorded section events themselves
-  are retained server-side and **deleted after 90 days** by default. Readers with
+  are retained server-side and deleted on the [retention schedule](/trust/data-retention/#schedule). Readers with
   **Do Not Track** or **Save-Data** enabled send nothing at all, and `requireConsent`
   defers all recording to your site's own consent banner.
 
@@ -98,7 +104,9 @@ build, so the password never has to leave your own environment.
 
 ## Team security in the dashboard
 
-The Aardvark cloud dashboard is built for teams that have to answer to a security review:
+The Aardvark cloud dashboard gives teams the controls below. What it does not provide —
+multi-factor authentication for dashboard sign-in, for one — is listed on the
+[SOC 2 page](/trust/soc-2/#authentication).
 
 - **Roles.** Three team roles: the **owner** holds full account authority — billing,
   minting and rotating the account **secret** key, and owner-only configuration;
@@ -139,8 +147,10 @@ the **Security** tab of the
 project's public contribution repository, and the place to reach the maintainers about
 any part of Aardvark. That keeps
 the report confidential until a fix ships; we'll acknowledge it and keep you posted on
-the fix and disclosure timeline. If private reporting isn't available to you, open a
-minimal issue asking for a private channel — without any details — and we'll follow up.
+the fix and disclosure timeline. If private reporting isn't available to you, email
+[support@aardvarkdocs.com](mailto:support@aardvarkdocs.com) or open a minimal issue to ask
+for a private channel, and we'll follow up. Leave the details out of both: the address is a
+general support mailbox, and issues are public.
 
 Aardvark is pre-1.0; security fixes land on the latest release, so please reproduce
 against the most recent version before reporting.
@@ -170,6 +180,7 @@ binaries as false positives.
 
 ## Questions
 
-For anything this page doesn't answer, browse the [support knowledge base](/support/) or
-open an issue on the
+Policies — privacy, data retention, subprocessors, and terms — live in the
+[Trust Center](/trust/). For anything this page doesn't answer, browse the
+[support knowledge base](/support/) or open an issue on the
 [public sample-site repository](https://github.com/aardvarkdocs/sample-site).

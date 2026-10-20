@@ -161,7 +161,7 @@ then no query text on either side to line up.
 
 Readers with **Do Not Track** or **Save-Data** enabled send nothing at all.
 
-Data is deleted after **90 days** by default. Nothing derived outlives it — there are no
+Data is deleted on the [retention schedule](/trust/data-retention/#schedule). Nothing derived outlives it — there are no
 long-lived summaries that keep a copy after the raw rows expire.
 
 Ingest is bounded per account: **5,000 page views in any rolling 24 hours** by default, each
@@ -255,5 +255,5 @@ feature refuses to do.
 ## Turning it off
 
 Remove the `contentReach` block (or set `enabled: false`) and rebuild. The client stops
-shipping with your site immediately, and existing data ages out on the normal 90-day
-window.
+shipping with your site immediately, and existing data ages out on the
+[retention schedule](/trust/data-retention/#schedule).

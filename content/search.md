@@ -377,8 +377,8 @@ Mintlify show:
   recommendations that remain available after the raw event-retention window;
 - **CSV export** of the top terms.
 
-Query text is stored by default (bounded; the base raw-row retention window is **90 days by default**
-and configurable via the gateway's `SEARCH_EVENT_RETENTION_DAYS`). When that window is shorter than the
+Query text is stored by default (bounded; the base raw-row retention window is on the
+[retention schedule](/trust/data-retention/#schedule) and configurable via the gateway's `SEARCH_EVENT_RETENTION_DAYS`). When that window is shorter than the
 active calendar period, the gateway retains only the latest 50,000 stored queries, latest 50,000 click
 candidates, and at most one preceding stored-query owner per retained click for each account — no more
 than 150,000 extended source rows per retained source period, and normally fewer. This is the same bounded
