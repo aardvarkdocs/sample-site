@@ -85,7 +85,9 @@ scaffolded `.gitignore` already does):
 
 `vark build` writes everything to `build/`: one HTML file per page (as
 `<url>/index.html`) with a Markdown twin beside it, the bundled islands JS/CSS
-under `_aardvark/`, your fingerprinted static assets, plus [generated files](/llms-and-sitemap/)
+under `_aardvark/` with the theme's files and the third-party license notices for all of them
+(`_aardvark/THIRD_PARTY_NOTICES.txt`), your fingerprinted static assets, plus
+[generated files](/llms-and-sitemap/)
 (`sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt`, the search index, and
 `_headers` / `_redirects` for hosts that read them). Every build replaces the
 directory wholesale, so never keep anything of your own in it.

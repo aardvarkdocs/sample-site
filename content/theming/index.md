@@ -50,6 +50,14 @@ instead, where the whole tree is copied and fingerprinted.
   theme ships none. A `componentLibraries:` block in your `aardvark.config.yaml` can add to
   these, replace one, or remove one without touching the theme; this site declares its
   libraries there (see [Component libraries](/components/extras/component-libraries/)).
+- **`themes/vark/THIRD_PARTY_NOTICES`** — the copyright notices and license texts for the
+  third-party code in the theme: the Mermaid and Markdeep diagram scripts, the styles it adapts
+  from Markdeep and Shiki, and the Tabler icons on its code-block buttons. A build publishes it in
+  `/_aardvark/THIRD_PARTY_NOTICES.txt`, followed by the licenses of the npm packages in your
+  site's component bundle and of the Tabler icons in its pages, so your site carries the notices
+  for the code it serves. A theme
+  of your own, or `templates/`, can ship its own file of that name (with or without `.txt`); the
+  build adds it to that same file.
 
 ## Selecting a theme
 

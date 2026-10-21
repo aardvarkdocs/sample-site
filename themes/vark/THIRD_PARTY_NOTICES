@@ -11,8 +11,8 @@ comments its bundler preserved (DOMPurify's, lodash's, and four helper notices
 inside Cytoscape.js) and no license text at all, not even Mermaid's own;
 markdeep.min.js keeps its three-line header and, where the bundled copy of
 highlight.js begins, that library's banner; twoslash.css and theme.scss carry
-first-party comments that credit the rules they adapt. This file supplies what
-those comments omit.
+first-party comments that credit the rules they adapt, and code-blocks.js one
+that credits its icons. This file supplies what those comments omit.
 Versions are not listed: the files are refreshed from their upstream releases.
 Everything else in this theme is first-party.
 
@@ -69,15 +69,22 @@ twoslash.css
 theme.scss
   Its svg.diagram rules for Markdeep diagrams are adapted from Markdeep's own
   diagram stylesheet (https://casual-effects.com/markdeep), (C) Morgan McGuire.
-  License: BSD-2-Clause. The rest of the stylesheet is first-party.
+  License: BSD-2-Clause. The rest of the stylesheet is first-party. A site
+  built with aardvark serves it compiled, as theme-<token>.css.
+
+code-blocks.js
+  Its copy, check and download button icons are Tabler Icons outline glyphs
+  (https://tabler.io/icons), (c) Paweł Kuna. License: MIT. The rest of the
+  script is first-party.
 
 
 Fonts
-  The copy of this theme packaged with aardvark also includes a fonts/ folder
-  (Inter and JetBrains Mono, SIL Open Font License 1.1, each with its license
-  text beside it). aardvark uses those fonts to render social-card images and
-  PDFs. The folder is not part of the theme's public copy in the
-  aardvarkdocs/sample-site repository.
+  aardvark renders social-card images and PDFs with Inter and JetBrains Mono
+  (SIL Open Font License 1.1). The font files, each with its license text
+  beside it, are in a fonts/ folder in the copy of this theme packaged with
+  aardvark. The copies made from it leave that folder out: the theme a new
+  project starts from, the /_aardvark/ folder of a site built with aardvark,
+  and the theme's public copy in the aardvarkdocs/sample-site repository.
 
 
 Copyright notices
@@ -527,6 +534,13 @@ Adapted into twoslash.css
     https://github.com/shikijs/shiki
     Copyright (c) 2021 Pine Wu
     Copyright (c) 2023 Anthony Fu <https://github.com/antfu>
+    License: MIT (text under "MIT License" below)
+
+Drawn in code-blocks.js
+
+  Tabler Icons
+    https://github.com/tabler/tabler-icons
+    Copyright (c) 2020-2026 Paweł Kuna
     License: MIT (text under "MIT License" below)
 
 
