@@ -16,10 +16,10 @@ Use it as `{% raw %}{% carousel %}…{% endCarousel %}{% endraw %}` in Markdown 
 > **The carousel needs the `carousel` component library.** These tags resolve against
 > [`@mantine/carousel`](https://mantine.dev/x/carousel/), which a site opts into: the package has
 > to be installed **and** a `carousel:` entry has to be declared under `componentLibraries:` in
-> your theme's `theme.yaml`. Without it the carousel renders nothing and the build reports an
-> unknown component library. A site scaffolded by `vark new` installs the package but ships no
-> `theme.yaml` — add one to turn these tags on. This site's copy, in `themes/vark/theme.yaml`,
-> is a working example.
+> your `aardvark.config.yaml` (or in your theme's `theme.yaml`). Without it the carousel renders
+> nothing and the build reports an unknown component library. A site scaffolded by `vark new`
+> installs the package but declares no libraries — add the entry to turn these tags on. This site
+> declares it in its own `aardvark.config.yaml`.
 >
 > The carousel measures its live container to size the slides, so it is built **in the browser**
 > rather than pre-rendered into the page HTML: it does not appear with JavaScript turned off.

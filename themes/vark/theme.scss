@@ -1,8 +1,5 @@
-/* MIRROR: src/aardvark/themes/vark/theme.scss is canonical and
-   examples/sample-site/themes/vark/theme.scss is its committed sample-site mirror. Run
-   scripts/sync-theme-mirror.sh --write after packaged-theme edits. Drift fails via
-   tests/test_theme_mirror.py and scripts/sync-theme-mirror.sh --check. This .scss is
-   compiled to _aardvark/theme.css at build time (libsass); see aardvark/scss.py. */
+/* The vark theme's stylesheet. aardvark compiles this .scss to _aardvark/theme.css at build
+   time (libsass). */
 
 /* ============================================================================
    COLOR SYSTEM — the single source of truth for every color in the theme.
@@ -16,7 +13,7 @@
    The rest of this stylesheet only ever references var(--aardvark-*), so changing
    a value here recolors the whole site. Python reads the compiled :root values
    back to seed the Mantine island palette, the PWA theme-color, the OG cards and
-   the build-time a11y contrast audit (see aardvark/scss.py).
+   the build-time a11y contrast audit.
    ============================================================================ */
 
 /* ---- Common palette — the colors you'll tweak most ---- */
@@ -124,7 +121,7 @@ $semantic: (
   highlight-inset: $highlight-inset, markdeep-ink: $markdeep-ink, markdeep-paper: $markdeep-paper,
   markdeep-shade: $markdeep-shade, markdeep-shade-dark: $markdeep-shade-dark,
 );
-/* Brand colors that seed the Mantine island palette (harvested by scss.py as
+/* Brand colors that seed the Mantine island palette (aardvark harvests them as
    --aardvark-palette-*). Add entries to expose more component colors. */
 $brand: (primary: $primary-light, secondary: $secondary-light);
 
@@ -186,7 +183,7 @@ $brand: (primary: $primary-light, secondary: $secondary-light);
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 /* background-* longhands (not the shorthand) so a configured theme.backgroundImage can layer
-   over the --aardvark-bg color: theme.py sets --aardvark-bg-image (+ optional size/position/
+   over the --aardvark-bg color: aardvark sets --aardvark-bg-image (+ optional size/position/
    repeat/attachment) from config. With no image, --aardvark-bg-image is unset → `none`, so
    this is just the background color, as before. The image shows through the transparent
    content area, sidebar and TOC; with attachment: fixed the sticky header/tab bar repaint it
@@ -308,7 +305,7 @@ html[data-aardvark-banner-hidden] .aardvark-banner { display: none; }
 .aardvark-header:has(+ .aardvark-tabbar) { border-bottom: 0; }
 /* The sticky header and tab bar let a configured theme.backgroundImage show through, instead
    of hiding it behind a solid band. They read --aardvark-bg-image-FIXED, not --aardvark-bg-image:
-   theme.py publishes that var only when the image is attachment:fixed, which is viewport-relative
+   aardvark publishes that var only when the image is attachment:fixed, which is viewport-relative
    and so lines the bars up pixel-for-pixel with <body>. Under the default scroll (and local),
    background-size is sized to each element's own box — the 56px bar vs the full page would
    mismatch and seam — so the var is unset, the bars fall back to `none`, and they stay a solid
@@ -355,7 +352,7 @@ html[data-aardvark-banner-hidden] .aardvark-banner { display: none; }
   background: color-mix(in srgb, var(--aardvark-surface) 86%, transparent);
   padding: 48px var(--aardvark-main-pad-x) 40px;
 }
-/* Same glass recipe as the `glass` card variant (src/aardvark/islands/builtins/Card.css):
+/* Same glass recipe as the `glass` card variant (the Card island's stylesheet, Card.css):
    a more translucent fill + blur where backdrop-filter is supported, so it frosts over the page
    background instead of reading flat. */
 @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
@@ -826,7 +823,7 @@ img.aardvark-icon { width: 1em; height: 1em; object-fit: contain; }
 .aardvark-nav-subtree-wrap > .aardvark-nav-subtree { overflow: hidden; min-height: 0; visibility: hidden; transition: visibility .22s ease; }
 .aardvark-nav-branch.aardvark-open > .aardvark-nav-subtree-wrap > .aardvark-nav-subtree { visibility: visible; }
 .aardvark-nav-subtree { padding-left: 12px; }
-/* The {% openapi %} operation subtree (theme.py marks it when its leaves carry an HTTP method) skips the
+/* The {% openapi %} operation subtree (aardvark marks it when its leaves carry an HTTP method) skips the
    nesting indent — the right-justified verb chips already read as one, so the 12px would just cost label
    width in the narrow sidebar. */
 .aardvark-nav-subtree.aardvark-nav-subtree-flush { padding-left: 0; }
@@ -963,7 +960,7 @@ img.aardvark-icon { width: 1em; height: 1em; object-fit: contain; }
   font-size: .875rem; line-height: 1.5; text-align: center;
 }
 /* Token colors for highlighted code are generated from config and injected via
-   {% theme_style %} (see theme.py render_theme_style); only structural rules live here. */
+   {% theme_style %}; only structural rules live here. */
 /* Code-block actions: copy + download buttons revealed top-right on hover/focus
    (code-blocks.js wraps each <pre> in .aardvark-code-block and injects them). Pure
    chrome — a no-JS page just shows the styled <pre>. Collapsed they're opacity:0 +
@@ -1514,7 +1511,7 @@ body.aardvark-ai-open .aardvark-layout { padding-right: var(--aardvark-ai-w, 380
   /* Content width: the main column keeps 40px side padding at every width, so on a ~400px screen
      ~80px is lost to padding while the grid track already fills the viewport. Step the var down
      (on :root, not .aardvark-main, so the layout's content-track cap and the footer/page-bar padding
-     stay in sync). theme.py only sets --aardvark-bg-* inline, so this override applies cleanly. */
+     stay in sync). aardvark only sets --aardvark-bg-* inline, so this override applies cleanly. */
   :root { --aardvark-main-pad-x: 20px; }
 
   /* Background on phones. The configured image is tuned for desktop (the sample uses
@@ -1522,7 +1519,7 @@ body.aardvark-ai-open .aardvark-layout { padding-right: var(--aardvark-ai-w, 380
      reads as a misaligned right-corner band — iOS ignores attachment:fixed (-> scroll) and
      contain+right shrinks the art into the corner. Force a clean full-bleed scrolling render that
      works for ANY configured backgroundImage. We override the background-* LONGHANDS directly, NOT
-     the --aardvark-bg-* vars: theme.py sets those vars inline on :root and inline outranks author
+     the --aardvark-bg-* vars: aardvark sets those vars inline on :root and inline outranks author
      rules, so re-defining the vars here wouldn't take — but the longhands live only in this sheet,
      so re-declaring them wins. The source still comes from --aardvark-bg-image, so this stays
      theme-level, not sample-specific (inert when no image is configured). */
@@ -1702,7 +1699,7 @@ html.aardvark-markdeep pre.markdeep { visibility: hidden; }
 
 .aardvark-api {
   /* The operation nav lives in the site's own left sidebar (emitted at build time
-     by {% openapi %} — see openapi/parse.py + theme.render_nav), so this wrapper is a
+     by {% openapi %}), so this wrapper is a
      single content column; the per-operation doc|rail split below carries the
      two-column layout — but only when the column is wide enough (container query). */
   /* A container context so each operation can respond to the CONTENT-COLUMN width

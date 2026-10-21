@@ -15,10 +15,10 @@ snippets) via `component('aardvark', 'areachart', …)`.
 > **The charts need the `charts` component library.** Chart tags resolve against
 > [`@mantine/charts`](https://mantine.dev/charts/getting-started/), which a site opts into: the
 > package has to be installed **and** a `charts:` entry has to be declared under
-> `componentLibraries:` in your theme's `theme.yaml`. Without it the chart renders nothing and
-> the build reports an unknown component library. A site scaffolded by `vark new` installs the
-> package but ships no `theme.yaml` — add one to turn the chart tags on. This site's copy, in
-> `themes/vark/theme.yaml`, is a working example.
+> `componentLibraries:` in your `aardvark.config.yaml` (or in your theme's `theme.yaml`). Without
+> it the chart renders nothing and the build reports an unknown component library. A site
+> scaffolded by `vark new` installs the package but declares no libraries — add the entry to turn
+> the chart tags on. This site declares it in its own `aardvark.config.yaml`.
 >
 > Charts are drawn **in the browser** (they measure their live container), so they are not part
 > of the pre-rendered HTML and do not appear with JavaScript turned off.

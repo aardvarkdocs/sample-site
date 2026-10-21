@@ -10,8 +10,9 @@
   // A column sorts numerically only when every non-empty cell is a clean number
   // (tolerating thousands separators, a leading currency sign, a trailing %), so a
   // "3 days" / "config ai.model" column falls back to text rather than mis-sorting.
-  // KEEP IN SYNC with asNumber in islands/builtins/ApiReference.jsx — the React island
-  // can't import this file (it isn't part of the esbuild bundle), so the regex is duped.
+  // KEEP IN SYNC with asNumber in aardvark's ApiReference island — the React island
+  // can't import this file (it isn't part of the esbuild bundle), so the regex is duped,
+  // and a test fails when the two copies' regexes differ.
   function asNumber(text) {
     var cleaned = text.replace(/[,\s]/g, '').replace(/^[$£€]/, '').replace(/%$/, '');
     if (cleaned === '' || !/^[+-]?(\d+\.?\d*|\.\d+)$/.test(cleaned)) return null;

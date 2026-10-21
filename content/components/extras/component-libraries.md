@@ -1,14 +1,15 @@
 ---
 title: "Component libraries"
-description: "Pull additional React component libraries into your theme and address them from Markdown with {% component('library', 'Name') %} — the library name disambiguates, so two libraries that both export the same component never collide. Mantine is built in; everything else a theme declares in its theme.yaml."
+description: "Pull additional React component libraries into your site and address them from Markdown with {% component('library', 'Name') %} — the library name disambiguates, so two libraries that both export the same component never collide. Mantine is built in; anything else is declared in your aardvark.config.yaml or a theme's theme.yaml."
 ---
 
 # Component libraries
 
 Every Mantine component is available out of the box, addressed with the library name first —
-`{% raw %}{% component('mantine', 'Button') %}{% endraw %}`. And a **theme isn't limited to
-Mantine:** it can pull in *any* React component library — Stripe Elements, a charting kit, an icon
-set — and expose it through the same `{% raw %}{% component() %}{% endraw %}` tag.
+`{% raw %}{% component('mantine', 'Button') %}{% endraw %}`. And **you aren't limited to
+Mantine:** your site, or its theme, can pull in *any* React component library — Stripe Elements, a
+charting kit, an icon set — and expose it through the same `{% raw %}{% component() %}{% endraw %}`
+tag.
 
 The library name is what keeps two libraries that both export, say, `Tooltip` from colliding — a
 charting kit's `Tooltip` and Mantine's stay distinct because each is reached through its own key:
@@ -16,25 +17,30 @@ charting kit's `Tooltip` and Mantine's stay distinct because each is reached thr
 {% raw %}
 ```aardvark
 {% component('mantine', 'Button', color='blue') %}      {# Mantine — the built-in library #}
-{% component('stripe', 'PaymentElement') %}             {# a library this theme declared #}
+{% component('stripe', 'PaymentElement') %}             {# a library this site declared #}
 ```
 {% endraw %}
 
 For the built-in sources — Mantine, the native components, and your project snippets — you can drop
 the prefix: `{% raw %}{% component('Button') %}{% endraw %}` is shorthand for
 `{% raw %}{% component('mantine', 'Button') %}{% endraw %}`. That shorthand is **always**
-unambiguous — a theme library is only ever reachable through its name, so a library's `Button` can
-never capture the bare one.
+unambiguous — a declared library is only ever reachable through its name, so a library's `Button`
+can never capture the bare one.
 
 ## Declaring a library
 
-A theme declares its extra libraries in a **`theme.yaml`** beside its templates
-(`themes/<name>/theme.yaml`). This site pulls in [Stripe's React
-SDK](https://github.com/stripe/react-stripe-js):
+Libraries are declared in a `componentLibraries:` block, in either of two places:
+
+- **Your site's `aardvark.config.yaml`**, for a library your pages use.
+- **A theme's `theme.yaml`**, beside its templates (`themes/<name>/theme.yaml`), for a library the
+  theme brings to every site that uses it.
+
+Both take the same entries. This site pulls in [Stripe's React
+SDK](https://github.com/stripe/react-stripe-js) from its `aardvark.config.yaml`:
 
 {% raw %}
 ```yaml
-# themes/vark/theme.yaml
+# aardvark.config.yaml
 componentLibraries:
   stripe:
     package: "@stripe/react-stripe-js"   # the npm import specifier (must be `npm install`ed)
@@ -46,6 +52,36 @@ The **key** (`stripe`) is the first argument you pass to `{% raw %}{% component(
 **`package`** is what gets imported and bundled. Because the two are separate, the key is just a
 friendly handle. Keys are lowercase-kebab and may not be `mantine`, `aardvark`, or `snippet` (those
 name the built-in sources).
+
+### Adding to or overriding the theme's libraries
+
+The `componentLibraries:` block in `aardvark.config.yaml` is laid over the theme's one key at a
+time:
+
+- a **new key** adds a library;
+- a key the theme **already declares** replaces the theme's entry outright — nothing is inherited
+  from it, so list every option the library needs;
+- **`<key>: null`** removes the theme's library.
+
+For a theme whose `theme.yaml` declares `stripe` and `dropzone`:
+
+{% raw %}
+```yaml
+# aardvark.config.yaml
+componentLibraries:
+  icons:                                 # a new library, for this site only
+    package: "@tabler/icons-react"
+    components: [IconRocket, IconHeart]
+  stripe:                                # replaces the theme's `stripe` entry
+    package: "@stripe/react-stripe-js"
+    components: [PaymentElement, AddressElement]
+  dropzone: null                         # removes the theme's `dropzone` library
+```
+{% endraw %}
+
+Entries in `aardvark.config.yaml` are checked exactly like a theme's: a problem gets a build warning
+naming the file it's in, and an entry that can't be used is skipped. A `null` for a key the theme
+doesn't declare removes nothing, so the build warns about that too — it's usually a misspelt key.
 
 ## The one piece a library can't hand you
 
@@ -95,7 +131,7 @@ function useColorScheme() {
 // The one thing a component library can't hand you from Markdown is the runtime Stripe instance:
 // loadStripe() returns a Promise (and injects Stripe.js), not a JSON-serialisable prop. So this
 // thin snippet owns the <Elements> provider; everything *inside* it — a Payment Element, a Card
-// Element — is rendered straight from the theme-declared `stripe` library via
+// Element — is rendered straight from the site-declared `stripe` library via
 // {% component('stripe', 'PaymentElement') %} etc., nested as this provider's children.
 //
 // loadStripe only runs in the browser, so it's resolved client-side; during the build-time
@@ -158,7 +194,7 @@ nest the built-in `{% raw %}{% card %}{% endraw %}` and Stripe's `PaymentElement
 
 Three sources, composed by nesting: your **`StripeProvider`** snippet owns the `<Elements>` context,
 the built-in **`{% raw %}{% card %}{% endraw %}`** gives the frame and its `cta` button, and Stripe's
-**`PaymentElement`** — addressed through the theme's **`stripe`** library, since a theme library is
+**`PaymentElement`** — addressed through the site's **`stripe`** library, since a declared library is
 always reached by its key — is the card's content. A snippet stays callable as
 `{% raw %}{% component('StripeProvider', …) %}{% endraw %}` too; you need that form inside a loop, as
 the storefront does below. Renders, live (test mode — swap in your own `pk_test_…`):
@@ -253,7 +289,10 @@ Each library entry accepts a few extras beyond `package` and `components`:
   `components` list), or `namespace` (`import * as Lib`, which pulls the whole package in, so
   reach for it only when you must).
 - **`css`** — a list of stylesheet imports the library needs (e.g. a design system's base CSS). They
-  load with the rest of the island styles, on the client.
+  load with the rest of the island styles, on the client. Each is either a package's stylesheet
+  (`some-lib/styles.css`) or a path to a file of your own; a relative path (`./brand.css`) is read
+  from the folder of the file that declares it — beside `aardvark.config.yaml`, or beside the
+  theme's `theme.yaml`. A path that names no file is skipped with a build warning.
 - **`ssr: false`** — skip this library during the build-time prerender. Use it for a browser-only
   library (one that touches `window` at import time); its islands then render on the client only.
 

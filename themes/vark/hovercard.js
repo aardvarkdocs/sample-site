@@ -2,7 +2,7 @@
 // keyboard focus of — a link to another page in this site, a floating card splits
 // vertically: the target page's OG "unfurl" image on the left, and its breadcrumb,
 // title, and a fading excerpt of its content on the right. The data comes from the
-// build-time manifest at /_aardvark/page-cards.json (see generate/pagecards.py).
+// build-time manifest at /_aardvark/page-cards.json, which aardvark writes.
 // Suppressed on mobile / narrow viewports (MIN_WIDTH). Progressive enhancement:
 // with no JS the links just work.
 (function () {

@@ -54,17 +54,34 @@ configuration in `aardvark.config.yaml`.
 
 ## Building
 
-Install the public aardvark CLI from the
-[installation guide](https://aardvarkdocs.com/getting-started/installation/) and make
-sure Node.js is available. This sample includes a protected-page demo; set its
-demonstration password before building.
+Building this site requires the aardvark CLI, `vark`. Install it with Homebrew
+on macOS (`brew tap aardvarkdocs/tap && brew install aardvark`) or download a
+prebuilt binary for macOS, Linux, or Windows; see
+[Installation](https://aardvarkdocs.com/getting-started/installation/) for every
+option. Node.js must be installed too: the build uses it to bundle the
+interactive components. Use a version that satisfies the `engines` field in this
+site's `package.json`, which can ask for a newer Node than the general minimum
+on the Installation page. There's no separate `npm install` step: the first
+build sets up the JavaScript packages itself. When the packages the CLI carries
+don't match this site's `package.json`, it runs npm for you, which needs network
+access.
+
+The site's password-protection demo, `/secretpage/`, is encrypted at build time
+with the password in the `SECRET_PAGE_PW` environment variable. If it's unset or
+empty, the build stops rather than publish that page unencrypted. Any password
+works for a local build; it's the one you type to open that page. On any system,
+the simplest place to set it is a `.env` file in this directory, which `vark`
+loads before every command and `.gitignore` keeps out of commits:
+
+```ini
+SECRET_PAGE_PW=choose-a-password
+```
+
+Then build the site, or preview it while you edit:
 
 ```bash
-npm ci                 # install the sample site's locked dependencies
-# Set SECRET_PAGE_PW=secret! in a local .env file (do not commit it).
-vark build             # renders content/ to ./build
-python3 -m http.server 8000 --directory build
-# open http://127.0.0.1:8000
+vark build   # renders content/ to ./build
+vark dev     # live preview in your browser, rebuilt on every change
 ```
 
 ## What's inside
@@ -75,7 +92,10 @@ python3 -m http.server 8000 --directory build
 - `generators/` — Python hooks that create pages and other build outputs
 - `snippets/` — custom React components
 - `components/` — custom Markdown macro components
-- `templates/` — HTML theme overrides
+- `templates/` — HTML theme overrides and extra page layouts
+- `themes/vark/` — the default theme's templates, styles and scripts, published from the
+  aardvark package this site is built with (third-party notices in
+  `themes/vark/THIRD_PARTY_NOTICES`)
 - `static/` — assets copied as-is
 - `openapi/` — OpenAPI specs rendered as reference pages
 - `i18n/` — UI strings for translations

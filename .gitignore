@@ -1,0 +1,15 @@
+# What a build writes. `vark build` and `vark dev` recreate all of it, so none of it is
+# committed: the site, the staging directory an interrupted build can leave beside it, the
+# npm packages, and aardvark's cache.
+/build/
+/.build.*/
+node_modules/
+.aardvark-cache/
+# generators/pricing.py writes this page on every build, next to the committed pricing page.
+/content/pricing/models.md
+# An older output path: a stale copy in an older checkout must not be committed.
+/content/pricing.md
+
+# Local secrets, such as SECRET_PAGE_PW for the /secretpage/ demo. vark loads .env itself.
+.env
+.env.*

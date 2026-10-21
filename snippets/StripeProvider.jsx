@@ -28,7 +28,7 @@ function useColorScheme() {
 // The one thing a component library can't hand you from Markdown is the runtime Stripe instance:
 // loadStripe() returns a Promise (and injects Stripe.js), not a JSON-serialisable prop. So this
 // thin snippet owns the <Elements> provider; everything *inside* it — a Payment Element, a Card
-// Element — is rendered straight from the theme-declared `stripe` library via
+// Element — is rendered straight from the site-declared `stripe` library via
 // {% component('stripe', 'PaymentElement') %} etc., nested as this provider's children.
 //
 // loadStripe only runs in the browser, so it's resolved client-side; during the build-time

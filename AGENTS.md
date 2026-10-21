@@ -29,7 +29,8 @@ Rules that keep automated work safe in this repository:
   repository only and cannot be changed through a public pull request. A
   `.claude/`, `.codex/` or `.cursor/` directory (and the legacy `.cursorrules`) is
   refused at any depth for the same reason — those configure the tools that read
-  the guides. The sync also refuses the
+  the guides. The sync also refuses the top-level `LICENSE`, every file under
+  `themes/vark/` (published from the aardvark package), the
   top-level `.github/` and `worker/` directories, any `.git` path component,
   symlinks, submodules, unsafe paths, and oversized payloads. Keep proposals to
   ordinary sample-site files and the top-level files

@@ -47,8 +47,9 @@ instead, where the whole tree is copied and fingerprinted.
 - **`themes/vark/color-scheme.js`** — light/dark handling (see [Light & dark mode](/theming/dark-mode/)).
 - **`themes/vark/theme.yaml`** — optional. A manifest of extra React component libraries
   the theme makes callable from Markdown beyond Mantine and your own snippets. The packaged
-  theme ships none; this site's copy powers
-  [Component libraries](/components/extras/component-libraries/).
+  theme ships none. A `componentLibraries:` block in your `aardvark.config.yaml` can add to
+  these, replace one, or remove one without touching the theme; this site declares its
+  libraries there (see [Component libraries](/components/extras/component-libraries/)).
 
 ## Selecting a theme
 
@@ -86,11 +87,11 @@ be a bare template name — anything with a slash or `..` in it is rejected with
 and the page renders with `default.html`; `pagetype: default` is the same as leaving it
 unset.
 
-This site ships a `landing.html` in its theme and a page that opts into it. Here's the
-whole template, read straight from the theme file so it never drifts from what actually
-renders:
+This site ships a `landing.html` in its `templates/` folder and a page that opts into it.
+Here's the whole template, read straight from the file so it never drifts from what
+actually renders:
 
-```html src="../../themes/vark/landing.html" title="themes/vark/landing.html" lines
+```html src="../../templates/landing.html" title="templates/landing.html" lines
 ```
 
 {% card icon="layout-2" title="See it live" cta="Open the landing example" href="/theming/landing-example/" accent="grape" %}

@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <!--
-  A sample alternate theme template, selected per page with `pagetype: landing` in
-  front matter. It demonstrates that a theme can carry more than one layout: this one
+  A sample alternate page template, selected per page with `pagetype: landing` in
+  front matter. It demonstrates that a site can carry more than one layout: this one
   drops the sidebar nav and the on-this-page TOC and centers the content in a full-width
   hero, while reusing the same `default.html` context (brand, theme styles, assets).
-  Lives only in this project's themes/vark/ (not the packaged vark theme), so it's a
-  worked example of "add your own template and point a page at it". The hero styling is
-  scoped here and built on the theme's --aardvark-* variables, so it stays on-theme in
-  both light and dark mode without touching theme.css.
+  Lives in this project's templates/ folder, not in the vark theme (a page template is
+  looked up in templates/ first, then in the active theme), so it's a worked example of
+  "add your own template and point a page at it". The hero styling is scoped here and
+  built on the theme's --aardvark-* variables, so it stays on-theme in both light and
+  dark mode without touching theme.css.
 -->
 <html lang="{% lang %}"{% (' data-aardvark-banner="' + banner_id + '"') if banner_id else '' %}>
 <head>

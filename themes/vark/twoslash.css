@@ -1,6 +1,6 @@
 /* Twoslash — interactive TypeScript type hovers, inline errors, ^? queries and completions
- * on ```ts twoslash code blocks. Rendered at build time by Shiki + @shikijs/twoslash (see
- * aardvark/twoslash.py); this file styles the markup that the @shikijs/twoslash *rich*
+ * on ```ts twoslash code blocks. Rendered at build time by Shiki + @shikijs/twoslash; this
+ * file styles the markup that the @shikijs/twoslash *rich*
  * renderer emits. Loaded only on pages that contain a twoslash block (default.html gates it on
  * page_has_twoslash).
  *

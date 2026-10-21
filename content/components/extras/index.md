@@ -17,7 +17,7 @@ from configuration rather than writing it in the page.)
 - [Banner](/components/extras/banner/) — a full-width announcement row across the top of the page, in your site's primary color.
 - [Changelog](/components/extras/changelog/) — a timeline of changes read from a YAML data file, filterable by tag, with an RSS feed.
 - [CodeGroup](/components/extras/codegroup/) — several fenced code blocks shown as language / file tabs, each with its own copy button; the chosen language syncs across every code group on the page.
-- [Component libraries](/components/extras/component-libraries/) — pull extra React libraries into your theme and address them with `{% raw %}{% component('library', 'Name') %}{% endraw %}`.
+- [Component libraries](/components/extras/component-libraries/) — pull extra React libraries into your site or theme and address them with `{% raw %}{% component('library', 'Name') %}{% endraw %}`.
 - [Examples](/components/extras/examples/) — side-by-side request/response panels for API docs: titled, syntax-highlighted code blocks with per-block copy/download, and a tab strip for multiple languages or status codes.
 - [Gitfolder](/components/extras/gitfolder/) — embed a public GitHub repo folder: file tree, highlighted source, inline images, a Markdown/SVG preview toggle, and a Download .zip button.
 - [Include](/components/extras/include/) — splice a shared Markdown partial into a page, varied by the including page's front matter.

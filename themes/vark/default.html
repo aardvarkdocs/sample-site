@@ -97,7 +97,7 @@
       %}
       {%
       # Page-feedback widget. Gated on `pageFeedback` so `false` removes it entirely
-      # (PageFeedback is force-bundled in builder.py under the same flag). One island
+      # (aardvark force-bundles PageFeedback under the same flag). One island
       # owns the rating + the comment box + both gtag events; the literal wrapper keeps
       # `class="aardvark-rating"` in static HTML so the divider styling works before
       # hydration. Visible strings are passed in already-translated (island JSX isn't
