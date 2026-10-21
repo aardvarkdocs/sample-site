@@ -11,7 +11,7 @@ A **donut chart** for part-to-whole breakdowns. Give it the segments in `data` (
 with its value.
 
 Use it as `{% raw %}{% donutchart %}{% endraw %}` in Markdown, or call it from Python logic
-(loops, snippets) via `component('aardvark', 'donutchart', …)`.
+(loops, snippets) via `component('charts', 'DonutChart', …)`.
 
 > **The charts need the `charts` component library.** Chart tags resolve against
 > [`@mantine/charts`](https://mantine.dev/charts/getting-started/), which a site opts into: the
@@ -23,6 +23,8 @@ Use it as `{% raw %}{% donutchart %}{% endraw %}` in Markdown, or call it from P
 >
 > Charts are drawn **in the browser** (they measure their live container), so they are not part
 > of the pre-rendered HTML and do not appear with JavaScript turned off.
+
+Python calls pass `data` as a Python list; the Markdown tag accepts JSON strings.
 
 ## A basic donut chart
 
@@ -48,8 +50,12 @@ Use it as `{% raw %}{% donutchart %}{% endraw %}` in Markdown, or call it from P
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'donutchart', size=180, thickness=28, withLabels=True, chartLabel='Traffic',
-          data='[{"name":"Search","value":48,"color":"indigo.6"}, …]')
+component('charts', 'DonutChart', size=180, thickness=28, withLabels=True, chartLabel='Traffic',
+          data=[
+              {'name': 'Search', 'value': 48, 'color': 'indigo.6'},
+              {'name': 'Direct', 'value': 27, 'color': 'teal.6'},
+              {'name': 'Referral', 'value': 25, 'color': 'orange.6'},
+          ])
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -117,12 +123,12 @@ alert(value);
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'donutchart', size=180, thickness=28, withLabels=True, chartLabel='Traffic',
-          data='''[
-  {"name":"Search","value":48,"color":"indigo.6"},
-  {"name":"Direct","value":27,"color":"teal.6"},
-  {"name":"Referral","value":25,"color":"orange.6"}
-]''', attr={'onclick': '''
+component('charts', 'DonutChart', size=180, thickness=28, withLabels=True, chartLabel='Traffic',
+          data=[
+              {'name': 'Search', 'value': 48, 'color': 'indigo.6'},
+              {'name': 'Direct', 'value': 27, 'color': 'teal.6'},
+              {'name': 'Referral', 'value': 25, 'color': 'orange.6'},
+          ], attr={'onclick': '''
 const value = this.innerText;
 console.log('attr demo value:', value);
 alert(value);

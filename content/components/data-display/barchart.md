@@ -11,7 +11,7 @@ category axis. Several series put their bars side by side in each category group
 group opens a tooltip with its values.
 
 Use it as `{% raw %}{% barchart %}{% endraw %}` in Markdown, or call it from Python logic (loops,
-snippets) via `component('aardvark', 'barchart', …)`.
+snippets) via `component('charts', 'BarChart', …)`.
 
 > **The charts need the `charts` component library.** Chart tags resolve against
 > [`@mantine/charts`](https://mantine.dev/charts/getting-started/), which a site opts into: the
@@ -23,6 +23,8 @@ snippets) via `component('aardvark', 'barchart', …)`.
 >
 > Charts are drawn **in the browser** (they measure their live container), so they are not part
 > of the pre-rendered HTML and do not appear with JavaScript turned off.
+
+Python calls pass `data` and `series` as Python lists; the Markdown tag accepts JSON strings.
 
 ## A basic bar chart
 
@@ -48,9 +50,16 @@ snippets) via `component('aardvark', 'barchart', …)`.
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'barchart', h=260, dataKey='product', withLegend=True,
-          data='[{"product":"Free","Q1":40,"Q2":55}, …]',
-          series='[{"name":"Q1","color":"violet.6"},{"name":"Q2","color":"blue.6"}]')
+component('charts', 'BarChart', h=260, dataKey='product', withLegend=True,
+          data=[
+              {'product': 'Free', 'Q1': 40, 'Q2': 55},
+              {'product': 'Pro', 'Q1': 80, 'Q2': 120},
+              {'product': 'Team', 'Q1': 30, 'Q2': 48},
+          ],
+          series=[
+              {'name': 'Q1', 'color': 'violet.6'},
+              {'name': 'Q2', 'color': 'blue.6'},
+          ])
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -118,9 +127,15 @@ alert(value);
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'barchart', h=260, dataKey='product', withLegend=True,
-          data='[{"product":"Free","Q1":40,"Q2":55},{"product":"Pro","Q1":80,"Q2":120}]',
-          series='[{"name":"Q1","color":"violet.6"},{"name":"Q2","color":"blue.6"}]',
+component('charts', 'BarChart', h=260, dataKey='product', withLegend=True,
+          data=[
+              {'product': 'Free', 'Q1': 40, 'Q2': 55},
+              {'product': 'Pro', 'Q1': 80, 'Q2': 120},
+          ],
+          series=[
+              {'name': 'Q1', 'color': 'violet.6'},
+              {'name': 'Q2', 'color': 'blue.6'},
+          ],
           attr={'onclick': '''
 const value = this.innerText;
 console.log('attr demo value:', value);

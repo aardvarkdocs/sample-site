@@ -11,7 +11,9 @@ x-axis field with `dataKey`. It renders in the browser (it's Recharts-backed) an
 an interactive island.
 
 Use it as `{% raw %}{% linechart %}{% endraw %}` in Markdown, or call it from Python logic
-(loops, snippets) via `component('aardvark', 'linechart', …)`.
+(loops, snippets) via `component('charts', 'LineChart', …)`.
+
+Python calls pass `data` and `series` as Python lists; the Markdown tag accepts JSON strings.
 
 ## A basic line chart
 
@@ -42,9 +44,17 @@ x-axis field.
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'linechart', h=260, dataKey='month', withLegend=True,
-          data='[{"month":"Jan","Signups":120,"Active":80}, …]',
-          series='[{"name":"Signups","color":"indigo.6"},{"name":"Active","color":"teal.6"}]')
+component('charts', 'LineChart', h=260, dataKey='month', withLegend=True,
+          data=[
+              {'month': 'Jan', 'Signups': 120, 'Active': 80},
+              {'month': 'Feb', 'Signups': 180, 'Active': 110},
+              {'month': 'Mar', 'Signups': 160, 'Active': 135},
+              {'month': 'Apr', 'Signups': 240, 'Active': 190},
+          ],
+          series=[
+              {'name': 'Signups', 'color': 'indigo.6'},
+              {'name': 'Active', 'color': 'teal.6'},
+          ])
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -121,9 +131,15 @@ alert(value);
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'linechart', h=260, dataKey='month', withLegend=True,
-          data='[{"month":"Jan","Signups":120,"Active":80},{"month":"Feb","Signups":180,"Active":110}]',
-          series='[{"name":"Signups","color":"indigo.6"},{"name":"Active","color":"teal.6"}]',
+component('charts', 'LineChart', h=260, dataKey='month', withLegend=True,
+          data=[
+              {'month': 'Jan', 'Signups': 120, 'Active': 80},
+              {'month': 'Feb', 'Signups': 180, 'Active': 110},
+          ],
+          series=[
+              {'name': 'Signups', 'color': 'indigo.6'},
+              {'name': 'Active', 'color': 'teal.6'},
+          ],
           attr={'onclick': '''
 const value = this.innerText;
 console.log('attr demo value:', value);

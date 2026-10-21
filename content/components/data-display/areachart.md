@@ -10,7 +10,7 @@ volume or stacked totals. Give it the rows in `data` and the areas in `series` (
 with `dataKey` for the x-axis. Hovering a point opens a tooltip with that row's values.
 
 Use it as `{% raw %}{% areachart %}{% endraw %}` in Markdown, or call it from Python logic (loops,
-snippets) via `component('aardvark', 'areachart', …)`.
+snippets) via `component('charts', 'AreaChart', …)`.
 
 > **The charts need the `charts` component library.** Chart tags resolve against
 > [`@mantine/charts`](https://mantine.dev/charts/getting-started/), which a site opts into: the
@@ -22,6 +22,8 @@ snippets) via `component('aardvark', 'areachart', …)`.
 >
 > Charts are drawn **in the browser** (they measure their live container), so they are not part
 > of the pre-rendered HTML and do not appear with JavaScript turned off.
+
+Python calls pass `data` and `series` as Python lists; the Markdown tag accepts JSON strings.
 
 ## A basic area chart
 
@@ -49,9 +51,17 @@ snippets) via `component('aardvark', 'areachart', …)`.
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'areachart', h=260, dataKey='month', curveType='monotone', withLegend=True,
-          data='[{"month":"Jan","Requests":1200,"Errors":40}, …]',
-          series='[{"name":"Requests","color":"blue.6"},{"name":"Errors","color":"red.6"}]')
+component('charts', 'AreaChart', h=260, dataKey='month', curveType='monotone', withLegend=True,
+          data=[
+              {'month': 'Jan', 'Requests': 1200, 'Errors': 40},
+              {'month': 'Feb', 'Requests': 1800, 'Errors': 30},
+              {'month': 'Mar', 'Requests': 1600, 'Errors': 55},
+              {'month': 'Apr', 'Requests': 2400, 'Errors': 25},
+          ],
+          series=[
+              {'name': 'Requests', 'color': 'blue.6'},
+              {'name': 'Errors', 'color': 'red.6'},
+          ])
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -120,9 +130,15 @@ alert(value);
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'areachart', h=260, dataKey='month', withLegend=True,
-          data='[{"month":"Jan","Requests":1200,"Errors":40},{"month":"Feb","Requests":1800,"Errors":30}]',
-          series='[{"name":"Requests","color":"blue.6"},{"name":"Errors","color":"red.6"}]',
+component('charts', 'AreaChart', h=260, dataKey='month', withLegend=True,
+          data=[
+              {'month': 'Jan', 'Requests': 1200, 'Errors': 40},
+              {'month': 'Feb', 'Requests': 1800, 'Errors': 30},
+          ],
+          series=[
+              {'name': 'Requests', 'color': 'blue.6'},
+              {'name': 'Errors', 'color': 'red.6'},
+          ],
           attr={'onclick': '''
 const value = this.innerText;
 console.log('attr demo value:', value);

@@ -16,7 +16,7 @@ A **Community Component** — wraps [Picker](https://gfazioli.github.io/mantine-
 **gfazioli**, **MIT** licensed, npm `@gfazioli/mantine-picker`.
 
 Use it as `{% raw %}{% picker %}{% endraw %}` in Markdown, or call it from Python logic (loops,
-snippets) via `component('aardvark', 'picker', …)`.
+snippets) via `component('aardvark', 'Picker', …)`, passing `data` as a Python list.
 
 ## Demonstrations
 
@@ -103,7 +103,7 @@ Omit any attribute to take its default. Bare flags (e.g. `disabled`) become `=tr
 | `defaultValue` | one of the `data` values | The initially selected item (defaults to the first). |
 | `value` | one of the `data` values | Same starting selection as `defaultValue`, and wins when both are set. The wheel owns its selection from there — this seeds it, it does not pin it. |
 | `itemHeight` | integer px (`40` default) | Height of each row. |
-| `visibleItems` | odd integer (`3` default) | How many rows are visible at once. |
+| `visibleItems` | positive odd integer (`3` default) | How many rows are visible at once. Other counts use the default. |
 | `loop` | `true` (default) / `false` | Wrap around past the last item back to the first. |
 | `animate` | `true` (default) / `false` | Animate the scroll to the selected value on mount. |
 | `withHighlight` | `true` (default) / `false` | Show the highlight band over the selected row. |
@@ -158,7 +158,8 @@ can be overwritten. Reach for a `data-*` hook and a stylesheet rule instead.
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'picker', data='1, 2, 3, 4, 5', attr={'data-testid': 'qty-picker', 'aria-label': 'Quantity'})
+component('aardvark', 'Picker', data=['1', '2', '3', '4', '5'],
+          attr={'data-testid': 'qty-picker', 'aria-label': 'Quantity'})
 ```
 {% endAccordionSection %}
 {% endAccordion %}

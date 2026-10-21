@@ -11,7 +11,7 @@ slide inside a `{% raw %}{% carousel %}{% endraw %}`.
 
 Use it as `{% raw %}{% carousel %}…{% endCarousel %}{% endraw %}` in Markdown (with nested
 `{% raw %}{% slide %}{% endraw %}` blocks), or call it from Python logic (loops, snippets) via
-`component('aardvark', 'carousel', …)` and `component('aardvark', 'slide', …)`.
+`component('carousel', 'Carousel', …)` and `component('carousel', 'CarouselSlide', …)`.
 
 > **The carousel needs the `carousel` component library.** These tags resolve against
 > [`@mantine/carousel`](https://mantine.dev/x/carousel/), which a site opts into: the package has
@@ -63,11 +63,11 @@ Each `{% raw %}{% slide %}{% endraw %}` body is the slide content (rendered as M
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'carousel', slideSize='70%', slideGap='md',
-          withIndicators=True, loop=True,
-          children=(component('aardvark', 'slide', children='**Slide one**')
-                    + component('aardvark', 'slide', children='**Slide two**')
-                    + component('aardvark', 'slide', children='**Slide three**')))
+component('carousel', 'Carousel', slideSize='70%', slideGap='md',
+          withIndicators=True, emblaOptions={'loop': True},
+          children=(component('carousel', 'CarouselSlide', children='<strong>Slide one</strong>')
+                    + component('carousel', 'CarouselSlide', children='<strong>Slide two</strong>')
+                    + component('carousel', 'CarouselSlide', children='<strong>Slide three</strong>')))
 ```
 {% endAccordionSection %}
 {% endAccordion %}
@@ -204,15 +204,15 @@ alert(value);
 {% endAccordionSection %}
 {% accordionSection title="Source: Python" %}
 ```python
-component('aardvark', 'carousel', withIndicators=True, attr={'onclick': '''
+component('carousel', 'Carousel', withIndicators=True, attr={'onclick': '''
 const value = this.innerText;
 console.log('attr demo value:', value);
 alert(value);
 '''},
-          children=(component('aardvark', 'slide',
-                              children='**Tap the carousel** — the click handler reports its text content.')
-                    + component('aardvark', 'slide',
-                                children='**Second slide** — the handler is on the carousel root, not the slides.')))
+          children=(component('carousel', 'CarouselSlide',
+                              children='<strong>Tap the carousel</strong> — the click handler reports its text content.')
+                    + component('carousel', 'CarouselSlide',
+                                children='<strong>Second slide</strong> — the handler is on the carousel root, not the slides.')))
 ```
 {% endAccordionSection %}
 {% endAccordion %}
