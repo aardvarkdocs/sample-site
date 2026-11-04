@@ -1,0 +1,14 @@
+@import '@gfazioli/mantine-lens-select/styles.css';
+
+/* Styles for the {% lensselect %} built-in (LensSelect.jsx).
+
+   The first @import pulls in the upstream @gfazioli/mantine-lens-select stylesheet
+   (a CSS @import, never a JS import — an SSR --packages=external build crashes the
+   prerender on a package .css). Everything below is scoped under
+   [data-aardvark-island="LensSelect"]; the upstream styles own the lens/track
+   chrome, so this file only gives the island room to breathe in the page flow. */
+
+[data-aardvark-island='LensSelect'] {
+  display: block;
+  margin-block: var(--mantine-spacing-md);
+}

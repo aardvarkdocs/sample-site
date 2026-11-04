@@ -35,7 +35,13 @@ Libraries are declared in a `componentLibraries:` block, in either of two places
 - **A theme's `theme.yaml`**, beside its templates (`themes/<name>/theme.yaml`), for a library the
   theme brings to every site that uses it.
 
-Both take the same entries. This site pulls in [Stripe's React
+The packaged `vark` theme declares two libraries itself, `charts` (`@mantine/charts`) and
+`carousel` (`@mantine/carousel`): its [chart](/components/data-display/linechart/) and
+[carousel](/components/data-display/carousel/) tags are built on them. A theme folder in your
+project is [laid over the packaged theme](/theming/#layers-and-themeyaml), so its `theme.yaml`
+merges with vark's one library key at a time.
+
+Both files take the same entries. This site pulls in [Stripe's React
 SDK](https://github.com/stripe/react-stripe-js) from its `aardvark.config.yaml`:
 
 {% raw %}
@@ -298,6 +304,8 @@ Each library entry accepts a few extras beyond `package` and `components`:
 
 If a declared package isn't installed, the build prints a warning and that library's components
 render as a harmless comment rather than failing the whole build — run the matching `npm install`.
+For a library only the packaged theme declares, the warning waits until a page uses one of its
+components, and names the package then.
 
 Leaving `components` out is the other thing to know about: Aardvark then reads the package's own
 capitalized exports at build time, which needs `node` on your `PATH`. Without it — or if the

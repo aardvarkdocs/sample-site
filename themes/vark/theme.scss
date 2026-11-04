@@ -327,8 +327,8 @@ html[data-aardvark-banner-hidden] .aardvark-banner { display: none; }
 .aardvark-logo-dark { display: none; }
 :root[data-mantine-color-scheme="dark"] .aardvark-logo-light { display: none; }
 :root[data-mantine-color-scheme="dark"] .aardvark-logo-dark { display: block; }
-/* "Powered by Aardvark" footer (theme.render_powered_by). The #aardvark-powered-by id is
-   the documented opt-out — `#aardvark-powered-by { display: none }`. */
+/* "Powered by Aardvark" footer. The #aardvark-powered-by id is the documented opt-out —
+   `#aardvark-powered-by { display: none }`. */
 .aardvark-powered-by { border-top: 1px solid var(--aardvark-border); padding: 24px; text-align: center; }
 .aardvark-powered-by-link { display: inline-flex; align-items: center; gap: 8px; color: var(--aardvark-muted); font-size: 13px; text-decoration: none; }
 .aardvark-powered-by-link:hover { color: var(--aardvark-fg); }
@@ -338,7 +338,7 @@ html[data-aardvark-banner-hidden] .aardvark-banner { display: none; }
 .aardvark-powered-by-dark { display: none; }
 :root[data-mantine-color-scheme="dark"] .aardvark-powered-by-light { display: none; }
 :root[data-mantine-color-scheme="dark"] .aardvark-powered-by-dark { display: inline; }
-/* Site-wide footer (theme.render_footer, config `footer`): link columns + optional tagline as
+/* Site-wide footer (config `footer`): link columns + optional tagline as
    a frosted bar above the powered-by line. A translucent fill + backdrop blur (a deliberate
    exception to the otherwise-flat chrome) reads as glass over the page background/image. The
    vertical breathing room lives on .aardvark-main (when the template marks the layout with
@@ -776,11 +776,10 @@ html[data-aardvark-banner-hidden] .aardvark-banner { display: none; }
 i.aardvark-nav-icon, span.aardvark-nav-icon { display: inline-flex; align-items: center; justify-content: center; }
 img.aardvark-nav-icon { object-fit: contain; }
 /* A bare Tabler `icon:` normally arrives as an SVG baked straight into the static HTML. Pin it
-   to the 1em nav box; the descendant rules remain for the lazy-island fallback used by custom or
-   mismatched icon CDNs. */
+   to the 1em nav box. The lazy NavIcon fallback aardvark mounts for a custom or mismatched icon
+   CDN sizes and aligns its own glyph; the box only sets its font size. */
 .aardvark-nav-icon-tabler > svg { display: block; width: 100%; height: 100%; }
-.aardvark-nav-icon-tabler .aardvark-themeicon { font-size: 1em; vertical-align: 0; }
-.aardvark-nav-icon-tabler .aardvark-themeicon-glyph { width: 1em; height: 1em; }
+.aardvark-nav-icon-tabler .aardvark-themeicon { font-size: 1em; }
 /* Inline {% icon %}: an icon dropped inside prose or a heading. Sized to 1em via
    --aardvark-icon-size so it tracks the surrounding text; size/scale override that.
    FA <i> glyphs scale with font-size and tint with `color`; an <img> is boxed at 1em.
@@ -872,7 +871,7 @@ img.aardvark-icon { width: 1em; height: 1em; object-fit: contain; }
 .aardvark-content .aardvark-lead { margin: 0 0 1.5rem; color: var(--aardvark-muted); font-size: 1.15rem; line-height: 1.6; }
 
 /* Article byline: avatar (or initials disc) + author + publish date, tucked between an
-   authored taxonomy member's title and its lead (blog posts — see theme.render_article_byline).
+   authored taxonomy member's title and its lead (blog posts).
    The initials disc mirrors the ArticleCard byline's Avatar fallback, tinted from the accent. */
 .aardvark-content .aardvark-article-byline {
   display: flex; align-items: center; gap: 10px;
@@ -892,7 +891,7 @@ img.aardvark-icon { width: 1em; height: 1em; object-fit: contain; }
   font-weight: 500; color: var(--aardvark-fg);
 }
 
-/* Bottom-of-article tag row (taxonomy member pages — see theme.render_article_tags):
+/* Bottom-of-article tag row (taxonomy member pages):
    pill-chip LINKS into the listing's filtered view. The prose-anchor rule excludes
    .aardvark-article-tag (it outranks any content-scoped class pair at 0,3,1), so the
    pill colors below actually apply. Nav chrome — print-hidden. */
@@ -1013,13 +1012,13 @@ img.aardvark-icon { width: 1em; height: 1em; object-fit: contain; }
 
 /* ---- Code block decorators (title / lines / icon / highlight / focus / diff / wrap /
    expandable) -------------------------------------------------------------------------
-   markdown._render_decorated_fence wraps a fence carrying decorators (or a body with
-   `// [!code ++]` diff markers) in .aardvark-code-decorated, with every source line its own
-   .aardvark-code-line <span>. Token colors still come from the generated {% theme_style %}
-   block (its `pre code .k` selectors reach the spans nested one level deeper). All of this
-   renders with no JS; code-blocks.js only adds the copy/download buttons and the expandable
-   toggle. Copy/download read data-aardvark-code, so line numbers (CSS counters) and diff
-   signs (::before) never reach the clipboard. */
+   The build wraps a fence carrying decorators (or a body with `// [!code ++]` diff markers)
+   in .aardvark-code-decorated, with every source line its own .aardvark-code-line <span>.
+   Token colors still come from the generated {% theme_style %} block (its `pre code .k`
+   selectors reach the spans nested one level deeper). All of this renders with no JS;
+   code-blocks.js only adds the copy/download buttons and the expandable toggle. Copy/download
+   read data-aardvark-code, so line numbers (CSS counters) and diff signs (::before) never
+   reach the clipboard. */
 
 /* The decorated wrapper owns the card border + radius so a header and the code read as one
    unit; the inner <pre> drops its own chrome and rounds its own bottom corners to match (the
@@ -2033,7 +2032,7 @@ div.aardvark-api-prose table { display: block; width: fit-content; max-width: 10
    code-blocks.js now mounts copy/download in a header bar (filename/title left,
    language pill + buttons right) instead of floating them over the code, and the
    "powered by" footer is slimmed to a compact hairline row. Pure presentation on
-   the classes code-blocks.js / theme.render_powered_by emit — re-check on a
+   the classes code-blocks.js and the build's footer markup emit — re-check on a
    Mantine major bump like the other Mantine-internal rules.
    ============================================================================ */
 
@@ -2066,8 +2065,8 @@ div.aardvark-api-prose table { display: block; width: fit-content; max-width: 10
 @media print { .aardvark-code-header .aardvark-code-actions { display: none; } }
 
 /* Compact "powered by" footer: a slim CENTERED row — the "Powered by" label + the Aardvark logo,
-   linking to aardvarkdocs.com (theme.render_powered_by). Same markup + the #aardvark-powered-by
-   opt-out. Deliberately no tagline: a site's own footer shouldn't carry extra Aardvark copy. */
+   linking to aardvarkdocs.com. Same markup + the #aardvark-powered-by opt-out. Deliberately no
+   tagline: a site's own footer shouldn't carry extra Aardvark copy. */
 .aardvark-powered-by {
   padding: 14px 0;
   display: flex; align-items: center; justify-content: center;
@@ -2095,13 +2094,12 @@ div.aardvark-api-prose table { display: block; width: fit-content; max-width: 10
   .mantine-Marquee-content { animation: none !important; }
 }
 
-/* {% visibility %} human-vs-agent content (template/blocks.render_visibility). One templated
-   string feeds both the HTML and the agent .md, so the audience rides a data attribute that each
-   output reads: here the browser HIDES an agent-only block; generate._markdown.strip_islands does
-   the mirror image for the .md (drops a human-only block, keeps an agent-only one). for="human"
-   and for="all" stay visible in the HTML — no rule needed. Pure CSS: the wrapper is a plain div,
-   not an island, so this works with islands/JS disabled. This is a GLOBAL display:none, so an
-   agent block is hidden on screen AND in the browser's Print-to-PDF. (The separate whole-site PDF
-   is a human-facing render and drops agent content in Python — filter_visibility(drop="agent") in
-   generate.sitepdf — not via this CSS, which xhtml2pdf never sees.) */
+/* {% visibility %} human-vs-agent content. One templated string feeds both the HTML and the
+   agent .md, so the audience rides a data attribute that each output reads: here the browser
+   HIDES an agent-only block; the agent Markdown export does the mirror image for the .md (drops
+   a human-only block, keeps an agent-only one). for="human" and for="all" stay visible in the
+   HTML — no rule needed. Pure CSS: the wrapper is a plain div, not an island, so this works with
+   islands/JS disabled. This is a GLOBAL display:none, so an agent block is hidden on screen AND
+   in the browser's Print-to-PDF. (The separate whole-site PDF is a human-facing render and drops
+   agent content while it builds the PDF — not via this CSS, which xhtml2pdf never sees.) */
 [data-aardvark-visibility="agent"] { display: none; }

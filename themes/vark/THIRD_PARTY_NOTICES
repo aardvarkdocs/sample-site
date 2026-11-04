@@ -11,10 +11,11 @@ comments its bundler preserved (DOMPurify's, lodash's, and four helper notices
 inside Cytoscape.js) and no license text at all, not even Mermaid's own;
 markdeep.min.js keeps its three-line header and, where the bundled copy of
 highlight.js begins, that library's banner; twoslash.css and theme.scss carry
-first-party comments that credit the rules they adapt, and code-blocks.js one
-that credits its icons. This file supplies what those comments omit.
-Versions are not listed: the files are refreshed from their upstream releases.
-Everything else in this theme is first-party.
+first-party comments that credit the rules they adapt, and code-blocks.js and
+islands/Card.jsx ones that credit their icons. This file supplies what those
+comments omit. Versions are not listed: the files are refreshed from their
+upstream releases. Everything else in this theme is first-party, apart from the
+public-domain (CC0) Simple Icons marks drawn in islands/Prompt.jsx.
 
 
 mermaid.min.js
@@ -76,6 +77,11 @@ code-blocks.js
   Its copy, check and download button icons are Tabler Icons outline glyphs
   (https://tabler.io/icons), (c) Paweł Kuna. License: MIT. The rest of the
   script is first-party.
+
+islands/Card.jsx
+  Its external-link icon is the Tabler Icons outline glyph of that name
+  (https://tabler.io/icons), (c) Paweł Kuna. License: MIT. The rest of the
+  island is first-party.
 
 
 Fonts
@@ -536,7 +542,7 @@ Adapted into twoslash.css
     Copyright (c) 2023 Anthony Fu <https://github.com/antfu>
     License: MIT (text under "MIT License" below)
 
-Drawn in code-blocks.js
+Drawn in code-blocks.js and islands/Card.jsx
 
   Tabler Icons
     https://github.com/tabler/tabler-icons

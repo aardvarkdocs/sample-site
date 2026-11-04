@@ -1,0 +1,17 @@
+@import '@gfazioli/mantine-onboarding-tour/styles.css';
+
+/* Styles for the {% onboarding %} built-in (Onboarding.jsx). The upstream
+   @gfazioli/mantine-onboarding-tour stylesheet (the overlay, the focus cutout, the popover
+   chrome) is pulled in via the CSS @import above — a CSS @import, never a JS import, since a
+   JS import of a package .css crashes the SSR prerender under --packages=external. This file
+   only spaces our wrapper + trigger button; the tour's overlay is portaled to document.body
+   and styled entirely by the upstream stylesheet. Kept under [data-aardvark-onboarding] so it
+   can't leak onto the page. */
+
+[data-aardvark-onboarding] {
+  margin-block: var(--mantine-spacing-md);
+}
+
+[data-aardvark-onboarding] .aardvark-onboarding-trigger {
+  margin-block-end: var(--mantine-spacing-md);
+}

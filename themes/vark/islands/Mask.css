@@ -1,0 +1,11 @@
+@import '@gfazioli/mantine-mask/styles.css';
+
+/* Styles for the {% mask %} built-in (Mask.jsx). The package's own
+   stylesheet is pulled in by the @import above (CSS @import only — never a JS import of a
+   package .css, which would crash the SSR prerender under --packages=external). This file
+   only adds container rhythm so a spotlight mask sits with the same vertical spacing as
+   other block components. */
+
+[data-aardvark-island='Mask'] {
+  margin-block: var(--mantine-spacing-md);
+}

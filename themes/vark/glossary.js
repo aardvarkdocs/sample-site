@@ -1,6 +1,6 @@
 // Hover definition cards for public glossary terms. On hover over — or keyboard focus
-// of — a term/acronym marked `public` in definitions.yaml (rendered by markdown._glossarize
-// as a dotted-underline <span class="aardvark-glossary-term">), a small floating card shows
+// of — a term/acronym marked `public` in definitions.yaml (rendered by the build's Markdown
+// pass as a dotted-underline <span class="aardvark-glossary-term">), a small floating card shows
 // the term (with its acronym) and its definition. The data rides on the span's data-*
 // attributes, so there is no manifest to fetch. The card reuses the link-preview hovercard
 // styling (.aardvark-hovercard*). Progressive enhancement: with no JS the dotted underline

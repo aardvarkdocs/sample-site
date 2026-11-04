@@ -1,0 +1,317 @@
+/* Styles for the ArticleCard island (ArticleCard.jsx). Each variant is a
+   port of its ui.mantine.dev article-cards gallery source (the .module.css files), scoped
+   under [data-aardvark-articlecard] and keyed off data-variant. Colors ride Mantine's
+   semantic vars (--mantine-color-body / -bright / -dimmed / -default-border) so dark mode
+   flips automatically; the gallery's `Outfit` display face becomes the site's own
+   --aardvark-font-heading. Co-located: esbuild inlines this into islands.css at build time,
+   so the theme's stylesheet needs no copy of it. */
+
+/* ------------------------------------------------------------------ base */
+[data-aardvark-articlecard] {
+  position: relative;
+  background-color: var(--mantine-color-body);
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* fill a grid cell so a row of cards is equal-height */
+  transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+}
+[data-aardvark-articlecard][data-clickable] {
+  cursor: pointer;
+}
+/* The {% card %} hover treatment (Card.css's clickable/lift recipe, values matched
+   exactly): translateY lift + shadow + accent-tinted border, with the sheen sweep below.
+   Replaces the gallery's scale "raise" — the zoom read as a shimmer next to the site's
+   other cards. */
+[data-aardvark-articlecard][data-clickable]:hover,
+[data-aardvark-articlecard][data-clickable]:focus-within {
+  z-index: 1;
+  transform: translateY(-4px);
+  box-shadow: var(--mantine-shadow-lg);
+  border-color: color-mix(in srgb, var(--aardvark-accent) 45%, var(--aardvark-border, transparent));
+}
+/* Like Card.css's image variant: the tall photo card doesn't lift — just a shadow bump. */
+[data-aardvark-articlecard][data-variant='background'][data-clickable]:hover,
+[data-aardvark-articlecard][data-variant='background'][data-clickable]:focus-within {
+  transform: none;
+  box-shadow: var(--mantine-shadow-lg);
+}
+
+/* Sheen sweep — the {% card %} flash (Card.css's .aardvark-card-sheen), wrapped so it
+   self-clips: the span is an overflow-hidden frame over the whole card and its ::before
+   is the moving gradient, because the horizontal variant's root keeps overflow:visible
+   for the floating badge and can't clip the sweep itself. */
+[data-aardvark-articlecard] .aardvark-articlecard-sheen {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: inherit;
+}
+[data-aardvark-articlecard] .aardvark-articlecard-sheen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    color-mix(in srgb, #fff 22%, transparent) 50%,
+    transparent 60%
+  );
+  transform: translateX(-120%);
+  opacity: 0;
+}
+[data-aardvark-articlecard][data-clickable]:hover .aardvark-articlecard-sheen::before {
+  animation: aardvark-articlecard-sheen 0.85s ease;
+}
+@keyframes aardvark-articlecard-sheen {
+  from {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+@media (hover: none) {
+  [data-aardvark-articlecard] .aardvark-articlecard-sheen {
+    display: none; /* the sweep is a hover-only flourish (matches Card.css) */
+  }
+}
+
+/* Stretched link: the single title anchor covers the whole card via ::after. */
+[data-aardvark-articlecard][data-clickable] .aardvark-articlecard-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* Keyboard focus ring on the CARD (the stretched link fills it) — project convention. */
+[data-aardvark-articlecard][data-clickable]:focus-within {
+  outline: 2px solid var(--aardvark-accent, var(--mantine-primary-color-filled));
+  outline-offset: 2px;
+}
+[data-aardvark-articlecard] .aardvark-articlecard-link:focus,
+[data-aardvark-articlecard] .aardvark-articlecard-link:focus-visible {
+  outline: none; /* the ring is drawn on the card via :focus-within */
+}
+
+/* ----------------------------------------------------------------- shared */
+/* The title is a real <h3> heading (screen-reader heading navigation finds each article), but
+   carries no heading typography of its own — inherit body size/weight/leading so the visual
+   matches the pre-heading markup; per-variant rules below set weight/leading/margins, and the
+   background variant sets an explicit large size. */
+[data-aardvark-articlecard] .aardvark-articlecard-title {
+  display: block;
+  margin: 0;
+  font-family: var(--aardvark-font-heading);
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  color: var(--mantine-color-bright);
+}
+/* The single stretched link lives INSIDE the heading — a heading affordance, NOT a prose link.
+   theme.css's prose-anchor rule is `.aardvark-content a:not()...` at specificity (0,4,1) (three
+   :not() classes), so scope THROUGH the .aardvark-articlecard-title heading to match it at (0,4,1)
+   and win on cascade order (island CSS loads after theme.css) — a bare `a.link` (0,3,1) would
+   lose and the title would render as an underlined prose link. The anchor inherits the heading's
+   color (bright, or white under [data-light-text]). */
+.aardvark-content [data-aardvark-articlecard] .aardvark-articlecard-title a.aardvark-articlecard-link {
+  color: inherit;
+  text-decoration: none;
+}
+.aardvark-content [data-aardvark-articlecard] .aardvark-articlecard-title a.aardvark-articlecard-link:hover {
+  color: var(--aardvark-accent);
+}
+[data-aardvark-articlecard] .aardvark-articlecard-media {
+  overflow: hidden;
+}
+[data-aardvark-articlecard] .aardvark-articlecard-img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+}
+/* The uppercase category caption (gallery ArticleCardImage / ArticleCardVertical). */
+[data-aardvark-articlecard] .aardvark-articlecard-category {
+  opacity: 0.8;
+}
+
+/* --------------------------------------- variant: horizontal (gallery ArticleCard) */
+[data-aardvark-articlecard][data-variant='horizontal'] {
+  overflow: visible; /* the floating badge hugs the image corner */
+}
+/* The gradient rating badge floats over the cover image's bottom-right corner. */
+[data-aardvark-articlecard][data-variant='horizontal'] .aardvark-articlecard-rating {
+  position: absolute;
+  top: var(--mantine-spacing-xs);
+  right: 12px;
+  pointer-events: none;
+  z-index: 2;
+}
+[data-aardvark-articlecard][data-variant='horizontal'] .aardvark-articlecard-title {
+  margin-top: var(--mantine-spacing-md);
+  margin-bottom: 7px;
+  font-weight: 500;
+}
+/* margin-top:auto (not a fixed gap) pins the author/date footer to the card's bottom
+   edge even on a card WITHOUT a description, so mixed rows keep aligned footers. */
+[data-aardvark-articlecard][data-variant='horizontal'] .aardvark-articlecard-footergroup {
+  margin-top: auto;
+  padding-top: calc(var(--mantine-spacing-md) + 2px);
+}
+/* Description takes the flexible middle so footers align across a card row. */
+[data-aardvark-articlecard][data-variant='horizontal'] .aardvark-articlecard-desc {
+  flex: 1;
+}
+
+/* --------------------------------------- variant: footer (gallery ArticleCardFooter) */
+[data-aardvark-articlecard][data-variant='footer'] .aardvark-articlecard-title {
+  line-height: 1.35;
+  font-weight: 450;
+  margin-top: var(--mantine-spacing-xs);
+}
+[data-aardvark-articlecard][data-variant='footer'] .aardvark-articlecard-footerrow {
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-lg);
+  margin-top: var(--mantine-spacing-md);
+  border-top: 1px solid var(--mantine-color-default-border);
+}
+/* The author block sits above the footer strip; push it (or the bare date an
+   author-less card renders in that slot) down so the strip pins to the card's bottom
+   edge and a row of cards keeps aligned footers. */
+[data-aardvark-articlecard][data-variant='footer'] .aardvark-articlecard-authorrow,
+[data-aardvark-articlecard][data-variant='footer'] > .aardvark-articlecard-date {
+  margin-top: auto;
+  padding-top: var(--mantine-spacing-lg);
+}
+
+/* ----------------------------------- variant: background (gallery ArticleCardImage) */
+[data-aardvark-articlecard][data-variant='background'][data-light-text] {
+  min-height: 440px; /* the gallery's tall photo canvas */
+  padding: 0;
+}
+[data-aardvark-articlecard] .aardvark-articlecard-bg {
+  position: relative;
+  height: 100%;
+  min-height: inherit;
+  display: flex;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+}
+[data-aardvark-articlecard] .aardvark-articlecard-bg-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* category+title up top, CTA pinned at the bottom */
+  align-items: flex-start;
+  width: 100%;
+  padding: var(--mantine-spacing-xl);
+}
+/* The gallery renders white text straight over the photo, but the title/category live
+   at the TOP here — give that zone the same >=0.72 structural black floor Card.css's
+   image variant uses at its bottom, so white-on-dark stays WCAG AA (large-text) over
+   ANY cover, fading photo-forward below (the bottom CTA is a self-contained white
+   button and needs no floor). The build-time contrast audit can't see island CSS, so
+   legibility is enforced structurally here — keep the top stop >= 0.72 if tuned. */
+[data-aardvark-articlecard] .aardvark-articlecard-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.78) 0%,
+    rgba(0, 0, 0, 0.55) 30%,
+    rgba(0, 0, 0, 0.18) 65%,
+    transparent 100%
+  );
+}
+[data-aardvark-articlecard][data-light-text] .aardvark-articlecard-category {
+  color: var(--mantine-color-white);
+  opacity: 0.9; /* small text: keep it comfortably readable over the scrim floor */
+}
+[data-aardvark-articlecard] .aardvark-articlecard-bg-title {
+  margin-top: var(--mantine-spacing-xs);
+}
+[data-aardvark-articlecard][data-light-text] .aardvark-articlecard-title {
+  color: var(--mantine-color-white);
+  font-weight: 600;
+  line-height: 1.2;
+  font-size: 32px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+/* The CTA pill is decorative: keep it visually above the stretched-link overlay, but let
+   pointer hits pass through to that real anchor. This works in the prerendered/no-JS card
+   and avoids synthesizing a second click after hydration. */
+[data-aardvark-articlecard] .aardvark-articlecard-cta {
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+  margin-top: var(--mantine-spacing-md);
+  text-shadow: none;
+}
+
+/* ----------------------------------- variant: vertical (gallery ArticleCardVertical) */
+[data-aardvark-articlecard][data-variant='vertical'] .aardvark-articlecard-row {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  height: 100%;
+}
+[data-aardvark-articlecard][data-variant='vertical'] .aardvark-articlecard-rowimg {
+  max-width: 220px;
+  height: auto;
+}
+[data-aardvark-articlecard][data-variant='vertical'] .aardvark-articlecard-body {
+  padding: var(--mantine-spacing-md);
+  min-width: 0; /* long titles wrap instead of overflowing */
+}
+[data-aardvark-articlecard][data-variant='vertical'] .aardvark-articlecard-title {
+  font-weight: 500;
+  line-height: 1.2;
+  margin-top: var(--mantine-spacing-xs);
+  margin-bottom: var(--mantine-spacing-md);
+}
+/* The gallery stacks the split under 755px. */
+@media (max-width: 47.1875em) {
+  [data-aardvark-articlecard][data-variant='vertical'] .aardvark-articlecard-row {
+    flex-direction: column;
+  }
+  [data-aardvark-articlecard][data-variant='vertical'] .aardvark-articlecard-rowimg {
+    max-width: 100%;
+    max-height: 180px;
+  }
+}
+
+/* ------------------------------------- variant: plain (gallery ArticlesCardsGrid) */
+[data-aardvark-articlecard][data-variant='plain'] {
+  border: 1px solid transparent; /* materializes on hover (the base hover recipe) */
+}
+[data-aardvark-articlecard][data-variant='plain'] .aardvark-articlecard-date {
+  margin-top: var(--mantine-spacing-xs);
+}
+[data-aardvark-articlecard][data-variant='plain'] .aardvark-articlecard-title {
+  font-weight: 500;
+  font-size: var(--mantine-font-size-lg);
+}
+
+/* ------------------------------------------------------- reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  [data-aardvark-articlecard] {
+    transition: none;
+  }
+  [data-aardvark-articlecard][data-clickable]:hover,
+  [data-aardvark-articlecard][data-clickable]:focus-within {
+    transform: none; /* no lift */
+  }
+  [data-aardvark-articlecard][data-clickable]:hover .aardvark-articlecard-sheen::before {
+    animation: none; /* no sheen sweep (matches Card.css) */
+  }
+}

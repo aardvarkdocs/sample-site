@@ -1,0 +1,31 @@
+/* Styles for the Steps island — a Markdown ordered list rendered as a Mantine
+   Timeline (see Stepper.jsx). Scoped under the island's data attribute, the
+   same convention as Tabs.css.
+
+   The .mantine-Timeline-* names are Mantine's runtime static classes (emitted per
+   part by getStyles, like the .mantine-Tabs-* Tabs.css relies on). They are
+   version-tied to Mantine 9 — re-check on a Mantine major bump. */
+
+/* Track the site accent for the bullets and the connecting line. Mantine's Timeline
+   reads --tl-color for the active bullet fill + line; the number inside an active
+   (filled) bullet uses --tl-icon-color, left at Mantine's default (white).
+
+   Every step renders active (filled) with a WHITE number, so the fill follows
+   --aardvark-accent-solid — the darker primary kept AA under white in BOTH schemes —
+   rather than the lighter dark-mode --aardvark-accent that washes white numbers out.
+   (Changelog's Timeline keeps --aardvark-accent: its bullets are empty dots, no white
+   text, where the lighter accent reads better on the dark page.) Falls back to the
+   accent, then Mantine's blue. */
+[data-aardvark-steps] {
+  --tl-color: var(--aardvark-accent-solid, var(--aardvark-accent, #228be6));
+}
+
+/* Each step body is Markdown prose. A loose list wraps every item in <p>, and any
+   block child (code, sub-list, image) carries its own margins — zero the top/bottom
+   edges so a step's content sits flush with its number rather than drifting down. */
+[data-aardvark-steps] .mantine-Timeline-itemContent > :first-child {
+  margin-top: 0;
+}
+[data-aardvark-steps] .mantine-Timeline-itemContent > :last-child {
+  margin-bottom: 0;
+}

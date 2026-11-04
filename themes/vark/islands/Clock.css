@@ -1,0 +1,6 @@
+@import '@gfazioli/mantine-clock/styles.css';
+
+/* Styles for the {% clock %} built-in (Clock.jsx). The package's own
+   stylesheet is pulled in by the @import above (a CSS @import — never a JS import of a
+   package .css, which would crash the SSR prerender). The package owns the clock face,
+   hands, and ticks; nothing extra is needed here. */

@@ -1,0 +1,28 @@
+@import '@gfazioli/mantine-border-animate/styles.css';
+
+/* Styles for the {% borderAnimate %} built-in (BorderAnimate.jsx),
+   a Community Component wrapping @gfazioli/mantine-border-animate.
+
+   The package's own stylesheet is pulled in by the CSS @import above (a CSS import, NOT a
+   JS `import '@gfazioli/mantine-border-animate/styles.css'` — the SSR bundle runs esbuild with
+   --packages=external, which crashes the prerender on a package .css). The package owns the
+   animated-border chrome via its data-attribute selectors. This file otherwise only adds the
+   page rhythm around the wrapper. */
+
+[data-aardvark-island='BorderAnimate'] {
+  display: inline-block;
+  margin-block: var(--mantine-spacing-xs);
+}
+
+/* Since v3 the package stops its animation for prefers-reduced-motion only under Mantine's
+   respectReducedMotion theme flag, which Aardvark doesn't set — so stop it here, for every
+   part that animates (the beam/glow/pulse layer and its ::after, the comet/draw/dash stroke). */
+@media (prefers-reduced-motion: reduce) {
+  [data-aardvark-island='BorderAnimate'] .mantine-BorderAnimate-border,
+  [data-aardvark-island='BorderAnimate'] .mantine-BorderAnimate-border::after,
+  [data-aardvark-island='BorderAnimate'] .mantine-BorderAnimate-svg,
+  [data-aardvark-island='BorderAnimate'] .mantine-BorderAnimate-stroke {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,9 @@
+@import '@gfazioli/mantine-picker/styles.css';
+
+/* Styles for the {% picker %} built-in (Picker.jsx). The community package's
+   own stylesheet is pulled in by the @import above (the only way to load a sub-package .css —
+   a JS import would crash the SSR prerender). We only give the picker a little breathing room
+   in the page flow; the wheel chrome itself is owned by @gfazioli/mantine-picker. */
+.aardvark-picker-host {
+  margin-block: var(--mantine-spacing-md);
+}

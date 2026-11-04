@@ -1,6 +1,6 @@
 ---
-description: Wrap Markdown in a custom tag pair to build compound Mantine components
-  whose panel bodies render as full Markdown.
+description: Wrap Markdown in a tag pair so a component's body renders as full Markdown —
+  how block tags pair, nest and take attributes, and how to build or replace one.
 icon: fa-solid fa-cubes
 menu: docs
 title: Block components
@@ -14,7 +14,7 @@ plain string — Markdown inside it is **not** rendered. **Block components** so
 the other case: a compound built from several Mantine components, given its own
 tag pair, wrapping a region of **Markdown that renders normally**.
 
-The first one is the **accordion**:
+The **accordion** is one:
 
 {% raw %}
 ```aardvark
@@ -82,50 +82,72 @@ An open tag takes attributes in the same shape as every other tag:
 - `attr={...}` is special: a Python dict of raw HTML attributes forwarded to the block's
   outer element, exactly like [`attr` on a component](/authoring/components-and-snippets/#attaching-html-attributes-attr).
 
-Every block can also be called from Python — `component('aardvark', 'accordion',
+Every built-in block can also be called from Python — `component('aardvark', 'accordion',
 children=…)` renders exactly what the tag does — so you can build one inside a
 `for` loop; see [Templating & data](/authoring/templating/#whats-in-scope).
 
-## Built-in block components
+## Every block is a component
 
-These are the tag pairs Aardvark ships. Each has its own reference page under
-**Built-in Components**:
+The accordion, tabs, cards, the callout and every other block under **Built-in
+Components**, except the few [the template engine owns](#tags-the-template-engine-owns),
+are components of the default `vark` theme: one `.md` definition per tag in
+the theme's `components/` folder (see [Theme & customization](/theming/#files)), written
+the same way as the [custom components](/authoring/custom-components/) you define
+yourself. So you can add a block of your own, or replace a built-in one.
 
-- [Accordion](/components/data-display/accordion/) — collapsible sections with Markdown bodies (`{% raw %}{% accordion %}{% endraw %}` / `{% raw %}{% accordionSection %}{% endraw %}`).
-- [Article card](/components/data-display/articlecard/) — blog-style article cards with a byline, avatar (or initials fallback), date, badge, and cover image, in five layout variants (`{% raw %}{% articleCard %}{% endraw %}`).
-- [Card](/components/data-display/card/) — content cards with icons, cover/background images, gradient/glass/stat variants, and whole-card links, arranged in a responsive grid (`{% raw %}{% cardGrid %}{% endraw %}` / `{% raw %}{% card %}{% endraw %}`).
-- [Code groups](/components/extras/codegroup/) — several fenced code blocks shown as language/file tabs, each with its own copy button (`{% raw %}{% codeGroup %}{% endraw %}`).
-- [Examples](/components/extras/examples/) — side-by-side request/response panels for API docs: titled, syntax-highlighted code with per-block copy/download and a tab strip (`{% raw %}{% requestExample %}{% endraw %}` / `{% raw %}{% responseExample %}{% endraw %}`).
-- [Gitfolder](/components/extras/gitfolder/) — an embedded file browser for a folder of a public GitHub or GitLab repo, fetched once at build time and cached (`{% raw %}{% gitfolder %}{% endraw %}`).
-- [Map](/components/extras/map/) — an embedded OpenFreeMap / MapLibre map with a pin per location, placed by address (geocoded at build time) or by coordinates (`{% raw %}{% map %}{% endraw %}`; its `pin` lines live inside the block).
-- [Panel](/components/extras/panel/) — a supplementary side panel that floats beside the content on a wide viewport and stacks below it on a narrow one (`{% raw %}{% panel %}{% endraw %}`).
-- [Tabs](/components/navigation/tabs/) — tabbed panels with full Markdown bodies (`{% raw %}{% tabs %}{% endraw %}` / `{% raw %}{% tab %}{% endraw %}`).
-- [Target](/components/extras/target/) — names a region of a page so Content Reach reports on it as its own section; it renders no chrome of its own (`{% raw %}{% target %}{% endraw %}`).
-- [Tree](/components/navigation/tree/) — a nested file/folder explorer (`{% raw %}{% tree %}{% endraw %}` / `{% raw %}{% folder %}{% endraw %}` / `{% raw %}{% file %}{% endraw %}`); click a file to open its source in a modal.
-- [Update](/components/extras/update/) — an inline release-note entry on a timeline rail: a version/date label beside its Markdown body (`{% raw %}{% update %}{% endraw %}`).
-- [Visibility](/components/extras/visibility/) — show or hide a block depending on whether a human is reading the HTML page or an AI agent is reading its Markdown twin (`{% raw %}{% visibility %}{% endraw %}`).
+### Build your own
 
-Not every paired tag is a block component. [Callout](/components/feedback/callout/),
-[API fields](/components/extras/api-fields/) (`{% raw %}{% field %}{% endraw %}`),
-[Prompt](/components/extras/prompt/), [Button](/components/buttons/button/) and the rest
-of the tag library are built-in macro components — `.md` definitions Aardvark ships that
-take a body as `children`, built the same way as the
-[custom components](/authoring/custom-components/) you write yourself — and
-[Include](/components/extras/include/) is a directive of the template engine. From the
-page they read the same; the difference is what you can build yourself. A block component
-is registered inside Aardvark, so a project can't add one — but a `components/*.md`
-definition that pads its `children` with blank lines gets the same "Markdown body"
-behavior for your own compounds; see
-[Custom components](/authoring/custom-components/#use-it-inline-or-block).
+To build a block of your own, write a custom component whose closing tag is mandatory and
+whose body pads its `children` with blank lines, so the page's Markdown pass renders them:
+
+```aardvark
+---
+name: Aside                # the tag: {% raw %}{% Aside %}{% endraw %} … {% raw %}{% endAside %}{% endraw %}
+close: required
+---
+{% raw %}{% component('Paper', withBorder=True, p='md', children="\n\n" + children + "\n\n") %}{% endraw %}
+```
+
+`close: required` makes a missing `{% raw %}{% endAside %}{% endraw %}` a build error
+rather than an empty block. Two more front-matter keys shape a block's body:
+`childScope: true` gives tabs or accordion sections among the children their own set
+of values, as the built-in tabs do, and `children: raw` hands the body over verbatim,
+as the built-in `codeGroup`, `requestExample`, `file` and `map` do. [How a tag is called](/authoring/custom-components/#how-a-tag-is-called)
+lists every key.
+
+### Replace a built-in
+
+Define `components/<tag>.md` in your project with the built-in's `name:` and your
+definition is used everywhere that tag appears, including
+`component('aardvark', '<tag>', …)` calls.
+[Replace a built-in](/authoring/custom-components/#replace-a-built-in) gives the order
+that decides between your project's definition and your theme's layers.
+
+## Tags the template engine owns
+
+A few names belong to the template engine itself, so no component can take them or
+replace them:
+
+- `{% raw %}{% raw %}{% endraw %}` / `endraw`, which shows template syntax as written.
+- [Include](/components/extras/include/) (`include`), which renders another file in place.
+- [Visibility](/components/extras/visibility/) (`visibility` / `endVisibility`) — show or hide a block depending on whether a human is reading the HTML page or an AI agent is reading its Markdown twin.
+- [Target](/components/extras/target/) (`target` / `endTarget`) — names a region of a page so Content Reach reports on it as its own section; it renders no chrome of its own.
+
+A definition that takes one of these names fails the build with a clear error. Every
+other tag — [Icon](/components/data-display/icon/),
+[Changelog](/components/extras/changelog/), [Taxonomy](/components/extras/taxonomy/) and
+[OpenAPI](/components/extras/openapi/) included — is a component you can replace.
 
 ## Good to know
 
-- **A block must be closed.** A built-in block tag with no matching close fails the build
-  (`Unclosed {% raw %}{% accordion %}{% endraw %}`) — unlike a custom component, which may be
+- **A block with `close: required` must be closed.** An open tag with no matching close
+  fails the build (`Unclosed {% raw %}{% accordion %}{% endraw %}`); the engine's own
+  paired tags behave the same way. A component without `close: required` may instead be
   self-closing. A stray close tag with no open is dropped silently.
-- **Open-tag names are reserved.** `accordion`, `tabs`, `card`, `map`, … are always the
-  block: you can't name a custom component after one, and a Python expression in a
-  `{% raw %}{% %}{% endraw %}` block can't start with one of those words.
+- **A tag named after a component is that component.** `{% raw %}{% card %}{% endraw %}`
+  is always the card, not a Python expression that happens to start with the word
+  `card` — unless the name is followed by `(`, `.` or `[`, which makes it Python using
+  a variable of that name.
 - **`{% raw %}{% raw %}{% endraw %}` is respected when pairing tags.** A close tag shown
   inside a raw region — the way this page shows `{% raw %}{% endAccordion %}{% endraw %}` in
   its code sample — doesn't terminate the surrounding block.

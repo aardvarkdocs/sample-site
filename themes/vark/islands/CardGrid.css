@@ -1,0 +1,25 @@
+/* Styles for the {% cardGrid %} built-in (CardGrid.jsx). Mantine's
+   SimpleGrid owns the responsive column behavior (cols={{ base, sm, lg }} collapses to one
+   column on mobile), so this file only sets the block rhythm and guarantees equal-height
+   rows. Scoped under [data-aardvark-card-grid] so it can't affect other grids. */
+
+[data-aardvark-card-grid] {
+  margin-block: var(--mantine-spacing-lg);
+}
+
+/* Client-only builds (islands.ssr:false, or no toolchain) mount the grid after first paint; until
+   then the placeholder is near-zero height and content below it jumps when the cards render.
+   Reserve a one-row floor on the un-rendered island. :has drops it the instant the real grid
+   (which carries [data-aardvark-card-grid] and sets its own height) appears — on a prerendered
+   or hydrated build that's already true at first paint, so the floor never leaves a gap.
+   The floor is a single desktop-row estimate (a stacked mobile row can be taller, so a little
+   shift can remain there); it's a custom property so a theme can tune or zero it. */
+[data-aardvark-island='CardGrid']:not(:has(> [data-aardvark-card-grid])) {
+  min-height: var(--aardvark-card-grid-min-height, 220px);
+}
+
+/* Stretch each card to the tallest in its row (Card is a flex column with height:100%
+   and a margin-top:auto footer, so its CTA pins to the bottom regardless of body length). */
+[data-aardvark-card-grid] > [data-aardvark-card] {
+  height: 100%;
+}

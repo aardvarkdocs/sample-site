@@ -1,0 +1,36 @@
+/* Glyph rendered inside the built-in {% actionicon %} / {% closebutton %} islands (ActionIcon.jsx,
+   CloseButton.jsx, via _iconGlyph.jsx). The glyph fills the button and inherits its currentColor,
+   so it tints with the ActionIcon variant in both color schemes. Co-located and inlined into
+   islands.css (never JS-imported — a Mantine sub-package CSS import crashes the SSR prerender). */
+.aardvark-button-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 70%;
+  height: 70%;
+  line-height: 1;
+}
+.aardvark-button-glyph-tabler,
+.aardvark-button-glyph-svg {
+  /* The lazily-injected Tabler SVG (and its reserved placeholder) / inline <svg>. */
+  width: 70%;
+  height: 70%;
+}
+.aardvark-button-glyph-tabler svg,
+.aardvark-button-glyph-svg svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+/* The image case renders the <img> AS the element (no wrapper), so it's `img.aardvark-button-glyph-img`.
+   The element+class selector also out-specifies the `.aardvark-content img { height:auto }` reset. */
+img.aardvark-button-glyph-img {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
+}
+.aardvark-button-glyph-emoji,
+.aardvark-button-glyph-fa {
+  font-size: 1em;
+  line-height: 1;
+}

@@ -72,7 +72,7 @@
       # Top-of-content bar: breadcrumbs (left) + the "Open" page-markdown menu (right, via
       # margin-left:auto). Rendered whenever either exists, so a page with neither stays clean.
       # The menu lives here (not the TOC rail) so it shows on mobile and in wide/full layouts.
-      # See theme.render_markdown_menu.
+      # The build renders both pieces of markup; md-menu.js adds the menu's behavior.
       if breadcrumbs_html or markdown_menu_html:
           crumbs = ('<nav class="aardvark-breadcrumbs" aria-label="' + escape(t('Breadcrumb')) + '">' + breadcrumbs_html + '</nav>') if breadcrumbs_html else ''
           # Without breadcrumbs the bar holds only the menu; the `-bare` variant floats it level

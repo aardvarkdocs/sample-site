@@ -1,0 +1,72 @@
+/* Styles for the {% field %} built-in (ApiField.jsx). Everything is
+   scoped under the island wrapper [data-aardvark-island="ApiField"] so it never leaks
+   into surrounding page content.
+
+   All colors/spacing/radii come from Mantine CSS variables, which are color-scheme
+   aware, so the field row reads correctly in both light and dark mode with no explicit
+   dark-mode rules. */
+
+[data-aardvark-island='ApiField'] {
+  display: block;
+  padding-block: var(--mantine-spacing-sm);
+  /* Every row carries a bottom hairline. Consecutive field rows are SEPARATE island
+     wrappers (each a <div data-aardvark-island="ApiField">), so a shared collapsed
+     border isn't available — a bottom-per-row is what makes a run read as a bounded
+     list: each row is separated from the next AND the last row is closed off, with no
+     dependency on a :last-of-type selector (which keys on the div tag name, not this
+     attribute, and so would drop the closing rule whenever the field group isn't the
+     final <div> sibling — e.g. when it's followed by an accordion or another island). */
+  border-bottom: 1px solid var(--mantine-color-default-border);
+}
+
+/* The header line: name + type + badges + default, wrapping on narrow screens. */
+[data-aardvark-island='ApiField'] .aardvark-api-field-head {
+  row-gap: var(--mantine-spacing-xs);
+}
+
+/* The field name — the row's anchor. Mantine's <Code> already gives the mono font and a
+   tinted background; nudge the weight up so it stands out from the type token beside it. */
+[data-aardvark-island='ApiField'] .aardvark-api-field-name {
+  font-weight: 600;
+  font-size: var(--mantine-font-size-sm);
+}
+
+/* The type reads as secondary metadata: dimmed monospace, no background, so it's clearly
+   subordinate to the field name without competing with it. */
+[data-aardvark-island='ApiField'] .aardvark-api-field-type {
+  font-family: var(--mantine-font-family-monospace);
+  font-size: var(--mantine-font-size-sm);
+}
+
+/* The uppercase-free badges (required / deprecated / location) sit inline with the name.
+   Normal casing keeps them readable next to the mono tokens. */
+[data-aardvark-island='ApiField'] .aardvark-api-field-badge {
+  text-transform: none;
+  font-weight: 600;
+}
+
+/* `default: <value>` — a dimmed label with the value in a small inline <Code>. */
+[data-aardvark-island='ApiField'] .aardvark-api-field-default {
+  font-size: var(--mantine-font-size-sm);
+}
+
+[data-aardvark-island='ApiField'] .aardvark-api-field-default-value {
+  font-size: var(--mantine-font-size-xs);
+}
+
+/* The description body — rendered Markdown. Indent it slightly under the header so the
+   prose visually belongs to the field above it, and tighten the block margins so a
+   one-paragraph description doesn't add a big gap. */
+[data-aardvark-island='ApiField'] .aardvark-api-field-body {
+  margin-block-start: var(--mantine-spacing-xs);
+  color: var(--mantine-color-text);
+  font-size: var(--mantine-font-size-sm);
+}
+
+[data-aardvark-island='ApiField'] .aardvark-api-field-body > :first-child {
+  margin-block-start: 0;
+}
+
+[data-aardvark-island='ApiField'] .aardvark-api-field-body > :last-child {
+  margin-block-end: 0;
+}

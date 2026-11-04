@@ -13,13 +13,11 @@ Use it as `{% raw %}{% carousel %}…{% endCarousel %}{% endraw %}` in Markdown 
 `{% raw %}{% slide %}{% endraw %}` blocks), or call it from Python logic (loops, snippets) via
 `component('carousel', 'Carousel', …)` and `component('carousel', 'CarouselSlide', …)`.
 
-> **The carousel needs the `carousel` component library.** These tags resolve against
-> [`@mantine/carousel`](https://mantine.dev/x/carousel/), which a site opts into: the package has
-> to be installed **and** a `carousel:` entry has to be declared under `componentLibraries:` in
-> your `aardvark.config.yaml` (or in your theme's `theme.yaml`). Without it the carousel renders
-> nothing and the build reports an unknown component library. A site scaffolded by `vark new`
-> installs the package but declares no libraries — add the entry to turn these tags on. This site
-> declares it in its own `aardvark.config.yaml`.
+> **The carousel needs `@mantine/carousel` installed.** These tags resolve against the
+> `carousel` [component library](/components/extras/component-libraries/), which the packaged
+> theme declares, over [`@mantine/carousel`](https://mantine.dev/x/carousel/). A site scaffolded
+> by `vark new` installs the package, so the tags work as written. Without the package the
+> carousel renders nothing, and the build warns and names the package to install.
 >
 > The carousel measures its live container to size the slides, so it is built **in the browser**
 > rather than pre-rendered into the page HTML: it does not appear with JavaScript turned off.

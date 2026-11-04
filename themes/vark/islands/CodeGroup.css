@@ -1,0 +1,39 @@
+/* Styles for the {% codeGroup %} island (CodeGroup.jsx) — language/file tabs over a set of
+   fenced code blocks, each with its own Copy button.
+
+   CodeGroup renders the shared Aardvark <Tabs> island (Tabs.jsx), so it inherits that chrome:
+   the [data-aardvark-tabs] hover, the sliding underline (for `variant="default"/"outline"`), and
+   the panel crossfade all come from Tabs.css. Content styling is inherited too — the island renders
+   inside .aardvark-content, so the per-tab <pre><code> picks up the site's code-block frame
+   (background/border/radius/padding) and syntax palette from theme.scss, and
+   .aardvark-code-block + .aardvark-code-actions give the hover-revealed Copy/Download cluster for
+   free. This file only adds what's specific to a CODE group: let a long tab strip wrap, and keep the
+   code panel flush to the strip. Everything is scoped under .aardvark-code-group so it never touches
+   the {% tabs %} content tabs or the header nav tab bar (theme.scss).
+
+   Co-located with the island and bundled into islands.css by esbuild (the island imports
+   it, and aardvark stages the theme's islands folder whole). */
+
+/* Let a long strip of language/file tabs wrap onto a second row instead of overflowing, and sit it
+   just above the code with a small gap. The strip is the shared <Tabs> list (.mantine-Tabs-list). */
+.aardvark-code-group .mantine-Tabs-list {
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+/* The active tab's panel body IS the code block; drop any inherited panel padding so the code card
+   aligns flush with the tab strip above it (Mantine Tabs.Panel has none by default, but be explicit
+   so a theme override can't introduce a gap). */
+.aardvark-code-group .mantine-Tabs-panel {
+  padding: 0;
+}
+
+/* Keep the copy/download actions visible on touch devices (no hover), matching theme.scss's
+   treatment of on-page code blocks — belt-and-suspenders since the shared .aardvark-code-actions
+   rule already does this, but scoped here in case a future theme narrows that selector. */
+@media (hover: none) {
+  .aardvark-code-group .aardvark-code-actions {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

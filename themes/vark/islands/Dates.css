@@ -1,0 +1,6 @@
+@import '@mantine/dates/styles.css';
+
+/* Shared @mantine/dates stylesheet import for the date/time built-in wrappers.
+   Keep this as a CSS @import rather than a JS package CSS import so the client
+   bundle gets the upstream styles without breaking the Node SSR bundle's
+   --packages=external build. */

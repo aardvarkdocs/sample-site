@@ -1,0 +1,284 @@
+/* Styles for the {% gitfolder %} island (GitFolder.jsx, behind the built-in {% gitfolder %}
+   block). Everything is scoped under the [data-aardvark-gitfolder] attribute the
+   root sets, so it never leaks into page content. Colors reuse the chrome's --aardvark-*
+   tokens (Mantine-variable backed, with Mantine fallbacks) so it tracks light/dark and the
+   configured accent automatically — same approach as Tree.css.
+
+   Co-located with GitFolder.jsx and bundled into islands.css by esbuild (aardvark
+   stages the theme's islands folder whole). The widget renders INLINE inside
+   .aardvark-content (no portal, unlike the {% tree %} modal), so the syntax-highlight palette
+   (`:is(.aardvark-content, …) pre code …`, from the theme) already colors the code — this
+   file only sets structure and neutralizes the generic `.aardvark-content pre` chrome inside
+   the code pane. */
+
+[data-aardvark-gitfolder] {
+  margin-block: var(--mantine-spacing-md);
+}
+
+[data-aardvark-gitfolder] .aardvark-gitfolder {
+  overflow: hidden; /* clip the panes to the Paper's border-radius */
+}
+
+/* ---- header ---- */
+[data-aardvark-gitfolder] .aardvark-gitfolder-header {
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-heading {
+  min-width: 0; /* allow the title block to shrink + truncate */
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-titles {
+  min-width: 0; /* enable the Mantine `truncate` on the repo/folder lines */
+}
+/* The repo/folder heading links to the folder on GitHub. */
+[data-aardvark-gitfolder] .aardvark-gitfolder-heading-link {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
+  min-width: 0; /* so the titles inside can still truncate */
+  color: inherit;
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-heading-link:hover .aardvark-gitfolder-titles > :first-child {
+  text-decoration: underline;
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-ghicon {
+  color: var(--mantine-color-dimmed);
+  flex: none;
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-ref {
+  flex: none;
+}
+/* Footer: the repo's detected license, so readers see the terms before reusing the code. */
+[data-aardvark-gitfolder] .aardvark-gitfolder-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
+  color: var(--mantine-color-dimmed);
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-footer svg {
+  flex: none;
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-zip {
+  flex: none;
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-burger {
+  display: none; /* mobile only — revealed at the narrow breakpoint below */
+}
+
+/* ---- two-pane body: each pane scrolls independently within a fixed height ---- */
+[data-aardvark-gitfolder] .aardvark-gitfolder-body {
+  height: clamp(360px, 60vh, 640px);
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-nav {
+  /* Keep the file browser compact so the file viewer gets the bulk of the width. */
+  flex: 0 0 clamp(140px, 22%, 220px);
+  border-right: 1px solid var(--aardvark-border, var(--mantine-color-default-border));
+  min-height: 0; /* let the inner ScrollArea own the overflow */
+  min-width: 0;
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-scroll {
+  height: 100%;
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-tree {
+  padding: 4px 2px;
+  font-size: 0.7rem; /* a touch under Mantine xs (0.75rem) — denser file list, less name overflow */
+  line-height: 1.5;
+}
+
+/* ---- file-tree rows (mirrors the {% tree %} look, without its keyboard-roving contract) ---- */
+[data-aardvark-gitfolder] .aardvark-gitfolder-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  text-align: left;
+  padding: 2px 4px;
+  padding-left: calc(var(--depth, 0) * 10px + 2px);
+  border-radius: var(--mantine-radius-sm);
+  cursor: pointer;
+  user-select: none;
+  color: var(--aardvark-fg, var(--mantine-color-text));
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-row:hover {
+  background: var(--aardvark-hover, var(--mantine-color-default-hover));
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-row:focus-visible {
+  outline: 2px solid var(--aardvark-accent, var(--mantine-color-blue-filled));
+  outline-offset: -2px;
+}
+/* Selected file — tint with the accent's light variant, same token the tree's highlighted
+   row uses, so selection tracks the configured primary color. */
+[data-aardvark-gitfolder] .aardvark-gitfolder-row[data-selected] {
+  background: var(--mantine-primary-color-light);
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-icon,
+[data-aardvark-gitfolder] .aardvark-gitfolder-chevron,
+[data-aardvark-gitfolder] .aardvark-gitfolder-spacer {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  color: var(--mantine-color-dimmed);
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-chevron {
+  transition: transform 0.18s ease;
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-chevron[data-open] {
+  transform: rotate(90deg);
+}
+
+/* ---- right pane: file header + code / placeholders ---- */
+/* File pane header: path on the left, the Source/Preview toggle + "Source" GitHub link on
+   the right. Sticky so the actions stay reachable while the content scrolls. */
+[data-aardvark-gitfolder] .aardvark-gitfolder-filehead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-sm);
+  flex-wrap: wrap;
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
+  border-bottom: 1px solid var(--aardvark-border, var(--mantine-color-default-border));
+  background: var(--aardvark-surface, var(--mantine-color-body));
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-path {
+  font-family: var(--mantine-font-family-monospace);
+  font-size: var(--mantine-font-size-sm);
+  word-break: break-all;
+  min-width: 0;
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-fileactions {
+  flex: none;
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-ghlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  color: var(--mantine-color-dimmed);
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-ghlink:hover {
+  color: var(--aardvark-link, var(--mantine-primary-color-filled));
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-empty,
+[data-aardvark-gitfolder] .aardvark-gitfolder-note {
+  display: block;
+  padding: var(--mantine-spacing-md);
+}
+
+/* Inline image display (raster files, and the Preview side of an SVG). */
+[data-aardvark-gitfolder] .aardvark-gitfolder-imgwrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--mantine-spacing-md);
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-imgwrap img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Rendered Markdown preview. It's inline in .aardvark-content, so base typography mostly
+   applies; these keep it readable inside the (narrower, scrollable) pane. */
+[data-aardvark-gitfolder] .aardvark-gitfolder-md {
+  padding: var(--mantine-spacing-md);
+  font-size: var(--mantine-font-size-sm);
+  line-height: 1.6;
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-md img {
+  max-width: 100%;
+  height: auto;
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-md :first-child {
+  margin-top: 0;
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-md pre {
+  overflow: auto;
+  padding: var(--mantine-spacing-sm);
+  background: var(--aardvark-surface, var(--mantine-color-default));
+  border-radius: var(--mantine-radius-sm);
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-md :not(pre) > code {
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.9em;
+  background: var(--mantine-color-default);
+  padding: 0.1em 0.35em;
+  border-radius: var(--mantine-radius-sm);
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-md table {
+  border-collapse: collapse;
+  display: block;
+  overflow: auto;
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-md th,
+[data-aardvark-gitfolder] .aardvark-gitfolder-md td {
+  border: 1px solid var(--aardvark-border, var(--mantine-color-default-border));
+  padding: 4px 8px;
+}
+
+/* The code <pre>. Override the generic `.aardvark-content pre` chrome (specificity
+   [data-aardvark-gitfolder] .aardvark-gitfolder-pre = 0,2,0 beats 0,1,1): the pane already has
+   its own border, so drop the boxed look and keep a neutral surface + monospace + scroll. The
+   syntax token colors come from the theme's syntax palette (this is inline in
+   .aardvark-content). */
+[data-aardvark-gitfolder] .aardvark-gitfolder-pre {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  padding: var(--mantine-spacing-md);
+  background: var(--aardvark-surface, var(--mantine-color-default));
+  overflow: auto;
+  font-family: var(--mantine-font-family-monospace);
+  font-size: var(--mantine-font-size-sm);
+  line-height: 1.5;
+}
+[data-aardvark-gitfolder] .aardvark-gitfolder-pre code {
+  font-family: inherit;
+  background: none;
+  padding: 0;
+}
+
+/* ---- responsive: stack the panes; the nav collapses behind the header Burger ---- */
+@media (max-width: 700px) {
+  [data-aardvark-gitfolder] .aardvark-gitfolder-burger {
+    display: block;
+  }
+  [data-aardvark-gitfolder] .aardvark-gitfolder-body {
+    flex-direction: column;
+    height: auto;
+  }
+  [data-aardvark-gitfolder] .aardvark-gitfolder-nav {
+    flex: none;
+    border-right: 0;
+    border-bottom: 1px solid var(--aardvark-border, var(--mantine-color-default-border));
+    max-height: 0;
+    overflow: hidden; /* collapsed by default on mobile */
+  }
+  [data-aardvark-gitfolder] .aardvark-gitfolder-nav[data-open] {
+    max-height: 50vh;
+  }
+  [data-aardvark-gitfolder] .aardvark-gitfolder-main {
+    min-height: 0;
+  }
+  [data-aardvark-gitfolder] .aardvark-gitfolder-main .aardvark-gitfolder-scroll {
+    height: auto;
+    max-height: 70vh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-aardvark-gitfolder] .aardvark-gitfolder-chevron {
+    transition: none;
+  }
+}

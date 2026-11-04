@@ -1,0 +1,7 @@
+@import '@gfazioli/mantine-rings-progress/styles.css';
+
+/* Styles for the {% ringsprogress %} built-in (RingsProgress.jsx), a
+   Community Component wrapping @gfazioli/mantine-rings-progress. The vendor stylesheet is
+   pulled in via the CSS @import above (NOT a JS import — an SSR `--packages=external`
+   prerender crashes on a package .css JS import). This file adds no further rules; the
+   component is otherwise styled entirely by the vendor sheet + Mantine's theme tokens. */

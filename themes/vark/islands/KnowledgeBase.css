@@ -1,0 +1,185 @@
+/* Styles for the KnowledgeBase island (KnowledgeBase.jsx): featured
+   question cards, clickable category cards, and the filtered article-card list. The card
+   chrome itself (surface, hover lift + sheen, stretched link, focus ring) comes from
+   Card.css via the shared data-aardvark-card attributes — this file only carries the
+   KB-specific bits. Scoped under [data-aardvark-kb]. Colors ride Mantine's semantic vars
+   plus the site accent, so dark mode flips automatically — no bespoke surfaces here. */
+
+[data-aardvark-kb] section + section {
+  margin-top: var(--mantine-spacing-xl);
+}
+
+/* --- the hero banner ("ask your question") --- */
+/* The site's SATURATED gradient language — the same accent → accent-lightened recipe
+   the gradient cards use (Card.jsx buildGradientCss's single-color derivation) with
+   the home hero's soft radial glow — not a subtle surface wash. The base is
+   --aardvark-accent-solid: the DARKER accent the announcement banner keeps in BOTH
+   schemes (the lighter dark-mode accent would wash out under this white text).
+   The far stop is held to 84% accent (not the cards' 72%) so its lightest point stays
+   dark enough for legible white text, and the white text carries the announcement
+   banner's shadow — the site's established technique for AA-safe white on a mid-tone
+   primary (see theme.scss .aardvark-banner). */
+[data-aardvark-kb] .aardvark-kb-hero {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(28px, 4.5vw, 44px);
+  border-radius: var(--mantine-radius-lg, 12px);
+  background: linear-gradient(
+    135deg,
+    var(--aardvark-accent-solid, var(--aardvark-accent, var(--mantine-primary-color-filled))),
+    color-mix(
+      in srgb,
+      var(--aardvark-accent-solid, var(--aardvark-accent, var(--mantine-primary-color-filled))) 84%,
+      #fff
+    )
+  );
+  color: #fff;
+}
+/* The glow rides an overlay pseudo-element; the content stacks above it. Kept faint
+   (0.18) and anchored top-right, away from the text column, so it never lifts the
+   text's background above the contrast floor. */
+[data-aardvark-kb] .aardvark-kb-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 150% at 92% -45%, rgba(255, 255, 255, 0.18), transparent 55%);
+  pointer-events: none;
+}
+[data-aardvark-kb] .aardvark-kb-hero > * {
+  position: relative;
+}
+[data-aardvark-kb] .aardvark-kb-hero-title {
+  margin: 0;
+  font-size: clamp(1.45rem, 2.8vw, 2rem);
+  line-height: 1.15;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+}
+[data-aardvark-kb] .aardvark-kb-hero-text {
+  margin: 8px 0 0;
+  color: #fff;
+  max-width: 60ch;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+}
+/* The ask row: input grows, button hugs. Collapses to a stacked column on narrow
+   viewports so the button never crushes the field. */
+[data-aardvark-kb] .aardvark-kb-hero-form {
+  display: flex;
+  gap: 8px;
+  margin-top: var(--mantine-spacing-lg);
+  max-width: 620px;
+}
+[data-aardvark-kb] .aardvark-kb-hero-input {
+  flex: 1;
+  min-width: 0;
+}
+/* A solid white field on the gradient (the home hero's on-violet treatment) — same
+   look in dark mode, where Mantine's default input surface would go muddy. */
+[data-aardvark-kb] .aardvark-kb-hero-input input {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: transparent;
+  color: #1a1b1e;
+}
+[data-aardvark-kb] .aardvark-kb-hero-input input::placeholder {
+  color: #5c5f66;
+}
+[data-aardvark-kb] .aardvark-kb-hero-submit {
+  flex-shrink: 0;
+}
+/* Keyboard rings read white on the saturated surface. */
+[data-aardvark-kb] .aardvark-kb-hero-input input:focus-visible,
+[data-aardvark-kb] .aardvark-kb-hero-submit:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+@media (max-width: 30em) {
+  [data-aardvark-kb] .aardvark-kb-hero-form {
+    flex-direction: column;
+  }
+}
+/* The article list is a scroll target (sidebar `#tag=` links / filter deep links scroll
+   it into view) — clear the sticky header, same offset recipe as the page's headings. */
+[data-aardvark-kb] .aardvark-kb-articles {
+  scroll-margin-top: calc(var(--aardvark-header-h, 56px) + var(--aardvark-tabbar-h, 0px) + 16px);
+}
+[data-aardvark-kb] .aardvark-kb-heading {
+  margin: 0 0 var(--mantine-spacing-md);
+}
+
+/* --- shared entry-card innards (featured grid + the article list) --- */
+/* The title reads as PLAIN TEXT: the whole card is the click target (stretched link +
+   hover lift/sheen), so link styling on the title is noise. The anchor stays in the
+   DOM for semantics/keyboard — beat theme.css's prose-anchor color/underline with a
+   content-scoped two-class selector, exactly like ArticleCard.css. No hover color
+   either: the card's own hover treatment is the affordance. */
+[data-aardvark-kb] .aardvark-kb-article-title,
+.aardvark-content [data-aardvark-kb] a.aardvark-kb-article-title,
+.aardvark-content [data-aardvark-kb] a.aardvark-kb-article-title:hover {
+  font-weight: 600;
+  color: var(--mantine-color-text);
+  text-decoration: none;
+}
+/* The tag toggles are div[role=button] badges — Card.css's `.aardvark-card-content a,
+   button` z-index rule doesn't match them, so lift them above the stretched link here. */
+[data-aardvark-kb] [data-aardvark-card] .aardvark-kb-tags [role='button'] {
+  position: relative;
+  z-index: 2;
+}
+
+/* --- category cards: real <button>s wearing the Aardvark card chrome --- */
+[data-aardvark-kb] .aardvark-kb-category {
+  align-items: flex-start;
+  gap: 4px;
+  text-align: left;
+  font: inherit; /* browser <button> UA resets */
+  cursor: pointer;
+}
+/* The pressed (active-filter) state: accent border + a faint accent wash. */
+[data-aardvark-kb] .aardvark-kb-category[aria-pressed='true'] {
+  border-color: var(--aardvark-accent, var(--mantine-primary-color-filled));
+  background: color-mix(
+    in srgb,
+    var(--aardvark-accent, var(--mantine-primary-color-filled)) 8%,
+    var(--mantine-color-body)
+  );
+}
+/* The count badge sits under the label with a little air. */
+[data-aardvark-kb] .aardvark-kb-category-count {
+  margin-top: 4px;
+}
+/* The lazily-loaded Tabler glyph: a fixed-size reserved box (no layout shift). */
+[data-aardvark-kb] .aardvark-kb-category-icon {
+  display: inline-flex;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--aardvark-accent, var(--mantine-primary-color-filled));
+}
+[data-aardvark-kb] .aardvark-kb-category-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* --- the article list --- */
+/* The articles head row (heading + filtered count + "Show all") owns the section's
+   bottom margin; the heading inside it drops its own so the baseline row stays tight. */
+[data-aardvark-kb] .aardvark-kb-articles-head {
+  margin: 0 0 var(--mantine-spacing-md);
+}
+[data-aardvark-kb] .aardvark-kb-articles-head .aardvark-kb-heading {
+  margin: 0;
+}
+[data-aardvark-kb] .aardvark-kb-status {
+  margin-bottom: 0;
+}
+[data-aardvark-kb] .aardvark-kb-tag {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Keyboard focus ring for the tag toggle badges — same recipe as the site's other toggle
+   elements in theme.scss. (The cards' own ring comes from Card.css.) */
+[data-aardvark-kb] .aardvark-kb-tag:focus-visible {
+  outline: 2px solid var(--aardvark-accent, var(--mantine-primary-color-filled));
+  outline-offset: 2px;
+}

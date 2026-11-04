@@ -1,0 +1,81 @@
+/* Styles for the {% requestExample %} / {% responseExample %} panels
+   (ExamplePanel.jsx). Scoped under [data-aardvark-island="ExamplePanel"] so the
+   header/tab chrome never leaks onto the page. The code block itself (.aardvark-code-block > pre and
+   the Copy/Download .aardvark-code-actions) is styled ENTIRELY by theme.css — the same rules the
+   on-page fences and the tree-file modal use — so nothing here restyles the code; we only frame it.
+   Colors reuse the chrome's --aardvark-* tokens so panels track light/dark and the theme accent.
+   This file is co-located: esbuild inlines it into islands.css at build time, so the theme's
+   stylesheet needs NO copy of it and it adds no theme.css token. */
+
+/* --------------------------------------------------------------------- panel */
+[data-aardvark-island="ExamplePanel"] .aardvark-example-panel {
+  border: 1px solid var(--aardvark-border);
+  border-radius: 10px;
+  overflow: hidden; /* clip the header's bottom border to the rounded corners */
+  background: var(--aardvark-surface, var(--aardvark-bg));
+  /* An accent hairline down the left edge, tinted per kind below, so a pinned request panel and its
+     response reading side-by-side are told apart at a glance. */
+  border-left: 3px solid var(--aardvark-example-accent, var(--aardvark-accent));
+}
+[data-aardvark-island="ExamplePanel"] .aardvark-example-panel[data-kind="response"] {
+  /* A distinct hue for responses (green reads as "returned OK"); requests keep the theme accent. */
+  --aardvark-example-accent: var(--mantine-color-teal-6, #12b886);
+}
+
+/* ---------------------------------------------------------------------- head */
+[data-aardvark-island="ExamplePanel"] .aardvark-example-head {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--aardvark-border);
+  /* A faint tint so the header reads as chrome above the code surface. */
+  background: color-mix(in srgb, var(--aardvark-example-accent, var(--aardvark-accent)) 6%, transparent);
+}
+[data-aardvark-island="ExamplePanel"] .aardvark-example-icon {
+  color: var(--aardvark-example-accent, var(--aardvark-accent));
+  flex: none;
+}
+[data-aardvark-island="ExamplePanel"] .aardvark-example-title {
+  color: var(--aardvark-fg);
+  letter-spacing: 0.01em;
+}
+
+/* A single block's optional title= sub-heading, above the code. */
+[data-aardvark-island="ExamplePanel"] .aardvark-example-subtitle {
+  padding: 6px 12px 0;
+}
+
+/* The code sits flush inside the panel: strip the theme's pre border/radius (the panel already
+   frames it) and drop the outer margin so it fills the panel body edge-to-edge. */
+[data-aardvark-island="ExamplePanel"] .aardvark-example-code {
+  margin: 0;
+}
+[data-aardvark-island="ExamplePanel"] .aardvark-example-code > pre {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+/* ---------------------------------------------------------------------- tabs */
+/* The multi-block tab strip. Mantine's Tabs.List gets a bottom border by default; keep a subtle one
+   aligned to the panel divider, and let the code panel below it sit flush. */
+[data-aardvark-island="ExamplePanel"] .aardvark-example-tabs .mantine-Tabs-list {
+  padding: 0 6px;
+  border-bottom: 1px solid var(--aardvark-border);
+  --tabs-color: var(--aardvark-example-accent, var(--aardvark-accent));
+}
+[data-aardvark-island="ExamplePanel"] .aardvark-example-tabs .mantine-Tabs-tab {
+  font-size: 0.8125rem;
+  padding: 6px 10px;
+}
+[data-aardvark-island="ExamplePanel"] .aardvark-example-tabs .mantine-Tabs-panel {
+  /* The code block fills the panel body; no extra padding around it. */
+  padding: 0;
+}
+
+/* -------------------------------------------------------------------- empty */
+[data-aardvark-island="ExamplePanel"] .aardvark-example-empty {
+  padding: 12px;
+}
+
+/* The whole-site PDF pass and print should still show the panels statically — nothing here relies on
+   JS to render the code, so no print overrides are needed beyond the shared code-actions hide (in
+   theme.css), which already drops the Copy/Download buttons in print. */

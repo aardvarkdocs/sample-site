@@ -1,0 +1,90 @@
+/* Styles for the animated content-tabs island (Tabs.jsx, behind the
+   {% tabs %}/{% tab %} blocks). Everything is scoped under the [data-aardvark-tabs]
+   attribute the island sets on the Mantine Tabs root, so it never touches the
+   unrelated header nav tab bar (.aardvark-tabs / .aardvark-tab in theme.css).
+   Colors reuse the chrome's --aardvark-* tokens (Mantine-variable backed), so the
+   bar tracks light/dark and the configured accent automatically.
+
+   This file is co-located with the island and bundled into islands.css by esbuild
+   (the island imports it, and aardvark stages the theme's islands folder whole). */
+
+/* Positioning context for the absolute indicator (which is a child of the list). */
+[data-aardvark-tabs] .mantine-Tabs-list {
+  position: relative;
+}
+
+/* With our own sliding bar, suppress Mantine's per-tab active border so a second,
+   static underline doesn't compete with it. NB: .mantine-Tabs-* are Mantine-internal
+   class names and therefore version-tied — re-check on a Mantine major bump, as
+   theme.css already does for .mantine-Button-root / .mantine-Rating-root. */
+[data-aardvark-tabs][data-indicator] .mantine-Tabs-tab[data-active] {
+  border-color: transparent;
+}
+
+/* The sliding indicator. JS sets transform (translateX/translateY) + width/height
+   from the active tab's measured box; here we only declare the look + the slide.
+   The transition is always on: the bar is rendered only once measured, and a
+   freshly-rendered element doesn't run transitions, so it appears in place on load
+   (no slide-in from the edge) — only later changes (a click, a resize, a late
+   webfont) animate. Width/height transition too so a same-row resize stays smooth. */
+[data-aardvark-tabs] .aardvark-tabs-indicator {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: var(--aardvark-accent, #228be6);
+  border-radius: 2px;
+  pointer-events: none;
+  /* Mantine's tabs are position:relative; z-index:0, so the bar needs a higher
+     z-index to stay above a hovered tab's background rather than be covered by it. */
+  z-index: 1;
+  transition: transform 0.25s ease, width 0.25s ease, height 0.25s ease;
+}
+/* Vertical tabs: the bar runs down the inline-end of the list instead of along
+   the bottom. */
+[data-aardvark-tabs] .aardvark-tabs-indicator[data-orientation='vertical'] {
+  left: auto;
+  right: 0;
+  top: 0;
+  bottom: auto;
+  width: 2px;
+  height: 0;
+}
+
+/* Hover affordance: a faint fill behind the tab on hover (matches the chrome's
+   nav/control hover), so the strip feels interactive before the underline slides.
+   .mantine-Tabs-tab is Mantine-internal and version-tied (see the note above). */
+[data-aardvark-tabs] .mantine-Tabs-tab {
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+[data-aardvark-tabs] .mantine-Tabs-tab:hover {
+  background: var(--aardvark-hover);
+}
+
+/* Crossfade: the newly active panel's body fades + rises in. JS adds [data-animate]
+   only after the first user switch, so the initial (and SSR-baked) panel just
+   appears with no fade. keepMounted=false keeps only the active panel in flow, so
+   no absolute stacking is needed and the height tracks the content. */
+[data-aardvark-tabs] .aardvark-tabs-fade[data-animate] {
+  animation: aardvark-tabs-fade-in 0.2s ease;
+}
+@keyframes aardvark-tabs-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-aardvark-tabs] .aardvark-tabs-indicator {
+    transition: none;
+  }
+  [data-aardvark-tabs] .aardvark-tabs-fade[data-animate] {
+    animation: none;
+  }
+}

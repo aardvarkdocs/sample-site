@@ -1,0 +1,41 @@
+# The vark theme's manifest. A build reads it, but a built site never serves it and `vark new`
+# never copies it into a new project. It is part of the theme's source, which the public
+# sample-site repository shows.
+#
+# themeApi is the theme API version the theme is written against, as a quoted "MAJOR.MINOR"
+# string (an unquoted 1.10 would read as the number 1.1).
+themeApi: "1.0"
+
+# Extra React component libraries the theme's own tags are built on, beyond the built-in
+# Mantine/builtin/snippet sources. Each becomes addressable from Markdown as
+# {% component('<key>', 'Name') %}. A library's package only has to be installed once a page
+# uses it; `vark new` installs both. A site can add to, replace or remove these under
+# componentLibraries in its aardvark.config.yaml.
+componentLibraries:
+  # @mantine/charts — Recharts-backed charts. ssr: false because Recharts renders against live
+  # container dimensions (a ResponsiveContainer), so the charts are client-rendered only; the
+  # build skips them in the SSR prerender and they mount in the browser. Their tags
+  # ({% linechart %}, {% barchart %}, {% areachart %}, {% donutchart %}) resolve here. Heavy dep
+  # (Recharts), so a chart-free site never pulls it in.
+  charts:
+    package: "@mantine/charts"
+    css:
+      - "@mantine/charts/styles.css"
+    ssr: false
+    components:
+      - LineChart
+      - BarChart
+      - AreaChart
+      - DonutChart
+  # @mantine/carousel — embla-backed slides carousel. ssr: false because embla measures live DOM
+  # dimensions on mount, so the carousel is client-rendered only (the build skips it in the SSR
+  # prerender). Its tags ({% carousel %}, {% slide %}) resolve here. Heavy deps (embla), so a
+  # carousel-free site never pulls them in.
+  carousel:
+    package: "@mantine/carousel"
+    css:
+      - "@mantine/carousel/styles.css"
+    ssr: false
+    components:
+      - Carousel
+      - CarouselSlide

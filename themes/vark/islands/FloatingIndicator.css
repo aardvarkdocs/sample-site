@@ -1,0 +1,44 @@
+/* Styles for the {% floatingindicator %} built-in demo
+   (FloatingIndicator.jsx). Everything is scoped under
+   .aardvark-floating-indicator-* so nothing leaks onto the page. Colors reuse the
+   chrome's --aardvark-* / Mantine tokens so the demo tracks light/dark and the
+   configured theme accent. Co-located: esbuild inlines it into islands.css at
+   build time, so the theme's stylesheet needs NO copy of it and it adds no theme.css
+   token. */
+
+.aardvark-floating-indicator-track {
+  position: relative;
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--mantine-radius-default, 8px);
+  background: var(--mantine-color-default-hover, rgba(0, 0, 0, 0.04));
+}
+
+/* The primitive: a single highlight box Mantine moves between controls. */
+.aardvark-floating-indicator-bar {
+  border-radius: var(--mantine-radius-default, 6px);
+  background: var(--mantine-color-body, #fff);
+  box-shadow: var(--mantine-shadow-sm);
+}
+
+.aardvark-floating-indicator-control {
+  position: relative;
+  z-index: 1; /* above the sliding bar */
+  padding: 6px 14px;
+  border-radius: var(--mantine-radius-default, 6px);
+  font-size: var(--mantine-font-size-sm, 0.875rem);
+  color: var(--aardvark-text, var(--mantine-color-text));
+  transition: color 0.15s ease;
+}
+
+.aardvark-floating-indicator-control[data-active] {
+  color: var(--aardvark-accent, var(--mantine-primary-color-filled));
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aardvark-floating-indicator-control {
+    transition: none;
+  }
+}

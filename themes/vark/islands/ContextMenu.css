@@ -1,0 +1,20 @@
+/* mantine-contextmenu ships its own stylesheet for the floating menu chrome; pull it in
+   here (a CSS @import, never a JS import — a package .css imported from JS crashes the SSR
+   prerender, see the mantine-subpackage-css-ssr note). This must come first so our own
+   rules below can override it. */
+@import 'mantine-contextmenu/styles.css';
+
+/* Styles for the {% contextmenu %} community built-in (ContextMenu.jsx).
+   The floating menu itself is owned by the imported stylesheet above; this only styles the
+   right-click target box so it reads as an interactive surface on a docs page. */
+.aardvark-contextmenu-target {
+  cursor: context-menu;
+  user-select: none;
+  text-align: center;
+}
+
+.aardvark-contextmenu-glyph {
+  display: inline-flex;
+  width: 1em;
+  height: 1em;
+}

@@ -106,7 +106,7 @@
     if (tagLinks.length) {
       // location.hash keeps percent-encoding while the href attribute carries the raw
       // slug — decode BOTH sides so a non-ASCII tag slug ("café") still matches. Trim first,
-      // mirroring _tagCloud.jsx's tagsFromHash (`part.trim()` before decode), so a hand-mangled
+      // mirroring the listing islands' tagsFromHash (@aardvark/islands/tag-cloud) (`part.trim()` before decode), so a hand-mangled
       // `#tag=a, b` highlights the same entry the island filters. Fail closed on bad %-encoding.
       var decodeSlug = function (s) {
         var t = String(s).trim();
@@ -142,7 +142,7 @@
       };
       var syncTagHighlight = function () {
         var hash = window.location.hash || '';
-        // Match the listing islands (_tagCloud.jsx / KnowledgeBase.jsx): an unrelated in-page
+        // Match the listing islands (@aardvark/islands/tag-cloud / KnowledgeBase.jsx): an unrelated in-page
         // anchor (a TOC/#heading link) is NOT filter state — the islands keep the filter active
         // across it, so the sidebar highlight must stay too, or it would lie while the list
         // stays filtered. Only a `#tag=…` hash, or NO hash, is authoritative.

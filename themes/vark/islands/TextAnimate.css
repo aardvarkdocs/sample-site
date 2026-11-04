@@ -1,0 +1,9 @@
+@import '@gfazioli/mantine-text-animate/styles.css';
+
+/* Styles for the {% textAnimate %} built-in (TextAnimate.jsx),
+   a Community Component wrapping @gfazioli/mantine-text-animate.
+
+   The package's own stylesheet is pulled in by the CSS @import above (a CSS import, NOT a
+   JS `import '@gfazioli/mantine-text-animate/styles.css'` — the SSR bundle runs esbuild with
+   --packages=external, which crashes the prerender on a package .css). The package owns the
+   animation chrome via its data-attribute selectors; nothing else is needed here. */

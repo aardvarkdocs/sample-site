@@ -37,7 +37,11 @@ params:
 
 The declared params (`gap`) and the special `children` slot are available as
 variables in the body. Every `*.md` under `components/` is scanned, subfolders
-included, so you can group definitions however you like. The `name:` must be a bare
+included, so you can group definitions however you like. A subfolder can be a link to a folder
+elsewhere, to share definitions between sites; each folder is read once, however it's linked. A
+link to nothing, a folder that can't be read, or a link to a folder that holds `components/`
+itself fails the build, naming it. A name starting with a dot is skipped, as an editor's lock file
+is. The `name:` must be a bare
 identifier (letters, digits, underscores; not starting with a digit), and two files in
 `components/` can't declare the same `name` — that fails the build.
 
@@ -84,28 +88,32 @@ params:
   size: int               # shorthand: a bare type = optional, no default
 ```
 
-- **Types**: `string`, `int`, `float`, `bool`, `list` — nothing else (no dict/object;
-  pass structured data as a `list` or a JSON string). Values from the call site
+- **Types**: `string`, `int`, `float`, `bool`, `list`, `any`. Values from the call site
   are coerced to the declared type: `count="3"` becomes the integer `3`, a `list`
   accepts a comma-separated string (`tags="a, b"` → `['a', 'b']`), and a `bool`
   accepts a bare flag (`{% raw %}{% Tag compact %}{% endraw %}`) or `"true"` /
   `"false"`. A value that can't be coerced — `count="lots"`, `size=true` for an
-  `int`, `"yes"` for a `bool` — is a build error.
+  `int`, `"yes"` for a `bool` — is a build error. An `any` param takes the value
+  exactly as passed, with no coercion, so it is how structured data passes, such as a
+  dict from the Python form (`component('aardvark', …)`).
 - **`required: true`** with no value supplied is a build error; **`default`** fills
   in when the param is omitted. Declaring both is rejected (a default already makes
   it optional). A param with neither, left unsupplied, is `None` in the body.
 - Passing a param the component didn't declare is a build error — every mistake is
   caught at build time, naming the component, the param, the page it was used on, and
-  the defining file.
+  the defining file. (A definition with `passthrough: true` accepts any attribute; see
+  [How a tag is called](#how-a-tag-is-called).)
 - **Reserved names.** `children` and `attr` are the body slot and the forwarded
-  attribute dict, and `component`, `inline_component` and `snippet` are the render helpers
-  the body calls — none can be a param name. Neither can a name starting with
-  `__aardvark_`.
-- **Reserved tags.** A component can't be named `raw`, `include`, `openapi`, `icon` or
-  `taxonomy`, nor after a [block component](/authoring/block-components/) open or close
-  tag (`accordion`, `endAccordion`, `card`, `tabs`, …) — those are handled by the template
-  engine first, so the definition would never be reached. Discovery rejects the name
-  with a clear error.
+  attribute dict, `component`, `inline_component` and `snippet` are the render helpers
+  the body calls, and `globals` is how a body hands its namespace to the
+  [Component Python API](/authoring/component-api/) — none can be a param name. Neither
+  can a name starting with `__aardvark_`.
+- **Reserved tags.** A component can't be named after a tag the template engine handles
+  itself: `raw`, `endraw`, `include`, `visibility`, `endVisibility`, `target` or `endTarget`.
+  The engine reads those first, so the definition would never be reached; discovery rejects
+  the name with a clear error. Every other built-in tag is a component of the default theme —
+  `accordion`, `card`, `tabs`, `icon`, `changelog`, `taxonomy` and `openapi` included — that
+  your own definition can [replace](#replace-a-built-in).
 
 The calling page is **not** visible inside the body — a component is a pure
 function of its declared inputs. Pass page data explicitly, e.g.
@@ -161,18 +169,72 @@ Forward it to the island you want it to land on, and your tag supports
 {% callout title="One block, one Python program" severity="info" %}
 A `{% raw %}{% %}{% endraw %}` block ends at the **first** `%}` — even one inside a
 Python string or a `#` comment. Writing a tag such as `{% raw %}{% button %}{% endraw %}`
-inside a Python block therefore ends the block early and the rest of it is dropped,
-silently. Mention template syntax in a comment as plain prose ("the button tag") instead.
+inside a Python block therefore ends the block early, and the rest of it is emitted as
+page text. Mention template syntax in a comment as plain prose ("the button tag") instead.
 This applies to every page, but it bites most often in definitions, whose bodies are
-usually one long Python block.
+usually one long Python block — so the build warns when a definition's body has been cut
+short this way. A [Python body](#python-bodies) has no such trap.
 {% endCallout %}
+
+## Python bodies
+
+A definition whose body is all Python can say so with `body: python`. The body is then
+exactly one fenced `python` block, compiled once when the build starts and run as-is on
+every call — it is never scanned for `{% raw %}{% %}{% endraw %}`, so a `%}` in a string or
+comment is harmless. Emit with `print(...)`, exactly as in a template block; a syntax error
+fails the build naming the definition file and line. Either kind of body can use the helpers the
+built-in components are written with — `import aardvark.components as av`; see
+[Component Python API](/authoring/component-api/).
+
+aardvark's own component definitions all have Python bodies — it requires one for them.
+Your definitions in `components/` can use either kind: a template body, as in the examples
+above, remains fully supported.
+
+{% raw %}
+````markdown
+---
+name: Stat
+body: python
+params:
+  label: {type: string, required: true}
+  value: int
+---
+```python
+parts = [label]
+if value is not None:
+    parts.append(str(value))
+print(component('Text', children=": ".join(parts)))
+```
+````
+{% endraw %}
+
+## How a tag is called
+
+Front-matter keys shape the call site, for definitions that need more than typed params
+and an optional body:
+
+| Key | Effect |
+|---|---|
+| `close: required` | The closing tag is mandatory; a missing one is a build error. `close: never` makes the tag always self-closing. |
+| `children: raw` | The body receives the text between the tags verbatim — nothing inside it is rendered. |
+| `childScope: true` | Tabs or accordion sections among the children get their own set of values, as inside a tabs block. |
+| `passthrough: true` | Any attribute is accepted; the body reads them all, in the order written, from `attrs`. |
+| `positional: {param, noun, example}` | The tag takes a leading quoted value, as in `{% raw %}{% Glyph 'rocket' %}{% endraw %}`, bound to the `string` param `param`, which must be declared `required: true`. |
+| `aliases: [OtherName]` | Extra tag names for the same definition. |
+
+A `README.md`, `CONTRIBUTING.md` or `CHANGELOG.md` in `components/` is documentation, not
+a definition, and is skipped, however it's capitalized. The one exception is an all-lowercase
+`changelog.md`, which defines the `changelog` tag.
 
 ## Built-in components
 
-Aardvark ships well over a hundred **built-in components** defined exactly this way, so
-you don't have to. **`{% raw %}{% button %}{% endraw %}`** renders a button or link,
-exposing the full Mantine Button surface — `variant`, `color`, `size`, gradient,
-sections, link target, spacing, `id`, an `onclick` handler, and more. See its page,
+aardvark ships well over a hundred **built-in components** defined exactly this way, each
+with a [Python body](#python-bodies), so you don't have to. They live in the default `vark`
+theme, one `.md` file per tag in its `components/` folder (see
+[Theme & customization](/theming/#files)).
+**`{% raw %}{% button %}{% endraw %}`** renders a button or link, exposing the full Mantine
+Button surface — `variant`, `color`, `size`, gradient, sections, link target, spacing, `id`,
+an `onclick` handler, and more. See its page,
 [Button](/components/buttons/button/), for the full list with live examples. The label
 is the block body or a `text` param.
 
@@ -213,9 +275,85 @@ Be careful when proceeding here.
 that maps each severity to its color and icon — a small example of a built-in component
 composing a snippet.
 
+### Replace a built-in
+
 To customize a built-in, define your own `components/<name>.md` with the same
 `name:` — your version wins, everywhere the tag is used (including
-`component('aardvark', '<name>', …)` calls).
+`component('aardvark', '<name>', …)` calls). When more than one definition names a tag,
+the first of these wins:
+
+1. your project's `components/` folder;
+2. your theme's layers, highest first: your theme folder's `components/`
+   (`themes/<name>/components/`), then the layers of each theme it
+   [builds on](/theming/#building-on-another-theme). A file in a higher layer also replaces
+   the file at the same path below it.
+
+The default `vark` theme's components are the bottom layer, unless the theme builds on
+nothing (`extends: null`, or a complete `vark` with no `extends:`); then only the components
+its own layers define exist. [Layers and `theme.yaml`](/theming/#layers-and-themeyaml) has the
+full rules.
+
+A [snippet](/authoring/custom-snippets/) never takes a tag from a component: when the two
+share a name, the tag stays the component's, and the snippet is reachable through its call
+form, `component('snippet', 'Name', …)`.
+
+## Markdown hooks
+
+Some plain Markdown renders as a component: a blockquote as a notification, a numbered
+list as a [Steps](/components/navigation/steps/) timeline, an image alone in its paragraph
+as one you can click to zoom, and so on (see the
+[Markdown reference](/authoring/markdown-reference/)). Each renders through a **Markdown
+hook**: a definition in the theme that declares `markdownHook:` instead of a `name:`. To
+change how one renders across your site, add a `components/*.md` that declares the same
+`markdownHook:`, whatever the file is called; your version replaces the theme's.
+
+| Hook | Renders | Values it's given |
+|---|---|---|
+| `blockquote` | a `>` blockquote | none |
+| `alert` | a GitHub alert (`> [!NOTE]` …) | `kind`: `NOTE`, `TIP`, `IMPORTANT`, `WARNING` or `CAUTION` |
+| `details` | a raw `<details>` block | `title` (the `<summary>`, or `Details`), `defaultOpen` (bool) |
+| `steps` | a numbered list outside any other list, with no task items | none |
+| `step` | one item of that list | `number` (int) |
+| `taskItem` | a `- [ ]` or `- [x]` item, inside its list item | `checked` (bool) |
+| `image` | an image alone in its paragraph | `src`, `alt`, `title`, `loading`, `decoding` |
+| `divider` | `---`, `***` or `___` | none |
+
+A hook has a [Python body](#python-bodies). It declares under `params` the values it reads,
+each as the type in the table (a string unless noted) or `any`, and never `required:`:
+aardvark gives it every value it has, and a value the page doesn't set, such as an image's
+title, is `None`. Any other param stops the build. The body can call `component(…)`,
+`inline_component(…)` and `open_island(…)`, and `islands:` lists the components it needs:
+when one of them isn't available, that Markdown renders as plain HTML and the build warns.
+
+Values are as the page wrote them, so `src` is the image's URL before the build fingerprints
+it and adds the site's `basePath`. The build does both where the URL lands: in a built-in
+component's URL prop, such as ZoomImage's `src`, or in an HTML attribute the hook prints.
+
+Every hook but `image` and `divider` wraps content aardvark renders afterwards, such as a
+blockquote's text, which `children` stands for. Such a hook prints what it opens, then
+`children` exactly once, then only the tags that close what it opened, innermost first. What
+it leaves open around `children` can only be `<div>` and `<span>` elements.
+`open_island('Name', …)` opens a component without closing it; list every component it
+opens under `islands:`, since one that isn't available opens nothing, and the tags that
+follow would no longer match. This one renders every blockquote as a gray
+[Mantine Blockquote](https://mantine.dev/core/blockquote/):
+
+{% raw %}
+````markdown
+---
+markdownHook: blockquote
+islands: [Blockquote]
+body: python
+---
+```python
+print(open_island("Blockquote", color="gray") + children + "</div>")
+```
+````
+{% endraw %}
+
+A hook that prints anything else, or raises an error, stops the build with a message naming
+its file. A theme with no hook for some Markdown renders it as plain HTML, and the build
+notes that once.
 
 ## Custom components vs snippets
 

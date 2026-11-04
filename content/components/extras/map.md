@@ -107,7 +107,7 @@ Each `{% raw %}{% pin %}{% endraw %}` takes:
 | `lat=…` `lng=…` | Explicit coordinates (skips geocoding). `lon` is accepted as an alias for `lng`. A pair outside Earth's bounds (latitude ±90, longitude ±180) warns and drops the pin rather than placing it at some wrapped spot. |
 | `label="…"` | Bold heading in the marker's popup (and the location's name in the fallback list). `title` is accepted as an alias. |
 | `description="…"` | A line of detail below the label in the popup. |
-| `color="#c2255c"` | Marker color — a plain CSS color: a hex value, a named color, or an `rgb()` / `hsl()` function. Anything else warns and the pin keeps the default color. |
+| `color="#c2255c"` | Marker color — a CSS color: a hex value, a named color, or an `rgb()` / `hsl()` function. A value that could break out of the marker's inline style (a `url(`, a `;`, an unbalanced parenthesis or a comma outside one) warns and the pin keeps the default color. |
 
 ## Geocoding, privacy & offline builds
 

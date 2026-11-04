@@ -1,0 +1,24 @@
+@import '@gfazioli/mantine-video/styles.css';
+
+/* Styles for the {% video %} built-in (Video.jsx). The upstream
+   @gfazioli/mantine-video stylesheet is pulled in via the CSS @import above (a CSS
+   @import, never a JS import — a JS import of a package .css crashes the SSR prerender
+   under --packages=external). This file only sizes our wrapper and the native <video>
+   fallback; the player chrome is owned by the upstream stylesheet, scoped by its own
+   class names. Kept under [data-aardvark-video] so it can't leak onto the page. */
+
+[data-aardvark-video] {
+  width: 100%;
+  margin-block: var(--mantine-spacing-md);
+}
+
+/* The SSR / no-JS / screen-reader player: a plain native <video> at full width. It
+   inherits the wrapper's aspect-ratio (set inline from the `aspectRatio` prop) so the
+   fallback box matches the live player's frame and the layout doesn't jump on takeover. */
+[data-aardvark-video] .aardvark-video-fallback {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--mantine-radius-md);
+  background: var(--mantine-color-dark-9, #000);
+}

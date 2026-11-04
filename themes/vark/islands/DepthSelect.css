@@ -1,0 +1,15 @@
+@import '@gfazioli/mantine-depth-select/styles.css';
+
+/* Styles for the {% depthselect %} built-in (DepthSelect.jsx).
+
+   The first @import pulls in the upstream @gfazioli/mantine-depth-select
+   stylesheet (a CSS @import, never a JS import — an SSR --packages=external build
+   crashes the prerender on a package .css). Everything below is scoped under
+   [data-aardvark-island="DepthSelect"] so it can't leak onto the page; the upstream
+   styles own the 3D stack chrome, so this file only gives the island room to
+   breathe in the page flow. */
+
+[data-aardvark-island='DepthSelect'] {
+  display: block;
+  margin-block: var(--mantine-spacing-md);
+}

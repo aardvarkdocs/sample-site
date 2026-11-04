@@ -1,0 +1,135 @@
+/* Styles for the {% map %} built-in (Map.jsx).
+
+   The bundler pulls mantine-map/styles.css (including MapLibre's stylesheet) into the
+   local islands.css before this file. These rules only adapt the native tag's container,
+   accessible fallback, attribution, marker buttons, and popup contents. Everything stays
+   scoped under [data-aardvark-map]; popovers render inside the map root so fullscreen keeps
+   them and MapLibre's package-owned source attribution together. */
+
+[data-aardvark-map] {
+  position: relative;
+  width: 100%;
+  margin-block: var(--mantine-spacing-md);
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+  overflow: hidden;
+  background: var(--mantine-color-default);
+}
+
+/* MapLibre renders its WebGL canvas + controls into this layer. It fills the box and
+   sits under the fallback until the map is ready; then the fallback is taken off-screen
+   and the live map shows through. */
+[data-aardvark-map] .aardvark-map-canvas {
+  position: absolute;
+  inset: 0;
+}
+
+/* A marker carrying popup content is a real button so click, Enter, and Space all open the
+   Mantine Popover. Reset only native button chrome; Mantine Map still owns the pin visual. */
+[data-aardvark-map] .aardvark-map-marker {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+[data-aardvark-map] .aardvark-map-marker:focus-visible {
+  outline: 2px solid var(--mantine-primary-color-filled);
+  outline-offset: 3px;
+  border-radius: 50%;
+}
+
+/* The no-JS / pre-ready / screen-reader view: a list of the pinned locations filling the
+   box, scrolling if it overflows. */
+[data-aardvark-map] .aardvark-map-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: auto;
+  padding: var(--mantine-spacing-md);
+}
+
+/* Map is live: keep the list in the DOM for assistive tech but pull it out of view
+   (a self-contained visually-hidden, so this island owns its toggle). */
+[data-aardvark-map][data-ready] .aardvark-map-fallback {
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0); /* legacy fallback */
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+[data-aardvark-map] .aardvark-map-locations {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xs);
+  color: var(--mantine-color-text);
+  font-size: var(--mantine-font-size-sm);
+}
+
+[data-aardvark-map] .aardvark-map-loc-desc {
+  color: var(--mantine-color-dimmed);
+}
+
+[data-aardvark-map] .aardvark-map-empty {
+  margin: 0;
+  text-align: center;
+  color: var(--mantine-color-dimmed);
+  font-size: var(--mantine-font-size-sm);
+}
+
+/* OpenFreeMap's style metadata is not a stable source for the credits required by its tiles.
+   Keep one always-visible, non-collapsible React attribution surface inside the fullscreen root.
+   The package-created MapLibre text control is hidden only for this known provider to avoid a
+   duplicate; custom styles retain MapLibre's own source-driven attribution untouched. */
+[data-aardvark-map][data-openfreemap] .maplibregl-ctrl-attrib {
+  display: none;
+}
+
+[data-aardvark-map] .aardvark-map-attribution {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: 2px 5px;
+  border-radius: var(--mantine-radius-xs) 0 0 0;
+  background: color-mix(in srgb, var(--mantine-color-body) 88%, transparent);
+  color: var(--mantine-color-text);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+[data-aardvark-map] .aardvark-map-attribution a {
+  color: inherit;
+  text-decoration: none;
+}
+
+[data-aardvark-map] .aardvark-map-attribution a:hover,
+[data-aardvark-map] .aardvark-map-attribution a:focus-visible {
+  text-decoration: underline;
+}
+
+/* Mantine Popover owns the bubble chrome; these rules only set its text rhythm. */
+[data-aardvark-map] .aardvark-map-popup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+[data-aardvark-map] .aardvark-map-popup-title {
+  font-size: var(--mantine-font-size-sm);
+}
+[data-aardvark-map] .aardvark-map-popup-desc {
+  font-size: var(--mantine-font-size-xs);
+}
+[data-aardvark-map] .aardvark-map-popup-addr {
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+}

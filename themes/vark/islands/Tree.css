@@ -1,0 +1,119 @@
+/* Styles for the {% tree %} island (Tree*.jsx, behind the built-in
+   tree/folder/file block components). Everything is scoped under the [data-aardvark-tree]
+   attribute the root island sets, so it never leaks into page content. Colors reuse the
+   chrome's --aardvark-* tokens (Mantine-variable backed, with Mantine fallbacks) so the
+   tree tracks light/dark and the configured accent automatically.
+
+   Co-located with Tree.jsx and bundled into islands.css by esbuild (aardvark
+   stages the theme's islands folder whole). Only Tree.jsx imports
+   it; the folder/file islands rely on it being in the bundle, since they only ever render
+   as descendants of the tree. The code modal is styled under .aardvark-tree-modal (NOT the
+   [data-aardvark-tree] scope) because Mantine portals the Modal to document.body, outside
+   the tree subtree. */
+
+[data-aardvark-tree] {
+  font-size: var(--mantine-font-size-sm);
+  line-height: 1.7;
+}
+
+[data-aardvark-tree] .aardvark-tree-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 6px;
+  border-radius: var(--mantine-radius-sm);
+  user-select: none;
+  scroll-margin: 8px;
+}
+[data-aardvark-tree] .aardvark-tree-row[data-interactive] {
+  cursor: pointer;
+}
+[data-aardvark-tree] .aardvark-tree-row[data-interactive]:hover {
+  background: var(--aardvark-hover, var(--mantine-color-default-hover));
+}
+[data-aardvark-tree] .aardvark-tree-row:focus-visible {
+  outline: 2px solid var(--aardvark-accent, var(--mantine-color-blue-filled));
+  outline-offset: -2px;
+}
+/* The accent's light variant, so the highlight tracks the configured primary color
+   (not a hardcoded blue) — matches the focus-outline + Tabs accent usage. */
+[data-aardvark-tree] .aardvark-tree-item[data-highlighted] > .aardvark-tree-row {
+  background: var(--mantine-primary-color-light);
+}
+
+/* The chevron, and the matching spacer that keeps file / static-folder rows aligned
+   under folders that have one. */
+[data-aardvark-tree] .aardvark-tree-chevron,
+[data-aardvark-tree] .aardvark-tree-spacer {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+[data-aardvark-tree] .aardvark-tree-chevron {
+  color: var(--mantine-color-dimmed);
+  transition: transform 0.18s ease;
+}
+[data-aardvark-tree] .aardvark-tree-chevron[data-open] {
+  transform: rotate(90deg);
+}
+
+[data-aardvark-tree] .aardvark-tree-icon {
+  flex: none;
+  color: var(--mantine-color-dimmed);
+}
+
+[data-aardvark-tree] .aardvark-tree-label {
+  white-space: nowrap;
+  color: var(--aardvark-fg, var(--mantine-color-text));
+}
+[data-aardvark-tree] a.aardvark-tree-label {
+  text-decoration: underline;
+}
+
+[data-aardvark-tree] .aardvark-tree-comment {
+  color: var(--mantine-color-dimmed);
+  font-family: var(--mantine-font-family-monospace);
+  font-size: var(--mantine-font-size-xs);
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+/* The nesting container: left padding indents the children and the left border draws the
+   vertical guide line. Nesting compounds automatically — a folder inside a folder stacks
+   guides at increasing offsets — so no JS depth tracking is needed. */
+[data-aardvark-tree] .aardvark-tree-group {
+  margin-left: 13px;
+  padding-left: 12px;
+  border-left: 1px solid var(--aardvark-border, var(--mantine-color-default-border));
+}
+
+/* ---- the code modal. Portaled out of [data-aardvark-tree], so scoped on its own
+   className. The wrapper and the Copy/Download actions reuse the shared .aardvark-code-block
+   / .aardvark-code-actions / .aardvark-code-btn rules in theme.css — the same ones the
+   on-page code blocks and the OpenAPI samples use — so only the modal's <pre> is styled
+   here. Neutral base only (background / padding / overflow / monospace) — the syntax token
+   colors come from the theme's injected syntax palette, which scopes
+   .aardvark-tree-modal alongside .aardvark-content so this portaled block colors like a
+   ``` fence. ---- */
+.aardvark-tree-modal .aardvark-tree-pre {
+  margin: 0;
+  padding: var(--mantine-spacing-md);
+  background: var(--mantine-color-default);
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-sm);
+  overflow: auto;
+  font-family: var(--mantine-font-family-monospace);
+  font-size: var(--mantine-font-size-sm);
+  line-height: 1.5;
+}
+.aardvark-tree-modal .aardvark-tree-pre code {
+  font-family: inherit;
+  background: none;
+  padding: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-aardvark-tree] .aardvark-tree-chevron {
+    transition: none;
+  }
+}

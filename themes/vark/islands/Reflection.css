@@ -1,0 +1,7 @@
+@import '@gfazioli/mantine-reflection/styles.css';
+
+/* Styles for the {% reflection %} built-in (Reflection.jsx). The package
+   stylesheet is pulled in by the @import above (a CSS @import, never a JS import of a
+   package .css — that crashes the SSR prerender). The effect is fully owned by the package
+   styles; nothing else is needed here. The data-aardvark-reflection hook is available for
+   site overrides. */

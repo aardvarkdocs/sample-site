@@ -1,0 +1,68 @@
+/* Styles for the ArticleList island (ArticleList.jsx): a grid of
+   ArticleCards with a tag-filter cloud. The wide/stacked layout copies Changelog.css's
+   recipe under this island's own class names; the card internals live in ArticleCard.css.
+   Colors ride Mantine's semantic vars so dark mode flips automatically. */
+
+/* --- RSS toolbar: right-aligned icon link above the layout (the Changelog pattern). --- */
+.aardvark-articlelist-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--mantine-spacing-xs);
+}
+
+/* --- wide: grid left, a sticky tag cloud in a right-hand column --- */
+/* The cloud is FIRST in the DOM (filter before results); explicit columns + shared row 1 place it
+   on the right beside the card grid on desktop — so visual order and keyboard/SR focus order stay
+   coherent (no CSS `order` reshuffle that would desync them, and no implicit second grid row). */
+.aardvark-articlelist-wide {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: var(--mantine-spacing-xl);
+  align-items: start;
+}
+.aardvark-articlelist-wide .aardvark-articlelist-main {
+  grid-column: 1;
+  grid-row: 1;
+}
+.aardvark-articlelist-wide .aardvark-articlelist-cloud {
+  grid-column: 2;
+  grid-row: 1;
+  position: sticky;
+  top: 5rem; /* clear the sticky site header */
+}
+
+/* Collapse to one column on narrow viewports: the cloud stacks above the grid — its natural DOM
+   position, so focus follows — rather than squeezing a too-narrow right rail. */
+@media (max-width: 48em) {
+  .aardvark-articlelist-wide {
+    grid-template-columns: 1fr;
+  }
+  .aardvark-articlelist-wide .aardvark-articlelist-main,
+  .aardvark-articlelist-wide .aardvark-articlelist-cloud {
+    grid-column: auto; /* single column — flow in DOM order (cloud, then grid) */
+    grid-row: auto;
+  }
+  .aardvark-articlelist-wide .aardvark-articlelist-cloud {
+    position: static;
+  }
+}
+
+/* --- stacked (non-wide, or cloud suppressed): cloud above the grid --- */
+.aardvark-articlelist-stacked .aardvark-articlelist-cloud {
+  margin-bottom: var(--mantine-spacing-lg);
+}
+
+/* --- tag cloud box --- */
+.aardvark-articlelist-cloud {
+  padding: var(--mantine-spacing-md);
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+}
+.aardvark-articlelist-tag {
+  cursor: pointer;
+  user-select: none;
+}
+.aardvark-articlelist-tag:focus-visible {
+  outline: 2px solid var(--aardvark-accent, var(--mantine-primary-color-filled));
+  outline-offset: 2px;
+}

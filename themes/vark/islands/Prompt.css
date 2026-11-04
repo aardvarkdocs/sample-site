@@ -1,0 +1,93 @@
+/* Styles for the {% prompt %} built-in (Prompt.jsx). Everything is scoped under
+   [data-aardvark-island="Prompt"] — the wrapper <div> the build's island collector emits —
+   so nothing leaks onto the page's own <pre>/code or buttons. Colors reuse the chrome's
+   --aardvark-* tokens (with Mantine vars as fallbacks) so the block tracks light/dark and the
+   configured theme. This file is co-located: esbuild inlines it into islands.css at build time,
+   so the theme's stylesheet needs NO copy of it and it adds no theme.css token. */
+
+[data-aardvark-island="Prompt"] .aardvark-prompt {
+  overflow: hidden; /* clip the rounded corners over the body's surface */
+}
+
+/* --------------------------------------------------------------- header row */
+/* A neutral header bar (the code-block surface, NOT the brand-tinted --aardvark-surface, which is
+   purple in the default theme) with an optional title on the left and a right-aligned tools cluster
+   — a "PROMPT" language pill + the icon actions — mirroring an on-page code block's header. */
+[data-aardvark-island="Prompt"] .aardvark-prompt-head {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-sm);
+  flex-wrap: wrap;
+  padding: 0.4rem 0.5rem 0.4rem 0.85rem;
+  border-bottom: 1px solid var(--aardvark-border, var(--mantine-color-default-border));
+  background: var(--aardvark-code-bg, var(--mantine-color-default));
+}
+[data-aardvark-island="Prompt"] .aardvark-prompt-title {
+  font-family: var(--aardvark-font-heading, inherit);
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--aardvark-fg, var(--mantine-color-text));
+  /* The author's title reads as written — no uppercase / letter-spacing. */
+}
+[data-aardvark-island="Prompt"] .aardvark-prompt-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto; /* push the pill + actions to the trailing edge */
+}
+/* The "PROMPT" language pill: the same accent-tinted rounded badge an on-page code block uses for its
+   language (see theme .aardvark-code-lang), so a prompt reads as just another labelled language. */
+[data-aardvark-island="Prompt"] .aardvark-prompt-lang {
+  flex: none;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--aardvark-accent, var(--mantine-primary-color-filled));
+  background: color-mix(in srgb, var(--aardvark-accent, var(--mantine-primary-color-filled)) 12%, transparent);
+  padding: 2px 7px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+[data-aardvark-island="Prompt"] .aardvark-prompt-actions {
+  flex: none;
+}
+/* The deep-link actions render as <a> (ActionIcon component="a"), so their icon would otherwise
+   inherit the docs LINK colour (accent/purple) from the content's `a` styling. Pin the icon to the
+   neutral foreground so the whole action row reads one colour, matching the copy button (a <button>,
+   which never picks up the link colour). Scoped to `a.` so the copy button keeps its own default and
+   teal "copied" state; targeting the <svg>'s own `color` beats the inherited link colour via
+   currentColor without competing on `<a>` specificity. */
+[data-aardvark-island="Prompt"] a.aardvark-prompt-action svg {
+  color: var(--aardvark-fg, var(--mantine-color-text));
+}
+
+/* --------------------------------------------------------------- prompt body */
+[data-aardvark-island="Prompt"] .aardvark-prompt-body {
+  background: var(--aardvark-bg, var(--mantine-color-body));
+}
+/* The verbatim prompt in a <pre> (the text lives in a nested <code> — see Prompt.jsx): preserve
+   whitespace and line breaks, wrap long lines so the block never forces horizontal page scroll,
+   and use the mono font stack. Reset the browser's default <pre> margin so it hugs the surface. */
+[data-aardvark-island="Prompt"] .aardvark-prompt-text {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  font-family: var(--aardvark-font-mono, var(--mantine-font-family-monospace, ui-monospace, monospace));
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--aardvark-fg, var(--mantine-color-text));
+  white-space: pre-wrap; /* keep the author's line breaks, but wrap long lines */
+  overflow-wrap: break-word;
+  tab-size: 2;
+}
+/* The nested <code> inherits the <pre>'s formatting — strip any default code styling (background,
+   border, inherited font-size) so it reads as one continuous preformatted block, not an inline
+   code chip. */
+[data-aardvark-island="Prompt"] .aardvark-prompt-text code {
+  font: inherit;
+  color: inherit;
+  background: none;
+  padding: 0;
+  border: none;
+  white-space: inherit;
+}

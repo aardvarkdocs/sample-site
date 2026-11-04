@@ -428,6 +428,9 @@ The directive takes a quoted spec path and an optional `verb` / `endpoint` pair:
 A page's [`sortableTables`](/authoring/tables/) and `filterableTables` settings (or
 the site `tables` block) also govern the reference's tables.
 
+From Python in a `{% raw %}{% %}{% endraw %}` block, `component('aardvark', 'openapi',
+'openapi/petstore.json', verb='get', endpoint='/pet/{petId}')` renders the same reference.
+
 ## How it works
 
 The directive loads and parses the spec and emits the built-in `ApiReference`
@@ -445,8 +448,9 @@ one. Examples you write in the spec always win.
 ## Good to know
 
 - **A description can't embed another reference.** An `{% raw %}{% openapi %}{% endraw %}` inside
-  a spec description stops the build: the description is already rendered as page content, so a
-  reference there would recurse into itself. Wrap it in a `raw` block to *show* the syntax.
+  a spec description is refused: the description is already rendered as page content, so a
+  reference there would recurse into itself. The build warns and that description renders
+  empty. Wrap it in a `raw` block to *show* the syntax.
 - **Nav anchors ignore a trailing slash.** `/pets` and `/pets/` resolve to the same operation
   anchor. When two genuinely different paths would collapse onto one id, the build warns, names
   both, and leaves the second out of the nav rather than shipping two links to the same place.
@@ -474,4 +478,4 @@ The reference mounts inside an island wrapper carrying `data-aardvark-island="Ap
 
 ## Injecting Attributes
 
-`{% raw %}{% openapi %}{% endraw %}` is a self-contained directive, not a wrapped component, so it doesn't take a raw `attr={…}` channel — style it through the CSS parts above, and configure it with the documented attributes (`verb`, `endpoint`). To customize a spec you can't edit — rewrite a summary, inject a primitive, hide an operation — use an [overlay](#overlays) instead.
+`{% raw %}{% openapi %}{% endraw %}` takes no `attr={…}`: the reference has no HTML attributes of its own to set, so the build warns when a tag carries one. Style it through the CSS parts above, and configure it with the documented attributes (`verb`, `endpoint`). To customize a spec you can't edit — rewrite a summary, inject a primitive, hide an operation — use an [overlay](#overlays) instead.

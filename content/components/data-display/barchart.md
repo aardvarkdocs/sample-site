@@ -13,13 +13,11 @@ group opens a tooltip with its values.
 Use it as `{% raw %}{% barchart %}{% endraw %}` in Markdown, or call it from Python logic (loops,
 snippets) via `component('charts', 'BarChart', …)`.
 
-> **The charts need the `charts` component library.** Chart tags resolve against
-> [`@mantine/charts`](https://mantine.dev/charts/getting-started/), which a site opts into: the
-> package has to be installed **and** a `charts:` entry has to be declared under
-> `componentLibraries:` in your `aardvark.config.yaml` (or in your theme's `theme.yaml`). Without
-> it the chart renders nothing and the build reports an unknown component library. A site
-> scaffolded by `vark new` installs the package but declares no libraries — add the entry to turn
-> the chart tags on. This site declares it in its own `aardvark.config.yaml`.
+> **The charts need `@mantine/charts` installed.** Chart tags resolve against the `charts`
+> [component library](/components/extras/component-libraries/), which the packaged theme
+> declares, over [`@mantine/charts`](https://mantine.dev/charts/getting-started/). A site
+> scaffolded by `vark new` installs the package, so the tags work as written. Without the
+> package the chart renders nothing, and the build warns and names the package to install.
 >
 > Charts are drawn **in the browser** (they measure their live container), so they are not part
 > of the pre-rendered HTML and do not appear with JavaScript turned off.

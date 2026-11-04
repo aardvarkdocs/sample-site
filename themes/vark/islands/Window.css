@@ -1,0 +1,10 @@
+@import '@gfazioli/mantine-window/styles.css';
+
+/* Styles for the {% window %} built-in (Window.jsx). The community package's
+   own stylesheet is pulled in by the @import above (the only way to load a sub-package .css —
+   a JS import would crash the SSR prerender). The relative host that holds the absolutely-
+   positioned (non-portal) window is sized in the island; this just keeps it visible if a
+   theme zeroes element margins. */
+.aardvark-window-host {
+  margin-block: var(--mantine-spacing-md);
+}

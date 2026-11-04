@@ -1,0 +1,12 @@
+@import '@gfazioli/mantine-split-pane/styles.css';
+
+/* Styles for the {% splitpane %} built-in (SplitPane.jsx). The community
+   package's own stylesheet is pulled in by the @import above (the only way to load a sub-package
+   .css — a JS import would crash the SSR prerender). The resizer chrome is owned by
+   @gfazioli/mantine-split-pane; we only give the split a border so the two panes read as one
+   surface in the docs. */
+[data-aardvark-island='SplitPane'] {
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+  overflow: hidden;
+}

@@ -1,0 +1,31 @@
+/* Frame for the {% appshell %} island (AppShell.jsx).
+
+   Mantine's AppShell positions its header / navbar / aside / footer with `position: fixed`
+   against the VIEWPORT and sizes them in `100dvh` — it is built to be the page root. Dropped
+   into a page that already has its own chrome (a docs page has a header + sidebar) those fixed
+   regions would escape their content slot, cover the site, and stay put on scroll with no way to
+   dismiss them. We re-root them to THIS box:
+
+   - `transform` (translateZ(0), zero visual change) makes the frame the *containing block* — and
+     the stacking context — for the AppShell's `position: fixed` regions, so they anchor here, not
+     the viewport. This is the load-bearing line: remove it and the shell escapes the page again.
+   - a bounded `height` + `overflow: hidden` clip the regions, which still size themselves in
+     `100dvh`, down to the frame.
+
+   The result is a self-contained app-layout preview that can never take over the page. `height`
+   is overridable per-instance via the tag's `height=` param (inline style on this element). */
+.aardvark-appshell-demo {
+  position: relative;
+  height: 380px;
+  overflow: hidden;
+  transform: translateZ(0);
+  border: 1px solid var(--mantine-color-default-border, #e9ecef);
+  border-radius: var(--mantine-radius-default, 0.5rem);
+  background-color: var(--mantine-color-body, #fff);
+}
+
+/* Keep the AppShell root (the only child) bounded to the frame so its in-flow content lays out
+   within the box rather than forcing an internal 100dvh scroll area before the frame clips it. */
+.aardvark-appshell-demo > div {
+  height: 100%;
+}

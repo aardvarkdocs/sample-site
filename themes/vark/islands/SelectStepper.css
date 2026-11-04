@@ -1,0 +1,7 @@
+@import '@gfazioli/mantine-select-stepper/styles.css';
+
+/* Styles for the {% selectstepper %} built-in (SelectStepper.jsx), a
+   Community Component wrapping @gfazioli/mantine-select-stepper. The vendor stylesheet is
+   pulled in via the CSS @import above (NOT a JS import — an SSR `--packages=external`
+   prerender crashes on a package .css JS import). No further rules are needed; the
+   component is styled by the vendor sheet + Mantine's theme tokens. */

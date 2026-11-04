@@ -1,0 +1,14 @@
+@import '@gfazioli/mantine-book/styles.css';
+
+/* Styles for the {% book %} built-in (Book.jsx).
+
+   The first @import pulls in the upstream @gfazioli/mantine-book stylesheet (a CSS
+   @import, never a JS import — an SSR --packages=external build crashes the
+   prerender on a package .css). Everything below is scoped under
+   [data-aardvark-island="Book"]; the upstream styles own the page/curl chrome, so
+   this file only gives the island room to breathe in the page flow. */
+
+[data-aardvark-island='Book'] {
+  display: block;
+  margin-block: var(--mantine-spacing-md);
+}

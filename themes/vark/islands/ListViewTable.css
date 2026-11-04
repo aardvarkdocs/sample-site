@@ -1,0 +1,12 @@
+@import '@gfazioli/mantine-list-view-table/styles.css';
+
+/* Styles for the {% listviewtable %} built-in (ListViewTable.jsx), a
+   Community Component wrapping @gfazioli/mantine-list-view-table. The package's own
+   stylesheet is pulled in by the @import above — a CSS @import, NOT a JS import, so it rides
+   the client bundle and never reaches the SSR prerender (a package .css import crashes
+   esbuild's --packages=external Node prerender; see the mantine-subpackage CSS/SSR
+   convention).
+
+   Nothing else is needed here: the upstream stylesheet owns the table chrome, and the
+   component honours the active Mantine theme (light/dark) on its own. This file exists so the
+   bundler has a co-located stylesheet to fold in. */

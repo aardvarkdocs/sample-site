@@ -75,9 +75,8 @@ component('charts', 'LineChart', h=260, dataKey='month', withLegend=True,
 > container — so it appears once the page's JavaScript has run, and the page's Markdown twin and
 > the whole-site PDF carry no chart. A `data` or `series` value that is not valid JSON, or is
 > JSON but not an array, warns during the build and draws an empty chart rather than stopping
-> the build. Charts need the `charts` component library declared (in `aardvark.config.yaml` or
-> the theme's `theme.yaml`), with `@mantine/charts` installed; this site declares it, so the tag
-> works here as written.
+> the build. Charts need `@mantine/charts` installed; the packaged theme declares the `charts`
+> component library over it, so the tag works here as written.
 
 ## CSS Selectors
 

@@ -1,0 +1,6 @@
+@import '@gfazioli/mantine-led/styles.css';
+
+/* Styles for the {% led %} built-in (Led.jsx). The package's own
+   stylesheet is pulled in by the @import above (a CSS @import — never a JS import of a
+   package .css, which would crash the SSR prerender). The package owns the LED's visuals
+   (glow, animation, variants); nothing extra is needed here. */

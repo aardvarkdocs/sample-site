@@ -1,0 +1,106 @@
+/* Styles for the {% changelog %} built-in (Changelog.jsx): a Mantine
+   Timeline of changes with a clickable tag-filter cloud. @mantine/core's stylesheet (which
+   covers Timeline + Badge + Button) loads globally from the client bundle, so — unlike an
+   island that pulls a Mantine sub-package stylesheet — there is no
+   `@import '@mantine/…/styles.css'` here; only this component's own layout.
+
+   Scoped under [data-aardvark-changelog]. The .mantine-Timeline-* names below are Mantine
+   7's runtime static classes (re-check on a Mantine major bump), the same convention
+   Stepper.css relies on. */
+
+[data-aardvark-changelog] {
+  /* Track the site accent for the bullets and the connecting line — Mantine's Timeline
+     reads --tl-color for the active bullet fill + line (see Stepper.css). */
+  --tl-color: var(--aardvark-accent, #228be6);
+}
+
+/* --- RSS toolbar: a right-aligned, icon-only link to the feed, above the layout so it
+   never overlaps the timeline or the sticky cloud column. --- */
+.aardvark-changelog-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--mantine-spacing-xs);
+}
+
+/* --- wide: timeline left, a sticky tag cloud in a right-hand column --- */
+/* The cloud is FIRST in the DOM (filter before results); explicit columns + shared row 1 place it
+   on the right beside the timeline on desktop — so visual order and keyboard/SR focus order stay
+   coherent (no CSS `order` reshuffle that would desync them, and no implicit second grid row). */
+.aardvark-changelog-wide {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: var(--mantine-spacing-xl);
+  align-items: start;
+}
+.aardvark-changelog-wide .aardvark-changelog-timeline {
+  grid-column: 1;
+  grid-row: 1;
+}
+.aardvark-changelog-wide .aardvark-changelog-cloud {
+  grid-column: 2;
+  grid-row: 1;
+  position: sticky;
+  top: 5rem; /* clear the sticky site header */
+}
+
+/* Collapse to one column on narrow viewports (Mantine's `sm` breakpoint): the cloud stacks above
+   the timeline — its natural DOM position, so focus follows — rather than squeezing a right rail. */
+@media (max-width: 48em) {
+  .aardvark-changelog-wide {
+    grid-template-columns: 1fr;
+  }
+  .aardvark-changelog-wide .aardvark-changelog-timeline,
+  .aardvark-changelog-wide .aardvark-changelog-cloud {
+    grid-column: auto; /* single column — flow in DOM order (cloud, then timeline) */
+    grid-row: auto;
+  }
+  .aardvark-changelog-wide .aardvark-changelog-cloud {
+    position: static;
+  }
+}
+
+/* --- stacked (non-wide, or wide+pre-filtered): cloud above the timeline --- */
+.aardvark-changelog-stacked .aardvark-changelog-cloud {
+  margin-bottom: var(--mantine-spacing-lg);
+}
+
+/* --- tag cloud --- */
+.aardvark-changelog-cloud {
+  padding: var(--mantine-spacing-md);
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+}
+.aardvark-changelog-tag {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* --- timeline entries --- */
+.aardvark-changelog-title {
+  margin: 0;
+}
+.aardvark-changelog-body {
+  margin-top: var(--mantine-spacing-xs);
+}
+/* The Markdown description renders block content (p / ul / pre / …), each carrying its own
+   margins; zero the outer edges so the body sits flush under the date rather than drifting
+   (the Stepper content pattern). */
+.aardvark-changelog-body > :first-child {
+  margin-top: 0;
+}
+.aardvark-changelog-body > :last-child {
+  margin-bottom: 0;
+}
+[data-aardvark-changelog] .mantine-Timeline-itemContent > :first-child {
+  margin-top: 0;
+}
+
+/* --- combined-day groups (combineByDay): the date once, then each of the day's changes,
+   each nested under a subtle left rule so the day reads as one entry. --- */
+.aardvark-changelog-changes {
+  margin-top: var(--mantine-spacing-xs);
+}
+.aardvark-changelog-change {
+  padding-left: var(--mantine-spacing-sm);
+  border-left: 2px solid var(--mantine-color-default-border);
+}

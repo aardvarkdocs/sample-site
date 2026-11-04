@@ -24,10 +24,10 @@
   // stops persisting. Reported, never rethrown: this script is render-blocking in <head>, and an
   // escaping throw abandons the rest of it, so `window.aardvarkColorScheme`, the toggle wiring and
   // the view-transition guards would never install — a dead theme toggle and a scheme flash on
-  // every navigation. The islands runtime's fallback persist path (client.js, used only when this
-  // script is absent) needs the same rule, and cannot share this one: it is concatenated verbatim
-  // into the generated bundle entry while this is a separately served theme asset, so neither file
-  // can import the other. If a copy grows there, change both together.
+  // every navigation. The islands runtime's fallback persist path (used only when this script is
+  // absent) needs the same rule, and cannot share this one: it is concatenated verbatim into the
+  // generated bundle entry while this is a separately served theme asset, so neither file can
+  // import the other. If a copy grows there, change both together.
   var STORAGE_DENIED_NAMES = [
     'SecurityError',
     'QuotaExceededError',

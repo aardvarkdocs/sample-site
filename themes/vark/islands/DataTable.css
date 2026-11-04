@@ -1,0 +1,15 @@
+@import 'mantine-datatable/styles.css';
+
+/* Styles for the {% datatable %} built-in (DataTable.jsx).
+
+   The first line pulls in mantine-datatable's own stylesheet. It is a CSS `@import` of the
+   PACKAGE stylesheet (resolved by esbuild's CSS bundler at build time and folded into the
+   single client `islands-<sha>.css`), NEVER a JS `import 'mantine-datatable/styles.css'` in
+   the .jsx: a package .css imported from JS crashes the SSR prerender bundle
+   (--platform=node --packages=external can't resolve a bare package .css at Node runtime).
+   @mantine/core's own stylesheet — which the grid also builds on — already loads globally
+   from the client bundle, so it isn't re-imported here.
+
+   This file adds no overrides of its own; the grid inherits the theme through Mantine's CSS
+   variables. It exists solely as the co-located stylesheet that carries the package @import,
+   matching the same-stem .css convention the bundler copies and the island imports. */

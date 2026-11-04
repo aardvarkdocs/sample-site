@@ -93,9 +93,10 @@ vark dev     # live preview in your browser, rebuilt on every change
 - `snippets/` — custom React components
 - `components/` — custom Markdown macro components
 - `templates/` — HTML theme overrides and extra page layouts
-- `themes/vark/` — the default theme's templates, styles and scripts, published from the
-  aardvark package this site is built with (third-party notices in
-  `themes/vark/THIRD_PARTY_NOTICES`)
+- `themes/vark/` — the default theme's templates, styles, scripts, built-in components
+  (`themes/vark/components/`, with its own `README.md`) and the React islands they render
+  (`themes/vark/islands/`), published from the aardvark package this site is built with
+  (third-party notices in `themes/vark/THIRD_PARTY_NOTICES`)
 - `static/` — assets copied as-is
 - `openapi/` — OpenAPI specs rendered as reference pages
 - `i18n/` — UI strings for translations

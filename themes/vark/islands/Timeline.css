@@ -1,0 +1,30 @@
+/* Styles for the built-in {% timeline %} island (Timeline.jsx). Scoped under
+   the island's data attribute, the same convention as Stepper.css /
+   Tabs.css. The .mantine-Timeline-* names are Mantine's runtime static
+   classes (emitted per part by getStyles) and are version-tied to Mantine 9 —
+   re-check on a Mantine major bump. */
+
+/* Default the bullet/line accent to the site color, falling back to Mantine's blue,
+   so a timeline with no explicit `color=` matches the theme. An author-set `color=`
+   (forwarded as Mantine's --tl-color) still wins, since it's set on the same root at a
+   higher specificity by Mantine's vars resolver. */
+[data-aardvark-timeline] {
+  --tl-color: var(--aardvark-accent, #228be6);
+}
+
+/* A lazily-fetched Tabler bullet glyph: size it to the bullet circle and let it inherit
+   the bullet's text color (Mantine renders the icon color via currentColor). */
+[data-aardvark-timeline] .aardvark-timeline-glyph {
+  width: 0.85em;
+  height: 0.85em;
+  display: inline-flex;
+}
+
+/* Each item body may be short prose; zero the stray top/bottom margins of a wrapping
+   block child so the content sits flush with its bullet rather than drifting. */
+[data-aardvark-timeline] .mantine-Timeline-itemContent > :first-child {
+  margin-top: 0;
+}
+[data-aardvark-timeline] .mantine-Timeline-itemContent > :last-child {
+  margin-bottom: 0;
+}

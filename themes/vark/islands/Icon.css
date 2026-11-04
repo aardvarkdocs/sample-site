@@ -1,0 +1,51 @@
+/* Inline {% icon %} — a Mantine ThemeIcon (rendered as a <span>, inside the island's <span>
+   wrapper) that flows inside prose or a heading. Icon.jsx's default case (transparent
+   variant, no size) sets --ti-size/--ti-fz to 1em and --ti-color to currentColor inline, so a plain
+   {% icon %} reads as a bare glyph tracking the surrounding text; passing variant=/color=/size=
+   gives the full ThemeIcon chip. This file is co-located and inlined into islands.css. */
+.aardvark-themeicon {
+  display: inline-flex;
+  /* Sit the box on the text baseline like an inline glyph rather than hanging below it. */
+  vertical-align: -0.15em;
+}
+.aardvark-themeicon[data-bare] {
+  vertical-align: -0.125em;
+}
+
+/* Glyphs are sized to the ThemeIcon's own font-size var (--ti-fz) so they scale with the icon:
+   the bare 1em box makes the glyph fill the text cell, a sized chip leaves the usual padding.
+   The `1em` fallback covers any size where Mantine doesn't set --ti-fz. */
+.aardvark-themeicon-fa {
+  font-size: var(--ti-fz, 1em);
+  line-height: 1;
+}
+.aardvark-themeicon-emoji {
+  font-size: var(--ti-fz, 1em);
+  line-height: 1;
+}
+/* The lazily-injected Tabler SVG (and the reserved placeholder before it loads). Fixed box = no
+   layout shift; the stroke inherits the ThemeIcon's currentColor. */
+.aardvark-themeicon-glyph {
+  display: inline-flex;
+  width: var(--ti-fz, 1em);
+  height: var(--ti-fz, 1em);
+}
+.aardvark-themeicon-glyph svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+/* The SVG is injected INTO its wrapper span, but the image case renders the <img> AS the element
+   (no wrapper) — so it's `img.aardvark-themeicon-img`, not a descendant `… img`. The element+class
+   selector also out-specifies the `.aardvark-content img { height:auto }` reset (islands.css loads
+   after theme.css), so the icon tracks --ti-fz instead of its natural resolution. */
+.aardvark-themeicon-svg svg,
+img.aardvark-themeicon-img {
+  display: block;
+  width: var(--ti-fz, 1em);
+  height: var(--ti-fz, 1em);
+  /* The icon box is fixed at --ti-fz; cancel the `.aardvark-content img { max-width:100% }` reset so
+     it isn't shrunk to the ThemeIcon's content width (the 1px border makes that < the box). */
+  max-width: none;
+  object-fit: contain;
+}

@@ -1,0 +1,24 @@
+@import '@mantine/dropzone/styles.css';
+
+.aardvark-Dropzone-status {
+  margin-top: var(--mantine-spacing-sm);
+  font-size: var(--mantine-font-size-sm);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.aardvark-Dropzone-status[data-status='accepted'] {
+  color: var(--mantine-color-teal-7);
+}
+
+.aardvark-Dropzone-status[data-status='rejected'] {
+  color: var(--mantine-color-red-7);
+}
+
+[data-mantine-color-scheme='dark'] .aardvark-Dropzone-status[data-status='accepted'] {
+  color: var(--mantine-color-teal-3);
+}
+
+[data-mantine-color-scheme='dark'] .aardvark-Dropzone-status[data-status='rejected'] {
+  color: var(--mantine-color-red-3);
+}

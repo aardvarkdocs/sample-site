@@ -1,0 +1,6 @@
+@import '@gfazioli/mantine-spinner/styles.css';
+
+/* Styles for the {% spinner %} built-in (Spinner.jsx). The package's
+   own stylesheet is pulled in by the @import above (a CSS @import — never a JS import of
+   a package .css, which would crash the SSR prerender). The package owns the spinner's
+   own visuals; nothing extra is needed here. */

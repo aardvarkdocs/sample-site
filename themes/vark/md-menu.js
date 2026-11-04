@@ -2,7 +2,8 @@
 // dropdown and copy the page's raw Markdown to the clipboard. Progressive enhancement —
 // open state is driven solely by the .aardvark-open class (no :hover/:focus-within in the
 // CSS), so a click reliably toggles it closed. Without JS the menu stays shut; its links
-// are still reachable via the page's .md URL (and llms.txt). See theme.render_markdown_menu.
+// are still reachable via the page's .md URL (and llms.txt). The build renders the menu's
+// markup, and default.html places it.
 (function () {
   function trigger(menu) {
     // The caret button that opens the dropdown (the "View in Markdown" primary is a plain link).

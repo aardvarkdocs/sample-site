@@ -10,7 +10,7 @@ description: "The built-in button tag — a styled button or link with the full 
 `{% raw %}{% button %}{% endraw %}` is a **built-in** tag for buttons and
 button-styled links — every Mantine Button capability, exposed as a single tag with
 no setup. The header's top-bar call-to-action buttons (`topButtons` in
-`aardvark.config.yaml`) use the same tag.
+`aardvark.config.yaml`) take the same fields (see [In the header](#in-the-header)).
 
 Use it as `{% raw %}{% button %}{% endraw %}` in Markdown, or call it from Python
 logic (loops, snippets) via `component('aardvark', 'button', …)`.
@@ -455,10 +455,12 @@ component('aardvark', 'button', text="See what's included", variant='subtle', ur
 
 ## In the header
 
-The site's top-bar call-to-action buttons are the same tag. Configure them with
-`topButtons` in `aardvark.config.yaml` — each entry accepts every field below. The
+The site's top-bar call-to-action buttons take the same fields as this tag. Configure them
+with `topButtons` in `aardvark.config.yaml` — each entry accepts every field below. The
 default is a **Login** (outline) + **Sign up** (grape→pink gradient at 135°) pair;
-set `topButtons: []` to hide them.
+set `topButtons: []` to hide them. They are aardvark's own `TopButton` island, part of the
+site chrome rather than this tag, so a `snippets/Button.jsx` override doesn't restyle them:
+override `snippets/TopButton.jsx` for that, or style their `aardvark-top-button` class.
 
 ## Attributes
 

@@ -1,0 +1,14 @@
+@import '@gfazioli/mantine-marquee/styles.css';
+
+/* Styles for the {% communityMarquee %} built-in (CommunityMarquee.jsx),
+   a Community Component wrapping @gfazioli/mantine-marquee.
+
+   The package's own stylesheet is pulled in by the CSS @import above (a CSS import, NOT a
+   JS `import '@gfazioli/mantine-marquee/styles.css'` — the SSR bundle runs esbuild with
+   --packages=external, which crashes the prerender on a package .css). This file otherwise
+   only adds the page rhythm around the ticker; the package owns the animation + fade chrome
+   via its data-attribute selectors. */
+
+[data-aardvark-island='CommunityMarquee'] {
+  margin-block: var(--mantine-spacing-md);
+}

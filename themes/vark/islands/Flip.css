@@ -1,0 +1,11 @@
+@import '@gfazioli/mantine-flip/styles.css';
+
+/* Styles for the {% flip %} built-in (Flip.jsx). The package stylesheet
+   is pulled in by the @import above (a CSS @import, never a JS import of a package .css —
+   that crashes the SSR prerender). This file only ensures each face fills the flip box so
+   front and back align, scoped under [data-aardvark-flip] so nothing leaks onto the page. */
+
+[data-aardvark-flip] .aardvark-flip-face {
+  width: 100%;
+  height: 100%;
+}

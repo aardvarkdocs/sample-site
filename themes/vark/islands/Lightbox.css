@@ -1,0 +1,26 @@
+/* @mantine-bites/lightbox ships its own stylesheet for the full-screen overlay + carousel
+   chrome; pull it in here (a CSS @import, never a JS import — a package .css imported from
+   JS crashes the SSR prerender, see the mantine-subpackage-css-ssr note). It must come
+   after @mantine/core's styles (the client entry imports those first), which it is — this
+   file only loads when a lightbox is on the page. */
+@import '@mantine-bites/lightbox/styles.css';
+
+/* Styles for the {% lightbox %} community built-in (Lightbox.jsx). The
+   overlay/carousel is owned by the imported stylesheet above; this only styles the
+   thumbnail grid the docs page shows. */
+[data-aardvark-lightbox] {
+  margin-block: var(--mantine-spacing-md);
+}
+
+[data-aardvark-lightbox] .aardvark-lightbox-thumb {
+  display: block;
+  width: 100%;
+  border-radius: var(--mantine-radius-md);
+  overflow: hidden;
+  cursor: zoom-in;
+  transition: transform 150ms ease;
+}
+
+[data-aardvark-lightbox] .aardvark-lightbox-thumb:hover {
+  transform: scale(1.02);
+}

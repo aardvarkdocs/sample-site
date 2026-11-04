@@ -1,0 +1,85 @@
+/* Styles for the built-in {% update %} island (Update.jsx): one inline release-note entry
+   drawn as a single Mantine Timeline Item — a version/date label on the left rail, the Markdown
+   body beside it. @mantine/core's stylesheet (Timeline + Badge + Text) loads globally from the
+   client bundle, so — like Changelog.css — there is no `@import '@mantine/…/styles.css'` here;
+   only this component's own layout.
+
+   Scoped under [data-aardvark-update]. The .mantine-Timeline-* names below are Mantine 9's
+   runtime static classes (re-check on a Mantine major bump), the same convention Timeline.css /
+   Changelog.css rely on. */
+
+[data-aardvark-update] {
+  /* Track the site accent for the bullet + connecting line — Mantine's Timeline reads
+     --tl-color for the active bullet fill and the line (see Timeline.css). An author-set
+     `color=` still wins: Mantine sets its own --tl-color on the Item at higher specificity. */
+  --tl-color: var(--aardvark-accent, #228be6);
+  /* Own the vertical gap between consecutive entries via a single token, so the between-entry
+     line bridge below can span EXACTLY that gap instead of guessing at the surrounding block
+     margins. Set as a bottom margin on every update island (collapsing with the next island's
+     top margin / adjacent prose is fine — the bridge only needs to cover its own reserved gap).
+     Override --aardvark-update-gap from your theme to change both the spacing and the bridge
+     together. */
+  --aardvark-update-gap: var(--mantine-spacing-lg);
+  margin-bottom: var(--aardvark-update-gap);
+}
+
+/* A lazily-fetched Tabler bullet glyph: size it to the bullet circle and let it inherit the
+   bullet's text color (Mantine renders the icon color via currentColor). Mirrors Timeline.css. */
+[data-aardvark-update] .aardvark-update-glyph {
+  width: 0.85em;
+  height: 0.85em;
+  display: inline-flex;
+}
+
+/* --- the left-rail label column (the Timeline.Item title): version, sub-label, badges --- */
+.aardvark-update-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.aardvark-update-version {
+  /* Slightly larger than body text so the version/date reads as the entry's heading. */
+  font-size: var(--mantine-font-size-md);
+  line-height: 1.3;
+}
+
+/* --- the Markdown body beside the rail --- */
+.aardvark-update-body {
+  margin-top: var(--mantine-spacing-xs);
+}
+/* The body renders block content (p / ul / pre / headings), each carrying its own margins; zero
+   the outer edges so it sits flush under the label rather than drifting (the Changelog/Stepper
+   content pattern). */
+.aardvark-update-body > :first-child {
+  margin-top: 0;
+}
+.aardvark-update-body > :last-child {
+  margin-bottom: 0;
+}
+[data-aardvark-update] .mantine-Timeline-itemContent > :first-child {
+  margin-top: 0;
+}
+
+/* --- bridge the line between adjacent entries ---
+   Each {% update %} is its own island (its own single-Item Timeline), so Mantine draws no line
+   past that single item — a run of updates would show a break at every entry boundary. We extend
+   a faint line segment DOWN from the item, through the entry's own bottom margin, so a stack
+   reads as one continuous rail. Because the island owns its bottom gap via --aardvark-update-gap
+   (set above), the bridge spans EXACTLY that gap (`100% - content-top-offset + gap`) rather than
+   guessing at the surrounding block margins — retune the gap and the bridge follows. The last
+   entry on the page also gets a trailing stub; that's an acceptable, subtle tail (Mintlify's rail
+   behaves the same). Values mirror bulletSize/lineWidth (18/2) set in Update.jsx; the accent
+   matches Mantine's own line color, kept faint so it doesn't visibly double the in-item stub. */
+[data-aardvark-update] .mantine-Timeline-item {
+  position: relative;
+}
+[data-aardvark-update] .mantine-Timeline-item::after {
+  content: '';
+  position: absolute;
+  left: 8px; /* (bulletSize 18 / 2) - (lineWidth 2 / 2) = 8 → centers on the bullet */
+  top: 18px; /* start just below the bullet (= bulletSize) */
+  width: 2px; /* = lineWidth */
+  height: calc(100% - 18px + var(--aardvark-update-gap));
+  background: var(--tl-color);
+  opacity: 0.25; /* subtle, like Mantine's inactive line */
+}
