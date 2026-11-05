@@ -7,8 +7,9 @@ upstream address and its copyright notice as upstream states it, and "License
 texts" reproduces each license in full (a text shared by several works is
 printed once and referenced by name). What the files themselves embed is
 limited: mermaid.min.js keeps, collected at its end, only the short attribution
-comments its bundler preserved (DOMPurify's, lodash's, and four helper notices
-inside Cytoscape.js) and no license text at all, not even Mermaid's own;
+comments its bundler preserved (DOMPurify's and the Babel regenerator-runtime
+notice inside DOMPurify's build, lodash's, and four helper notices inside
+Cytoscape.js) and no license text at all, not even Mermaid's own;
 markdeep.min.js keeps its three-line header and, where the bundled copy of
 highlight.js begins, that library's banner; twoslash.css and theme.scss carry
 first-party comments that credit the rules they adapt, and code-blocks.js and
@@ -23,16 +24,18 @@ mermaid.min.js
   browser build. License: MIT.
   The build bundles Mermaid's own dependencies, each under its own license:
     - DOMPurify (https://github.com/cure53/DOMPurify): Apache-2.0 OR MPL-2.0;
-      this theme redistributes it under Apache-2.0. Its one-line notice is
-      embedded at the end of the file.
+      this theme redistributes it under Apache-2.0. Its build inlines helper
+      functions from Babel (MIT). Its one-line notice and Babel's
+      regenerator-runtime notice are embedded at the end of the file.
     - lodash-es (https://lodash.com): MIT. Its header notice is embedded at the
       end of the file.
     - Cytoscape.js (https://js.cytoscape.org): MIT, with four helper notices
       (MIT) embedded at the end of the file; its layout extensions
       cytoscape-fcose and cytoscape-cose-bilkent with cose-base and
       layout-base: MIT.
-    - elkjs (https://github.com/kieler/elkjs): EPL-2.0, with one Apache-2.0
-      portion from Google.
+    - elkjs (https://github.com/kieler/elkjs): EPL-2.0 OR GPL-3.0-or-later;
+      this theme redistributes it under EPL-2.0. Its build includes the
+      browser entry of Google's web-worker: Apache-2.0.
     - Chevrotain (https://github.com/chevrotain/chevrotain) and its
       @chevrotain/* modules: Apache-2.0.
     - Mermaid's own parser package (@mermaid-js/parser): MIT. Its build
@@ -48,7 +51,7 @@ mermaid.min.js
     - dagre-d3-es, marked (with John Gruber's Markdown notice, BSD-3-Clause),
       roughjs (whose build inlines hachure-fill, path-data-parser,
       points-on-curve and points-on-path), Day.js: MIT.
-    - es-toolkit, khroma, stylis, uuid, ts-dedent, js-yaml, fastdom,
+    - es-toolkit, khroma, stylis, ts-dedent, js-yaml, fastdom,
       @braintree/sanitize-url, @iconify/utils, @upsetjs/venn.js: MIT;
       internmap: ISC.
   Copyright notices and license texts for all of these follow below.
@@ -115,6 +118,14 @@ Bundled in mermaid.min.js
       Apache-2.0 (text under "Apache License 2.0" below). The MPL-2.0 text is
       published at https://www.mozilla.org/MPL/2.0/ and ships with DOMPurify as
       LICENSE-MPL.
+    Its build inlines helper functions from Babel
+    (https://github.com/babel/babel) and carries this notice from them,
+    reproduced from the bundle:
+      regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE
+    The license file of Babel's helpers (@babel/helpers) states:
+      Copyright (c) 2014-present Sebastian McKenzie and other contributors
+      Copyright (c) 2014-present, Facebook, Inc. (ONLY ./src/helpers/regenerator* files)
+    License: MIT (text under "MIT License" below)
 
   lodash-es
     https://lodash.com
@@ -214,9 +225,15 @@ Bundled in mermaid.min.js
     build carries these notices:
       Copyright (c) 2017 Kiel University and others.
       Copyright (c) 2021 Kiel University and others.
-      SPDX-License-Identifier: EPL-2.0
-    License: EPL-2.0 (text under "Eclipse Public License 2.0" below).
-    One portion of the bundled build carries this notice instead:
+      SPDX-License-Identifier: EPL-2.0 OR GPL-3.0-or-later
+    License: EPL-2.0 OR GPL-3.0-or-later. This theme redistributes elkjs under
+      EPL-2.0 (text under "Eclipse Public License 2.0" below). The GPL-3.0
+      text is published at
+      https://www.gnu.org/licenses/gpl-3.0-standalone.html.
+    One portion of the bundled build is the browser entry of web-worker
+    (https://github.com/developit/web-worker), whose license file is the
+    Apache-2.0 text without a copyright line. web-worker's source file
+    carries this notice, which the bundled build omits:
       Copyright 2020 Google LLC
 
       Licensed under the Apache License, Version 2.0 (the "License");
@@ -461,11 +478,6 @@ Bundled in mermaid.min.js
     Copyright (c) 2016-present Sultan Tarimo
     License: MIT (text under "MIT License" below)
 
-  uuid
-    https://github.com/uuidjs/uuid
-    Copyright (c) 2010-2020 Robert Kieffer and other contributors
-    License: MIT (text under "MIT License" below)
-
   ts-dedent
     https://github.com/tamino-martinius/node-ts-dedent
     Copyright (c) 2018 Tamino Martinius
@@ -672,8 +684,8 @@ BSD 2-Clause License (Markdeep)
 
 Apache License 2.0
   Applies to DOMPurify (as redistributed here), Chevrotain and its
-  @chevrotain/* modules, the Google portion of elkjs, and the ColorBrewer color
-  schemes in d3-scale-chromatic.
+  @chevrotain/* modules, the web-worker portion of elkjs, and the ColorBrewer
+  color schemes in d3-scale-chromatic.
 
                                      Apache License
                                Version 2.0, January 2004
@@ -878,7 +890,9 @@ Apache License 2.0
        limitations under the License.
 
 Eclipse Public License 2.0
-  Applies to elkjs, reproduced as its license file states it.
+  Applies to elkjs (as redistributed here), reproduced as its license file
+  states it: elkjs fills in Exhibit A itself, naming the GPL-3.0-or-later
+  secondary license.
 
     # Eclipse Public License - v 2.0
 
@@ -1132,8 +1146,7 @@ Eclipse Public License 2.0
 
     “This Source Code may also be made available under the following
     Secondary Licenses when the conditions for such availability set forth
-    in the Eclipse Public License, v. 2.0 are satisfied: {name license(s),
-    version(s), and exceptions or additional permissions here}.”
+    in the Eclipse Public License, v. 2.0 are satisfied: GNU General Public License v3.0 or later”
 
     > Simply including a copy of this Agreement, including this Exhibit A is
     > not sufficient to license the Source Code under Secondary Licenses.
