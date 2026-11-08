@@ -1,3 +1,7 @@
+/* @aardvark-island {
+  "urlProps": ["leftImage", "rightImage"],
+  "imageProps": ["leftImage", "rightImage"]
+} */
 import { forwardRef } from 'react';
 import { Compare as MantineCompare } from '@gfazioli/mantine-compare';
 import './Compare.css';

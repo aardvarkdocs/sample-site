@@ -1,3 +1,4 @@
+/* @aardvark-island {"urlProps": ["icon"], "iconImageProps": ["icon"]} */
 import { forwardRef } from 'react';
 import { CloseButton as MantineCloseButton } from '@mantine/core';
 import { iconGlyph } from './_iconGlyph';

@@ -1,3 +1,7 @@
+/* @aardvark-island {
+  "urlProps": ["href", "leftSection", "rightSection", "items[]..."],
+  "iconImageProps": ["leftSection", "rightSection"]
+} */
 import { forwardRef } from 'react';
 import { NavLink as MantineNavLink } from '@mantine/core';
 import { classifyIcon, sanitizeSvg, LazyTablerIcon } from '@aardvark/islands/tabler-icons';

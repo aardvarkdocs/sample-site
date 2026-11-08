@@ -1,3 +1,4 @@
+/* @aardvark-island {"urlProps": ["images[].src"], "imageProps": ["images[].src"]} */
 import { forwardRef, useState } from 'react';
 import { Image, SimpleGrid, UnstyledButton } from '@mantine/core';
 import { Lightbox as BitesLightbox } from '@mantine-bites/lightbox';

@@ -1,3 +1,4 @@
+/* @aardvark-island {"urlProps": ["image"], "imageProps": ["image"]} */
 import { forwardRef } from 'react';
 import { QRCode as GfazioliQRCode } from '@gfazioli/mantine-qr-code';
 import './QrCode.css';

@@ -1,3 +1,4 @@
+/* @aardvark-island {"urlProps": ["items[].href"]} */
 import { forwardRef } from 'react';
 import { Paper, Text } from '@mantine/core';
 import { ContextMenuProvider, useContextMenu } from 'mantine-contextmenu';

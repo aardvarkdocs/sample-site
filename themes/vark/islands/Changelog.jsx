@@ -1,8 +1,18 @@
+/* @aardvark-island {
+  "urlProps": ["entries[].changes[].url"],
+  "linkProps": ["entries[].changes[].url"],
+  "implements": ["Changelog@1"]
+} */
 import { forwardRef, useMemo } from 'react';
 import { Anchor, Badge, Group, Stack, Text, Timeline, Title } from '@mantine/core';
 import { collectTags, filterByActiveTags, TagBadge, TagCloudBox, useSyncedTagFilter } from '@aardvark/islands/tag-cloud';
 import { FeedIcon } from './_feedIcon';
 import { sanitizeHref } from '@aardvark/islands/safe-href';
+// The English default of each label prop, from _ui_strings.json beside this file (named, so a
+// bundle carries only the tables its islands use). The build localizes every label from the same
+// table and passes a prop only when its translation differs (or the author set it), so that file
+// is the one place a label's English text changes.
+import { Changelog as LABELS } from './_ui_strings.json';
 import './Changelog.css';
 
 // The island behind the built-in {% changelog %} directive.
@@ -48,13 +58,12 @@ import './Changelog.css';
 // targets stay stable.
 const Changelog = forwardRef(function Changelog(
   { entries = [], wide = false, showTagCloud = true, feedUrl = null, tagSlugs = null,
-    // Localized (or author-overridden) cloud labels; undefined → TagCloudBox's own defaults.
-    filterLabel = undefined, clearLabel = undefined,
-    // The filter-empty copy; the default is the English string, so an untranslated site
-    // renders byte-identically (the directive only passes this prop when it localizes).
-    emptyText = 'No changes match the selected tags.',
-    // The RSS icon's accessible name + tooltip (localized like every other chrome label).
-    rssLabel = 'RSS feed' },
+    // The tag cloud's heading and its Clear button.
+    filterLabel = LABELS.filterLabel, clearLabel = LABELS.clearLabel,
+    // The filter-empty copy.
+    emptyText = LABELS.emptyText,
+    // The RSS icon's accessible name + tooltip.
+    rssLabel = LABELS.rssLabel },
   ref,
 ) {
   // The filter cloud: the union of every group's tags, in stable sorted order.

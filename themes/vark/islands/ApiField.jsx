@@ -1,3 +1,4 @@
+/* @aardvark-island {"implements": ["ApiField@1"]} */
 import { forwardRef } from 'react';
 import { Badge, Code, Group, Text } from '@mantine/core';
 import './ApiField.css';

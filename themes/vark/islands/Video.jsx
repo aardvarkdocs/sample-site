@@ -1,3 +1,7 @@
+/* @aardvark-island {
+  "urlProps": ["src", "poster", "fallbackSrc", "sources[].src"],
+  "imageProps": ["poster"]
+} */
 import { forwardRef, useEffect, useState } from 'react';
 import { Video as MantineVideo } from '@gfazioli/mantine-video';
 import './Video.css';

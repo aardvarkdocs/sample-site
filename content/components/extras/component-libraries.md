@@ -38,8 +38,8 @@ Libraries are declared in a `componentLibraries:` block, in either of two places
 The packaged `vark` theme declares two libraries itself, `charts` (`@mantine/charts`) and
 `carousel` (`@mantine/carousel`): its [chart](/components/data-display/linechart/) and
 [carousel](/components/data-display/carousel/) tags are built on them. A theme folder in your
-project is [laid over the packaged theme](/theming/#layers-and-themeyaml), so its `theme.yaml`
-merges with vark's one library key at a time.
+project is [laid over the packaged theme](/theming/component-library/#layers-and-themeyaml),
+so its `theme.yaml` merges with vark's one library key at a time.
 
 Both files take the same entries. This site pulls in [Stripe's React
 SDK](https://github.com/stripe/react-stripe-js) from its `aardvark.config.yaml`:

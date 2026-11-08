@@ -1,3 +1,9 @@
+/* @aardvark-island {
+  "urlProps": ["articles[].href", "articles[].image", "articles[].authorAvatar"],
+  "imageProps": ["articles[].image", "articles[].authorAvatar"],
+  "linkProps": ["articles[].href"],
+  "implements": ["ArticleList@1"]
+} */
 import { forwardRef, useMemo } from 'react';
 import { SimpleGrid, Text } from '@mantine/core';
 import { collectTags, filterByActiveTags, TagCloudBox, useSyncedTagFilter } from '@aardvark/islands/tag-cloud';
@@ -5,6 +11,11 @@ import { FeedIcon } from './_feedIcon';
 import { sanitizeHref } from '@aardvark/islands/safe-href';
 import { resolveCols } from './_colsLadder';
 import ArticleCard from './ArticleCard';
+// The English default of each label prop, from _ui_strings.json beside this file (named, so a
+// bundle carries only the tables its islands use). The build localizes every label from the same
+// table and passes a prop only when its translation differs (or the author set it), so that file
+// is the one place a label's English text changes.
+import { ArticleList as LABELS } from './_ui_strings.json';
 import './ArticleList.css';
 
 // The taxonomy article listing: a responsive grid of ArticleCards with a clickable
@@ -48,12 +59,12 @@ const ArticleList = forwardRef(function ArticleList(
     showTagCloud = true,
     tagSlugs = null,
     feedUrl = null,
-    emptyText = 'No articles match the selected tags.',
-    // Localized (or author-overridden) cloud labels; undefined → TagCloudBox's own defaults.
-    filterLabel = undefined,
-    clearLabel = undefined,
-    // The RSS icon's accessible name + tooltip (localized like every other chrome label).
-    rssLabel = 'RSS feed',
+    emptyText = LABELS.emptyText,
+    // The tag cloud's heading and its Clear button.
+    filterLabel = LABELS.filterLabel,
+    clearLabel = LABELS.clearLabel,
+    // The RSS icon's accessible name + tooltip.
+    rssLabel = LABELS.rssLabel,
     wide = false,
     ...rest
   },

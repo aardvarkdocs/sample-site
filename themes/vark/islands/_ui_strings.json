@@ -1,0 +1,27 @@
+{
+  "KnowledgeBase": {
+    "topLabel": "Top questions",
+    "categoriesLabel": "Browse by category",
+    "allLabel": "All articles",
+    "showAllLabel": "Show all",
+    "emptyText": "No articles match this category.",
+    "articleLabel": "article",
+    "articlesLabel": "articles",
+    "bannerTitle": "How can we help?",
+    "bannerText": "",
+    "askPlaceholder": "Ask a question…",
+    "askLabel": "Ask"
+  },
+  "ArticleList": {
+    "emptyText": "No articles match the selected tags.",
+    "filterLabel": "Filter by tag",
+    "clearLabel": "Clear",
+    "rssLabel": "RSS feed"
+  },
+  "Changelog": {
+    "filterLabel": "Filter by tag",
+    "clearLabel": "Clear",
+    "emptyText": "No changes match the selected tags.",
+    "rssLabel": "RSS feed"
+  }
+}

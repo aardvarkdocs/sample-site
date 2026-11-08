@@ -1,3 +1,4 @@
+/* @aardvark-island {"implements": ["Stepper@1"]} */
 import { Children, forwardRef, isValidElement } from 'react';
 import { Timeline } from '@mantine/core';
 import './Stepper.css';

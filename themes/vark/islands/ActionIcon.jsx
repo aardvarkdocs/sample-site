@@ -1,3 +1,4 @@
+/* @aardvark-island {"urlProps": ["href", "icon"], "iconImageProps": ["icon"]} */
 import { forwardRef } from 'react';
 import { ActionIcon as MantineActionIcon } from '@mantine/core';
 import { iconGlyph } from './_iconGlyph';

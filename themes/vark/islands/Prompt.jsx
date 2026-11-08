@@ -1,3 +1,4 @@
+/* @aardvark-island {"implements": ["Prompt@1"]} */
 import { forwardRef } from 'react';
 import { CopyButton as MantineCopyButton, ActionIcon, Group, Paper, ScrollArea, Text, Tooltip } from '@mantine/core';
 import { IconCheck, IconClipboard } from '@tabler/icons-react';

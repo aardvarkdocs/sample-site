@@ -1,3 +1,4 @@
+/* @aardvark-island {"implements": ["Map@1"]} */
 import { Popover } from '@mantine/core';
 import { Map as MantineMap } from 'mantine-map';
 import { Component, forwardRef, useCallback, useLayoutEffect, useRef, useState } from 'react';

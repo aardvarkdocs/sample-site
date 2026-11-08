@@ -1,3 +1,8 @@
+/* @aardvark-island {
+  "urlProps": ["featured[].href", "articles[].href"],
+  "linkProps": ["featured[].href", "articles[].href"],
+  "implements": ["KnowledgeBase@1"]
+} */
 import { forwardRef, useEffect, useMemo, useRef } from 'react';
 import {
   Anchor,
@@ -21,6 +26,11 @@ import {
 } from '@aardvark/islands/tag-cloud';
 import { classifyIcon, LazyTablerIcon } from '@aardvark/islands/tabler-icons';
 import { sanitizeHref } from '@aardvark/islands/safe-href';
+// The English default of each label prop (the banner's, the headings, the empty and count text),
+// from _ui_strings.json beside this file (named, so a bundle carries only the tables its islands
+// use). The build localizes every label from the same table and passes a prop only when its
+// translation differs, so that file is the one place a label's English text changes.
+import { KnowledgeBase as LABELS } from './_ui_strings.json';
 // Every card here (category buttons, featured questions, the article list) wears the
 // {% card %} island's chrome — data-aardvark-card + a sheen span — so the KB gets the
 // same hover lift/flash as the rest of the site's cards. Import Card.css directly so
@@ -70,7 +80,7 @@ import './KnowledgeBase.css';
 // "3 articles" / "1 article" — the category-card count line and the filtered status line.
 // The singular/plural nouns are parameterized (articleLabel/articlesLabel props) so a
 // translated page localizes the count like every other KB label. Exported for unit tests.
-export function articleCountLabel(count, one = 'article', other = 'articles') {
+export function articleCountLabel(count, one = LABELS.articleLabel, other = LABELS.articlesLabel) {
   return `${count} ${count === 1 ? one : other}`;
 }
 
@@ -82,17 +92,17 @@ const KnowledgeBase = forwardRef(function KnowledgeBase(
     tagSlugs = null,
     iconCdn = null,
     askMode = null,
-    bannerTitle = 'How can we help?',
-    bannerText = '',
-    askPlaceholder = 'Ask a question…',
-    askLabel = 'Ask',
-    topLabel = 'Top questions',
-    categoriesLabel = 'Browse by category',
-    allLabel = 'All articles',
-    showAllLabel = 'Show all',
-    emptyText = 'No articles match this category.',
-    articleLabel = 'article',
-    articlesLabel = 'articles',
+    bannerTitle = LABELS.bannerTitle,
+    bannerText = LABELS.bannerText,
+    askPlaceholder = LABELS.askPlaceholder,
+    askLabel = LABELS.askLabel,
+    topLabel = LABELS.topLabel,
+    categoriesLabel = LABELS.categoriesLabel,
+    allLabel = LABELS.allLabel,
+    showAllLabel = LABELS.showAllLabel,
+    emptyText = LABELS.emptyText,
+    articleLabel = LABELS.articleLabel,
+    articlesLabel = LABELS.articlesLabel,
     ...rest
   },
   ref,

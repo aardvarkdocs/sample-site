@@ -1,3 +1,8 @@
+/* @aardvark-island {
+  "urlProps": ["src", "fallbackSrc", "srcSet"],
+  "imageProps": ["src", "fallbackSrc", "srcSet"],
+  "implements": ["ZoomImage@1"]
+} */
 import { forwardRef, useEffect, useRef, useState } from 'react';
 import { useMergedRef } from '@mantine/hooks';
 import { Image, Modal, Tooltip } from '@mantine/core';

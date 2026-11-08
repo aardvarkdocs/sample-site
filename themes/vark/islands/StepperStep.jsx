@@ -1,3 +1,4 @@
+/* @aardvark-island {"implements": ["StepperStep@1"]} */
 import { forwardRef } from 'react';
 
 // Data carrier for one item of a Markdown ordered list that Aardvark auto-converts

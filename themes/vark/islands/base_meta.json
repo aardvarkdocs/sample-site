@@ -1,0 +1,15 @@
+{
+  "Anchor": {"urlProps": ["href"]},
+  "Avatar": {"urlProps": ["src"], "imageProps": ["src"]},
+  "BackgroundImage": {"urlProps": ["src"], "imageProps": ["src"]},
+  "Badge": {"implements": ["Badge@1"]},
+  "Button": {"urlProps": ["href"]},
+  "Divider": {"implements": ["Divider@1"]},
+  "Image": {
+    "urlProps": ["src", "fallbackSrc", "srcSet"],
+    "imageProps": ["src", "fallbackSrc", "srcSet"],
+    "implements": ["Image@1"]
+  },
+  "Rating": {"implements": ["Rating@1"]},
+  "Text": {"implements": ["Text@1"]}
+}

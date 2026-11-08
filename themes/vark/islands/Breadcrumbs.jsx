@@ -1,3 +1,4 @@
+/* @aardvark-island {"urlProps": ["items[].href"]} */
 import { forwardRef } from 'react';
 import { Breadcrumbs as MantineBreadcrumbs, Anchor, Text } from '@mantine/core';
 import { sanitizeHref } from '@aardvark/islands/safe-href';

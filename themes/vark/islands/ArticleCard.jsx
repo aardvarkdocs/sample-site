@@ -1,3 +1,9 @@
+/* @aardvark-island {
+  "urlProps": ["href", "image", "authorAvatar"],
+  "imageProps": ["image", "authorAvatar"],
+  "linkProps": ["href"],
+  "implements": ["ArticleCard@1"]
+} */
 import { forwardRef } from 'react';
 import {
   Anchor,

@@ -1,3 +1,4 @@
+/* @aardvark-island {"implements": ["CodeGroup@1"]} */
 import { forwardRef, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import CodeActions, { HighlightedPre } from '@aardvark/islands/code-actions';
 import { codeDownloadFilenames } from '@aardvark/islands/highlight';

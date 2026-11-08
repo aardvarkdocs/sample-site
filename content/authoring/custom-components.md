@@ -285,13 +285,13 @@ the first of these wins:
 1. your project's `components/` folder;
 2. your theme's layers, highest first: your theme folder's `components/`
    (`themes/<name>/components/`), then the layers of each theme it
-   [builds on](/theming/#building-on-another-theme). A file in a higher layer also replaces
-   the file at the same path below it.
+   [builds on](/theming/component-library/#building-on-another-theme). A file in a higher
+   layer also replaces the file at the same path below it.
 
 The default `vark` theme's components are the bottom layer, unless the theme builds on
 nothing (`extends: null`, or a complete `vark` with no `extends:`); then only the components
-its own layers define exist. [Layers and `theme.yaml`](/theming/#layers-and-themeyaml) has the
-full rules.
+its own layers define exist.
+[Layers and `theme.yaml`](/theming/component-library/#layers-and-themeyaml) has the full rules.
 
 A [snippet](/authoring/custom-snippets/) never takes a tag from a component: when the two
 share a name, the tag stays the component's, and the snippet is reachable through its call

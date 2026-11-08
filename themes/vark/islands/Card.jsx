@@ -1,3 +1,10 @@
+/* @aardvark-island {
+  "urlProps": ["href", "image", "icon"],
+  "imageProps": ["image"],
+  "iconImageProps": ["icon"],
+  "linkProps": ["href"],
+  "implements": ["Card@1"]
+} */
 import { forwardRef } from 'react';
 import { Anchor, BackgroundImage, Badge, Box, Button, Card as MantineCard, Group, Image, Text, Tooltip } from '@mantine/core';
 import { resolveCardIcon, LazyTablerIcon, classifyIcon } from '@aardvark/islands/tabler-icons';

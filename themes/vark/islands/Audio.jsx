@@ -1,3 +1,4 @@
+/* @aardvark-island {"urlProps": ["src", "fallbackSrc", "sources[].src"]} */
 import { forwardRef, useEffect, useState } from 'react';
 import { Audio as MantineAudio } from '@gfazioli/mantine-audio';
 import './Audio.css';

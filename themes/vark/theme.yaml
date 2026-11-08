@@ -6,8 +6,34 @@
 # string (an unquoted 1.10 would read as the number 1.1).
 themeApi: "1.0"
 
+# The islands runtime every island but the site chrome renders through: the module whose
+# wrap(element, ctx) puts an island's root inside what its component library needs. vark's islands
+# are Mantine components, so it names aardvark's own Mantine runtime (the one the site chrome
+# renders through too, so a page carries one Mantine provider setup, not two). noDomRef names the
+# components whose island exposes no DOM node for an `attr` to land on; aardvark applies such an
+# attr to the island's rendered root instead.
+runtime:
+  module: "@aardvark/islands/mantine-runtime"
+  noDomRef: [Accordion, MenuSub, NumberFormatter]
+
+# The component library the islands are built on: its components are addressable by bare name
+# ({% component('Button') %}) and as component('mantine', 'Button'). The vocabulary is the list
+# of component names the theme is written against; a build narrows it to what the project's
+# installed @mantine/core exports. meta declares what aardvark reads of those components' props
+# (URL, image and link props) and the core interfaces they implement, as an island's
+# @aardvark-island header does for the theme's own islands.
+baseLibrary:
+  key: mantine
+  package: "@mantine/core"
+  vocabulary: islands/mantine_components.json
+  meta: islands/base_meta.json
+
+# The island that gets the map runtime aardvark ships ({% map %}): a self-hosted Mantine Map and
+# MapLibre worker, rendered in the browser only.
+nativeMap: Map
+
 # Extra React component libraries the theme's own tags are built on, beyond the built-in
-# Mantine/builtin/snippet sources. Each becomes addressable from Markdown as
+# base/builtin/snippet sources. Each becomes addressable from Markdown as
 # {% component('<key>', 'Name') %}. A library's package only has to be installed once a page
 # uses it; `vark new` installs both. A site can add to, replace or remove these under
 # componentLibraries in its aardvark.config.yaml.

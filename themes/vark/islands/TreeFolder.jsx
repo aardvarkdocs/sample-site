@@ -1,3 +1,4 @@
+/* @aardvark-island {"urlProps": ["href"]} */
 import { forwardRef, useState } from 'react';
 import { Box, Collapse } from '@mantine/core';
 import { IconChevronRight, IconFolder, IconFolderOpen } from '@tabler/icons-react';

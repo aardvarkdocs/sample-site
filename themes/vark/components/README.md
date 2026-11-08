@@ -90,7 +90,11 @@ listings. Its reference is
 Many definitions render one of this theme's own React components, such as the `Callout` that
 `callout.md` renders. Each is a `.jsx` file, with any `.css` it imports, in the theme's
 `islands/` folder, beside this folder. The Mantine components a definition names, such as
-`Badge` or `Button`, come from Mantine itself.
+`Badge` or `Button`, come from Mantine itself. An island declares in a comment at the top of its
+source which of its props aardvark reads (site URLs, images and links) and which core
+conversions apply to it, and `islands/base_meta.json` (named by `baseLibrary.meta` in
+`theme.yaml`) does the same for the Mantine components; see
+[Island metadata](https://aardvarkdocs.com/theming/component-library/#island-metadata).
 
 Most islands that wrap a third-party Mantine extension, the Community Components, are
 client-only. Each carries the marker `Community Component` in its header comment: the build

@@ -1,3 +1,4 @@
+/* @aardvark-island {"implements": ["ApiReference@1"], "companions": ["JsonTree"]} */
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Accordion,

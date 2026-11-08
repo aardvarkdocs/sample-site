@@ -1,3 +1,4 @@
+/* @aardvark-island {"urlProps": ["icon"], "iconImageProps": ["icon"], "implements": ["Icon@1"]} */
 import { ThemeIcon, Tooltip } from '@mantine/core';
 import { classifyIcon, sanitizeSvg, LazyTablerIcon } from '@aardvark/islands/tabler-icons';
 import { sanitizeHref } from '@aardvark/islands/safe-href';

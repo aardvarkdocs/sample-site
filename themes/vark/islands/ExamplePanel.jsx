@@ -1,3 +1,4 @@
+/* @aardvark-island {"implements": ["ExamplePanel@1"]} */
 import { forwardRef, useMemo, useState } from 'react';
 import { Box, Group, Tabs, Text } from '@mantine/core';
 import { IconArrowUpRight, IconArrowDownLeft } from '@tabler/icons-react';

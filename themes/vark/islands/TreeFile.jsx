@@ -1,3 +1,4 @@
+/* @aardvark-island {"urlProps": ["href"]} */
 import { forwardRef, useState } from 'react';
 import { Box, Modal, ScrollArea } from '@mantine/core';
 import CodeActions, { HighlightedPre } from '@aardvark/islands/code-actions';
