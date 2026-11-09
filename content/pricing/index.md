@@ -2,17 +2,18 @@
 title: Pricing
 navtitle: Pricing
 description: >-
-  Aardvark is free to self-host. AI use and Docs Quality Checks runner time draw from
+  aardvark is free to self-host. AI use and Docs Quality Checks runner time draw from
   one prepaid balance at published rates.
 icon: fa-solid fa-tags
 menu: pricing
 weight: 1
 ---
 
-Aardvark is **free to use, forever**: prebuilt binaries for macOS, Linux, and Windows,
-self-hosting anywhere at no cost, and an open contribution mirror for these docs. There is
-no platform fee, no tier to pick and no seat to count — invite as many teammates as you like.
-Aardvark charges for two things, both in **dollars** (never opaque credits) and both from one
+aardvark is **free to use, forever**: prebuilt binaries for macOS, Linux, and Windows,
+self-hosting anywhere at no cost, and a public repository that holds these docs and the default
+theme's open-source component library. There is no platform fee, no tier to pick and no seat to
+count — invite as many teammates as you like.
+Aardvark cloud charges for two things, both in **dollars** (never opaque credits) and both from one
 prepaid balance: the **AI you actually use**, metered per token, and — only if you connect a
 repository — the runner minutes that [Docs Quality Checks](/github-automation/) consume.
 

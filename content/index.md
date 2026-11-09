@@ -1,8 +1,8 @@
 ---
-title: Why Aardvark?
-navtitle: Why Aardvark?
-description: Aardvark is the Mantine-powered static site generator — Markdown in, fast
-  static HTML out, with built-in search, OpenAPI, llms.txt, and one-binary deploys.
+title: Why aardvark?
+navtitle: Why aardvark?
+description: aardvark is a static site generator for documentation — Markdown in, fast
+  static HTML out, with open-source components, built-in search, OpenAPI, and llms.txt.
 icon: fa-solid fa-circle-question
 menu: why
 weight: 1
@@ -151,7 +151,7 @@ page.print('\n'.join(css))
 <div class="wa-hero__inner">
 <span class="wa-eyebrow"><i aria-hidden="true" class="fa-solid fa-bolt"></i> Markdown in · agent-ready out</span>
 <h1>The <span class="wa-grad">first word</span> in documentation</h1>
-<p class="wa-sub">Aardvark is a Mantine-powered static site generator. Author in Markdown, build to fast static HTML with interactive React islands.</p>
+<p class="wa-sub">aardvark is a static site generator for documentation. Author in Markdown, build to fast static HTML with interactive components from an open-source library built on Mantine.</p>
 <div class="wa-cta-row">
 <a class="wa-btn wa-btn--on-violet" href="/docs/#quickstart">Get started <i aria-hidden="true" class="fa-solid fa-arrow-right"></i></a>
 </div>
@@ -179,10 +179,11 @@ page.print('\n'.join(css))
 <span class="wa-chip">OG cards</span>
 <span class="wa-chip">i18n</span>
 <span class="wa-chip">dark mode</span>
+<span class="wa-chip">open-source components</span>
 </div>
 
 <div class="wa-stats">
-<div class="wa-stat"><span class="wa-stat__n">160+</span><span class="wa-stat__l">built-in components</span></div>
+<div class="wa-stat"><span class="wa-stat__n">160+</span><span class="wa-stat__l">open-source components</span></div>
 <div class="wa-stat"><span class="wa-stat__n">16</span><span class="wa-stat__l">analytics integrations</span></div>
 <div class="wa-stat"><span class="wa-stat__n">Latest</span><span class="wa-stat__l">models from major labs</span></div>
 <div class="wa-stat"><span class="wa-stat__n">1</span><span class="wa-stat__l">binary to deploy</span></div>
@@ -274,7 +275,7 @@ There are {% raw %}{% data.products.count %}{% endraw %} plans.
 <div class="wa-feature"><div class="wa-feature__ico"><i aria-hidden="true" class="fa-solid fa-bolt"></i></div><h3>Instant, no-backend search</h3><p>⌘K scores a prebuilt index right in the browser — no Algolia, no crawler, no server to keep running.</p></div>
 </div>
 <div class="wa-payline">
-<p><strong>Free to use.</strong> Aardvark builds a plain static site you can host anywhere — Netlify, Vercel, S3, or your own box. AI usage is <strong>pay-as-you-go</strong>, metered per token through the cloud gateway.</p>
+<p><strong>Free to use.</strong> aardvark builds a plain static site you can host anywhere — Netlify, Vercel, S3, or your own box — and the default theme's component library is <a href="https://github.com/aardvarkdocs/sample-site/tree/main/themes/vark">open source</a>. AI usage is <strong>pay-as-you-go</strong>, metered per token through the cloud gateway.</p>
 </div>
 <div class="wa-marquee-head">The newest models from major labs</div>
 </div>

@@ -7,7 +7,7 @@ aliases:
 
 # OpenAPI
 
-A **built-in** tag that renders an OpenAPI spec as a Mantine-powered reference —
+A **built-in** tag that renders an OpenAPI spec as an interactive reference —
 parameter and response tables, multi-language request samples, and a **"Try it
 now"** form — **inline, on any page**. Point it at a **single operation** to
 splice one endpoint into a guide right where you describe it; point it at the

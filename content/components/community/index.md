@@ -36,7 +36,8 @@ The catalog is kept current by an **automated monitor** — the `refresh-communi
 workflow (and its companion skill) watches the upstream Mantine extensions list and opens a PR as
 new extensions pass the license, framework, and conversion-architecture gates or existing ones
 move. Rejected projects remain recorded in the
-source manifest so the monitor does not repeatedly propose them.
+source manifest so the monitor does not repeatedly propose them. To suggest an extension, open an
+issue in the [public sample-site repository](https://github.com/aardvarkdocs/sample-site/issues).
 
 ## Bundled components
 

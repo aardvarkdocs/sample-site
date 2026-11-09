@@ -1,7 +1,7 @@
 ---
 title: Security & trust
 navtitle: Security
-description: How Aardvark keeps your docs secure — a static architecture with no
+description: How aardvark keeps your docs secure — a static architecture with no
   third-party runtime scripts by default, opt-in-only cloud features, encrypted
   protected sections, and team roles.
 icon: fa-solid fa-shield-halved
@@ -11,7 +11,7 @@ weight: 63
 
 # Security & trust
 
-Aardvark's security story starts from its architecture: the product of every build is a
+aardvark's security story starts from its architecture: the product of every build is a
 directory of **static files** that you own and host. Deployed on a static host, the
 site involves no server-side application code of yours to patch and no database to
 breach — pages are files, and the only code that runs is the client-side JavaScript in
@@ -120,12 +120,17 @@ multi-factor authentication for dashboard sign-in, for one — is listed on the
 
 ## Build-time code runs with your privileges
 
-Aardvark runs your project's Python at build time — [generation scripts](/generators/)
+aardvark runs your project's Python at build time — [generation scripts](/generators/)
 and inline `{% raw %}{% %}{% endraw %}` template blocks in pages. This is intentional and works
 like every other build tool that runs code (Sphinx's `conf.py`, Jekyll plugins, npm
 scripts): **it is not a sandbox**, and we deliberately don't pretend otherwise, because
 an in-process Python "sandbox" is escapable and would offer only false confidence. The
 security model is the standard one for build tooling: **only build content you trust.**
+
+That includes your theme: each component tag on a page runs Python from the active theme's
+component library at build time. The aardvark maintainers review the default `vark`
+theme's components, which ship inside each release. Review a third-party theme's components as
+you would any other build-time code.
 
 In practice:
 
@@ -144,18 +149,19 @@ Please report security issues **privately** — not in a public issue or pull re
 GitHub's private vulnerability reporting: the **"Report a vulnerability"** button under
 the **Security** tab of the
 [public sample-site repository](https://github.com/aardvarkdocs/sample-site) — the
-project's public contribution repository, and the place to reach the maintainers about
-any part of Aardvark. That keeps
+project's public contribution repository, home of these docs and the default theme's
+open-source component library, and the place to reach the maintainers about any part of
+aardvark or Aardvark cloud. That keeps
 the report confidential until a fix ships; we'll acknowledge it and keep you posted on
 the fix and disclosure timeline. If private reporting isn't available to you, email
 [support@aardvarkdocs.com](mailto:support@aardvarkdocs.com) or open a minimal issue to ask
 for a private channel, and we'll follow up. Leave the details out of both: the address is a
 general support mailbox, and issues are public.
 
-Aardvark is pre-1.0; security fixes land on the latest release, so please reproduce
+aardvark is pre-1.0; security fixes land on the latest release, so please reproduce
 against the most recent version before reporting.
 
-## How Aardvark itself is distributed
+## How aardvark itself is distributed
 
 The `vark` CLI ships as a **compiled binary** — via
 [Homebrew](/getting-started/installation/) on macOS, and as direct downloads from the

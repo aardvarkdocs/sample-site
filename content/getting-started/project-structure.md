@@ -1,5 +1,5 @@
 ---
-description: The directories and files that make up an Aardvark project, and what each
+description: The directories and files that make up an aardvark project, and what each
   one does.
 icon: /icons/folder.svg
 menu: docs
@@ -16,7 +16,7 @@ my-docs/
   aardvark.config.yaml   # site metadata, tabs, theme, integrations, AI flags
   content/               # *.md pages  ->  pretty URLs
   data/                  # *.json *.yaml *.csv  ->  data.<file>.<prop>
-  themes/vark/           # the docs theme (full, editable HTML + SCSS source you own)
+  themes/vark/           # the docs theme's layout and styles (editable HTML + SCSS you own)
   snippets/              # your custom *.jsx / *.tsx React components
   custom.css             # any project-root *.css / *.js -> copied, fingerprinted, linked
   package.json           # islands deps (react, @mantine/*, esbuild)
@@ -52,10 +52,13 @@ scaffolded `.gitignore` already does):
   `content/guide/intro.md` → `/guide/intro/`. See [Templating & data](/authoring/templating/).
 - **`data/`** — JSON, YAML, and CSV files. Each file becomes
   `data.<filename>` in your pages; a CSV becomes a list of row objects.
-- **`themes/vark/`** — Your editable copy of the active theme. `default.html` is the
-  page layout, rendered by the same `{% raw %}{% %}{% endraw %}` engine; a project-local
-  `themes/<name>/` wins over the bundled theme. Add more layouts (e.g. `landing.html`) and
-  select them per page with `pagetype:`. See [Theme & customization](/theming/).
+- **`themes/vark/`** — Your editable copy of the active theme's layout, styles and
+  scripts. `default.html` is the page layout, rendered by the same
+  `{% raw %}{% %}{% endraw %}` engine; a project-local `themes/<name>/` wins over the
+  bundled theme. Add more layouts (e.g. `landing.html`) and select them per page with
+  `pagetype:`. The theme's component library isn't copied: it stays packaged with aardvark,
+  and a `components/` or `snippets/` file of your own replaces one of its components. See
+  [Theme & customization](/theming/#the-themes-component-library).
 - **`templates/`** — Optional. Drop one file here to override just that file of the
   active theme (a lightweight alternative to forking the whole `themes/vark/`).
 - **`generators/`** — Optional. Python scripts that run at the start of every build

@@ -860,7 +860,7 @@ An **[accordion](/components/data-display/accordion/)** wraps collapsible panels
 
 {% accordion %}
 {% accordionSection title="What is Aardvark?" %}
-A Mantine-powered static site generator. This panel body is full **Markdown**.
+A static site generator for documentation. This panel body is full **Markdown**.
 {% endAccordionSection %}
 {% accordionSection title="How do I add a page?" %}
 Drop a Markdown file in `content/` with front matter and it joins the navigation automatically.

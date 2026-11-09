@@ -228,10 +228,13 @@ a definition, and is skipped, however it's capitalized. The one exception is an 
 
 ## Built-in components
 
-aardvark ships well over a hundred **built-in components** defined exactly this way, each
-with a [Python body](#python-bodies), so you don't have to. They live in the default `vark`
-theme, one `.md` file per tag in its `components/` folder (see
-[Theme & customization](/theming/#files)).
+The default `vark` theme's **built-in components** are defined exactly this way, each with a
+[Python body](#python-bodies), so you don't have to. Together they make up the theme's component
+library, one `.md` file per tag in its `components/` folder (see
+[The theme's component library](/theming/#the-themes-component-library)). The library is open
+source: read any built-in's definition in
+[`themes/vark/components/`](https://github.com/aardvarkdocs/sample-site/tree/main/themes/vark/components)
+for a worked example.
 **`{% raw %}{% button %}{% endraw %}`** renders a button or link, exposing the full Mantine
 Button surface — `variant`, `color`, `size`, gradient, sections, link target, spacing, `id`,
 an `onclick` handler, and more. See its page,

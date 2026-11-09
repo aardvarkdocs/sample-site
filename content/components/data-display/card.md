@@ -64,7 +64,7 @@ Incremental Markdown rendering and one esbuild pass.
 {% card title="Secure by default" icon="shield" accent="teal" %}
 Author-trusted, but hardened — escaped props, sanitized links.
 {% endCard %}
-{% card title="Open source" icon="brand-github" accent="grape" %}
+{% card title="Open-source icons" icon="brand-github" accent="grape" %}
 Browse the icon set at [tabler.io/icons](https://tabler.io/icons).
 {% endCard %}
 {% endCardGrid %}
@@ -82,7 +82,7 @@ Incremental Markdown rendering and one esbuild pass.
 {% card title="Secure by default" icon="shield" accent="teal" %}
 Author-trusted, but hardened — escaped props, sanitized links.
 {% endCard %}
-{% card title="Open source" icon="brand-github" accent="grape" %}
+{% card title="Open-source icons" icon="brand-github" accent="grape" %}
 Browse the icon set at [tabler.io/icons](https://tabler.io/icons).
 {% endCard %}
 {% endCardGrid %}
@@ -95,7 +95,7 @@ cards = component('aardvark', 'card', title='Fast builds', icon='bolt', accent='
                   children='Incremental Markdown rendering and one esbuild pass.')
 cards += component('aardvark', 'card', title='Secure by default', icon='shield', accent='teal',
                    children='Author-trusted, but hardened — escaped props, sanitized links.')
-cards += component('aardvark', 'card', title='Open source', icon='brand-github', accent='grape',
+cards += component('aardvark', 'card', title='Open-source icons', icon='brand-github', accent='grape',
                    children='Browse the icon set at [tabler.io/icons](https://tabler.io/icons).')
 page.print(component('aardvark', 'cardGrid', children=cards))
 ```

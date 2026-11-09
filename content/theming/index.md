@@ -11,10 +11,9 @@ weight: 40
 
 # Theme & customization
 
-A **theme** is a self-contained folder of HTML templates plus the CSS, JS, fonts, and
-logos they use. Aardvark ships one theme, **`vark`** (the default docs theme), as
-**full, editable source** — there's no hidden layout. `vark new` copies it into your
-project's `themes/vark/` so you own it.
+A **theme** is a self-contained folder: HTML templates, the CSS, JS, fonts, and logos they
+use, and the **component library** your pages are written with. aardvark ships one theme,
+**`vark`** (the default docs theme), as **full, editable source** — there's no hidden layout.
 
 ## Where the theme lives
 
@@ -36,6 +35,37 @@ Theme CSS/JS/asset files must sit at the **top level** of the theme (or `templat
 only top-level files are emitted to `/_aardvark/`, with per-build fingerprinted
 filenames. Keep nested assets (images, icon sets, extra fonts) in `static/`
 instead, where the whole tree is copied and fingerprinted.
+
+## The theme's component library
+
+A theme also carries the **component library** your pages are written with. Every
+`{% raw %}{% tag %}{% endraw %}` — `{% raw %}{% button %}{% endraw %}`,
+`{% raw %}{% tabs %}{% endraw %}`, `{% raw %}{% card %}{% endraw %}`,
+`{% raw %}{% changelog %}{% endraw %}`, `{% raw %}{% openapi %}{% endraw %}` and the rest — is a
+Markdown definition in the theme's `components/` folder, backed by React components: the
+theme's own, in its `islands/` folder, and those of the library it's built on. Only the tags
+aardvark's template engine handles itself belong to aardvark: `raw`,
+[`include`](/components/extras/include/), and two that carry build guarantees.
+[`visibility`](/components/extras/visibility/) shows a block to human readers of the HTML page,
+to AI agents reading its Markdown, or to both, and [`target`](/components/extras/target/) names a
+region for Content Reach.
+
+{% include '/_partials/open-source-library.md' %}
+
+Another theme can ship a completely different library, with its own tags, built on another React
+component library that runs on the React version aardvark bundles: its `theme.yaml` names the
+islands runtime and the base library its islands use (see
+[A theme's runtime](/theming/component-library/#a-themes-runtime)). The
+[site chrome](/theming/component-library/#the-themes-islands) — search, the Ask AI assistant and
+the rest of aardvark's own interface — ships with aardvark, not the theme. It is built on Mantine
+whichever theme you use, so a site on another library still bundles Mantine for those parts.
+
+You don't copy the library to change it. A definition in your project's `components/` with the
+same `name:` replaces the theme's definition of that tag, and a `snippets/<Name>.jsx` replaces
+the theme's React component of that name — see [Custom components](/authoring/custom-components/)
+and [Custom snippets](/authoring/custom-snippets/). How a theme folder of your own is layered over
+the packaged theme, what `theme.yaml` holds, which aardvark modules an island may import and what
+an island declares so aardvark can read its props: [Theme component library](/theming/component-library/).
 
 ## Files
 
@@ -88,13 +118,6 @@ usual start); what it builds on is vark's components, islands and component libr
 project-local `themes/<name>/` wins over a bundled theme of the same name; an unknown name warns
 and falls back to `vark`, so a typo never breaks the build. Per-file `templates/` overrides still
 apply on top of whichever theme is active.
-
-## Theme component library
-
-A theme's `components/` and `islands/` folders and its `theme.yaml` are laid over the packaged
-theme's file by file, so your folder needs only the ones you change. How the layers merge, what
-`theme.yaml` holds, which aardvark modules an island may import and what an island declares so
-aardvark can read its props: [Theme component library](/theming/component-library/).
 
 ## Page templates
 

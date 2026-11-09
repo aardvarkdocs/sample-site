@@ -57,7 +57,7 @@ plus the legacy `.cursorrules` — which those tools discover by walking the tre
 Only the maintainers change the `LICENSE` at the repository root, so the sync
 refuses a change to it. The files under `themes/vark/` are published from the
 aardvark package itself, so the sync refuses changes to them too; open an issue
-to suggest one. For safety, it also
+to suggest one (see [Contributing components](#contributing-components)). For safety, it also
 refuses changes at the repository root under `.github/` and `worker/`, as well as any path component
 named `.git`, symlinks, submodules, unsafe paths, and changes that exceed its
 size limits. A refused pull request receives a generic explanation; open an issue if a
@@ -67,6 +67,35 @@ Public pull requests are never merged into public `main`; that branch accepts
 only bot-authored outbound sync commits from the aardvark repository. Normal
 publishing is append-only, preserving the public branch and fork history needed
 for ongoing contributions.
+
+## Contributing components
+
+The vark theme's component library lives in `themes/vark/` and is open source
+under the MIT License. Bug fixes, improvements and ideas for new components are
+welcome.
+
+- **Suggest a change in an issue.** The sync refuses pull requests that
+  change `themes/vark/` (see [What can be changed](#what-can-be-changed)), so
+  [open an issue](../../issues/new) that describes the fix or the component
+  you'd like.
+- **Where things go.** A tag is defined by a Markdown file in
+  `themes/vark/components/`: its front matter declares the tag's name and typed
+  parameters, and a Python body renders it. Interactive components add a React
+  component, and its CSS, in `themes/vark/islands/`. The library's conventions
+  are in `themes/vark/components/README.md`.
+- **Every component needs a docs page** in `content/components/<category>/`;
+  see [Docs pages](#docs-pages).
+- **Tests are added by maintainers.** aardvark's automated test suites live in
+  its private source repository. Maintainers build this site with a change in
+  isolated CI before accepting it, then add or update the tests that cover it.
+- **New npm packages: open an issue first.** Components use the React and
+  Mantine versions in this site's `package.json`. A new package must be
+  permissively licensed and compatible as published, the same gates as
+  [Community Components](https://aardvarkdocs.com/components/community/), and
+  maintainers add it to the toolchain that ships with aardvark.
+- **Vendored bundles are maintainer-only.** The third-party bundles in
+  `themes/vark/` (`mermaid.min.js` and `markdeep.min.js`) are updated by the
+  maintainers; their licenses are listed in `themes/vark/THIRD_PARTY_NOTICES`.
 
 ## Docs pages
 
@@ -104,13 +133,17 @@ renders.
 
 ## Docs style
 
-Every page on this site follows these two rules:
+Every page on this site follows these rules:
 
 - **Write "aardvark" in lowercase** when it names the static site generator, even
   at the start of a sentence: "aardvark builds the site", the `aardvark` command,
   `aardvark.config.yaml`. "Aardvark" with a capital A names the company.
 - **Write "open source" as a noun or after a verb, and "open-source" before a
   noun:** "an open-source package", but "the package is open source".
+- **Say what is open source, and no more.** This repository's own content — the
+  sample site and the vark theme with its component library — is open source.
+  The aardvark CLI and build engine are not, so never describe aardvark itself
+  as open source.
 
 The rest apply wherever a page describes a built-in component, on its reference
 page or anywhere else:

@@ -3,7 +3,7 @@ aliases:
   - /resources/
   - from: /getting-started/quickstart/
     to: "#quickstart"
-description: Aardvark is a Mantine-powered static site generator — author in Markdown,
+description: aardvark is a static site generator for documentation — author in Markdown,
   build to fast static HTML with interactive React islands.
 heading: Getting Started
 heading-icon: fa-solid fa-flag
@@ -13,26 +13,28 @@ title: Introduction
 weight: 10
 ---
 
-# Aardvark
+# aardvark
 
-**Aardvark** is a documentation-focused static site generator. You author in
+**aardvark** is a documentation-focused static site generator. You author in
 Markdown and build to static HTML. Interactive UI is delivered as **islands**:
-Aardvark emits the HTML, and Mantine + your own React components render in the
-browser from a single bundled runtime.
+aardvark emits the HTML, and your theme's components — the default theme's
+open-source library is built on Mantine — plus your own React components render
+in the browser from a single bundled runtime.
 
-This very site is built with Aardvark.
+This very site is built with aardvark.
 
 {% card variant="gradient" gradient="indigo,grape,135" icon="rocket" title="Build your first site in a minute" cta="Start the quickstart" href="/docs/#quickstart" %}
-Markdown in, fast static HTML out — with interactive Mantine islands. No build config to write.
+Markdown in, fast static HTML out — with interactive components. No build config to write.
 {% endCard %}
 
-## Why Aardvark
+## Why aardvark
 
 - **Markdown in, HTML out** — pretty URLs, a TOC, and a clean default theme.
 - **Real Python templating** — logic lives in `{% raw %}{% %}{% endraw %}` tags and is actual
   Python, with your structured data exposed as `data.<file>.<prop>`.
-- **Every Mantine component** — embed any of the Mantine UI components (and
-  your own React snippets) directly from Markdown; they render as islands.
+- **Open-source components** — the default theme's library turns Mantine's UI
+  components and documentation staples like tabs, cards, maps and changelogs into
+  Markdown tags, and your own React snippets sit beside them. They render as islands.
 - **Batteries included** — built-in ⌘K search, a built-in "Ask AI" assistant,
   Google Analytics with page-rating events, OpenAPI "try it now" reference pages,
   and auto-generated `sitemap.xml` + `llms.txt`.
@@ -61,13 +63,13 @@ Install the CLI and you're ready to build.
 Scaffold and build your first site in a minute.
 {% endCard %}
 {% card title="Component gallery" icon="components" accent="grape" href="/components/" cta="Browse" %}
-Live examples of every Mantine component, callable straight from Markdown.
+Live examples of every built-in component, callable straight from Markdown.
 {% endCard %}
 {% endCardGrid %}
 
 ## Quickstart {#quickstart}
 
-Once you've [installed Aardvark](/getting-started/installation/), you can scaffold,
+Once you've [installed aardvark](/getting-started/installation/), you can scaffold,
 preview, and build your first site in a few commands.
 
 ### 1. Scaffold a site
@@ -83,15 +85,15 @@ default theme in `themes/vark/`, an example snippet (`snippets/Callout.jsx`), a
 root `custom.css`, a `package.json` for the islands, and a `.gitignore` that
 already excludes `build/`, `node_modules/`, `.aardvark-cache/`, and `.env`.
 
-### 2. Islands dependencies — included with Aardvark
+### 2. Islands dependencies — included with aardvark
 
-There's nothing to install and nothing to download: Aardvark ships the islands
+There's nothing to install and nothing to download: aardvark ships the islands
 toolchain — React, Mantine, and esbuild, which it uses to bundle the components
 you embed — and your first `vark dev` or `vark build` stages it into the
 project's `.aardvark-cache/` automatically (Node.js is the one prerequisite).
-Run `npm install` yourself only if you add packages Aardvark doesn't ship — a
+Run `npm install` yourself only if you add packages aardvark doesn't ship — a
 `node_modules` of your own always takes over — and set `AARDVARK_NO_AUTO_NPM`
-if you never want Aardvark running npm on your behalf.
+if you never want aardvark running npm on your behalf.
 
 ### 3. Develop with live reload
 
@@ -121,7 +123,7 @@ and is reported as a warning.
 
 ### Create your first page
 
-An Aardvark page is Markdown with optional YAML frontmatter. Logic is real
+An aardvark page is Markdown with optional YAML frontmatter. Logic is real
 Python inside `{% raw %}{% %}{% endraw %}` tags:
 
 {% raw %}

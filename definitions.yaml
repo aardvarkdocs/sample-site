@@ -51,6 +51,7 @@ terms:
       fr: compilation
 
   - term: theme
-    definition: The look and feel (templates, colors, fonts) applied to the site.
+    definition: The look and feel (templates, colors, fonts) applied to the site, and the
+      component library its pages use.
     translations:
       fr: thème

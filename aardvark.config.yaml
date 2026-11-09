@@ -1,13 +1,13 @@
 site:
   name: Aardvark
   description: >-
-    A Mantine-powered static site generator. Author in Markdown, build to
+    A static site generator for documentation. Author in Markdown, build to
     static HTML with interactive React islands.
   summary: >-
     vark builds documentation sites from Markdown. It uses real Python in
-    {% %} tags, loads JSON/YAML/CSV data, embeds any Mantine component as an
-    interactive island, and generates sitemap.xml, llms.txt, and OpenAPI
-    reference pages.
+    {% %} tags, loads JSON/YAML/CSV data, renders components from the default
+    theme's open-source library, built on Mantine, as interactive islands, and
+    generates sitemap.xml, llms.txt, and OpenAPI reference pages.
   # Official profile/source URLs for this project — emitted as the `sameAs` of
   # the home page's Organization JSON-LD so search engines link the entity.
   # sameAs:
@@ -69,10 +69,10 @@ webBotAuth:
   keys:
     - P8RGdtK6gevw78FvqaBzzuCGQY__vNxUyxOApPliptY   # base64url Ed25519 public key (from `vark web-bot-auth-keygen`)
 
-# OAuth/OIDC discovery. Aardvark ALWAYS publishes the discovery metadata an AI agent reads to learn
+# OAuth/OIDC discovery. aardvark ALWAYS publishes the discovery metadata an AI agent reads to learn
 # how to authenticate — /.well-known/openid-configuration, /.well-known/oauth-authorization-server,
 # /.well-known/oauth-protected-resource and /auth.md — so the isitagentready.com checks clear with
-# best-available info. Aardvark is NOT an OAuth server; these docs only ADVERTISE where to go. Unset,
+# best-available info. aardvark is NOT an OAuth server; these docs only ADVERTISE where to go. Unset,
 # every field is derived from `baseUrl` as a clearly-labelled EXAMPLE endpoint. Point them at your
 # real IdP (e.g. Cloudflare Access) for production. See Docs → Agent discovery. The example values
 # below mirror what the build would derive from baseUrl, made explicit so this demo's docs are concrete.
@@ -122,7 +122,7 @@ oauth:
     claimEndpoint: https://aardvarkdocs.com/oauth/claim
     eventsEndpoint: https://aardvarkdocs.com/agent/event/notify
 
-# DNS-AID (DNS-based Agent Interface Discovery). Aardvark ALWAYS emits a copy-pasteable zone snippet
+# DNS-AID (DNS-based Agent Interface Discovery). aardvark ALWAYS emits a copy-pasteable zone snippet
 # (/.well-known/dns-aid/records.zone) plus a /.well-known/dns-aid/records.json mirror from this list.
 # IMPORTANT: the DNS-AID check validates via DNS-over-HTTPS against your domain's real authoritative
 # nameservers, so NO HTTP server (vark serve included) can make it pass — you must publish these
@@ -170,7 +170,7 @@ dnsAid:
 # page's og:image. Cards are pure build output (written under build/_aardvark/og/,
 # never committed), rendered in parallel on `vark build` and skipped on
 # `vark dev` so authoring stays fast. They just need an absolute `baseUrl`
-# (rendering works out of the box — Pillow ships with Aardvark). A page can override
+# (rendering works out of the box — Pillow ships with aardvark). A page can override
 # its image with `image:` in front matter.
 og:
   generate: true
@@ -188,7 +188,7 @@ og:
 # config. A tab with `items:` instead of a `link` becomes a dropdown; `hidden: true`
 # keeps a tab's menu (and its pages' sidebar) but leaves it out of the bar.
 tabs:
-  - label: Why Aardvark?
+  - label: Why aardvark?
     icon: heart
     link: /
     id: why
@@ -259,6 +259,8 @@ footer:
           href: /blog/
         - label: Changelog
           href: /changelog/
+        - label: Open-source components
+          href: https://github.com/aardvarkdocs/sample-site/tree/main/themes/vark
     - heading: "Ship & scale"
       links:
         - label: Deploy
@@ -489,8 +491,9 @@ componentLibraries:
 # what makes a shorthand mean gitlab.com (the block keeps its `github:` name either way).
 # A page can hide either link with `editPage: false` /
 # `reportIssue: false` in its front matter. Omit the block (or `repo`) to show no links.
-# This points at the sample site's own public source repo (the example site is open;
-# Aardvark itself is not) — see the README note in aardvarkdocs/sample-site.
+# This points at the sample site's own public source repo (the example site and the vark
+# theme's component library are open source; the aardvark CLI and engine are not) — see the
+# README in aardvarkdocs/sample-site.
 github:
   repo: https://github.com/aardvarkdocs/sample-site
   branch: main
@@ -663,7 +666,7 @@ languages:
 # for how to enable each with real credentials.
 integrations:
   # Google Analytics. `ga4:` is the canonical (Mintlify-parity) key; `analytics:` is the
-  # original Aardvark key, kept working as an alias — both emit the same gtag snippet, and the
+  # original aardvark key, kept working as an alias — both emit the same gtag snippet, and the
   # page-rating + survey widgets record to whichever is set. Using one here (not both).
   analytics:
     # Intentionally wired to this project's real GA4 property so the live demo site records page
@@ -673,7 +676,7 @@ integrations:
     # account-specific, and a deploy-time env var is cleaner than committing it; see the AARDVARK_KEY
     # note under `ai.assistant` for that pattern.)
     measurementId: "G-0M07MLF54V"
-  # Aardvark supports the full set of Mintlify analytics platforms — drop in the id/key and the
+  # aardvark supports the full set of Mintlify analytics platforms — drop in the id/key and the
   # vendor snippet is injected site-wide. Platform keys and legacy fields remain Mintlify-compatible;
   # vendor-current additions are shown below. Uncomment any of these (see content/analytics.md):
   # gtm:        { tagId: "GTM-XXXXXXX" }

@@ -17,9 +17,9 @@ weight: 62
 
 # CLI reference
 
-aardvark — a Mantine-powered static site generator.
+aardvark — a static site generator for documentation.
 
-Author your content in Markdown and build it into a fast, fully static site: Mantine-powered interactive components, built-in client-side search, automatic Open Graph cards, and optional build-time AI enrichment. Scaffold a project with `vark new`, preview it live with `vark dev`, and produce the deployable site with `vark build`.
+Author your content in Markdown and build it into a fast, fully static site: interactive components from your theme's component library, built-in client-side search, automatic Open Graph cards, and optional build-time AI enrichment. Scaffold a project with `vark new`, preview it live with `vark dev`, and produce the deployable site with `vark build`.
 
 On interactive terminals, vark quietly checks for newer releases in the background while real subcommands run, and prints an upgrade reminder only when an update is available. Run `vark update` any time for an explicit check, or set `AARDVARK_NO_UPDATE_CHECK` to any non-empty value to turn the reminder off.
 

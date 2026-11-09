@@ -22,7 +22,7 @@ target. Add `icon:` to show a glyph beside the tab label.
 
 ```yaml
 tabs:
-  - label: Why Aardvark?
+  - label: Why aardvark?
     icon: heart
     link: /
     id: why

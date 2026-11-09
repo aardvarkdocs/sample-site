@@ -1,5 +1,5 @@
 ---
-description: Aardvark est un générateur de site statique propulsé par Mantine — rédigez
+description: aardvark est un générateur de site statique pour la documentation — rédigez
   en Markdown, compilez en HTML statique rapide avec des îlots React interactifs.
 heading: Prise en main
 menu: docs
@@ -7,26 +7,29 @@ title: Introduction
 weight: 10
 ---
 
-# Aardvark
+# aardvark
 
-**Aardvark** est un générateur de site statique axé sur la documentation. Vous
+**aardvark** est un générateur de site statique axé sur la documentation. Vous
 rédigez en Markdown et compilez en HTML statique. L'interface interactive est
-livrée sous forme d'**îlots** : Aardvark émet le HTML, et Mantine ainsi que vos
-propres composants React sont rendus dans le navigateur depuis un unique
-runtime regroupé.
+livrée sous forme d'**îlots** : aardvark émet le HTML, et les composants de votre
+thème — la bibliothèque open source du thème par défaut est bâtie sur Mantine —
+ainsi que vos propres composants React sont rendus dans le navigateur depuis un
+unique runtime regroupé.
 
-Ce site même est construit avec Aardvark.
+Ce site même est construit avec aardvark.
 
-## Pourquoi Aardvark
+## Pourquoi aardvark
 
 - **Markdown en entrée, HTML en sortie** — des URL propres, une table des
   matières et un thème par défaut soigné.
 - **Vrai templating Python** — la logique vit dans des balises
   `{% raw %}{% %}{% endraw %}` et c'est du véritable Python, avec vos données
   structurées exposées via `data.<fichier>.<propriété>`.
-- **Tous les composants Mantine** — intégrez n'importe quel composant Mantine
-  (et vos propres extraits React) directement depuis le Markdown ; ils
-  sont rendus en îlots.
+- **Des composants open source** — la bibliothèque du thème par défaut transforme
+  en balises Markdown les composants d'interface de Mantine et des classiques de
+  la documentation (onglets, cartes, cartes géographiques, journaux des
+  modifications) ; vos propres extraits React s'y ajoutent. Ils sont rendus en
+  îlots.
 - **Tout inclus** — recherche intégrée ⌘K, assistant « Ask AI » intégré, Google Analytics avec
   événements de notation de page, pages de référence OpenAPI « essayez
   maintenant », et génération automatique de `sitemap.xml` + `llms.txt`.
@@ -53,11 +56,11 @@ Ce site même est construit avec Aardvark.
 
 - [Installation](/fr/getting-started/installation/) — procurez-vous l'outil.
 - [Démarrage rapide](/fr/#demarrage-rapide) — construisez votre premier site en une minute.
-- [Galerie de composants](/components/) — des exemples de composants Mantine rendus en direct, appelables directement depuis Markdown.
+- [Galerie de composants](/components/) — des exemples en direct de chaque composant intégré, appelables directement depuis Markdown.
 
 ## Démarrage rapide {#demarrage-rapide}
 
-Une fois [Aardvark installé](/fr/getting-started/installation/), vous pouvez créer,
+Une fois [aardvark installé](/fr/getting-started/installation/), vous pouvez créer,
 prévisualiser et compiler votre premier site en quelques commandes.
 
 ### 1. Créer un site
@@ -74,15 +77,15 @@ le thème par défaut modifiable dans `themes/vark/`, un exemple de composant
 îlots et un `.gitignore` qui exclut déjà `build/`, `node_modules/`,
 `.aardvark-cache/` et `.env`.
 
-### 2. Dépendances des îlots — incluses avec Aardvark
+### 2. Dépendances des îlots — incluses avec aardvark
 
-Rien à installer et rien à télécharger : Aardvark embarque la chaîne d'outils des
+Rien à installer et rien à télécharger : aardvark embarque la chaîne d'outils des
 îlots — React, Mantine et esbuild, qu'il utilise pour regrouper les composants que
 vous intégrez — et votre premier `vark dev` ou `vark build` la met en place
 automatiquement dans le `.aardvark-cache/` du projet (Node.js est le seul
 prérequis). Ne lancez `npm install` vous-même que si vous ajoutez des paquets
-qu'Aardvark n'embarque pas — un `node_modules` à vous prend toujours le pas — et
-définissez `AARDVARK_NO_AUTO_NPM` si vous ne voulez jamais qu'Aardvark lance npm
+qu'aardvark n'embarque pas — un `node_modules` à vous prend toujours le pas — et
+définissez `AARDVARK_NO_AUTO_NPM` si vous ne voulez jamais qu'aardvark lance npm
 à votre place.
 
 ### 3. Développer avec le rechargement automatique
@@ -116,7 +119,7 @@ rendu sous forme de commentaire HTML et signalé par un avertissement.
 
 ### Créer votre première page
 
-Une page Aardvark est un fichier Markdown avec un frontmatter YAML facultatif.
+Une page aardvark est un fichier Markdown avec un frontmatter YAML facultatif.
 La logique est du véritable Python placé dans des balises
 `{% raw %}{% %}{% endraw %}` :
 

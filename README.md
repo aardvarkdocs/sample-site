@@ -1,9 +1,10 @@
 # aardvark sample site
 
-This is the example site for aardvark, a Mantine-powered static site generator:
-author in Markdown, build to static HTML with interactive React islands. It
-doubles as a starter template for new documentation sites and as the project's
-own documentation.
+This is the example site for aardvark, a static site generator for
+documentation: author in Markdown, build to static HTML with interactive React
+islands. It doubles as a starter template for new documentation sites, as the
+project's own documentation, and as the home of **vark**, aardvark's default
+theme, whose component library is open source.
 
 > This repository is the public contribution mirror of the sample site in
 > aardvark's private source repository. “Two-way” describes the contribution
@@ -45,6 +46,22 @@ The private repository remains the source of truth. Public pull requests are
 never merged into public `main`; that branch accepts only bot-authored outbound
 sync commits from the aardvark repository. Normal publishing is append-only, so
 open pull requests and forks retain their merge bases.
+
+## The open-source component library
+
+`themes/vark/` holds the vark theme and its component library. Each of the
+library's tags, such as `{% button %}` or `{% tabs %}`, is a Markdown definition
+in `themes/vark/components/`, backed by React components: the theme's own, in
+`themes/vark/islands/`, and those of Mantine and the other npm packages it
+builds on. A few tags, such as `{% include %}` and `{% visibility %}`, are built
+into the aardvark CLI instead. The library is built on
+[Mantine](https://mantine.dev) and is open source under the MIT License. Ideas
+for fixes and new components are welcome —
+see [Contributing components](CONTRIBUTING.md#contributing-components) for how
+to propose one.
+
+The aardvark CLI that builds this site is distributed separately as a prebuilt
+binary. It is not open source, and this repository's license doesn't cover it.
 
 ## Use it for a new project
 
@@ -93,14 +110,21 @@ vark dev     # live preview in your browser, rebuilt on every change
 - `snippets/` — custom React components
 - `components/` — custom Markdown macro components
 - `templates/` — HTML theme overrides and extra page layouts
-- `themes/vark/` — the default theme's templates, styles, scripts, built-in components
-  (`themes/vark/components/`, with its own `README.md`) and the React islands they render
-  (`themes/vark/islands/`), published from the aardvark package this site is built with
-  (third-party notices in `themes/vark/THIRD_PARTY_NOTICES`)
+- `themes/vark/` — the default theme: its templates, styles, scripts and open-source
+  component library (the built-in components in `themes/vark/components/`, with its own
+  `README.md`, and the React islands they render in `themes/vark/islands/`), published from the
+  aardvark package this site is built with (third-party notices in
+  `themes/vark/THIRD_PARTY_NOTICES`)
 - `static/` — assets copied as-is
 - `openapi/` — OpenAPI specs rendered as reference pages
 - `i18n/` — UI strings for translations
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE). This covers the sample site and the vark theme,
+including its component library. Third-party files keep their own licenses and
+trademarks: the theme's are listed in `themes/vark/THIRD_PARTY_NOTICES`, the
+Inter font in `static/fonts/` is under the SIL Open Font License 1.1, the
+Swagger Petstore spec in `openapi/petstore.json` is under the Apache License
+2.0, the folder icon in `static/icons/` is from Tabler Icons (MIT), and the
+logos under `static/logos/` belong to their owners.

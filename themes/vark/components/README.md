@@ -111,12 +111,13 @@ Every component needs a reference page in this repository, under
 `content/components/<category>/`. The recipe and the writing style are in
 [CONTRIBUTING.md](https://github.com/aardvarkdocs/sample-site/blob/main/CONTRIBUTING.md#docs-pages).
 
-Changes to this folder aren't accepted by pull request yet: open an issue to suggest one
+Changes to this folder aren't accepted by pull request: open an issue to suggest one
 (see
 [What can be changed](https://github.com/aardvarkdocs/sample-site/blob/main/CONTRIBUTING.md#what-can-be-changed)
 in CONTRIBUTING.md). The aardvark maintainers write the tests for each component.
 
 ## License
 
-See the [LICENSE](https://github.com/aardvarkdocs/sample-site/blob/main/LICENSE) file at
-the root of this repository.
+The component library is open source under the MIT License: see the
+[LICENSE](https://github.com/aardvarkdocs/sample-site/blob/main/LICENSE) file at the root of
+this repository.
