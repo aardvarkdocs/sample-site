@@ -34,6 +34,7 @@ Add these as you need them — none is required:
   openapi/               # OpenAPI specs (any path works; this is the convention)
   versions/              # frozen doc snapshots cut by `vark version cut`
   i18n/                  # ui-strings.yaml: translated theme chrome and nav labels
+  skills/                # agent skills, one skills/<name>/SKILL.md each
   .env                   # secrets such as AARDVARK_SECRET_KEY, auto-loaded by build/dev
 ```
 
@@ -49,7 +50,10 @@ scaffolded `.gitignore` already does):
 ## What each directory does
 
 - **`content/`** — One `.md` file per page. `content/index.md` → `/`,
-  `content/guide/intro.md` → `/guide/intro/`. See [Templating & data](/authoring/templating/).
+  `content/guide/intro.md` → `/guide/intro/`. A file whose name starts with a dot is never a
+  page, which keeps an editor's lock files out of the site; a dot folder such as `.well-known/`
+  publishes like any other. A page that is a link to a file that doesn't exist stops the build
+  and names the link. See [Templating & data](/authoring/templating/).
 - **`data/`** — JSON, YAML, and CSV files. Each file becomes
   `data.<filename>` in your pages; a CSV becomes a list of row objects.
 - **`themes/vark/`** — Your editable copy of the active theme's layout, styles and
@@ -77,6 +81,9 @@ scaffolded `.gitignore` already does):
   per-language translations of the theme chrome ("On this page", "Was this page
   helpful?") and of your nav and tab labels. `vark build --translate` regenerates it,
   and `languages.uiStrings` can point somewhere else.
+- **`skills/`** — Optional. Agent skills, one `skills/<name>/SKILL.md` each, which the
+  build publishes with an index at `/.well-known/agent-skills/index.json`. `vark ai-enrich`
+  can write them from your pages. See [Build-time AI](/ai-features/).
 - **`openapi/`** — OpenAPI specs you render inline with the
   `{% raw %}{% openapi %}{% endraw %}` directive — a whole spec, or a single-endpoint
   slice — on an ordinary Markdown page. See [OpenAPI](/components/extras/openapi/).
@@ -86,7 +93,8 @@ scaffolded `.gitignore` already does):
 
 ## Output
 
-`vark build` writes everything to `build/`: one HTML file per page (as
+`vark build` writes everything to `build/`, or to the folder `outDir` names in
+`aardvark.config.yaml`: one HTML file per page (as
 `<url>/index.html`) with a Markdown twin beside it, the bundled islands JS/CSS
 under `_aardvark/` with the theme's files and the third-party license notices for all of them
 (`_aardvark/THIRD_PARTY_NOTICES.txt`), your fingerprinted static assets, plus
@@ -94,3 +102,14 @@ under `_aardvark/` with the theme's files and the third-party license notices fo
 (`sitemap.xml`, `robots.txt`, `llms.txt`, `llms-full.txt`, the search index, and
 `_headers` / `_redirects` for hosts that read them). Every build replaces the
 directory wholesale, so never keep anything of your own in it.
+
+That makes `outDir` a folder of its own, inside the project or outside it: `dist`, `out/site`
+and `../site-out` all work. Before it touches anything, a build stops with an error if a file
+rather than a folder is already at `outDir`, or if `outDir` is or holds the project folder, or
+is, holds or sits inside a source folder. Those are the folders in the first two lists above
+(`themes/` as a whole), a released version's `source:` and each language's source folder
+wherever the config puts them, a theme kept outside `themes/` (except any of these that is or
+holds the project folder), and `.git/`. `<outDir>.old`, where a build sets the previous output
+aside and then deletes it, is held to the same rules. A page, component definition, glossary
+file or config file the build reads from either, through a link or not, stops it too, before it
+renders a page.
