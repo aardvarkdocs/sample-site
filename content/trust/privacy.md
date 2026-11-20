@@ -5,7 +5,7 @@ description: >-
   you and your readers have.
 icon: fa-solid fa-user-shield
 menu: pricing
-lastmod: 2026-10-19 # bump on every edit; production builds show no git dates
+lastmod: 2026-10-21 # bump on every edit; production builds show no git dates
 weight: 11
 sortableTables: false
 filterableTables: false
@@ -124,14 +124,15 @@ MCP server with `vark serve`, MCP tool-call records.
   [retention schedule](/trust/data-retention/#schedule) or are
   [erased on request](/trust/data-retention/#erasure).
 - **Automated analysis of stored conversations.** Runs whenever conversations are stored
-  and has no switch of its own. Stored turns are sent a second time to a model, in two
+  and the account is active, and has no switch of its own. Stored turns are sent a second time to a model, in two
   passes: one classifies each answer, and runs only for turns stored with the model's
   reasoning; the other groups reader questions into the Insights summaries in the owner's
   dashboard. [Model providers](/trust/subprocessors/#model-providers) says who picks that
   model. Those summaries quote example reader questions. The analysis is billed
-  to the owner's account. `ai.assistant.store_history: false` stops new turns reaching the
-  analysis, and with them the chat history and analytics built on new conversations. It
-  does not stop the analysis of turns already stored: those can still be analyzed, and
+  to the owner's account, and does not run while the account is suspended or closed.
+  `ai.assistant.store_history: false` stops new turns reaching the analysis, and with them
+  the chat history and analytics built on new conversations. It does not stop the analysis
+  of turns already stored: while the account is active, those can still be analyzed, and
   billed, until they age out or are erased.
 - **Thumbs feedback.** On whenever the assistant is configured, with no switch of its own.
   A thumbs up or down stores the vote and the text of the question it rates, for the

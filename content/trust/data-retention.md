@@ -6,7 +6,7 @@ description: >-
   schedule, and how account closure, erasure and exports work.
 icon: fa-solid fa-clock-rotate-left
 menu: pricing
-lastmod: 2026-10-19 # bump on every edit; production builds show no git dates
+lastmod: 2026-10-21 # bump on every edit; production builds show no git dates
 weight: 14
 sortableTables: false
 filterableTables: false
@@ -18,7 +18,7 @@ Aardvark cloud deletes a few categories of data on a schedule: assistant transcr
 search analytics, Content Reach measurements and short-lived records such as sign-in
 links and sessions. Everything else has no time limit: it stays until you remove it, where
 the dashboard lets you, or ask us to erase it, and some billing records are kept even then
-(see [Erasure](#erasure)). Closing an account does not erase anything.
+(see [Erasure](#erasure)). Closing an account erases nothing except its dashboard sessions.
 
 ## Retention schedule {#schedule}
 
@@ -35,7 +35,7 @@ in the privacy policy.
 | Content Reach page views and section measurements | 90 days by default | Deleted by a scheduled job. No derived summary is kept; see [Content Reach](/content-reach/#privacy). |
 | **Short-lived** | | |
 | Sign-in and invitation links | Sign-in links 15 minutes by default, single use; invitations 7 days | Deleted when an invitation is revoked, or by a scheduled job after expiry. |
-| Dashboard sessions | 30 days by default from sign-in or from the last account switch, which starts a new session; not extended by other activity | Deleted when you sign out, or by a scheduled job after expiry. |
+| Dashboard sessions | 30 days by default from sign-in or from the last account switch, which starts a new session; not extended by other activity | Deleted when you sign out, when the account is closed, or by a scheduled job after expiry. |
 | GitHub app connection state, while you connect the app | 30 minutes | Deleted by a scheduled job after expiry, whether or not the connection completed. |
 | Rate-limit counters | Until their counting window ends | Each counter deletes itself. |
 | **No time limit** | | |
@@ -73,18 +73,19 @@ What closing does:
 - **Archives the account.** Its status becomes closed, and a closed account cannot be
   reopened.
 - **Revokes every API key,** so AI requests and other calls made with them stop.
+- **Stops new billed work,** the same work a [suspension](/trust/terms/#termination) stops,
+  and switches off its Docs Quality Check automations. Work already under way is billed
+  when it finishes.
+- **Signs out its dashboard sessions** by deleting them. No team member can open a closed
+  account in the dashboard, and it is not offered at sign-in or for switching accounts.
 
 What closing does not do:
 
-- **It does not erase records.** The scheduled deletions keep running, so transcripts,
+- **It does not erase other records.** The scheduled deletions keep running, so transcripts,
   search analytics and Content Reach rows still age out. Everything else stays;
   [erasure](#erasure) is a separate request.
-- **It does not stop the analysis of conversations already stored.** Turns with a reasoning trace that have not
-  been classified yet can still be classified, and billed against a remaining prepaid
-  balance, until they age out or are erased. See the entry on automated analysis under
-  [what we process about your readers](/trust/privacy/#reader-data).
-- **It does not remove team memberships or end dashboard sessions.** Team members can
-  still view the retained records in the dashboard.
+- **It does not remove team memberships.** The memberships stay on record, but they no
+  longer give access to the account.
 - **It does not remove the saved card or the Stripe customer record.** The card stays
   attached at Stripe. To remove the card yourself first, see
   [Can I remove my saved card?](/support/removing-saved-card/).
@@ -95,9 +96,9 @@ What closing does not do:
 
 _This section forms part of the [Data Processing Addendum](/trust/dpa/)._
 
-Closing an account archives it and does not erase its records. To have personal data
-erased, email us; we carry out the erasure by hand, confirm when it is done, and say
-what we keep and why.
+Closing an account archives it and erases none of its records except its dashboard
+sessions. To have personal data erased, email us; we carry out the erasure by hand, confirm
+when it is done, and say what we keep and why.
 
 - **How to ask.** Email [support@aardvarkdocs.com](mailto:support@aardvarkdocs.com) and
   say what you want erased: the whole account, particular records, or your own user

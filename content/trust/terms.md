@@ -7,7 +7,7 @@ description: >-
   ends.
 icon: fa-solid fa-scale-balanced
 menu: pricing
-lastmod: 2026-10-19 # bump on every edit; production builds show no git dates
+lastmod: 2026-10-21 # bump on every edit; production builds show no git dates
 weight: 16
 ---
 
@@ -218,7 +218,7 @@ part of, used in a way that breaks this section, email
 Report a security vulnerability through the private route under
 [Reporting a vulnerability](/security/#reporting-a-vulnerability) instead.
 
-## 8. The service
+## 8. The service {#service}
 
 Aardvark cloud is provided as it is today. aardvark is pre-1.0 software, and features can
 change or be removed.
@@ -241,22 +241,25 @@ gives no remedy for downtime. There is no status page for Aardvark cloud.
 ## 9. Suspension and ending your account {#termination}
 
 - **Closing your account.** The account owner can ask us to close the account by emailing
-  [support@aardvarkdocs.com](mailto:support@aardvarkdocs.com). Closing an account archives it
-  and does not erase its records. [Closing an account](/trust/data-retention/#closing-an-account)
+  [support@aardvarkdocs.com](mailto:support@aardvarkdocs.com). Closing an account archives it;
+  apart from signing out its dashboard sessions, it erases none of its records. [Closing an account](/trust/data-retention/#closing-an-account)
   explains what closing does and does not do, and
   [erasure](/trust/data-retention/#erasure) how to have records erased. A balance left in
   the account is covered by the refunds item in [section 3](#fees).
 - **Suspension or closure by us.** We may suspend or close an account that breaks these terms,
   including [section 7](#acceptable-use), that has unpaid fees, or that puts the service or other people at
-  risk. A suspended account's AI requests made with its API keys are refused, whether from
-  the reader assistant, build-time AI, `vark author` or a Docs Quality Check, and so are
-  top-ups and the reader data its site sends us (unlike the gateway's own pause when it
-  cannot price requests, which a top-up lifts). Suspension does not stop everything: a
-  scheduled or push-triggered Docs Quality Check still runs and its compute time is still
-  billed, even though its AI requests fail; and the dashboard's own assistants still work,
-  for a signed-in team member or with the account's secret key, as does the analysis of
-  stored conversations, and both are still billed. Closure by us has the same effect as
-  closure at your request. If you think we acted by mistake, email
+  risk. A suspended account starts no new billed work. Its AI requests made with its API keys
+  are refused, whether from the reader assistant, build-time AI, `vark author` or a Docs
+  Quality Check, and so are top-ups and the reader data its site sends us. No dashboard
+  assistant turn, analysis of stored conversations or Docs Quality Check run starts either.
+  Work already under way is billed when it finishes: a Docs Quality Check run already
+  running keeps going and its compute time is billed, even though its AI requests are
+  refused. Once the account is reactivated, a scheduled check that came due during the
+  suspension runs once. Stored answers still waiting to be classified can then be
+  classified, and billed, unless they have aged out or been erased. The gateway's own pause
+  when it cannot confirm what requests cost, described in [section 8](#service), is
+  different: the dashboard can lift it, with or without a top-up. Closure by us has the
+  same effect as closure at your request. If you think we acted by mistake, email
   [support@aardvarkdocs.com](mailto:support@aardvarkdocs.com).
 - **What continues.** Closing an account does not cancel fees you already owe.
   [Sections 10](#disclaimers), [11](#liability) and [12](#claims) continue to apply, and so does the Data Processing Addendum for

@@ -759,7 +759,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -767,8 +767,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -882,7 +882,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -890,15 +890,15 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
             }
           },
           "402": {
-            "description": "Payment required — `anomaly_paused`, `insufficient_balance`, `no_billing_key`.",
+            "description": "Payment required — `account_inactive`, `anomaly_paused`, `insufficient_balance`, `no_billing_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -906,8 +906,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "anomaly_paused",
-                    "message": "AI is paused pending review of unusual usage."
+                    "code": "account_inactive",
+                    "message": "This account is on hold, so the assistant is paused. You weren't billed."
                   }
                 }
               }
@@ -1062,7 +1062,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1070,8 +1070,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -1235,7 +1235,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1243,8 +1243,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -1373,7 +1373,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1381,8 +1381,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -1567,7 +1567,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1575,8 +1575,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -2144,7 +2144,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2152,8 +2152,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -2292,7 +2292,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2300,8 +2300,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -2368,7 +2368,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2376,8 +2376,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -2480,7 +2480,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2488,8 +2488,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -2757,7 +2757,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2765,8 +2765,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -3021,7 +3021,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3029,8 +3029,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -3108,7 +3108,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3116,8 +3116,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -3339,7 +3339,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3347,15 +3347,15 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
             }
           },
           "403": {
-            "description": "Forbidden — `csrf`, `forbidden`, `forbidden_key`.",
+            "description": "Forbidden — `account_closed`, `csrf`, `forbidden`, `forbidden_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3363,8 +3363,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "csrf",
-                    "message": "Missing the dashboard request header on a state-changing request."
+                    "code": "account_closed",
+                    "message": "This account is closed, so its Docs Quality Check automations can't be changed."
                   }
                 }
               }
@@ -3456,7 +3456,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3464,8 +3464,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -3670,7 +3670,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3678,8 +3678,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -3797,7 +3797,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3805,8 +3805,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -3974,7 +3974,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3982,15 +3982,15 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
             }
           },
           "402": {
-            "description": "Payment required — `insufficient_balance`.",
+            "description": "Payment required — `account_inactive`, `insufficient_balance`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3998,7 +3998,7 @@
                 },
                 "example": {
                   "error": {
-                    "code": "insufficient_balance",
+                    "code": "account_inactive",
                     "message": ""
                   }
                 }
@@ -4174,7 +4174,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4182,8 +4182,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -4353,6 +4353,22 @@
               }
             }
           },
+          "402": {
+            "description": "Payment required — `account_inactive`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_inactive",
+                    "message": "This account is on hold or closed, so the run was not started."
+                  }
+                }
+              }
+            }
+          },
           "404": {
             "description": "Not found — `not_found`.",
             "content": {
@@ -4395,7 +4411,7 @@
                 "example": {
                   "error": {
                     "code": "claim_failed",
-                    "message": "Couldn't read the automation config."
+                    "message": "Couldn't claim the run."
                   }
                 }
               }
@@ -4732,7 +4748,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4740,8 +4756,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -4868,7 +4884,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4876,8 +4892,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -5064,7 +5080,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -5072,8 +5088,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -5412,7 +5428,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -5420,8 +5436,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -5760,7 +5776,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -5768,8 +5784,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -5864,7 +5880,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -5872,15 +5888,15 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
             }
           },
           "402": {
-            "description": "Payment required — `insufficient_balance`.",
+            "description": "Payment required — `account_inactive`, `insufficient_balance`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -5888,8 +5904,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "insufficient_balance",
-                    "message": "No active key to bill this request to."
+                    "code": "account_inactive",
+                    "message": "This account is on hold, so the analytics assistant is paused. Not billed."
                   }
                 }
               }
@@ -6034,7 +6050,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6042,8 +6058,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -6177,7 +6193,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6185,8 +6201,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -6324,7 +6340,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6332,8 +6348,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -6424,7 +6440,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6432,8 +6448,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -6536,7 +6552,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6544,8 +6560,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -6715,7 +6731,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6723,8 +6739,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -6920,7 +6936,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6928,8 +6944,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -7042,7 +7058,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7050,8 +7066,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -7159,7 +7175,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7167,8 +7183,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -7292,7 +7308,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7300,8 +7316,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -7447,7 +7463,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7455,8 +7471,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -7631,7 +7647,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7639,8 +7655,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -8045,7 +8061,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8053,8 +8069,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -8509,7 +8525,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8517,8 +8533,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -8582,7 +8598,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8590,8 +8606,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -8936,7 +8952,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8944,8 +8960,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -9193,7 +9209,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -9201,8 +9217,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -9385,7 +9401,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -9393,8 +9409,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -9514,7 +9530,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -9522,8 +9538,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -9843,7 +9859,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -9851,8 +9867,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -9941,7 +9957,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -9949,8 +9965,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -10048,7 +10064,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10056,8 +10072,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -10181,7 +10197,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10189,8 +10205,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -10315,7 +10331,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10323,8 +10339,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -10441,7 +10457,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10449,8 +10465,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -10589,7 +10605,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10597,8 +10613,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -10700,7 +10716,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10708,8 +10724,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -10842,7 +10858,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10850,8 +10866,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -11007,7 +11023,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11015,8 +11031,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -11259,7 +11275,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11267,8 +11283,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -11625,7 +11641,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11633,8 +11649,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }
@@ -11887,7 +11903,7 @@
             }
           },
           "401": {
-            "description": "Unauthenticated — `invalid_key`.",
+            "description": "Unauthenticated — `account_closed`, `invalid_key`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11895,8 +11911,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "invalid_key",
-                    "message": "A secret key (aardvark_secret_…) is required."
+                    "code": "account_closed",
+                    "message": "This account is closed."
                   }
                 }
               }

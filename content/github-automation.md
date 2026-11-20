@@ -276,9 +276,12 @@ Each run **spends from your gateway balance** on two things, both shown per run 
 Schedule the heavier capabilities (translation, or a style-guide pass over a large site) accordingly,
 and keep an eye on your balance from the [cloud gateway](/ai-gateway/) dashboard. A run is skipped
 (and shown as such) unless your available balance is above zero — it doesn't check what the run will
-cost, so a run can take your balance below zero; top up to resume. The gateway can also cap how many
-runs an account has in flight at once; a run refused by that cap shows as skipped and fires again on
-its next trigger.
+cost, so a run can take your balance below zero; top up to resume. No run starts while the account is
+suspended or closed: **Run now** is refused, and shows as skipped (*account on hold*) while the account is
+suspended; a schedule that comes due waits and
+fires once if the account is reactivated; a push during the hold is not acted on, so push again or use
+**Run now** afterwards. The gateway can also cap how many runs an account has in
+flight at once; a run refused by that cap shows as skipped and fires again on its next trigger.
 
 ## For operators
 

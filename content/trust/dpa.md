@@ -6,7 +6,7 @@ description: >-
   processed, who else handles it, and what Aardvark does and does not commit to.
 icon: fa-solid fa-file-contract
 menu: pricing
-lastmod: 2026-10-19 # bump on every edit; production builds show no git dates
+lastmod: 2026-10-21 # bump on every edit; production builds show no git dates
 weight: 15
 ---
 
@@ -15,7 +15,8 @@ weight: 15
 {% callout title="Where this differs from a typical addendum" severity="info" %}
 This addendum is narrower than a typical one. It includes no transfer mechanism such
 as the EU Standard Contractual Clauses, no audit or inspection rights, no fixed number of
-hours for incident notice, no automatic deletion when an account closes, and no claim that
+hours for incident notice, no automatic deletion of the data processed on your behalf when an
+account closes, and no claim that
 subprocessors' terms mirror it. If your law requires any of these in a processor contract,
 this addendum does not provide them.
 {% endCallout %}
@@ -66,7 +67,7 @@ its own page:
   [model providers](/trust/subprocessors/#model-providers).
 - **Requests from individuals:** [your rights](/trust/privacy/#your-rights).
 - **Changes to the subprocessor list:** [changes](/trust/subprocessors/#changes).
-- **The end of an account:** closing deletes nothing by itself; records stay until the schedule or an erasure request removes them. See
+- **The end of an account:** closing deletes nothing by itself except the account's dashboard sessions; other records stay until the schedule or an erasure request removes them. See
   [closing an account](/trust/data-retention/#closing-an-account) and
   [erasure](/trust/data-retention/#erasure).
 
@@ -90,8 +91,8 @@ requires it. Maintaining the service includes testing changes, which can use a c
 production data (see [confidentiality](/trust/soc-2/#confidentiality)).
 
 **Automated analysis of stored transcripts.** If your site stores reader conversations,
-that also instructs us to run the automated analysis of them, including turns already
-stored after you turn storing off, until they age out or are erased. What the analysis
+that also instructs us to run the automated analysis of them while the account is active,
+including turns already stored after you turn storing off, until they age out or are erased. What the analysis
 does, whether it runs by default, and what turning stored conversations off does and does
 not stop are in the entries on stored conversations and their automated analysis under
 [what we process about your readers](/trust/privacy/#reader-data).
