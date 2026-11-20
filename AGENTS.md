@@ -29,14 +29,16 @@ Rules that keep automated work safe in this repository:
   repository only and cannot be changed through a public pull request. A
   `.claude/`, `.codex/` or `.cursor/` directory (and the legacy `.cursorrules`) is
   refused at any depth for the same reason — those configure the tools that read
-  the guides. The sync also refuses the top-level `LICENSE`, every file under
-  `themes/vark/` (published from the aardvark package), the
+  the guides. The sync also refuses the top-level legal files (`LICENSE` and
+  `CLA.md`), the maintainer-only files under `themes/vark/` that
+  [Contributing components](CONTRIBUTING.md#contributing-components) lists, the
   top-level `.github/` and `worker/` directories, any `.git` path component,
   symlinks, submodules, unsafe paths, and oversized payloads. Keep proposals to
-  ordinary sample-site files and the top-level files
-  [CONTRIBUTING.md](CONTRIBUTING.md) lists as proposable.
+  ordinary sample-site files, the component library in `themes/vark/`, and the
+  top-level files [CONTRIBUTING.md](CONTRIBUTING.md) lists as proposable.
 - The vark theme's component library in `themes/vark/` is open source under the
   MIT License; the aardvark CLI that builds the site is not. Read
-  [Docs style](CONTRIBUTING.md#docs-style) before writing about either. Suggest a
-  component change in an issue, as
-  [Contributing components](CONTRIBUTING.md#contributing-components) describes.
+  [Docs style](CONTRIBUTING.md#docs-style) before writing about either. A pull
+  request that changes `themes/vark/` is imported only after everyone behind it
+  signs the [Contributor License Agreement](CLA.md) on that pull request. Never
+  post the signing comment yourself: signing is each contributor's own legal act.

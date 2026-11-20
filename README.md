@@ -55,10 +55,11 @@ in `themes/vark/components/`, backed by React components: the theme's own, in
 `themes/vark/islands/`, and those of Mantine and the other npm packages it
 builds on. A few tags, such as `{% include %}` and `{% visibility %}`, are built
 into the aardvark CLI instead. The library is built on
-[Mantine](https://mantine.dev) and is open source under the MIT License. Ideas
-for fixes and new components are welcome —
-see [Contributing components](CONTRIBUTING.md#contributing-components) for how
-to propose one.
+[Mantine](https://mantine.dev) and is open source under the MIT License. Pull
+requests with fixes and new components are welcome — see
+[Contributing components](CONTRIBUTING.md#contributing-components) for what a
+change needs, including the [Contributor License Agreement](CLA.md) that
+contributors to the library sign.
 
 The aardvark CLI that builds this site is distributed separately as a prebuilt
 binary. It is not open source, and this repository's license doesn't cover it.

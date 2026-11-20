@@ -48,8 +48,11 @@ logic — ever leaves the binary. The gateway schedules the runs, opens the PRs,
 > You stay in control of access on GitHub: the app sees only the repositories you select, and you can
 > change or revoke that at any time from your GitHub settings. On those repositories it asks for
 > **Contents** and **Pull requests** (read & write) — what it needs to push a branch and open a pull
-> request — plus the read-only **Metadata** permission every app gets. It needs no access to your
-> repository's secrets or workflows, because nothing is ever written into either.
+> request — and for **Issues** and **Actions** (read & write), which it needs only on Aardvark's own
+> repositories, plus the read-only **Metadata** permission every app gets. The
+> [privacy policy](/trust/privacy/#what-we-collect) says what GitHub may send us under **Issues**. It
+> needs no access to your repository's secrets or workflows, because nothing is ever written into
+> either.
 
 ## Choose checks and a schedule
 

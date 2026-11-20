@@ -54,10 +54,12 @@ wherever they sit, so they publish outbound from the source repository only and
 the sync refuses an inbound change to one at any depth. The same goes for the
 agent toolchains' own config directories — `.claude/`, `.codex/` and `.cursor/`,
 plus the legacy `.cursorrules` — which those tools discover by walking the tree.
-Only the maintainers change the `LICENSE` at the repository root, so the sync
-refuses a change to it. The files under `themes/vark/` are published from the
-aardvark package itself, so the sync refuses changes to them too; open an issue
-to suggest one (see [Contributing components](#contributing-components)). For safety, it also
+The legal files at the repository root — `LICENSE` and `CLA.md` — are changed
+only by the maintainers, so the sync refuses a change to either. The files under
+`themes/vark/` are published from the aardvark package itself and ship with it,
+so a change there also needs everyone behind the pull request to sign the
+[Contributor License Agreement](CLA.md), and the sync accepts only some of those
+files; see [Contributing components](#contributing-components). For safety, it also
 refuses changes at the repository root under `.github/` and `worker/`, as well as any path component
 named `.git`, symlinks, submodules, unsafe paths, and changes that exceed its
 size limits. A refused pull request receives a generic explanation; open an issue if a
@@ -74,10 +76,11 @@ The vark theme's component library lives in `themes/vark/` and is open source
 under the MIT License. Bug fixes, improvements and ideas for new components are
 welcome.
 
-- **Suggest a change in an issue.** The sync refuses pull requests that
-  change `themes/vark/` (see [What can be changed](#what-can-be-changed)), so
-  [open an issue](../../issues/new) that describes the fix or the component
-  you'd like.
+- **Open a pull request.** A change to `themes/vark/` follows the same
+  lifecycle as any other (see [Pull requests are welcome](#pull-requests-are-welcome)),
+  once everyone behind it has signed the Contributor License Agreement (below).
+  To suggest a fix or a component without writing it,
+  [open an issue](../../issues/new).
 - **Where things go.** A tag is defined by a Markdown file in
   `themes/vark/components/`: its front matter declares the tag's name and typed
   parameters, and a Python body renders it. Interactive components add a React
@@ -93,9 +96,29 @@ welcome.
   permissively licensed and compatible as published, the same gates as
   [Community Components](https://aardvarkdocs.com/components/community/), and
   maintainers add it to the toolchain that ships with aardvark.
+- **What the sync accepts in `themes/vark/`.** Markdown, JavaScript, TypeScript,
+  JSX, TSX, CSS, SCSS, HTML, SVG, YAML and JSON files, as ordinary (not
+  executable) files. Some files there are maintainer-only, and the sync refuses a change
+  to them: `theme.yaml`; the base component list,
+  `themes/vark/islands/mantine_components.json`; package manifests and
+  lockfiles; archives; license and notice files; tool settings files
+  (`tsconfig.json`, `jsconfig.json`, and any file or folder whose name starts
+  with a dot); and anything in a `vendor/` folder. A file in
+  `themes/vark/islands/` can't take the name of one of aardvark's own
+  interface components, such as `Search` or `AiAssistant`, in any letter case.
+  `themes/vark/fonts/` isn't published here.
 - **Vendored bundles are maintainer-only.** The third-party bundles in
   `themes/vark/` (`mermaid.min.js` and `markdeep.min.js`) are updated by the
   maintainers; their licenses are listed in `themes/vark/THIRD_PARTY_NOTICES`.
+- **Contributor License Agreement.** Everyone who authored, co-authored or
+  committed a commit in a pull request that changes `themes/vark/`, and whoever
+  opened it, signs the current version of the project's
+  [Contributor License Agreement](CLA.md) before the change is taken in for
+  review. You sign by commenting on that pull request. A signature counts only
+  on the pull request it is posted on, so sign each one you take part in. A
+  comment from the sync bot there gives the exact sentence and lists who still
+  needs to sign. If you edit or delete your signing comment, it no longer
+  counts, and the pull request waits until you sign again.
 
 ## Docs pages
 

@@ -5,7 +5,7 @@ description: >-
   you and your readers have.
 icon: fa-solid fa-user-shield
 menu: pricing
-lastmod: 2026-10-21 # bump on every edit; production builds show no git dates
+lastmod: 2026-11-20 # bump on every edit; production builds show no git dates
 weight: 11
 sortableTables: false
 filterableTables: false
@@ -64,9 +64,11 @@ repository; [Subprocessors](/trust/subprocessors/) lists what it contains.
 **GitHub app data.** If you install the optional GitHub app, we store the name of the GitHub
 user or organization it is installed on, the names and default branches of the repositories
 you grant it, your automation settings, and a history of runs, including each run's
-repository, branch, status and charge. While you connect the app, a short-lived record
-holds a random connection token with your account and user identifiers (see the
-[retention schedule](/trust/data-retention/#schedule)).
+repository, branch, status and charge. GitHub may also notify us of any comment on an issue
+or pull request in those repositories, sending the comment, its author and that issue or
+pull request; we discard each notification without storing or logging its contents. While
+you connect the app, a short-lived record holds a random connection token with your account
+and user identifiers (see the [retention schedule](/trust/data-retention/#schedule)).
 
 **What is not collected.** No password exists. No IP address or user agent is written to
 account, session or API key records, and the records that hold reader data have no field for
