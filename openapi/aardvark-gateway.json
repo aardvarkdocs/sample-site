@@ -366,7 +366,7 @@
         "operationId": "postAuthSwitch",
         "x-aardvark-browser-tryit": false,
         "x-aardvark-browser-tryit-reason": "This auth endpoint is same-origin to the gateway dashboard, so browser calls from this docs page are blocked by CORS. Use a generated request sample or the dashboard instead.",
-        "description": "Rotates the session to a different account the user belongs to. Requires the session cookie and the `X-Aardvark-Dashboard` CSRF header. Rate limited per user.",
+        "description": "Rotates the session to a different account the user belongs to. Requires the session cookie and the `X-Aardvark-Dashboard` CSRF header. If supplied, `X-Aardvark-Account` must match the account being switched from. Rate limited per user.",
         "security": [
           {
             "sessionCookie": [],
@@ -459,6 +459,22 @@
                   "error": {
                     "code": "csrf",
                     "message": "Missing the dashboard request header."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -625,7 +641,8 @@
         "description": "Headline metrics over the last `days` (default 30, capped at 365): conversation/answer/feedback counts, verdict mix, uncertainty rate, engagement, support-deflection rate, and top languages.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -789,6 +806,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -804,6 +837,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -929,6 +963,22 @@
               }
             }
           },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
+          },
           "413": {
             "description": "Payload too large — `too_large`.",
             "content": {
@@ -1006,7 +1056,8 @@
         "description": "Server-side fetch of one Aardvark documentation page (Markdown) for the assistant's `fetch_doc` grounding tool. The path is validated to a same-origin `.md` page and the body is size-capped.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -1109,6 +1160,22 @@
               }
             }
           },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
+          },
           "429": {
             "description": "Rate limited — `rate_limited`.",
             "content": {
@@ -1155,6 +1222,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -1266,6 +1334,22 @@
               }
             }
           },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
+          },
           "413": {
             "description": "Payload too large — `too_large`.",
             "content": {
@@ -1311,7 +1395,8 @@
         "description": "Per-type counts and the most recent authoring events over the last 90 days. Returns clean empty shapes when no rows exist.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -1399,6 +1484,22 @@
                   "error": {
                     "code": "forbidden_key",
                     "message": "This credential can't manage the account."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -1543,6 +1644,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -1593,6 +1695,22 @@
                   "error": {
                     "code": "csrf",
                     "message": "Missing the dashboard request header on a state-changing request."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -2028,7 +2146,8 @@
         "description": "Recent turns grouped into conversations, each with the reader vote and (when available) an automated analysis verdict. `filter=needs_attention` restricts to low-confidence / doc-gap / not-found turns; `verdict`/`intent`/`vote`/`q`/`tag` narrow it further.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -2174,6 +2293,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -2188,7 +2323,8 @@
         "description": "CSV of the conversation turns matching the same filters as `GET /v1/conversations` (every cell formula-injection-guarded). An `X-Aardvark-Export-Truncated: true` response header signals the export cap was hit.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -2322,6 +2458,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -2336,7 +2488,8 @@
         "description": "The account's insight-digest opt-in: whether `enabled`, the `cadence`, and when it was `last_sent_ts`.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -2398,6 +2551,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -2411,6 +2580,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -2506,6 +2676,22 @@
                   "error": {
                     "code": "csrf",
                     "message": "Missing the dashboard request header on a state-changing request."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -2686,7 +2872,8 @@
         "description": "The owner-facing READ of reader thumbs votes — the capture POST is `POST /v1/feedback`. Returns up/down counts, the satisfaction rate, and recent rated answers. Dashboard-authed (session OR secret key); a public key is rejected at the door.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -2783,6 +2970,22 @@
                   "error": {
                     "code": "forbidden_key",
                     "message": "This credential can't manage the account."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -2971,7 +3174,8 @@
         "description": "One cross-stream snapshot of the account's reader feedback over a recent 30-day window — thumbs, page ratings, survey responses, and conversation sentiment — powering the metric tiles at the top of the dashboard Feedback panel. Each sub-stream degrades to zeros if its backing table isn't present yet.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -3051,6 +3255,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -3065,7 +3285,8 @@
         "description": "The static catalog of AI authoring capabilities (e.g. keyword and description generation, the style-guide pass) that can be enabled to run on a connected repo. Readable by any authenticated dashboard user.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -3139,6 +3360,22 @@
               }
             }
           },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
+          },
           "503": {
             "description": "Service unavailable — `github_unconfigured`.",
             "content": {
@@ -3169,6 +3406,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -3387,7 +3625,7 @@
             }
           },
           "409": {
-            "description": "Conflict — `install_mismatch`, `install_missing`, `install_stale`, `install_suspended`.",
+            "description": "Conflict — `account_context_changed`, `install_mismatch`, `install_missing`, `install_stale`, `install_suspended`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3395,8 +3633,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "install_mismatch",
-                    "message": "This repo's installation is owned by a different account — reconnect it."
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -3432,6 +3670,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -3487,6 +3726,22 @@
               }
             }
           },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
+          },
           "503": {
             "description": "Service unavailable — `github_unconfigured`.",
             "content": {
@@ -3516,7 +3771,8 @@
         "description": "Everything the dashboard's Docs Quality Checks page needs: whether the integration is configured, the install-URL slug, the account's installations, and each connected repo with its per-capability automation config.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -3701,6 +3957,22 @@
               }
             }
           },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
+          },
           "503": {
             "description": "Service unavailable — `github_unconfigured`.",
             "content": {
@@ -3731,6 +4003,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -3845,7 +4118,7 @@
             }
           },
           "409": {
-            "description": "Conflict — `install_mismatch`.",
+            "description": "Conflict — `account_context_changed`, `install_mismatch`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3853,8 +4126,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "install_mismatch",
-                    "message": "This repo's installation is owned by a different account."
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -3890,6 +4163,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -4038,7 +4312,7 @@
             }
           },
           "409": {
-            "description": "Conflict — `account_run_cap`, `already_running`, `install_mismatch`, `install_missing`, `install_stale`, `install_suspended`, `not_configured`, `rulesets_required`.",
+            "description": "Conflict — `account_context_changed`, `account_run_cap`, `already_running`, `install_mismatch`, `install_missing`, `install_stale`, `install_suspended`, `not_configured`, `rulesets_required`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4046,8 +4320,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "install_mismatch",
-                    "message": "This repo's installation is no longer connected to this account."
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -4099,6 +4373,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -4200,6 +4475,22 @@
                   "error": {
                     "code": "csrf",
                     "message": "Missing the dashboard request header on a state-changing request."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -4626,7 +4917,8 @@
         "description": "Run history for a connected repo, newest first, optionally filtered by `capability`. Each row carries status, conclusion, the PR the run opened, and the metered compute cost.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -4795,6 +5087,22 @@
               }
             }
           },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
+          },
           "503": {
             "description": "Service unavailable — `github_unconfigured`.",
             "content": {
@@ -4825,6 +5133,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -4932,7 +5241,7 @@
             }
           },
           "409": {
-            "description": "Conflict — `active_run`, `compute_pending`.",
+            "description": "Conflict — `account_context_changed`, `active_run`, `compute_pending`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4940,8 +5249,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "active_run",
-                    "message": "Cancel the active run before clearing it from history."
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -4976,7 +5285,8 @@
         "description": "Returns the latest GitHub Actions job log text for one Docs Quality Check run. The dashboard polls this endpoint while a row is expanded so queued and in-progress runs can surface logs as soon as GitHub publishes them.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -5122,6 +5432,22 @@
                   "error": {
                     "code": "not_found",
                     "message": "That run wasn't found."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -5359,6 +5685,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -5458,6 +5785,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -5472,7 +5815,8 @@
         "description": "The cron-clustered analytics surface: live metrics plus Top Questions and Coverage Gaps for the selected period, with prior-period deltas when available.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -5806,6 +6150,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -5821,6 +6181,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -5927,6 +6288,22 @@
               }
             }
           },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
+          },
           "429": {
             "description": "Rate limited — `concurrency_limit`, `rate_limited`.",
             "content": {
@@ -5988,7 +6365,8 @@
         "description": "Returns metadata for every key on the account (prefix, mode, label, allowed origins, revoked flag) — never the hash or secret value.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -6080,6 +6458,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -6093,6 +6487,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -6225,7 +6620,7 @@
             }
           },
           "409": {
-            "description": "Conflict — `secret_key_exists`.",
+            "description": "Conflict — `account_context_changed`, `secret_key_exists`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6233,8 +6628,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "secret_key_exists",
-                    "message": "This account already has an active secret key — rotate it instead of minting a second one."
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -6254,6 +6649,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -6386,6 +6782,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -6401,6 +6813,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -6486,6 +6899,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -6501,6 +6930,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -6600,7 +7030,7 @@
             }
           },
           "409": {
-            "description": "Conflict — `key_not_rotatable`.",
+            "description": "Conflict — `account_context_changed`, `key_not_rotatable`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -6608,8 +7038,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "key_not_rotatable",
-                    "message": ""
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -6628,7 +7058,8 @@
         "description": "Top tools, recent calls, and a bucketed time series over a window of `days` (default 7, max 90). Buckets are hourly for ≤2 days, daily otherwise.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -6757,6 +7188,22 @@
                   "error": {
                     "code": "forbidden_key",
                     "message": "This credential can't manage the account."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -6903,7 +7350,8 @@
         "description": "The dashboard READ of reader star ratings: the overall average, total count, and a per-page breakdown. Dashboard-authed like `/v1/insights`.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -6966,6 +7414,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -6981,6 +7445,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -7105,6 +7570,22 @@
               }
             }
           },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
+          },
           "429": {
             "description": "Rate limited — `rate_limited`.",
             "content": {
@@ -7151,6 +7632,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -7222,6 +7704,22 @@
               }
             }
           },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
+          },
           "429": {
             "description": "Rate limited — `rate_limited`.",
             "content": {
@@ -7284,6 +7782,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -7339,6 +7838,22 @@
               }
             }
           },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
+          },
           "429": {
             "description": "Rate limited — `rate_limited`.",
             "content": {
@@ -7383,6 +7898,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -7494,6 +8010,22 @@
               }
             }
           },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
+          },
           "429": {
             "description": "Rate limited — `rate_limited`.",
             "content": {
@@ -7572,6 +8104,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -7711,7 +8244,7 @@
             }
           },
           "409": {
-            "description": "Conflict — `account_merge_in_progress`, `topup_in_progress`.",
+            "description": "Conflict — `account_context_changed`, `account_merge_in_progress`, `topup_in_progress`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -7719,8 +8252,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "account_merge_in_progress",
-                    "message": "This account is being merged; no new card charge was created."
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -7932,7 +8465,8 @@
         "description": "Aggregate Content Reach over a window of `days` (default 30, max 90): page-view and session totals, average foreground-visible time, average sections reached, totals for each of the five tracked actions, and a per-page table with reach completion. Averages are clamped means — the clamp is applied at ingest, so a tab left open cannot drag them. Everything is aggregate: there is no endpoint returning an individual reader's path, because there is no durable visitor identity to build one from.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -8087,6 +8621,22 @@
                   "error": {
                     "code": "forbidden_key",
                     "message": "This credential can't manage the account."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -8371,7 +8921,8 @@
         "description": "Per-page Content Reach drill-in — the data behind the dashboard's section heat strip. Returns one row per section in document order with its reach rate, median foreground dwell, and action counts, plus the distribution of last-reached sections. Reach counts and action totals are exact over the window; the dwell statistic is a MEDIAN over a bounded sample, so one long-parked tab cannot skew it.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -8555,6 +9106,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -8570,6 +9137,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -8645,6 +9213,22 @@
               }
             }
           },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
+          },
           "503": {
             "description": "Service unavailable — `service_unavailable`.",
             "content": {
@@ -8674,7 +9258,8 @@
         "description": "On-site search analytics over a window of `days` (default 30, max 90): top searches, zero-result queries, click-through, average clicked position, searches-per-session, no-click rate, Ask-AI escalation rate, top clicked pages, a language split, and a bucketed volume series (hourly for ≤2 days, daily otherwise). The response also includes the latest durable calendar-period search-theme/content-gap snapshot, which is independent of the requested live-event window.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -8982,6 +9567,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -9165,7 +9766,8 @@
         "description": "The positive/neutral/negative distribution of analyzed conversations over a recent window, plus recent example messages, for the reader-feedback panel. Dashboard-authed like `/v1/insights`.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -9235,6 +9837,22 @@
                   "error": {
                     "code": "forbidden_key",
                     "message": "This credential can't manage the account."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -9348,7 +9966,8 @@
         "description": "Lists tickets for the account. Plain members see only their own; owners/admins/secret-key callers see the whole account. Capped at 100 (newest first).",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -9431,6 +10050,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -9444,6 +10079,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -9556,6 +10192,22 @@
                   "error": {
                     "code": "csrf",
                     "message": "Missing the dashboard request header on a state-changing request."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -9768,7 +10420,8 @@
         "description": "The dashboard READ of structured survey answers: per-question aggregates (choice bars + rating averages) plus recent open-ended survey comments. Dashboard-authed like `/v1/usage`.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -9889,6 +10542,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -9903,7 +10572,8 @@
         "description": "The account's custom tag vocabulary (`tags`) and the per-account cap (`max`).",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -9987,6 +10657,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -10000,6 +10686,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -10096,7 +10783,7 @@
             }
           },
           "409": {
-            "description": "Conflict — `duplicate_tag`, `tag_cap`.",
+            "description": "Conflict — `account_context_changed`, `duplicate_tag`, `tag_cap`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -10104,8 +10791,8 @@
                 },
                 "example": {
                   "error": {
-                    "code": "duplicate_tag",
-                    "message": "A tag with that name already exists."
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -10125,6 +10812,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -10243,6 +10931,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -10257,7 +10961,8 @@
         "description": "Returns the account's members. Owners/admins also see pending invites; plain members see members only.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -10361,6 +11066,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -10376,6 +11097,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -10488,6 +11210,22 @@
               }
             }
           },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
+          },
           "429": {
             "description": "Rate limited — `rate_limited`.",
             "content": {
@@ -10534,6 +11272,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -10635,6 +11374,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -10650,6 +11405,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -10762,6 +11518,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -10777,6 +11549,7 @@
         "security": [
           {
             "sessionCookie": [],
+            "accountHeader": [],
             "csrfHeader": []
           },
           {
@@ -10904,6 +11677,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -10918,7 +11707,8 @@
         "description": "A flat, cursor-paged feed of answer turns in ascending `(ts, conversation_id, turn)` order (oldest first) — built for forward incremental sync. Page with `next_cursor` / `has_more`.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -11049,6 +11839,22 @@
                   "error": {
                     "code": "forbidden_key",
                     "message": "This credential can't manage the account."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
                   }
                 }
               }
@@ -11244,7 +12050,8 @@
         "description": "Returns the account's stored transcripts grouped into conversations (newest first), each turn carrying its vote. Capped at ~300 turns; `truncated` signals older history exists.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -11305,6 +12112,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -11319,7 +12142,8 @@
         "description": "The dashboard overview payload: account status, balance, recent usage rows, top-ups, reader feedback/comments, account events, and the payment/auto-top-up configuration. Readable even when the account is suspended.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -11671,6 +12495,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -11685,7 +12525,8 @@
         "description": "Owner/admin billing usage grouped by the team member who minted each key, over an optional [since, until) window. Account-owned secret/admin/CLI usage is listed as one row per key with safe key metadata.",
         "security": [
           {
-            "sessionCookie": []
+            "sessionCookie": [],
+            "accountHeader": []
           },
           {
             "secretKey": []
@@ -11933,6 +12774,22 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Conflict — `account_context_changed`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": {
+                    "code": "account_context_changed",
+                    "message": "The dashboard account has changed. Reload the dashboard before continuing."
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -11986,6 +12843,12 @@
         "in": "cookie",
         "name": "__Host-av_session",
         "description": "Dashboard session cookie from the magic-link flow (HttpOnly, Secure, SameSite=Lax)."
+      },
+      "accountHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Aardvark-Account",
+        "description": "The active_account returned by /auth/me for the displayed dashboard. Required with session cookies on account-scoped requests."
       },
       "csrfHeader": {
         "type": "apiKey",
