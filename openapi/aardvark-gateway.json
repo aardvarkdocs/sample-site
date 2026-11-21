@@ -531,8 +531,28 @@
         "operationId": "postAuthVerify",
         "x-aardvark-browser-tryit": false,
         "x-aardvark-browser-tryit-reason": "This auth endpoint is same-origin to the gateway dashboard, so browser calls from this docs page are blocked by CORS. Use a generated request sample or the dashboard instead.",
-        "description": "The token in the body is the credential. On success sets the `__Host-av_session` cookie. NOTE: this endpoint's responses use the non-standard shape `{ ok, error }` (read by the landing page's script), not the usual error envelope.",
+        "description": "Send the token as `application/json` from the gateway dashboard origin with a nonempty `X-Aardvark-Dashboard` header. On success sets the `__Host-av_session` cookie. NOTE: this endpoint's responses use the non-standard shape `{ ok, error }` (read by the landing page's script), not the usual error envelope.",
         "security": [],
+        "parameters": [
+          {
+            "name": "X-Aardvark-Dashboard",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Send `1` to identify a dashboard request."
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The origin of the gateway that issued the link."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -574,6 +594,62 @@
           },
           "400": {
             "description": "Bad request — `invalid`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "error"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "description": "Always `false` in this error response."
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "Error code string."
+                    }
+                  }
+                },
+                "example": {
+                  "ok": false,
+                  "error": "invalid"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden — `invalid`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "ok",
+                    "error"
+                  ],
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "description": "Always `false` in this error response."
+                    },
+                    "error": {
+                      "type": "string",
+                      "description": "Error code string."
+                    }
+                  }
+                },
+                "example": {
+                  "ok": false,
+                  "error": "invalid"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Error — `invalid`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8150,13 +8226,13 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "pending": {
-                      "type": "boolean",
-                      "description": "Present when the charge is still settling."
-                    },
                     "balance_usd": {
                       "type": "number",
                       "description": "New balance after the credit (on a synchronous charge)."
+                    },
+                    "pending": {
+                      "type": "boolean",
+                      "description": "Present when the charge is still settling."
                     }
                   }
                 }
@@ -8164,7 +8240,7 @@
             }
           },
           "400": {
-            "description": "Bad request — `bad_request`, `no_card`, `payment_error`.",
+            "description": "Bad request — `bad_request`, `no_card`, `payment_error`, `topup_failed`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8244,7 +8320,7 @@
             }
           },
           "409": {
-            "description": "Conflict — `account_context_changed`, `account_merge_in_progress`, `topup_in_progress`.",
+            "description": "Conflict — `account_context_changed`, `account_merge_in_progress`, `topup_idempotency_conflict`, `topup_in_progress`.",
             "content": {
               "application/json": {
                 "schema": {
