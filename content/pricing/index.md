@@ -7,6 +7,7 @@ description: >-
 icon: fa-solid fa-tags
 menu: pricing
 weight: 1
+mode: wide
 ---
 
 aardvark is **free to use, forever**: prebuilt binaries for macOS, Linux, and Windows,
