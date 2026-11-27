@@ -86,6 +86,11 @@ agrees with the anchors search indexes. A page view carries at most **40 bands**
 plus the first 39 headings and targets in document order (40 targets under `targetsOnly`).
 Anything below that is unmeasured — no reach, no dwell, no actions — and is left out of the
 completion denominator, so a reader who covers every tracked band can still reach 100%.
+Beyond the cap, Reach checks up to 64 more sections. If all 64 are hidden and more
+remain, dwell stops at the start of the last visible tracked section. Reach checks up
+to 64 headings separately to locate the end of the last tracked heading. When the
+heading's end is unknown, Reach includes it in the current completion count only if
+it already qualified as reached earlier in the page view.
 
 A section can be **reached with zero dwell**, and that isn't a bug — the two measures
 answer different questions. A long section can fill a reader's screen (so it is reached)
