@@ -39,6 +39,7 @@ per-function docs below do not restate them.
 
 import collections
 import http.client
+import itertools
 import json
 import math
 import os
@@ -49,7 +50,6 @@ import urllib.error
 from aardvark.ai import model_context
 from aardvark.http_fetch import (
     InsecureRedirect,
-    OversizeResponse,
     RedirectLoopError,
     http_get_bytes,
 )
@@ -94,16 +94,23 @@ OPENROUTER_HOSTS = frozenset({"openrouter.ai"})
 RATE = data["pricing"]["rate"]
 CACHE_TTL_SECONDS = 3600
 # Defensive cap on a fetched response body (both catalogs are well under 1 MB today). An
-# oversize body is rejected BEFORE parsing on both transport legs — the curl leg raises
-# OversizeResponse, and the urllib leg's one-past-cap sentinel byte is checked in _fetch_json —
-# and either way it becomes a `schema` CatalogError, degrading via the cache/empty path.
+# oversize body is rejected BEFORE parsing: both transport legs return one byte past the cap,
+# which _fetch_json checks, and it becomes a `schema` CatalogError, degrading via the cache/empty
+# path.
 MAX_RESPONSE_BYTES = 16 * 1024 * 1024
+# Per transport leg: a fetch whose urllib leg times out tries curl for as long again.
+FETCH_TIMEOUT_SECONDS = 15
 
 # Artificial Analysis "Intelligence Index" — an independent model-quality score. Their API
 # is free but keyed: set ARTIFICIAL_ANALYSIS_API_KEY to add a Quality column. Without a key
 # the column is simply omitted. Build-time + cached use fits their "cache responses, don't
-# put keys in client code" terms. See https://artificialanalysis.ai/documentation.
-AA_MODELS_URL = "https://artificialanalysis.ai/api/v2/data/llms/models"
+# put keys in client code" terms. The free language-models list answers a page at a time
+# (``?page=N``, from 1, until ``pagination.has_more`` is false); see
+# https://artificialanalysis.ai/data-api/docs.
+AA_MODELS_URL = "https://artificialanalysis.ai/api/v2/language/models/free"
+#: Well past the list's length (two pages of 200 in the published example): a listing that never
+#: reports its last page stops here instead of spending the key's daily requests.
+AA_MAX_PAGES = 10
 #: As above, and this is the request the allowlist exists for — it is the one with the key.
 ARTIFICIAL_ANALYSIS_HOSTS = frozenset({"artificialanalysis.ai"})
 AA_KEY_ENV = "ARTIFICIAL_ANALYSIS_API_KEY"
@@ -159,7 +166,7 @@ def _fetch_json(url, headers, allowed_hosts):
     """
     try:
         raw, _final_url = http_get_bytes(
-            url, timeout=15, headers=headers, max_bytes=MAX_RESPONSE_BYTES,
+            url, timeout=FETCH_TIMEOUT_SECONDS, headers=headers, max_bytes=MAX_RESPONSE_BYTES,
             allowed_hosts=allowed_hosts,
         )
     except InsecureRedirect as exc:
@@ -187,10 +194,6 @@ def _fetch_json(url, headers, allowed_hosts):
                 f"(HTTP {exc.code} {' '.join(str(exc.reason).split())})",
             ) from exc
         raise CatalogError("http", f"the server answered HTTP {exc.code} {exc.reason}") from exc
-    except OversizeResponse as exc:
-        raise CatalogError(
-            "schema", f"the response is larger than the {MAX_RESPONSE_BYTES}-byte ceiling ({exc})"
-        ) from exc
     except urllib.error.URLError as exc:
         raise CatalogError("network", f"the request never completed ({exc.reason})") from exc
     except (TimeoutError, OSError, http.client.HTTPException) as exc:
@@ -212,8 +215,7 @@ def _fetch_json(url, headers, allowed_hosts):
     if len(raw) > MAX_RESPONSE_BYTES:
         # http_get_bytes returns up to max_bytes + 1: the extra byte is an oversize SENTINEL
         # the caller must act on, not part of the accepted limit. Without this check the
-        # stated cap would not actually be enforced on the urllib leg (the curl leg raises
-        # OversizeResponse itself, handled above).
+        # stated cap would not actually be enforced on either leg.
         raise CatalogError(
             "schema",
             f"the response is larger than the {MAX_RESPONSE_BYTES}-byte ceiling",
@@ -235,21 +237,24 @@ def _loads(data, what):
         raise CatalogError("json", f"{what} is not valid JSON ({exc!r})") from exc
 
 
-def _entries(payload, source, *, key_required=True):
-    """``(objects, total, unreadable)`` for a catalog payload, or raise a ``schema``
+def _entries(payload, source):
+    """``(objects, total, unreadable)`` for a ``{"data": [...]}`` payload, or raise a ``schema``
     :class:`CatalogError`.
 
-    ``key_required=False`` also accepts a bare list, one of the two shapes Artificial Analysis
-    answers with. Non-object entries are returned as :class:`_Unreadable` rather than warned
-    about here: whether they are worth reporting depends on whether this payload is the one
-    the page ends up using, which only the caller knows.
+    A bare list is refused, live or cached. Neither upstream answers one, and a snapshot is
+    written only once it has passed this check (rule 3). The Artificial Analysis cache file may
+    still hold an answer from the retired ``/api/v2/data/llms/models``, which was an object with
+    a ``data`` list too. A bare list cached anyway fails like any other wrong shape whenever it
+    is read: :func:`_load` warns and never serves it.
+
+    Non-object entries are returned as :class:`_Unreadable` rather than warned about here:
+    whether they are worth reporting depends on whether this payload is the one the page ends
+    up using, which only the caller knows.
     """
     if isinstance(payload, list):
-        if key_required:
-            raise CatalogError(
-                "schema", f'the {source} response was a bare list, not a {{"data": …}} object'
-            )
-        data = payload
+        raise CatalogError(
+            "schema", f'the {source} response was a bare list, not a {{"data": …}} object'
+        )
     elif not isinstance(payload, dict):
         raise CatalogError(
             "schema", f"the {source} response was a JSON {type(payload).__name__}, not an object"
@@ -662,13 +667,14 @@ def _write_snapshot(cache_path, payload, source):
 
 
 def _load(cache_path, url, headers, allowed_hosts, *, source, parse, subject, consequence,
-          stale_note, missing_from, empty):
+          stale_note, missing_from, empty, fetch=_fetch_json):
     """Fetch-with-cache for one upstream, returning ``(result, failure)``.
 
     ``failure`` is the accepted :data:`_KINDS` name of what degraded this run (or the ``unknown``
     sentinel for an internal labelling defect), and is ``None`` when nothing did — a clean fetch
     or a cache hit inside the TTL. ``parse`` turns a payload into that upstream's usable result
     and raises when there isn't one; ``empty`` is what "nothing usable" looks like to the caller.
+    ``fetch`` reads the live payload (:func:`_fetch_json`, or :func:`_fetch_pages` for a paged list).
     Shared by both upstreams so the rules cannot hold for one and drift for the other.
     """
     age = _snapshot_age(cache_path, source)
@@ -687,7 +693,7 @@ def _load(cache_path, url, headers, allowed_hosts, *, source, parse, subject, co
             _report_unreadable(parsed, source, missing_from)
             return parsed.result, None
     try:
-        payload = _fetch_json(url, headers, allowed_hosts)
+        payload = fetch(url, headers, allowed_hosts)
         parsed = parse(payload, source)
     except CatalogError as exc:
         return _stale_fallback(
@@ -794,7 +800,7 @@ def _index(payload, source):
     aliases. Like :func:`_catalog`, it validates as far as the finished index, because a
     payload whose score field was renamed parses perfectly and yields nothing.
     """
-    models, entries, unreadable = _entries(payload, source, key_required=False)
+    models, entries, unreadable = _entries(payload, source)
     idx, families = {}, []
     for position, m in enumerate(models):
         name, name_problem = _text(m.get("name"), "a name")
@@ -851,6 +857,81 @@ def _index(payload, source):
     return _Parsed((idx, families), unreadable, entries)
 
 
+def _page(payload, page):
+    """``(items, more)`` for page ``page`` (from 1) of a paged Artificial Analysis list.
+
+    The list's published schema (https://artificialanalysis.ai/api/v2/openapi) gives every page a
+    boolean ``pagination.has_more`` and an integer ``pagination.page``. A ``{"data": [...]}`` page
+    without either raises a ``schema`` :class:`CatalogError` rather than pass as the last, which
+    would cache the pages read so far as the whole list. So does a page that reports another page
+    number (a listing that ignores ``?page`` repeats its first page), and a later page of another
+    shape. ``None`` for a first page of another shape: the parser names its fault.
+    """
+    if isinstance(payload, dict) and isinstance(payload.get("data"), list):
+        pagination = payload.get("pagination")
+        fields = pagination if isinstance(pagination, dict) else {}
+        more, reported = fields.get("has_more"), fields.get("page")
+        if not isinstance(more, bool):
+            raise CatalogError(
+                "schema",
+                f"page {page} of the {ARTIFICIAL_ANALYSIS} list does not say whether more follow "
+                "(no boolean pagination.has_more)",
+            )
+        if not isinstance(reported, int) or isinstance(reported, bool):
+            raise CatalogError(
+                "schema",
+                f"page {page} of the {ARTIFICIAL_ANALYSIS} list does not say which page it is "
+                "(no integer pagination.page)",
+            )
+        if reported != page:
+            raise CatalogError(
+                "schema", f"page {page} of the {ARTIFICIAL_ANALYSIS} list reported itself as page {reported}"
+            )
+        return payload["data"], more
+    if page == 1:
+        return None
+    raise CatalogError(
+        "schema",
+        f'page {page} of the {ARTIFICIAL_ANALYSIS} list was a JSON {type(payload).__name__}, '
+        'not a {"data": [...]} object',
+    )
+
+
+def _page_url(url, page):
+    """The address of page ``page`` (from 1) of the list at ``url``: ``url`` itself for the first
+    (the list's default), ``?page=N`` after it."""
+    return url if page == 1 else f"{url}?page={page}"
+
+
+def _collect_pages(pages):
+    """Read through the final page, keeping its pagination metadata and every page's items in order.
+
+    A listing still reporting more after :data:`AA_MAX_PAGES` is a ``schema`` failure.
+    """
+    data = []
+    for page in range(1, AA_MAX_PAGES + 1):
+        payload = next(pages)
+        read = _page(payload, page)
+        if read is None:
+            return payload
+        items, more = read
+        data += items
+        if not more:
+            return {**payload, "data": data}
+    raise CatalogError(
+        "schema", f"the {ARTIFICIAL_ANALYSIS} list still reported more pages after {AA_MAX_PAGES}"
+    )
+
+
+def _fetch_pages(url, headers, allowed_hosts):
+    """Fetch each page only when needed. A failed request ends the walk immediately, so a stalled
+    upstream holds a build for one page's two transport legs (:data:`FETCH_TIMEOUT_SECONDS` each).
+    """
+    return _collect_pages(
+        _fetch_json(_page_url(url, page), headers, allowed_hosts) for page in itertools.count(1)
+    )
+
+
 def _fetch_intelligence(cache_path, api_key):
     """The Quality column's ``(idx, families)``, empty when it is unavailable.
 
@@ -872,6 +953,7 @@ def _fetch_intelligence(cache_path, api_key):
         stale_note="the Quality column may be out of date",
         missing_from="the Quality column",
         empty=({}, []),
+        fetch=_fetch_pages,
     )
     return result
 
